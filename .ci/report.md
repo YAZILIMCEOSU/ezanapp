@@ -1,11 +1,11 @@
-# CI raporu (2026-10-04 13:29 UTC)
+# CI raporu (2026-10-04 13:47 UTC)
 
 | adım | sonuç |
 |---|---|
 | pub get | success |
 | format | success |
 | analyze | failure |
-| test | success |
+| test | failure |
 | build | failure |
 
 ## pubget
@@ -86,7 +86,7 @@
 + xml 7.1.0
 + yaml 3.1.4
 + yet_another_json_isolate 2.1.1
-Changed 197 dependencies!
+Changed 205 dependencies!
 8 packages have newer versions incompatible with dependency constraints.
 Try `flutter pub outdated` for more information.
 Upgrading analysis_options.yaml to exclude build and platform directories.
@@ -95,175 +95,209 @@ Upgrading analysis_options.yaml to exclude build and platform directories.
 ## fmt
 ```
 == dart fix --apply ==
+Computing fixes in ezanapp...
+Applying fixes...
+
+lib/core/services/push_service.dart
   prefer_initializing_formals - 1 fix
 
-lib/data/models/app_settings.dart
+lib/features/ai/ai_screen.dart
   curly_braces_in_flow_control_structures - 1 fix
 
-lib/data/prayer/aladhan_api_source.dart
+lib/features/ilahi/player_controller.dart
   curly_braces_in_flow_control_structures - 1 fix
 
-lib/data/prayer/diyanet_api_source.dart
+lib/features/more/more_screen.dart
   curly_braces_in_flow_control_structures - 1 fix
 
-lib/data/prayer/prayer_times_repository.dart
-  prefer_initializing_formals - 2 fixes
-
-lib/data/repositories/ilahi_repository.dart
+lib/features/settings/about_screen.dart
   curly_braces_in_flow_control_structures - 1 fix
 
-lib/features/home/home_screen.dart
-  prefer_const_constructors - 3 fixes
-  unnecessary_const - 1 fix
+test/prayer_calculation_test.dart
+  prefer_const_declarations - 1 fix
+  unnecessary_brace_in_string_interps - 1 fix
 
-lib/features/widgets/ad_banner.dart
-  directives_ordering - 1 fix
-
-lib/features/widgets/app_shell.dart
-  use_null_aware_elements - 1 fix
-
-lib/features/widgets/prayer_countdown_chip.dart
-  unused_import - 1 fix
-
-lib/features/widgets/prayer_widgets.dart
-  unused_import - 1 fix
-
-lib/features/widgets/state_views.dart
-  use_null_aware_elements - 1 fix
-
-lib/router/app_router.dart
-  directives_ordering - 1 fix
-
-22 fixes made in 18 files.
+7 fixes made in 6 files.
 == dart format ==
-Formatted lib/data/repositories/daily_content_repository.dart
-Formatted lib/data/repositories/hadith_repository.dart
-Formatted lib/data/repositories/ilahi_repository.dart
-Formatted lib/data/repositories/quran_repository.dart
-Formatted lib/data/repositories/ramadan_repository.dart
-Formatted lib/data/repositories/zikir_repository.dart
-Formatted lib/design/app_colors.dart
-Formatted lib/design/app_spacing.dart
-Formatted lib/design/app_theme.dart
-Formatted lib/features/home/home_screen.dart
-Formatted lib/features/prayers/prayers_screen.dart
-Formatted lib/features/widgets/ad_banner.dart
-Formatted lib/features/widgets/app_shell.dart
-Formatted lib/features/widgets/prayer_countdown_chip.dart
-Formatted lib/features/widgets/prayer_widgets.dart
-Formatted lib/features/widgets/state_views.dart
-Formatted lib/router/app_router.dart
-Formatted lib/state/content_providers.dart
-Formatted lib/state/providers.dart
-Formatted 61 files (55 changed) in 0.39 seconds.
+Formatted lib/core/services/push_service.dart
+Formatted lib/core/services/sync_service.dart
+Formatted lib/features/settings/backup_screen.dart
+Formatted test/core/text_normalizer_test.dart
+Formatted test/data/models_test.dart
+Formatted 93 files (5 changed) in 0.94 seconds.
 ```
 
 ## analyze
 ```
 Analyzing ezanapp...                                            
 
-   info • Statements in an if should be enclosed in a block. Try wrapping the statement in a block • lib/features/prayers/prayers_screen.dart:275:29 • curly_braces_in_flow_control_structures
-   info • Statements in an if should be enclosed in a block. Try wrapping the statement in a block • lib/features/prayers/prayers_screen.dart:539:25 • curly_braces_in_flow_control_structures
-  error • Target of URI doesn't exist: '../features/ai/ai_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:5:8 • uri_does_not_exist
-  error • Target of URI doesn't exist: '../features/hadith/hadith_detail_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:6:8 • uri_does_not_exist
-  error • Target of URI doesn't exist: '../features/hadith/hadith_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:7:8 • uri_does_not_exist
-  error • Target of URI doesn't exist: '../features/ilahi/ilahi_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:9:8 • uri_does_not_exist
-  error • Target of URI doesn't exist: '../features/ilahi/player_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:10:8 • uri_does_not_exist
-  error • Target of URI doesn't exist: '../features/ilahi/playlist_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:11:8 • uri_does_not_exist
-  error • Target of URI doesn't exist: '../features/more/more_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:12:8 • uri_does_not_exist
-  error • Target of URI doesn't exist: '../features/more/onboarding_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:13:8 • uri_does_not_exist
-  error • Target of URI doesn't exist: '../features/more/premium_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:14:8 • uri_does_not_exist
-  error • Target of URI doesn't exist: '../features/qibla/qibla_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:16:8 • uri_does_not_exist
-  error • Target of URI doesn't exist: '../features/quran/quran_bookmarks_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:17:8 • uri_does_not_exist
-  error • Target of URI doesn't exist: '../features/quran/quran_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:18:8 • uri_does_not_exist
-  error • Target of URI doesn't exist: '../features/quran/quran_search_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:19:8 • uri_does_not_exist
-  error • Target of URI doesn't exist: '../features/quran/surah_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:20:8 • uri_does_not_exist
-  error • Target of URI doesn't exist: '../features/ramadan/ramadan_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:21:8 • uri_does_not_exist
-  error • Target of URI doesn't exist: '../features/settings/about_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:22:8 • uri_does_not_exist
-  error • Target of URI doesn't exist: '../features/settings/city_picker_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:23:8 • uri_does_not_exist
-  error • Target of URI doesn't exist: '../features/settings/notification_settings_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:24:8 • uri_does_not_exist
-  error • Target of URI doesn't exist: '../features/settings/settings_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:25:8 • uri_does_not_exist
-  error • Target of URI doesn't exist: '../features/widgets/not_found_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:26:8 • uri_does_not_exist
-  error • Target of URI doesn't exist: '../features/zikir/zikir_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:27:8 • uri_does_not_exist
-  error • Target of URI doesn't exist: '../features/zikir/zikir_stats_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:28:8 • uri_does_not_exist
-  error • The function 'AppShell' isn't defined. Try importing the library that defines 'AppShell', correcting the name to the name of an existing function, or defining a function named 'AppShell' • lib/router/app_router.dart:93:12 • undefined_function
-  error • The name 'QuranScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:121:25 • creation_with_non_type
-  error • The name 'IlahiScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:131:25 • creation_with_non_type
-  error • The name 'MoreScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:141:25 • creation_with_non_type
-  error • The name 'OnboardingScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:150:17 • creation_with_non_type
-  error • The name 'QiblaScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:155:17 • creation_with_non_type
-  error • The name 'ZikirScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:160:17 • creation_with_non_type
-  error • The name 'ZikirStatsScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:165:21 • creation_with_non_type
-  error • The name 'HadithScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:172:17 • creation_with_non_type
-  error • The function 'HadithDetailScreen' isn't defined. Try importing the library that defines 'HadithDetailScreen', correcting the name to the name of an existing function, or defining a function named 'HadithDetailScreen' • lib/router/app_router.dart:177:15 • undefined_function
-  error • The name 'RamadanScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:186:17 • creation_with_non_type
-  error • The name 'AiScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:190:69 • creation_with_non_type
-  error • The name 'PremiumScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:195:17 • creation_with_non_type
-  error • The name 'CityPickerScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:200:17 • creation_with_non_type
-  error • The name 'SettingsScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:205:17 • creation_with_non_type
-  error • The name 'NotificationSettingsScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:210:21 • creation_with_non_type
-  error • The name 'AboutScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:215:21 • creation_with_non_type
-  error • The name 'QuranSearchScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:222:17 • creation_with_non_type
-  error • The name 'QuranBookmarksScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:227:17 • creation_with_non_type
-  error • The function 'SurahScreen' isn't defined. Try importing the library that defines 'SurahScreen', correcting the name to the name of an existing function, or defining a function named 'SurahScreen' • lib/router/app_router.dart:231:63 • undefined_function
-  error • The name 'PlayerScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:239:17 • creation_with_non_type
-  error • The name 'PlaylistScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:244:17 • creation_with_non_type
-  error • The function 'PlaylistScreen' isn't defined. Try importing the library that defines 'PlaylistScreen', correcting the name to the name of an existing function, or defining a function named 'PlaylistScreen' • lib/router/app_router.dart:248:63 • undefined_function
-  error • The function 'NotFoundScreen' isn't defined. Try importing the library that defines 'NotFoundScreen', correcting the name to the name of an existing function, or defining a function named 'NotFoundScreen' • lib/router/app_router.dart:254:7 • undefined_function
-  error • Undefined class 'FutureProviderFamily'. Try changing the name to the name of an existing class, or creating a class with the name 'FutureProviderFamily' • lib/state/content_providers.dart:58:7 • undefined_class
-   info • Type could be non-nullable. Try changing the type to be non-nullable • lib/state/content_providers.dart:58:55 • unnecessary_nullable_for_final_variable_declarations
-   info • Statements in an if should be enclosed in a block. Try wrapping the statement in a block • lib/state/content_providers.dart:65:9 • curly_braces_in_flow_control_structures
-  error • Undefined class 'FutureProviderFamily'. Try changing the name to the name of an existing class, or creating a class with the name 'FutureProviderFamily' • lib/state/content_providers.dart:105:7 • undefined_class
-   info • Type could be non-nullable. Try changing the type to be non-nullable • lib/state/content_providers.dart:105:47 • unnecessary_nullable_for_final_variable_declarations
-  error • Undefined class 'FutureProviderFamily'. Try changing the name to the name of an existing class, or creating a class with the name 'FutureProviderFamily' • lib/state/content_providers.dart:130:7 • undefined_class
-   info • Type could be non-nullable. Try changing the type to be non-nullable • lib/state/content_providers.dart:130:60 • unnecessary_nullable_for_final_variable_declarations
-   info • Statements in an if should be enclosed in a block. Try wrapping the statement in a block • lib/state/content_providers.dart:136:9 • curly_braces_in_flow_control_structures
-  error • Undefined class 'FutureProviderFamily'. Try changing the name to the name of an existing class, or creating a class with the name 'FutureProviderFamily' • lib/state/content_providers.dart:219:7 • undefined_class
-   info • Type could be non-nullable. Try changing the type to be non-nullable • lib/state/content_providers.dart:219:51 • unnecessary_nullable_for_final_variable_declarations
+  error • The getter 'inAppAdhan' isn't defined for the type 'NotificationSettings'. Try importing the library that defines 'inAppAdhan', correcting the name to the name of an existing getter, or defining a getter or field named 'inAppAdhan' • lib/app/app.dart:47:35 • undefined_getter
+warning • The value of the field '_app' isn't used. Try removing the field, or using it • lib/core/services/push_service.dart:78:16 • unused_field
+   info • 'anonKey' is deprecated and shouldn't be used. Use publishableKey instead. anonKey will be removed in a future major version. Try replacing the use of the deprecated member with the replacement • lib/core/services/sync_service.dart:66:11 • deprecated_member_use
+  error • There's no constant named 'buffering' in 'PlaybackStatus'. Try correcting the name to the name of an existing constant, or defining a constant named 'buffering' • lib/features/ilahi/player_controller.dart:45:68 • undefined_enum_constant
+  error • The expression doesn't evaluate to a function, so it can't be invoked • lib/features/ilahi/player_controller.dart:328:35 • invocation_of_non_function_expression
+  error • The name 'SectionHeader' isn't a class. Try correcting the name to match an existing class • lib/features/more/islamic_days_screen.dart:69:17 • creation_with_non_type
+  error • The name 'SectionHeader' isn't a class. Try correcting the name to match an existing class • lib/features/more/islamic_days_screen.dart:121:17 • creation_with_non_type
+  error • The method 'push' isn't defined for the type 'BuildContext'. Try correcting the name to the name of an existing method, or defining a method named 'push' • lib/features/qibla/qibla_screen.dart:110:44 • undefined_method
+  error • The name 'SectionHeader' isn't a class. Try correcting the name to match an existing class • lib/features/qibla/qibla_screen.dart:159:17 • creation_with_non_type
+  error • The name 'AyahSearchResult' isn't a type, so it can't be used as a type argument. Try correcting the name to an existing type, or defining a type named 'AyahSearchResult' • lib/features/quran/quran_search_screen.dart:27:8 • non_type_as_type_argument
+  error • The name 'AyahSearchResult' isn't a type, so it can't be used as a type argument. Try correcting the name to an existing type, or defining a type named 'AyahSearchResult' • lib/features/quran/quran_search_screen.dart:27:44 • non_type_as_type_argument
+  error • The name 'AyahSearchResult' isn't a type, so it can't be used as a type argument. Try correcting the name to an existing type, or defining a type named 'AyahSearchResult' • lib/features/quran/quran_search_screen.dart:59:27 • non_type_as_type_argument
+  error • The name 'AyahSearchResult' isn't a type, so it can't be used as a type argument. Try correcting the name to an existing type, or defining a type named 'AyahSearchResult' • lib/features/quran/quran_search_screen.dart:70:18 • non_type_as_type_argument
+  error • A value of type 'dynamic' can't be assigned to a variable of type 'List<InvalidType>'. Try changing the type of the variable, or casting the right-hand type to 'List<InvalidType>' • lib/features/quran/quran_search_screen.dart:70:46 • invalid_assignment
+warning • The type argument(s) of the function 'read' can't be inferred. Use explicit type argument(s) for 'read' • lib/features/quran/quran_search_screen.dart:71:12 • inference_failure_on_function_invocation
+  error • Undefined name 'runtimeProvider'. Try correcting the name to one that is defined, or defining the name • lib/features/quran/quran_search_screen.dart:71:17 • undefined_identifier
+  error • Undefined class 'AyahSearchResult'. Try changing the name to the name of an existing class, or creating a class with the name 'AyahSearchResult' • lib/features/quran/quran_search_screen.dart:174:15 • undefined_class
+  error • The getter 'values' isn't defined for the type 'Iterable<ItemPosition>'. Try importing the library that defines 'values', correcting the name to the name of an existing getter, or defining a getter or field named 'values' • lib/features/quran/surah_screen.dart:49:75 • undefined_getter
+  error • The name 'SectionHeader' isn't a class. Try correcting the name to match an existing class • lib/features/ramadan/ramadan_screen.dart:190:17 • creation_with_non_type
+  error • The name 'SectionHeader' isn't a class. Try correcting the name to match an existing class • lib/features/ramadan/ramadan_screen.dart:192:17 • creation_with_non_type
+  error • The name 'SectionHeader' isn't a class. Try correcting the name to match an existing class • lib/features/ramadan/ramadan_screen.dart:194:17 • creation_with_non_type
+  error • The name 'SectionHeader' isn't a class. Try correcting the name to match an existing class • lib/features/ramadan/ramadan_screen.dart:196:17 • creation_with_non_type
+   info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check. Guard a 'State.context' use with a 'mounted' check on the State, and other BuildContext use with a 'mounted' check on the BuildContext • lib/features/settings/notification_settings_screen.dart:345:36 • use_build_context_synchronously
+warning • Dead code. Try removing the code, or fixing the code before it so that it can be reached • lib/features/zikir/zikir_screen.dart:288:64 • dead_code
+warning • The left operand can't be null, so the right operand is never executed. Try removing the operator and the right operand • lib/features/zikir/zikir_screen.dart:288:67 • dead_null_aware_expression
+  error • The name 'Override' isn't a type, so it can't be used as a type argument. Try correcting the name to an existing type, or defining a type named 'Override' • lib/main.dart:54:21 • non_type_as_type_argument
+  error • A value of type 'dynamic' can't be assigned to a variable of type 'Object'. Try changing the type of the variable, or casting the right-hand type to 'Object' • test/prayer_calculation_test.dart:22:28 • invalid_assignment
 
-58 issues found. (ran in 16.0s)
+27 issues found. (ran in 20.6s)
 ```
 
 ## test
 ```
-00:00 +0: loading /home/runner/work/ezanapp/ezanapp/test/placeholder_test.dart
-00:00 +0: placeholder
-00:00 +1: All tests passed!
+  package:intl/src/intl_helpers.dart 222:19      verifiedLocale
+  package:intl/src/intl/date_format.dart 267:25  new DateFormat
+  package:ezanai/core/utils/app_time.dart 58:12  AppTime.formatTime
+  test/core/text_normalizer_test.dart 65:22      main.<fn>.<fn>
+  
+00:00 +14 -6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay sonraki vakit ve içinde bulunulan vakit doğru bulunur
+00:00 +15 -6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay sonraki vakit ve içinde bulunulan vakit doğru bulunur
+00:00 +16 -6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay bozuk veri sağlıksız kabul edilir
+00:00 +17 -6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay JSON gidiş-dönüşü vakitleri korur
+00:00 +18 -6: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: (setUpAll)
+00:00 +18 -6: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: doğrulama verisi yüklendi
+00:00 +19 -6: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: yerel hesap, Diyanet vakitlerine ±3 dakika içinde kalır
+00:00 +19 -7: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: yerel hesap, Diyanet vakitlerine ±3 dakika içinde kalır [E]
+  Expected: empty
+    Actual: [
+              'Adana 2022-01-15 imsak: hesap 18:20, Diyanet 06:20 (20520.0 dk)',
+              'Adana 2022-01-15 gunes: hesap 19:44, Diyanet 07:44 (24059.6 dk)',
+              'Adana 2022-01-15 ogle: hesap 00:53, Diyanet 12:53 (43199.7 dk)',
+              'Adana 2022-01-15 ikindi: hesap 03:30, Diyanet 15:30 (53819.8 dk)',
+              'Adana 2022-01-15 aksam: hesap 05:52, Diyanet 17:52 (60899.8 dk)',
+              'Adana 2022-01-15 yatsi: hesap 07:11, Diyanet 19:11 (67979.5 dk)',
+              'Adana 2022-03-21 imsak: hesap 17:15, Diyanet 05:15 (16979.9 dk)',
+              'Adana 2022-03-21 gunes: hesap 18:35, Diyanet 06:34 (20519.0 dk)',
+              'Adana 2022-03-21 ogle: hesap 00:51, Diyanet 12:51 (43199.5 dk)',
+              'Adana 2022-03-21 ikindi: hesap 04:17, Diyanet 16:17 (57359.7 dk)',
+              'Adana 2022-03-21 aksam: hesap 06:58, Diyanet 18:58 (64440.0 dk)',
+              'Adana 2022-03-21 yatsi: hesap 08:13, Diyanet 20:12 (71519.3 dk)',
+              'Adana 2022-06-21 imsak: hesap 15:27, Diyanet 03:27 (9899.7 dk)',
+              'Adana 2022-06-21 gunes: hesap 17:13, Diyanet 05:12 (16979.2 dk)',
+              'Adana 2022-06-21 ogle: hesap 00:46, Diyanet 12:45 (43199.2 dk)',
+              'Adana 2022-06-21 ikindi: hesap 04:37, Diyanet 16:37 (57360.2 dk)',
+              'Adana 2022-06-21 aksam: hesap 08:09, Diyanet 20:09 (71520.2 dk)',
+              'Adana 2022-06-21 yatsi: hesap 09:47, Diyanet 21:46 (75059.4 dk)',
+              'Adana 2022-09-23 imsak: hesap 17:01, Diyanet 05:00 (16979.5 dk)',
+              'Adana 2022-09-23 gunes: hesap 18:20, Diyanet 06:20 (20519.6 dk)',
+              'Adana 2022-09-23 ogle: hesap 00:37, Diyanet 12:36 (43199.3 dk)',
+              'Adana 2022-09-23 ikindi: hesap 04:02, Diyanet 16:02 (57359.5 dk)',
+              'Adana 2022-09-23 aksam: hesap 06:43, Diyanet 18:42 (64439.0 dk)',
+              'Adana 2022-09-23 yatsi: hesap 07:58, Diyanet 19:57 (67979.3 dk)',
+              ...
+            ]
+  Adana 2022-01-15 imsak: hesap 18:20, Diyanet 06:20 (20520.0 dk)
+  Adana 2022-01-15 gunes: hesap 19:44, Diyanet 07:44 (24059.6 dk)
+  Adana 2022-01-15 ogle: hesap 00:53, Diyanet 12:53 (43199.7 dk)
+  Adana 2022-01-15 ikindi: hesap 03:30, Diyanet 15:30 (53819.8 dk)
+  Adana 2022-01-15 aksam: hesap 05:52, Diyanet 17:52 (60899.8 dk)
+  Adana 2022-01-15 yatsi: hesap 07:11, Diyanet 19:11 (67979.5 dk)
+  Adana 2022-03-21 imsak: hesap 17:15, Diyanet 05:15 (16979.9 dk)
+  Adana 2022-03-21 gunes: hesap 18:35, Diyanet 06:34 (20519.0 dk)
+  Adana 2022-03-21 ogle: hesap 00:51, Diyanet 12:51 (43199.5 dk)
+  Adana 2022-03-21 ikindi: hesap 04:17, Diyanet 16:17 (57359.7 dk)
+  Adana 2022-03-21 aksam: hesap 06:58, Diyanet 18:58 (64440.0 dk)
+  Adana 2022-03-21 yatsi: hesap 08:13, Diyanet 20:12 (71519.3 dk)
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test/prayer_calculation_test.dart 93:5              main.<fn>
+  
+00:00 +19 -7: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: vakitler gün içinde artan sırada
+00:00 +19 -8: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: vakitler gün içinde artan sırada [E]
+  Expected: a value greater than <17.41661458903598>
+    Actual: <1.1797826165299405>
+     Which: is not a value greater than <17.41661458903598>
+  1. vakit sonraki vakitten geç olmamalı
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test/prayer_calculation_test.dart 105:7             main.<fn>
+  
+00:00 +19 -8: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: Hanefî ikindi vakti Şâfiî'den sonra olur
+00:00 +20 -8: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: yüksek enlemlerde gece ortası kuralı vakit üretir
+00:00 +21 -8: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: (tearDownAll)
+00:00 +21 -8: Some tests failed.
+
+Failing tests:
+  /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime 24 saat ve 12 saat biçimi
+  /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer ekleri kaba biçimde kırpar
+  /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer kelimelere ayırır ve kısa kelimeleri atar
+  /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings bozuk yedek varsayılanlara döner
+  ... and 4 more
 ```
 
 ## build
 ```
-Upgrading build.gradle.kts
-Upgrading gradle.properties
-Upgrading gradle.properties
-Running Gradle task 'assembleDebug'...                          
-Warning: Flutter support for your project's Gradle version (8.14.3) will soon be dropped. Please upgrade your Gradle version to a version of at least 9.1.0 soon.
-Alternatively, use the flag "--android-skip-build-dependency-validation" to bypass this check.
-
-Potential fix: Your project's gradle version is typically defined in the gradle wrapper file. By default, this can be found at /home/runner/work/ezanapp/ezanapp/android/gradle/wrapper/gradle-wrapper.properties. 
-For more information, see https://docs.gradle.org/current/userguide/gradle_wrapper.html.
-
-Warning: Flutter support for your project's Android Gradle Plugin version (Android Gradle Plugin version 8.12.1) will soon be dropped. Please upgrade your Android Gradle Plugin version to a version of at least Android Gradle Plugin version 9.0.1 soon.
-Alternatively, use the flag "--android-skip-build-dependency-validation" to bypass this check.
-
-Potential fix: Your project's AGP version is typically defined in the plugins block of the `settings.gradle` file (/home/runner/work/ezanapp/ezanapp/android/settings.gradle), by a plugin with the id of com.android.application. 
-If you don't see a plugins block, your project was likely created with an older template version. In this case it is most likely defined in the top-level build.gradle file (/home/runner/work/ezanapp/ezanapp/android/build.gradle) by the following line in the dependencies block of the buildscript: "classpath 'com.android.tools.build:gradle:<version>'".
+                                           ^^^^^^^^^^^^^^^^
+lib/features/quran/quran_search_screen.dart:59:27: Error: 'AyahSearchResult' isn't a type.
+        _results = const <AyahSearchResult>[];
+                          ^^^^^^^^^^^^^^^^
+lib/features/quran/quran_search_screen.dart:70:18: Error: 'AyahSearchResult' isn't a type.
+      final List<AyahSearchResult> results = await ref
+                 ^^^^^^^^^^^^^^^^
+lib/features/quran/quran_search_screen.dart:71:17: Error: The getter 'runtimeProvider' isn't defined for the type '_QuranSearchScreenState'.
+ - '_QuranSearchScreenState' is from 'package:ezanai/features/quran/quran_search_screen.dart' ('lib/features/quran/quran_search_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'runtimeProvider'.
+          .read(runtimeProvider)
+                ^^^^^^^^^^^^^^^
+lib/features/quran/quran_search_screen.dart:174:15: Error: 'AyahSearchResult' isn't a type.
+        final AyahSearchResult result = _results[index];
+              ^^^^^^^^^^^^^^^^
+lib/features/quran/surah_screen.dart:49:75: Error: The getter 'values' isn't defined for the type 'Iterable<ItemPosition>'.
+ - 'Iterable' is from 'dart:core'.
+ - 'ItemPosition' is from 'package:scrollable_positioned_list/src/item_positions_listener.dart' ('../../../.pub-cache/hosted/pub.dev/scrollable_positioned_list-0.3.8/lib/src/item_positions_listener.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'values'.
+    final Iterable<ItemPosition> visible = _positions.itemPositions.value.values
+                                                                          ^^^^^^
+lib/features/ramadan/ramadan_screen.dart:190:17: Error: Not a constant expression.
+          const SectionHeader(title: 'Hatim takibi'),
+                ^^^^^^^^^^^^^
+lib/features/ramadan/ramadan_screen.dart:192:17: Error: Not a constant expression.
+          const SectionHeader(title: 'Kaza orucu takibi'),
+                ^^^^^^^^^^^^^
+lib/features/ramadan/ramadan_screen.dart:194:17: Error: Not a constant expression.
+          const SectionHeader(title: 'İmsakiye'),
+                ^^^^^^^^^^^^^
+lib/features/ramadan/ramadan_screen.dart:196:17: Error: Not a constant expression.
+          const SectionHeader(title: 'Günün duası'),
+                ^^^^^^^^^^^^^
+lib/features/ilahi/player_controller.dart:45:68: Error: Member not found: 'buffering'.
+      status == PlaybackStatus.loading || status == PlaybackStatus.buffering;
+                                                                   ^^^^^^^^^
+lib/features/ilahi/player_controller.dart:328:51: Error: The method 'call' isn't defined for the type 'String'.
+Try correcting the name to the name of an existing method, or defining a method named 'call'.
+        onTap: () => context.push(AppRoutes.player(player.track!.id)),
+                                                  ^
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Target kernel_snapshot_program failed: Exception
 
 
 FAILURE: Build failed with an exception.
 
-* Where:
-Build file '/home/runner/work/ezanapp/ezanapp/android/app/build.gradle.kts' line: 3
-
 * What went wrong:
-An exception occurred applying plugin request [id: 'dev.flutter.flutter-gradle-plugin']
-> Failed to apply plugin 'dev.flutter.flutter-gradle-plugin'.
-   > Error: Your project's Kotlin version (2.2.0) is lower than Flutter's minimum supported version of 2.2.20. Please upgrade your Kotlin version. 
-     Alternatively, use the flag "--android-skip-build-dependency-validation" to bypass this check.
-
-     Potential fix: Your project's KGP version is typically defined in the plugins block of the `settings.gradle` file (/home/runner/work/ezanapp/ezanapp/android/settings.gradle), by a plugin with the id of org.jetbrains.kotlin.android. 
-     If you don't see a plugins block, your project was likely created with an older template version, in which case it is most likely defined in the top-level build.gradle file (/home/runner/work/ezanapp/ezanapp/android/build.gradle) by the ext.kotlin_version property.
-
+Execution failed for task ':app:compileFlutterBuildDebug'.
+> Process 'command '/opt/hostedtoolcache/flutter/stable-3.47.6-x64/flutter/bin/flutter'' finished with non-zero exit value 1
 
 * Try:
 > Run with --stacktrace option to get the stack trace.
@@ -271,20 +305,7 @@ An exception occurred applying plugin request [id: 'dev.flutter.flutter-gradle-p
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 1m 19s
-Running Gradle task 'assembleDebug'...                             80.6s
-
-┌─ Flutter Fix ────────────────────────────────────────────────────────────────────────┐
-│ [!] Starting AGP 9+, only the new DSL interface will be read.                        │
-│ This results in a build failure when applying the Flutter Gradle plugin at           │
-│ /home/runner/work/ezanapp/ezanapp/android/app/build.gradle.kts.                      │
-│                                                                                      │
-│ To resolve this update flutter or opt out of `android.newDsl`.                       │
-│ For instructions on how to opt out, see:                                             │
-│ https://developer.android.com/build/releases/agp-9-0-0-release-notes                 │
-│                                                                                      │
-│ If you are not upgrading to AGP 9+, run `flutter analyze --suggestions` to check for │
-│ incompatible dependencies.                                                           │
-└──────────────────────────────────────────────────────────────────────────────────────┘
+BUILD FAILED in 4m 7s
+Running Gradle task 'assembleDebug'...                            248.6s
 Gradle task assembleDebug failed with exit code 1
 ```
