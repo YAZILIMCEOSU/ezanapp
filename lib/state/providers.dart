@@ -34,7 +34,7 @@ final StreamProvider<bool> connectivityProvider = StreamProvider<bool>(
 
 final Provider<bool> isOnlineProvider = Provider<bool>(
   (Ref ref) =>
-      ref.watch(connectivityProvider).valueOrNull ??
+      ref.watch(connectivityProvider).value ??
       ref.read(runtimeProvider).connectivity.isOnline,
 );
 
@@ -431,7 +431,7 @@ final AsyncNotifierProvider<PrayerTimesNotifier, TodayTimes>
 
 enum PrayerRangeView {
   today('Bugün', Icons.today_rounded),
-  week('Hafta', Icons.tiles_rounded),
+  week('Hafta', Icons.date_range_rounded),
   month('Ay', Icons.calendar_month_rounded);
 
   const PrayerRangeView(this.label, this.icon);
@@ -488,10 +488,8 @@ final AsyncNotifierProvider<PrayerRangeNotifier, List<PrayerTimesDay>>
         PrayerRangeNotifier.new);
 
 /// Saniyelik saat — geri sayımlar için. Ekrandan çıkıldığında durur.
-final AutoDisposeStreamProvider<DateTime> clockProvider =
-    StreamProvider.autoDispose<DateTime>(
-  (Ref ref) => Stream<DateTime>.periodic(
-      const Duration(seconds: 1), (_) => DateTime.now()),
+final StreamProvider<DateTime> clockProvider = StreamProvider.autoDispose<DateTime>(
+  (Ref ref) => Stream<DateTime>.periodic(const Duration(seconds: 1), (_) => DateTime.now()),
 );
 
 /// Hicri tarih (ayarlardaki kaydırma uygulanır).
