@@ -9,7 +9,6 @@ analyzer:
   exclude:
     - "**/*.g.dart"
     - "**/*.freezed.dart"
-  plugins: []
 
 linter:
   rules:

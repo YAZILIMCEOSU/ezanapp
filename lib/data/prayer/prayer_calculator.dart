@@ -31,6 +31,7 @@ class CalculationMethod {
     this.temkin = Temkin.diyanet,
     this.highLatitudeRule = HighLatitudeRule.none,
     this.country = '',
+    this.manualOffsets = const <String, int>{},
   });
 
   final String id;
@@ -56,6 +57,40 @@ class CalculationMethod {
   final Temkin temkin;
   final HighLatitudeRule highLatitudeRule;
   final String country;
+
+  /// Kullanıcının vakit bazlı manuel düzeltmeleri (dakika).
+  final Map<String, int> manualOffsets;
+
+  CalculationMethod copyWith({
+    String? id,
+    String? name,
+    String? description,
+    double? fajrAngle,
+    double? ishaAngle,
+    int? ishaIntervalMinutes,
+    double? maghribAngle,
+    double? sunriseAngle,
+    double? asrFactor,
+    Temkin? temkin,
+    HighLatitudeRule? highLatitudeRule,
+    String? country,
+    Map<String, int>? manualOffsets,
+  }) =>
+      CalculationMethod(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        description: description ?? this.description,
+        fajrAngle: fajrAngle ?? this.fajrAngle,
+        ishaAngle: ishaAngle ?? this.ishaAngle,
+        ishaIntervalMinutes: ishaIntervalMinutes ?? this.ishaIntervalMinutes,
+        maghribAngle: maghribAngle ?? this.maghribAngle,
+        sunriseAngle: sunriseAngle ?? this.sunriseAngle,
+        asrFactor: asrFactor ?? this.asrFactor,
+        temkin: temkin ?? this.temkin,
+        highLatitudeRule: highLatitudeRule ?? this.highLatitudeRule,
+        country: country ?? this.country,
+        manualOffsets: manualOffsets ?? this.manualOffsets,
+      );
 
   /// T.C. Diyanet İşleri Başkanlığı (uygulamanın varsayılanı).
   static const CalculationMethod diyanet = CalculationMethod(
@@ -393,12 +428,12 @@ abstract final class PrayerCalculator {
     }
 
     return CalculatedTimes(
-      imsak: apply(imsak, offset('imsak', temkin.imsak).toInt()),
-      gunes: apply(gunes, offset('gunes', temkin.gunes).toInt()),
-      ogle: apply(dhuhr, offset('ogle', temkin.ogle).toInt()),
-      ikindi: apply(ikindi, offset('ikindi', temkin.ikindi).toInt()),
-      aksam: apply(aksam, offset('aksam', temkin.aksam).toInt()),
-      yatsi: apply(yatsi, offset('yatsi', temkin.yatsi).toInt()),
+      imsak: apply(imsak, offset('imsak', temkin.imsak)),
+      gunes: apply(gunes, offset('gunes', temkin.gunes)),
+      ogle: apply(dhuhr, offset('ogle', temkin.ogle)),
+      ikindi: apply(ikindi, offset('ikindi', temkin.ikindi)),
+      aksam: apply(aksam, offset('aksam', temkin.aksam)),
+      yatsi: apply(yatsi, offset('yatsi', temkin.yatsi)),
     );
   }
 

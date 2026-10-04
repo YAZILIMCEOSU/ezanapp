@@ -2,11 +2,13 @@ import 'package:sqflite/sqflite.dart' show ConflictAlgorithm;
 
 import '../../core/db/app_database.dart';
 import '../hijri/hijri_calendar.dart';
+import '../models/city.dart';
 import '../models/hijri_date.dart';
 import '../models/prayer.dart';
 import '../models/prayer_times_day.dart';
 import '../models/ramadan_models.dart';
-import 'prayer_times_repository.dart';
+import '../prayer/prayer_calculator.dart';
+import '../prayer/prayer_times_repository.dart';
 
 /// Ramazan modülü verisi: imsakiye, sahur/iftar, günlük kayıt, hatim, kaza orucu.
 class RamadanRepository {
@@ -42,8 +44,8 @@ class RamadanRepository {
 
   /// Sahur/iftar geri sayımı için bugünün ve yarının vakitleri.
   Future<({PrayerTimesDay today, PrayerTimesDay tomorrow, DateTime imsak, DateTime iftar})> todayTimes({
-    required dynamic location,
-    required dynamic method,
+    required UserLocation location,
+    required CalculationMethod method,
   }) async {
     final DateTime now = DateTime.now();
     final PrayerTimesDay today = await _prayerTimes.getDay(
@@ -65,7 +67,10 @@ class RamadanRepository {
   }
 
   /// Ramazan imsakiyesi (tüm ay).
-  Future<List<PrayerTimesDay>> imsakiye({required dynamic location, required dynamic method}) async {
+  Future<List<PrayerTimesDay>> imsakiye({
+    required UserLocation location,
+    required CalculationMethod method,
+  }) async {
     final ({DateTime start, DateTime end}) window = ramadanWindow();
     return _prayerTimes.getRange(
       location: location,

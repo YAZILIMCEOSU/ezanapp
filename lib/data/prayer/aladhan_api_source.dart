@@ -78,14 +78,18 @@ class AladhanApiSource implements PrayerTimesSource {
         return DateTime(date.year, date.month, date.day, hour, minute);
       }
 
-      final Map<Prayer, DateTime> mapped = <Prayer, DateTime>{
+      final Map<Prayer, DateTime?> parsed = <Prayer, DateTime?>{
         Prayer.imsak: parse(timings['Fajr']),
         Prayer.gunes: parse(timings['Sunrise']),
         Prayer.ogle: parse(timings['Dhuhr']),
         Prayer.ikindi: parse(timings['Asr']),
         Prayer.aksam: parse(timings['Maghrib']),
         Prayer.yatsi: parse(timings['Isha']),
-      }..removeWhere((Prayer key, DateTime? value) => value == null);
+      };
+      final Map<Prayer, DateTime> mapped = <Prayer, DateTime>{
+        for (final MapEntry<Prayer, DateTime?> entry in parsed.entries)
+          if (entry.value != null) entry.key: entry.value!,
+      };
       if (mapped.length < Prayer.values.length) {
         throw const PrayerTimesSourceException('aladhan', 'Vakitlerin tamamı çözümlenemedi.');
       }
@@ -96,7 +100,7 @@ class AladhanApiSource implements PrayerTimesSource {
           (hijriRaw['hijri'] as Map?)?.cast<String, Object?>() ?? <String, Object?>{};
       final String? hijriLabel = hijri.isEmpty
           ? null
-          : '${hijri['day']} ${(hijri['month'] as Map?)?.cast<String, Object?>()?['tr'] ?? (hijri['month'] as Map?)?.cast<String, Object?>()?['en']} ${hijri['year']}';
+          : '${hijri['day']} ${(hijri['month'] as Map?)?.cast<String, Object?>()['tr'] ?? (hijri['month'] as Map?)?.cast<String, Object?>()['en']} ${hijri['year']}';
 
       return PrayerTimesDay(
         date: DateTime(date.year, date.month, date.day),
@@ -142,7 +146,7 @@ class AladhanApiSource implements PrayerTimesSource {
         if (item is! Map) continue;
         final Map<String, Object?> record = item.cast<String, Object?>();
         final Map<String, Object?> gregorian =
-            ((record['date'] as Map?)?.cast<String, Object?>()?['gregorian'] as Map?)
+            ((record['date'] as Map?)?.cast<String, Object?>()['gregorian'] as Map?)
                     ?.cast<String, Object?>() ??
                 <String, Object?>{};
         final DateTime? date = DateTime.tryParse(gregorian['date'] as String? ?? '');
@@ -159,14 +163,18 @@ class AladhanApiSource implements PrayerTimesSource {
           return DateTime(date.year, date.month, date.day, hour, minute);
         }
 
-        final Map<Prayer, DateTime> mapped = <Prayer, DateTime>{
+        final Map<Prayer, DateTime?> parsed = <Prayer, DateTime?>{
           Prayer.imsak: parse(timings['Fajr']),
           Prayer.gunes: parse(timings['Sunrise']),
           Prayer.ogle: parse(timings['Dhuhr']),
           Prayer.ikindi: parse(timings['Asr']),
           Prayer.aksam: parse(timings['Maghrib']),
           Prayer.yatsi: parse(timings['Isha']),
-        }..removeWhere((Prayer key, DateTime? value) => value == null);
+        };
+        final Map<Prayer, DateTime> mapped = <Prayer, DateTime>{
+          for (final MapEntry<Prayer, DateTime?> entry in parsed.entries)
+            if (entry.value != null) entry.key: entry.value!,
+        };
         if (mapped.length == Prayer.values.length) {
           days.add(PrayerTimesDay(
             date: DateTime(date.year, date.month, date.day),

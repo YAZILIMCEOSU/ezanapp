@@ -125,6 +125,11 @@ def make_icon(size: int, rounded_corners: bool) -> Image.Image:
     return rounded(base, 0.22) if rounded_corners else base
 
 
+def make_logo_mark(size: int) -> Image.Image:
+    """Şeffaf zeminli uygulama işareti (arayüz içi kullanım)."""
+    return draw_logo(size, 0.86)
+
+
 def main() -> None:
     densities = {'mdpi': 48, 'hdpi': 72, 'xhdpi': 96, 'xxhdpi': 144, 'xxxhdpi': 192}
     for name, size in densities.items():
@@ -141,6 +146,14 @@ def main() -> None:
         fg.save(os.path.join(out_dir, 'ic_launcher_foreground.png'))
     os.makedirs(os.path.join(RES, 'drawable'), exist_ok=True)
     make_icon(1024, rounded_corners=False).save(os.path.join(RES, 'drawable', 'splash_logo.png'))
+
+    # Arayüz içi işaret (şeffaf zemin, tema renginden bağımsız kullanılır)
+    images_dir = os.path.join(ROOT, 'assets', 'images')
+    os.makedirs(images_dir, exist_ok=True)
+    make_logo_mark(512).save(os.path.join(images_dir, 'logo_mark.png'))
+    make_logo_mark(1024).resize((256, 256), Image.LANCZOS).save(
+        os.path.join(images_dir, 'logo_mark_small.png'))
+    print('logo işaretleri assets/images/ altına yazıldı')
 
     os.makedirs(STORE, exist_ok=True)
     make_icon(512, rounded_corners=False).save(os.path.join(STORE, 'play_icon_512.png'))

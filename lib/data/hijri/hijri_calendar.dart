@@ -33,8 +33,9 @@ class HijriCalendar {
     final String raw = await assets.loadString('assets/data/hijri_ummalqura.json');
     final Map<String, Object?> json = (jsonDecode(raw) as Map).cast<String, Object?>();
     final String encoded = json['monthLengths'] as String;
+    final int zero = '0'.codeUnitAt(0);
     final List<int> lengths =
-        encoded.codeUnits.map((int code) => code - '0'.charCodeAt(0) + 27).toList();
+        encoded.codeUnits.map((int code) => code - zero + 27).toList();
     final DateTime base = DateTime.parse(json['baseGregorian'] as String);
     _instance = HijriCalendar._(
       baseHijriYear: json['baseHijriYear'] as int,

@@ -60,6 +60,7 @@ class LocalCalculationSource implements PrayerTimesSource {
       longitude: location.longitude,
       method: method,
       timeZoneOffsetHours: location.city?.timeZoneOffsetHours ?? 3.0,
+      manualOffsets: method.manualOffsets,
     );
     final Map<Prayer, DateTime> mapped = <Prayer, DateTime>{
       for (final MapEntry<Prayer, double> entry in _asMap(times).entries)

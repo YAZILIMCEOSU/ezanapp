@@ -153,8 +153,8 @@ class AiService {
           createdAt: DateTime.now(),
         );
       } catch (error, stack) {
-        AppLogger.warn('AI uzak çağrısı başarısız: $error');
-        AppLogger.debug('$stack');
+        AppLog.warning('AI uzak çağrısı başarısız: $error');
+        AppLog.debug('$stack');
       }
     }
 

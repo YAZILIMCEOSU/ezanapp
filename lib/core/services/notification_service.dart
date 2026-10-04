@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui' show Color;
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
@@ -145,7 +145,7 @@ class NotificationService {
     for (final String name in preferred) {
       try {
         final tz.Location location = tz.getLocation(name);
-        if (location.currentTimeZone.offset == offset.inMilliseconds) return name;
+        if (location.currentTimeZone.offset == offset) return name;
       } catch (_) {
         continue;
       }
@@ -587,7 +587,7 @@ class NotificationService {
       time == null ? '--:--' : '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
 
   tz.TZDateTime _nextInstanceOf(int? weekday, int hour, int minute) {
-    tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
     tz.TZDateTime scheduled =
         tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
     if (weekday != null) {

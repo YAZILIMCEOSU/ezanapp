@@ -25,7 +25,7 @@ abstract final class GeoUtils {
   /// Büyük daire (initial bearing) formülü kullanılır.
   static double qiblaBearing(double latitude, double longitude) {
     final double lat1 = latitude * _deg2rad;
-    final double lat2 = AppConstants.kaabaLat * _deg2rad;
+    const double lat2 = AppConstants.kaabaLat * _deg2rad;
     final double deltaLon = (AppConstants.kaabaLng - longitude) * _deg2rad;
     final double y = math.sin(deltaLon);
     final double x = math.cos(lat1) * math.tan(lat2) - math.sin(lat1) * math.cos(deltaLon);

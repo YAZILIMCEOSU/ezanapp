@@ -3,7 +3,6 @@ import 'dart:async';
 import '../../core/constants/app_constants.dart';
 import '../../core/errors/app_exception.dart';
 import '../../core/services/connectivity_service.dart';
-import '../../core/services/location_service.dart';
 import '../../core/utils/logger.dart';
 import '../models/city.dart';
 import '../models/prayer.dart';
@@ -179,7 +178,7 @@ class PrayerTimesRepository {
   /// Ayarlar ekranı için: hangi kaynağın kullanıldığı bilgisi.
   Future<String> describeActiveSource(UserLocation location) async {
     if (location.city != null) {
-      final DateTime? last = await _cache.lastFetch(_locationKey(location, ''));
+      final DateTime? last = await _cache.lastFetch(_locationKey(location));
       if (last != null) return 'Son güncelleme: ${_relative(last)}';
     }
     if (location.city == null) {

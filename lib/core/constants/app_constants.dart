@@ -48,6 +48,8 @@ abstract final class NotificationChannels {
 
 /// Tercihlerde kullanılan anahtarlar (shared_preferences).
 abstract final class PrefKeys {
+  /// Uygulama ayarlarının tamamı tek bir JSON nesnesi olarak saklanır.
+  static const String appSettings = 'app_settings_v1';
   static const String onboardingDone = 'onboarding_done';
   static const String themeMode = 'theme_mode';
   static const String locationMode = 'location_mode';

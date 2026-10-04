@@ -29,10 +29,27 @@ jobs:
         continue-on-error: true
         run: set -o pipefail; flutter pub get 2>&1 | tee /tmp/pubget.log
 
-      - name: dart format
+      # Lint otomatik düzeltmeleri + biçimlendirme. Değişiklik varsa dala
+      # commit'lenir; böylece analiz adımı her zaman biçimli kod üzerinde çalışır.
+      - name: dart fix + format (otomatik)
         id: fmt
         continue-on-error: true
-        run: dart format --output=none --set-exit-if-changed lib test 2>&1 | tail -40 | tee /tmp/fmt.log
+        run: |
+          set -o pipefail
+          {
+            echo "== dart fix --apply =="
+            dart fix --apply 2>&1 | tail -40
+            echo "== dart format =="
+            dart format lib test 2>&1 | tail -20
+          } | tee /tmp/fmt.log
+          git config user.name "ezanai-ci"
+          git config user.email "ci@ezanai.local"
+          if ! git diff --quiet; then
+            git add -A lib test
+            git commit -m "chore(ci): dart fix ve biçimlendirme [skip ci]" || true
+            git pull --rebase --autostash origin ${{ github.ref_name }} || true
+            git push origin HEAD:${{ github.ref_name }} || true
+          fi
 
       - name: flutter analyze
         id: analyze

@@ -101,7 +101,7 @@ class AiRepository {
           }
         }
       } catch (error) {
-        AppLogger.warn('Kaynak künyesi okunamadı: $error');
+        AppLog.warning('Kaynak künyesi okunamadı: $error');
       }
     }
 

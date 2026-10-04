@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../../core/constants/app_constants.dart';
 import '../../design/app_theme.dart';
+import '../prayer/prayer_calculator.dart';
 import '../models/prayer.dart';
 
 /// Ezan bildirim sesi seçenekleri.
@@ -444,6 +444,18 @@ class AppSettings {
     return AppSettings.fromPrefs(decoded.cast<String, Object?>());
   }
 
-  /// Seçili yönteme Hanefî ikindi tercihini uygular.
-  static const Set<String> _asrOverridable = <String>{'diyanet', 'mwl', 'isna', 'egypt', 'umm_al_qura'};
+  /// Seçili yönteme kullanıcı tercihlerini uygular:
+  /// * Hanefî ikindi (asr-ı sânî) yalnızca ilgili yöntemlerde geçersiz kılınır.
+  /// * Vakit bazlı manuel düzeltmeler hesap motoruna aktarılır.
+  CalculationMethod resolvedMethod(CalculationMethod base) {
+    if (!_asrOverridable.contains(base.id) && manualOffsets.isEmpty) return base;
+    return base.copyWith(
+      asrFactor: asrHanafi && _asrOverridable.contains(base.id) ? 2.0 : base.asrFactor,
+      manualOffsets: manualOffsets,
+    );
+  }
+
+  static const Set<String> _asrOverridable = <String>{
+    'diyanet', 'mwl', 'isna', 'egypt', 'umm_al_qura', 'france', 'russia',
+  };
 }

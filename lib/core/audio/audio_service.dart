@@ -68,8 +68,8 @@ class AppAudioService {
         }
       });
       session.becomingNoisyEventStream.listen((_) => unawaited(_player.pause()));
-    } catch (error, stackTrace) {
-      AppLog.warning('Ses oturumu yapılandırılamadı', error: error, stackTrace: stackTrace);
+    } catch (error) {
+      AppLog.warning('Ses oturumu yapılandırılamadı: $error');
     }
 
     _stateSub = _player.playerStateStream.listen((PlayerState state) {
