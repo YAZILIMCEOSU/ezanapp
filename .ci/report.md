@@ -1,4 +1,4 @@
-# CI raporu (2026-10-04 13:24 UTC)
+# CI raporu (2026-10-04 13:29 UTC)
 
 | adım | sonuç |
 |---|---|
@@ -95,56 +95,47 @@ Upgrading analysis_options.yaml to exclude build and platform directories.
 ## fmt
 ```
 == dart fix --apply ==
-  prefer_const_declarations - 1 fix
+  prefer_initializing_formals - 1 fix
 
 lib/data/models/app_settings.dart
-  directives_ordering - 1 fix
-
-lib/data/models/hadith_models.dart
-  unnecessary_brace_in_string_interps - 1 fix
+  curly_braces_in_flow_control_structures - 1 fix
 
 lib/data/prayer/aladhan_api_source.dart
-  require_trailing_commas - 2 fixes
+  curly_braces_in_flow_control_structures - 1 fix
 
 lib/data/prayer/diyanet_api_source.dart
-  require_trailing_commas - 1 fix
-
-lib/data/prayer/prayer_calculator.dart
-  prefer_final_locals - 2 fixes
+  curly_braces_in_flow_control_structures - 1 fix
 
 lib/data/prayer/prayer_times_repository.dart
-  prefer_null_aware_operators - 1 fix
-
-lib/data/repositories/hadith_repository.dart
-  require_trailing_commas - 1 fix
+  prefer_initializing_formals - 2 fixes
 
 lib/data/repositories/ilahi_repository.dart
-  require_trailing_commas - 2 fixes
+  curly_braces_in_flow_control_structures - 1 fix
 
-lib/data/repositories/quran_repository.dart
-  prefer_const_constructors - 1 fix
+lib/features/home/home_screen.dart
+  prefer_const_constructors - 3 fixes
+  unnecessary_const - 1 fix
 
-lib/data/repositories/ramadan_repository.dart
-  require_trailing_commas - 2 fixes
+lib/features/widgets/ad_banner.dart
+  directives_ordering - 1 fix
 
-lib/data/repositories/zikir_repository.dart
-  prefer_const_constructors - 1 fix
-  require_trailing_commas - 1 fix
+lib/features/widgets/app_shell.dart
+  use_null_aware_elements - 1 fix
 
-lib/state/providers.dart
-  prefer_null_aware_operators - 1 fix
+lib/features/widgets/prayer_countdown_chip.dart
+  unused_import - 1 fix
 
-27 fixes made in 16 files.
+lib/features/widgets/prayer_widgets.dart
+  unused_import - 1 fix
+
+lib/features/widgets/state_views.dart
+  use_null_aware_elements - 1 fix
+
+lib/router/app_router.dart
+  directives_ordering - 1 fix
+
+22 fixes made in 18 files.
 == dart format ==
-Formatted lib/data/prayer/aladhan_api_source.dart
-Formatted lib/data/prayer/diyanet_api_source.dart
-Formatted lib/data/prayer/local_calculation_source.dart
-Formatted lib/data/prayer/prayer_calculator.dart
-Formatted lib/data/prayer/prayer_times_cache.dart
-Formatted lib/data/prayer/prayer_times_repository.dart
-Formatted lib/data/prayer/prayer_times_source.dart
-Formatted lib/data/repositories/ai_repository.dart
-Formatted lib/data/repositories/city_repository.dart
 Formatted lib/data/repositories/daily_content_repository.dart
 Formatted lib/data/repositories/hadith_repository.dart
 Formatted lib/data/repositories/ilahi_repository.dart
@@ -154,92 +145,83 @@ Formatted lib/data/repositories/zikir_repository.dart
 Formatted lib/design/app_colors.dart
 Formatted lib/design/app_spacing.dart
 Formatted lib/design/app_theme.dart
+Formatted lib/features/home/home_screen.dart
+Formatted lib/features/prayers/prayers_screen.dart
+Formatted lib/features/widgets/ad_banner.dart
+Formatted lib/features/widgets/app_shell.dart
+Formatted lib/features/widgets/prayer_countdown_chip.dart
+Formatted lib/features/widgets/prayer_widgets.dart
+Formatted lib/features/widgets/state_views.dart
+Formatted lib/router/app_router.dart
+Formatted lib/state/content_providers.dart
 Formatted lib/state/providers.dart
-Formatted 52 files (49 changed) in 0.18 seconds.
+Formatted 61 files (55 changed) in 0.39 seconds.
 ```
 
 ## analyze
 ```
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ai_repository.dart:78:75 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ai_repository.dart:80:62 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ai_repository.dart:108:61 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ai_repository.dart:108:62 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ai_repository.dart:108:63 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ai_repository.dart:135:71 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ai_repository.dart:188:57 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/city_repository.dart:30:69 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/city_repository.dart:137:48 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/city_repository.dart:185:33 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/city_repository.dart:275:61 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/daily_content_repository.dart:74:39 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/daily_content_repository.dart:105:54 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/hadith_repository.dart:47:57 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/hadith_repository.dart:51:78 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/hadith_repository.dart:56:47 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/hadith_repository.dart:151:59 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ilahi_repository.dart:85:61 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ilahi_repository.dart:123:61 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ilahi_repository.dart:150:64 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ilahi_repository.dart:150:65 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ilahi_repository.dart:164:50 • require_trailing_commas
-   info • Statements in an if should be enclosed in a block. Try wrapping the statement in a block • lib/data/repositories/ilahi_repository.dart:166:7 • curly_braces_in_flow_control_structures
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ilahi_repository.dart:176:70 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ilahi_repository.dart:203:47 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ilahi_repository.dart:223:61 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ilahi_repository.dart:277:47 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ilahi_repository.dart:313:63 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ilahi_repository.dart:410:67 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/quran_repository.dart:35:54 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/quran_repository.dart:89:47 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/quran_repository.dart:125:65 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/quran_repository.dart:125:66 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/quran_repository.dart:282:31 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/quran_repository.dart:299:73 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ramadan_repository.dart:150:29 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ramadan_repository.dart:193:52 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ramadan_repository.dart:246:21 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/zikir_repository.dart:32:56 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/zikir_repository.dart:36:47 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/zikir_repository.dart:156:7 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/zikir_repository.dart:212:70 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/design/app_colors.dart:64:3 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/design/app_colors.dart:68:3 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/design/app_colors.dart:72:3 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/design/app_theme.dart:209:63 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/design/app_theme.dart:334:23 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/design/app_theme.dart:340:23 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/design/app_theme.dart:346:23 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/design/app_theme.dart:351:24 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/design/app_theme.dart:356:24 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/design/app_theme.dart:361:24 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/design/app_theme.dart:377:22 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/design/app_theme.dart:385:46 • require_trailing_commas
-  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<bool>'. Try importing the library that defines 'valueOrNull', correcting the name to the name of an existing getter, or defining a getter or field named 'valueOrNull' • lib/state/providers.dart:37:39 • undefined_getter
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:48:43 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:64:79 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:89:41 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:106:41 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:110:41 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:130:41 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:134:41 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:138:41 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:142:41 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:180:32 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:274:72 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:280:51 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:353:19 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:430:32 • require_trailing_commas
-  error • Arguments of a constant creation must be constant expressions. Try making the argument a valid constant, or use 'new' to call the constructor • lib/state/providers.dart:434:17 • const_with_non_constant_argument
-  error • The getter 'tiles_rounded' isn't defined for the type 'Icons'. Try importing the library that defines 'tiles_rounded', correcting the name to the name of an existing getter, or defining a getter or field named 'tiles_rounded' • lib/state/providers.dart:434:23 • undefined_getter
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:453:38 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:488:32 • require_trailing_commas
-  error • Undefined class 'AutoDisposeStreamProvider'. Try changing the name to the name of an existing class, or creating a class with the name 'AutoDisposeStreamProvider' • lib/state/providers.dart:491:7 • undefined_class
-   info • Type could be non-nullable. Try changing the type to be non-nullable • lib/state/providers.dart:491:43 • unnecessary_nullable_for_final_variable_declarations
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:494:56 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:621:79 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:634:67 • require_trailing_commas
+Analyzing ezanapp...                                            
 
-206 issues found. (ran in 4.9s)
+   info • Statements in an if should be enclosed in a block. Try wrapping the statement in a block • lib/features/prayers/prayers_screen.dart:275:29 • curly_braces_in_flow_control_structures
+   info • Statements in an if should be enclosed in a block. Try wrapping the statement in a block • lib/features/prayers/prayers_screen.dart:539:25 • curly_braces_in_flow_control_structures
+  error • Target of URI doesn't exist: '../features/ai/ai_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:5:8 • uri_does_not_exist
+  error • Target of URI doesn't exist: '../features/hadith/hadith_detail_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:6:8 • uri_does_not_exist
+  error • Target of URI doesn't exist: '../features/hadith/hadith_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:7:8 • uri_does_not_exist
+  error • Target of URI doesn't exist: '../features/ilahi/ilahi_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:9:8 • uri_does_not_exist
+  error • Target of URI doesn't exist: '../features/ilahi/player_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:10:8 • uri_does_not_exist
+  error • Target of URI doesn't exist: '../features/ilahi/playlist_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:11:8 • uri_does_not_exist
+  error • Target of URI doesn't exist: '../features/more/more_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:12:8 • uri_does_not_exist
+  error • Target of URI doesn't exist: '../features/more/onboarding_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:13:8 • uri_does_not_exist
+  error • Target of URI doesn't exist: '../features/more/premium_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:14:8 • uri_does_not_exist
+  error • Target of URI doesn't exist: '../features/qibla/qibla_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:16:8 • uri_does_not_exist
+  error • Target of URI doesn't exist: '../features/quran/quran_bookmarks_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:17:8 • uri_does_not_exist
+  error • Target of URI doesn't exist: '../features/quran/quran_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:18:8 • uri_does_not_exist
+  error • Target of URI doesn't exist: '../features/quran/quran_search_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:19:8 • uri_does_not_exist
+  error • Target of URI doesn't exist: '../features/quran/surah_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:20:8 • uri_does_not_exist
+  error • Target of URI doesn't exist: '../features/ramadan/ramadan_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:21:8 • uri_does_not_exist
+  error • Target of URI doesn't exist: '../features/settings/about_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:22:8 • uri_does_not_exist
+  error • Target of URI doesn't exist: '../features/settings/city_picker_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:23:8 • uri_does_not_exist
+  error • Target of URI doesn't exist: '../features/settings/notification_settings_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:24:8 • uri_does_not_exist
+  error • Target of URI doesn't exist: '../features/settings/settings_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:25:8 • uri_does_not_exist
+  error • Target of URI doesn't exist: '../features/widgets/not_found_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:26:8 • uri_does_not_exist
+  error • Target of URI doesn't exist: '../features/zikir/zikir_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:27:8 • uri_does_not_exist
+  error • Target of URI doesn't exist: '../features/zikir/zikir_stats_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/router/app_router.dart:28:8 • uri_does_not_exist
+  error • The function 'AppShell' isn't defined. Try importing the library that defines 'AppShell', correcting the name to the name of an existing function, or defining a function named 'AppShell' • lib/router/app_router.dart:93:12 • undefined_function
+  error • The name 'QuranScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:121:25 • creation_with_non_type
+  error • The name 'IlahiScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:131:25 • creation_with_non_type
+  error • The name 'MoreScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:141:25 • creation_with_non_type
+  error • The name 'OnboardingScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:150:17 • creation_with_non_type
+  error • The name 'QiblaScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:155:17 • creation_with_non_type
+  error • The name 'ZikirScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:160:17 • creation_with_non_type
+  error • The name 'ZikirStatsScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:165:21 • creation_with_non_type
+  error • The name 'HadithScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:172:17 • creation_with_non_type
+  error • The function 'HadithDetailScreen' isn't defined. Try importing the library that defines 'HadithDetailScreen', correcting the name to the name of an existing function, or defining a function named 'HadithDetailScreen' • lib/router/app_router.dart:177:15 • undefined_function
+  error • The name 'RamadanScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:186:17 • creation_with_non_type
+  error • The name 'AiScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:190:69 • creation_with_non_type
+  error • The name 'PremiumScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:195:17 • creation_with_non_type
+  error • The name 'CityPickerScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:200:17 • creation_with_non_type
+  error • The name 'SettingsScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:205:17 • creation_with_non_type
+  error • The name 'NotificationSettingsScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:210:21 • creation_with_non_type
+  error • The name 'AboutScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:215:21 • creation_with_non_type
+  error • The name 'QuranSearchScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:222:17 • creation_with_non_type
+  error • The name 'QuranBookmarksScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:227:17 • creation_with_non_type
+  error • The function 'SurahScreen' isn't defined. Try importing the library that defines 'SurahScreen', correcting the name to the name of an existing function, or defining a function named 'SurahScreen' • lib/router/app_router.dart:231:63 • undefined_function
+  error • The name 'PlayerScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:239:17 • creation_with_non_type
+  error • The name 'PlaylistScreen' isn't a class. Try correcting the name to match an existing class • lib/router/app_router.dart:244:17 • creation_with_non_type
+  error • The function 'PlaylistScreen' isn't defined. Try importing the library that defines 'PlaylistScreen', correcting the name to the name of an existing function, or defining a function named 'PlaylistScreen' • lib/router/app_router.dart:248:63 • undefined_function
+  error • The function 'NotFoundScreen' isn't defined. Try importing the library that defines 'NotFoundScreen', correcting the name to the name of an existing function, or defining a function named 'NotFoundScreen' • lib/router/app_router.dart:254:7 • undefined_function
+  error • Undefined class 'FutureProviderFamily'. Try changing the name to the name of an existing class, or creating a class with the name 'FutureProviderFamily' • lib/state/content_providers.dart:58:7 • undefined_class
+   info • Type could be non-nullable. Try changing the type to be non-nullable • lib/state/content_providers.dart:58:55 • unnecessary_nullable_for_final_variable_declarations
+   info • Statements in an if should be enclosed in a block. Try wrapping the statement in a block • lib/state/content_providers.dart:65:9 • curly_braces_in_flow_control_structures
+  error • Undefined class 'FutureProviderFamily'. Try changing the name to the name of an existing class, or creating a class with the name 'FutureProviderFamily' • lib/state/content_providers.dart:105:7 • undefined_class
+   info • Type could be non-nullable. Try changing the type to be non-nullable • lib/state/content_providers.dart:105:47 • unnecessary_nullable_for_final_variable_declarations
+  error • Undefined class 'FutureProviderFamily'. Try changing the name to the name of an existing class, or creating a class with the name 'FutureProviderFamily' • lib/state/content_providers.dart:130:7 • undefined_class
+   info • Type could be non-nullable. Try changing the type to be non-nullable • lib/state/content_providers.dart:130:60 • unnecessary_nullable_for_final_variable_declarations
+   info • Statements in an if should be enclosed in a block. Try wrapping the statement in a block • lib/state/content_providers.dart:136:9 • curly_braces_in_flow_control_structures
+  error • Undefined class 'FutureProviderFamily'. Try changing the name to the name of an existing class, or creating a class with the name 'FutureProviderFamily' • lib/state/content_providers.dart:219:7 • undefined_class
+   info • Type could be non-nullable. Try changing the type to be non-nullable • lib/state/content_providers.dart:219:51 • unnecessary_nullable_for_final_variable_declarations
+
+58 issues found. (ran in 16.0s)
 ```
 
 ## test
@@ -255,6 +237,18 @@ Upgrading build.gradle.kts
 Upgrading gradle.properties
 Upgrading gradle.properties
 Running Gradle task 'assembleDebug'...                          
+Warning: Flutter support for your project's Gradle version (8.14.3) will soon be dropped. Please upgrade your Gradle version to a version of at least 9.1.0 soon.
+Alternatively, use the flag "--android-skip-build-dependency-validation" to bypass this check.
+
+Potential fix: Your project's gradle version is typically defined in the gradle wrapper file. By default, this can be found at /home/runner/work/ezanapp/ezanapp/android/gradle/wrapper/gradle-wrapper.properties. 
+For more information, see https://docs.gradle.org/current/userguide/gradle_wrapper.html.
+
+Warning: Flutter support for your project's Android Gradle Plugin version (Android Gradle Plugin version 8.12.1) will soon be dropped. Please upgrade your Android Gradle Plugin version to a version of at least Android Gradle Plugin version 9.0.1 soon.
+Alternatively, use the flag "--android-skip-build-dependency-validation" to bypass this check.
+
+Potential fix: Your project's AGP version is typically defined in the plugins block of the `settings.gradle` file (/home/runner/work/ezanapp/ezanapp/android/settings.gradle), by a plugin with the id of com.android.application. 
+If you don't see a plugins block, your project was likely created with an older template version. In this case it is most likely defined in the top-level build.gradle file (/home/runner/work/ezanapp/ezanapp/android/build.gradle) by the following line in the dependencies block of the buildscript: "classpath 'com.android.tools.build:gradle:<version>'".
+
 
 FAILURE: Build failed with an exception.
 
@@ -264,11 +258,11 @@ Build file '/home/runner/work/ezanapp/ezanapp/android/app/build.gradle.kts' line
 * What went wrong:
 An exception occurred applying plugin request [id: 'dev.flutter.flutter-gradle-plugin']
 > Failed to apply plugin 'dev.flutter.flutter-gradle-plugin'.
-   > Error: Your project's Gradle version (8.12.0) is lower than Flutter's minimum supported version of 8.14.0. Please upgrade your Gradle version. 
+   > Error: Your project's Kotlin version (2.2.0) is lower than Flutter's minimum supported version of 2.2.20. Please upgrade your Kotlin version. 
      Alternatively, use the flag "--android-skip-build-dependency-validation" to bypass this check.
 
-     Potential fix: Your project's gradle version is typically defined in the gradle wrapper file. By default, this can be found at /home/runner/work/ezanapp/ezanapp/android/gradle/wrapper/gradle-wrapper.properties. 
-     For more information, see https://docs.gradle.org/current/userguide/gradle_wrapper.html.
+     Potential fix: Your project's KGP version is typically defined in the plugins block of the `settings.gradle` file (/home/runner/work/ezanapp/ezanapp/android/settings.gradle), by a plugin with the id of org.jetbrains.kotlin.android. 
+     If you don't see a plugins block, your project was likely created with an older template version, in which case it is most likely defined in the top-level build.gradle file (/home/runner/work/ezanapp/ezanapp/android/build.gradle) by the ext.kotlin_version property.
 
 
 * Try:
@@ -277,8 +271,8 @@ An exception occurred applying plugin request [id: 'dev.flutter.flutter-gradle-p
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 1m 33s
-Running Gradle task 'assembleDebug'...                             95.5s
+BUILD FAILED in 1m 19s
+Running Gradle task 'assembleDebug'...                             80.6s
 
 ┌─ Flutter Fix ────────────────────────────────────────────────────────────────────────┐
 │ [!] Starting AGP 9+, only the new DSL interface will be read.                        │
