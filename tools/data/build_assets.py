@@ -359,25 +359,34 @@ def title_tr(value: str) -> str:
 
 
 def build_cities():
+    """Diyanet il/ilçe kimlikleri (vakit API'si için) ve koordinatlarla şehir veritabanı."""
     lookup = read_json(os.path.join(RAW, 'city_lookup.json'))
     districts_by_province = defaultdict(list)
     world_by_country = defaultdict(list)
-    provinces = {}
+    world_country_en = {}
     for row in lookup:
         country = row.get('UlkeAdi') or row.get('UlkeAdiEn') or ''
+        country_en = row.get('UlkeAdiEn') or country
         province = (row.get('SehirAdi') or '').strip()
         name = (row.get('IlceAdi') or '').strip()
+        district_id = str(row.get('IlceID') or '')
         lat, lon = row.get('lat'), row.get('lon')
-        if lat is None or lon is None:
+        if lat is None or lon is None or not district_id:
             continue
         if norm_tr(country) == 'TURKIYE':
-            districts_by_province[norm_tr(province)].append((name, float(lat), float(lon)))
+            districts_by_province[norm_tr(province)].append(
+                (name, district_id, float(lat), float(lon)))
         else:
+            world_country_en[country] = country_en
             world_by_country[country].append({
-                'n': title_tr(name), 'lat': round(float(lat), 5), 'lon': round(float(lon), 5),
+                'id': district_id,
+                'n': title_tr(name),
+                'lat': round(float(lat), 5),
+                'lon': round(float(lon), 5),
             })
 
     tr_provinces, tr_districts = [], []
+    seen_ids = set()
     for index, plate_name in enumerate(PLATE_PROVINCES, start=1):
         key = norm_tr(plate_name)
         capital = next((d for d in districts_by_province.get(key, []) if norm_tr(d[0]) == key), None)
@@ -387,36 +396,48 @@ def build_cities():
         if capital is None:
             print(f'  ! koordinat bulunamadı: {plate_name}', file=sys.stderr)
             continue
-        provinces[plate_name] = capital
+        districts = sorted(districts_by_province.get(key, []), key=lambda d: title_tr(d[0]))
         tr_provinces.append({
-            'id': index,
+            'id': capital[1],
+            'plate': index,
             'name': plate_name,
-            'lat': round(capital[1], 5),
-            'lon': round(capital[2], 5),
-            'districts': sorted({title_tr(d[0]) for d in districts_by_province.get(key, [])}),
+            'lat': round(capital[2], 5),
+            'lon': round(capital[3], 5),
+            'districtCount': len(districts),
         })
-        for name, lat, lon in districts_by_province.get(key, []):
+        for name, district_id, lat, lon in districts:
+            if district_id in seen_ids:
+                continue
+            seen_ids.add(district_id)
             tr_districts.append({
-                'name': title_tr(name), 'province': plate_name,
-                'lat': round(lat, 5), 'lon': round(lon, 5),
+                'id': district_id,
+                'name': title_tr(name),
+                'province': plate_name,
+                'lat': round(lat, 5),
+                'lon': round(lon, 5),
             })
 
     countries = []
     for country, cities in world_by_country.items():
-        unique = {c['n']: c for c in cities}
+        unique = {c['id']: c for c in cities}
         countries.append({
             'name': title_tr(country),
+            'nameEn': title_tr(world_country_en.get(country, country)),
             'cities': sorted(unique.values(), key=lambda c: c['n']),
         })
     countries.sort(key=lambda c: c['name'])
 
     write_json('cities_turkey.json', {
-        'source': 'Diyanet tabanlı açık yer veri kümesi (EzanVaktiAPI — koordinatlar)',
+        'source': 'Diyanet İşleri Başkanlığı il/ilçe kimlikleri ve koordinatları '
+                  '(açık veri kümesi: EzanVaktiAPI)',
+        'provinceCount': len(tr_provinces),
+        'districtCount': len(tr_districts),
         'provinces': tr_provinces,
-        'districts': sorted(tr_districts, key=lambda d: (d['province'], d['name'])),
+        'districts': tr_districts,
     })
     write_json('cities_world.json', {
-        'source': 'Açık yer veri kümesi (Diyanet tabanlı, 90+ ülke)',
+        'source': 'Diyanet tabanlı açık yer veri kümesi (90+ ülke, resmî ilçe kimlikleriyle)',
+        'countryCount': len(countries),
         'countries': countries,
     })
     print(f'  ✓ {len(tr_provinces)} il, {len(tr_districts)} ilçe, '
