@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches: [ arena/01a1057d-ezanapp ]
-    paths-ignore: [ 'tools/**', 'store/**', '**.md' ]
+    paths-ignore: [ 'tools/**', 'store/**', '.ci/**', '**.md' ]
   pull_request:
 
 concurrency:
@@ -12,22 +12,76 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  analyze:
+  verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
-      - name: Bağımlılıkları yükle
-        run: flutter pub get
-      - name: Biçim denetimi
-        run: dart format --output=none --set-exit-if-changed lib test || true
-      - name: Statik analiz
-        run: flutter analyze --no-pub
-      - name: Testler
-        run: flutter test --no-pub --reporter expanded
-      - name: Derleme (debug APK)
-        run: flutter build apk --debug --no-pub
+
+      - name: flutter pub get
+        id: pubget
+        continue-on-error: true
+        run: flutter pub get 2>&1 | tee /tmp/pubget.log
+
+      - name: dart format
+        id: fmt
+        continue-on-error: true
+        run: dart format --output=none --set-exit-if-changed lib test 2>&1 | tail -40 | tee /tmp/fmt.log
+
+      - name: flutter analyze
+        id: analyze
+        continue-on-error: true
+        run: flutter analyze --no-pub 2>&1 | tee /tmp/analyze.log
+
+      - name: flutter test
+        id: test
+        continue-on-error: true
+        run: flutter test --no-pub --reporter expanded 2>&1 | tail -120 | tee /tmp/test.log
+
+      - name: flutter build apk (debug)
+        id: build
+        continue-on-error: true
+        run: flutter build apk --debug --no-pub 2>&1 | tail -60 | tee /tmp/build.log
+
+      - name: Raporu yaz
+        if: always()
+        run: |
+          mkdir -p .ci
+          {
+            echo "# CI raporu ($(date -u '+%Y-%m-%d %H:%M UTC'))"
+            echo
+            echo "| adım | sonuç |"
+            echo "|---|---|"
+            echo "| pub get | ${{ steps.pubget.outcome }} |"
+            echo "| format | ${{ steps.fmt.outcome }} |"
+            echo "| analyze | ${{ steps.analyze.outcome }} |"
+            echo "| test | ${{ steps.test.outcome }} |"
+            echo "| build | ${{ steps.build.outcome }} |"
+            for f in pubget fmt analyze test build; do
+              if [ -f /tmp/$f.log ]; then
+                echo
+                echo "## $f"
+                echo '```'
+                tail -80 /tmp/$f.log
+                echo '```'
+              fi
+            done
+          } > .ci/report.md
+          cat .ci/report.md
+      - name: Raporu commit et
+        if: always()
+        run: |
+          git config user.name "ezanai-ci"
+          git config user.email "ci@ezanai.local"
+          git add -A .ci
+          git commit -m "ci(report): doğrulama sonuçları [skip ci]" || echo "değişiklik yok"
+          git push || true
+      - name: Adımlardan biri başarısızsa işi düşür
+        if: steps.pubget.outcome == 'failure' || steps.analyze.outcome == 'failure' || steps.test.outcome == 'failure' || steps.build.outcome == 'failure'
+        run: exit 1

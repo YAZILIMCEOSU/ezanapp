@@ -9,19 +9,38 @@ on:
 jobs:
   probe:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: false
-      - name: Flutter / Dart sürümü
+      - name: Sürümleri topla
         run: |
-          flutter --version
-          dart --version
-      - name: pub.dev en son sürümler
+          {
+            echo "# Ortam ve paket sürümleri"
+            echo
+            echo '```'
+            flutter --version
+            dart --version
+            echo '```'
+            echo
+            echo "| paket | en son sürüm | sdk |"
+            echo "|---|---|---|"
+            for p in flutter_riverpod go_router shared_preferences sqflite sqflite_common_ffi path_provider path http geolocator flutter_local_notifications timezone just_audio just_audio_background audio_session fl_chart intl share_plus url_launcher vibration flutter_secure_storage in_app_purchase google_mobile_ads supabase_flutter firebase_core firebase_auth cloud_firestore firebase_messaging firebase_analytics firebase_crashlytics firebase_remote_config scrollable_positioned_list collection uuid package_info_plus device_info_plus connectivity_plus flutter_lints cupertino_icons; do
+              json=$(curl -s "https://pub.dev/api/packages/$p")
+              v=$(echo "$json" | python3 -c "import json,sys; print(json.load(sys.stdin)['latest']['version'])" 2>/dev/null || echo "ERR")
+              sdk=$(echo "$json" | python3 -c "import json,sys; e=json.load(sys.stdin)['latest']['pubspec'].get('environment',{}); print(e.get('sdk',''), e.get('flutter',''))" 2>/dev/null || echo "")
+              echo "| $p | $v | $sdk |"
+            done
+          } > /tmp/versions.md
+          mkdir -p .ci && cp /tmp/versions.md .ci/versions.md
+      - name: Raporu commit et
         run: |
-          for p in flutter_riverpod go_router shared_preferences sqflite sqflite_common_ffi path_provider path http geolocator flutter_local_notifications timezone just_audio just_audio_background audio_session fl_chart intl share_plus url_launcher vibration flutter_secure_storage in_app_purchase google_mobile_ads supabase_flutter firebase_core firebase_auth cloud_firestore firebase_messaging firebase_analytics firebase_crashlytics firebase_remote_config scrollable_positioned_list collection uuid package_info_plus device_info_plus connectivity_plus flutter_lints cupertino_icons; do
-            v=$(curl -s "https://pub.dev/api/packages/$p" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d['latest']['version'])" 2>/dev/null || echo "ERR")
-            sdk=$(curl -s "https://pub.dev/api/packages/$p" | python3 -c "import json,sys; d=json.load(sys.stdin); e=d['latest']['pubspec'].get('environment',{}); print(e.get('sdk',''), e.get('flutter',''))" 2>/dev/null || echo "")
-            echo "$p = $v   [$sdk]"
-          done
+          git config user.name "ezanai-ci"
+          git config user.email "ci@ezanai.local"
+          git add -A .ci
+          git commit -m "ci(report): sürüm taraması [skip ci]" || echo "değişiklik yok"
+          git push
