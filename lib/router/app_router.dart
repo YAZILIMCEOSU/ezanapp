@@ -8,7 +8,11 @@ import '../features/hadith/hadith_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/ilahi/ilahi_screen.dart';
 import '../features/ilahi/player_screen.dart';
+<<<<<<< HEAD
 import '../features/ilahi/playlist_screen.dart';
+=======
+import '../features/more/islamic_days_screen.dart';
+>>>>>>> 730d593 (feat(ui): ana ekran, vakitler, kible, Kuran ve ilahi modulleri)
 import '../features/more/more_screen.dart';
 import '../features/more/onboarding_screen.dart';
 import '../features/more/premium_screen.dart';
@@ -50,6 +54,7 @@ abstract final class AppRoutes {
   static const String notificationSettings = '/ayarlar/bildirimler';
   static const String about = '/ayarlar/hakkinda';
   static const String premium = '/premium';
+  static const String calendar = '/takvim';
   static const String cities = '/sehir-sec';
   static const String onboarding = '/hosgeldin';
   static const String quranSearch = '/kuran/arama';
@@ -193,6 +198,10 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.premium,
       builder: (BuildContext context, GoRouterState state) =>
           const PremiumScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.calendar,
+      builder: (BuildContext context, GoRouterState state) => const IslamicDaysScreen(),
     ),
     GoRoute(
       path: AppRoutes.cities,

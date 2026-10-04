@@ -144,4 +144,23 @@ abstract final class TextNormalizer {
     }
     return hits >= needleTokens.length;
   }
+
+  /// Arapça metindeki harekeleri (hareke, şedde, tenvin) kaldırır.
+  ///
+  /// Kur'an metninde arama yaparken hareke farklarını yok saymak için
+  /// kullanılır; yazılı metin bozulmaz, yalnızca karşılaştırma sadeleşir.
+  static String stripArabicDiacritics(String value) {
+    return value.replaceAll(
+      RegExp('[\u0610-\u061a\u064b-\u065f\u0670\u06d6-\u06ed\u0640]'),
+      '',
+    );
+  }
+
+  /// 0-1 arası bir alaka skorunu yüzde metnine çevirir.
+  ///
+  /// Arama sonuçlarında kullanıcıya "eşleşme: %80" biçiminde gösterilir.
+  static String percent(double score) {
+    final double clamped = score.isNaN ? 0 : score.clamp(0, 1).toDouble();
+    return '%${(clamped * 100).round()}';
+  }
 }
