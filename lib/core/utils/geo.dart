@@ -38,7 +38,8 @@ abstract final class GeoUtils {
     const double earthRadiusKm = 6371.0088;
     final double dLat = (AppConstants.kaabaLat - latitude) * _deg2rad;
     final double dLon = (AppConstants.kaabaLng - longitude) * _deg2rad;
-    final double a = math.sin(dLat / 2) * math.sin(dLat / 2) +
+    final double a =
+        math.sin(dLat / 2) * math.sin(dLat / 2) +
         math.cos(latitude * _deg2rad) *
             math.cos(AppConstants.kaabaLat * _deg2rad) *
             math.sin(dLon / 2) *
@@ -47,8 +48,11 @@ abstract final class GeoUtils {
   }
 
   /// Kâbe'nin ufukta görünmesi gereken yükseklik açısı (0'a çok yakın).
-  static double horizonElevationDegrees(double latitude, double longitude,
-      {double altitudeMeters = 0}) {
+  static double horizonElevationDegrees(
+    double latitude,
+    double longitude, {
+    double altitudeMeters = 0,
+  }) {
     final double distanceKm = distanceToKaabaKm(latitude, longitude);
     if (distanceKm < 1) return 90;
     final double heightKm = 277.0 / 1000.0 + altitudeMeters / 1000.0;
@@ -56,9 +60,13 @@ abstract final class GeoUtils {
   }
 
   /// İki koordinat aynı mı (yaklaşık)?
-  static bool samePlace(double lat1, double lon1, double lat2, double lon2,
-          {double tolerance = 0.02}) =>
-      (lat1 - lat2).abs() < tolerance && (lon1 - lon2).abs() < tolerance;
+  static bool samePlace(
+    double lat1,
+    double lon1,
+    double lat2,
+    double lon2, {
+    double tolerance = 0.02,
+  }) => (lat1 - lat2).abs() < tolerance && (lon1 - lon2).abs() < tolerance;
 
   /// Yaklaşık UTC saat dilimi farkı (boylama göre, tam saat).
   static double approximateTimeZoneOffset(double longitude) {

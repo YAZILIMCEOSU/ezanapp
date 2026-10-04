@@ -10,8 +10,11 @@ const int kFreeDailyAiLimit = 10;
 
 /// Sohbet geçmişinin saklandığı satır.
 class AiStoredMessage {
-  const AiStoredMessage(
-      {required this.role, required this.content, required this.createdAt});
+  const AiStoredMessage({
+    required this.role,
+    required this.content,
+    required this.createdAt,
+  });
 
   final String role;
   final String content;
@@ -23,7 +26,7 @@ class AiStoredMessage {
 /// AI asistan deposu: sohbet geçmişi, günlük kota ve cevap üretimi.
 class AiRepository {
   AiRepository(this._database, {AiService? service})
-      : _service = service ?? AiService();
+    : _service = service ?? AiService();
 
   final AppDatabase _database;
   final AiService _service;
@@ -54,8 +57,9 @@ class AiRepository {
             id: row['id']! as String,
             title: (row['title'] as String?) ?? 'Sohbet',
             messages: const <AiMessage>[],
-            updatedAt:
-                DateTime.fromMillisecondsSinceEpoch(row['updated_at']! as int),
+            updatedAt: DateTime.fromMillisecondsSinceEpoch(
+              row['updated_at']! as int,
+            ),
           ),
         )
         .toList();
@@ -66,7 +70,7 @@ class AiRepository {
       'ai_conversations',
       <String, Object?>{
         'title': title.trim(),
-        'updated_at': DateTime.now().millisecondsSinceEpoch
+        'updated_at': DateTime.now().millisecondsSinceEpoch,
       },
       where: 'id = ?',
       whereArgs: <Object?>[conversationId],
@@ -74,10 +78,16 @@ class AiRepository {
   }
 
   Future<void> deleteConversation(String conversationId) async {
-    await _database.raw.delete('ai_messages',
-        where: 'conversation_id = ?', whereArgs: <Object?>[conversationId]);
-    await _database.raw.delete('ai_conversations',
-        where: 'id = ?', whereArgs: <Object?>[conversationId]);
+    await _database.raw.delete(
+      'ai_messages',
+      where: 'conversation_id = ?',
+      whereArgs: <Object?>[conversationId],
+    );
+    await _database.raw.delete(
+      'ai_conversations',
+      where: 'id = ?',
+      whereArgs: <Object?>[conversationId],
+    );
   }
 
   Future<void> clearAllConversations() async {
@@ -104,8 +114,14 @@ class AiRepository {
         if (decoded is List) {
           for (final Object? item in decoded) {
             if (item is Map) {
-              sources.add(AiSource.fromJson(item.map((Object? k, Object? v) =>
-                  MapEntry<String, Object?>(k.toString(), v))));
+              sources.add(
+                AiSource.fromJson(
+                  item.map(
+                    (Object? k, Object? v) =>
+                        MapEntry<String, Object?>(k.toString(), v),
+                  ),
+                ),
+              );
             }
           }
         }
@@ -132,7 +148,8 @@ class AiRepository {
       'citations': message.sources.isEmpty
           ? null
           : jsonEncode(
-              message.sources.map((AiSource s) => s.toJson()).toList()),
+              message.sources.map((AiSource s) => s.toJson()).toList(),
+            ),
       'created_at': message.createdAt.millisecondsSinceEpoch,
     });
     await _database.raw.update(
@@ -184,9 +201,10 @@ class AiRepository {
   // ------------------------------------------------------------- Soru-cevap
 
   /// Soru sorar; cevabı üretir. Kayıt işlemi çağıran katmana aittir.
-  Future<AiAnswer> ask(String question,
-          {List<AiMessage> history = const <AiMessage>[]}) =>
-      _service.ask(question, history: history);
+  Future<AiAnswer> ask(
+    String question, {
+    List<AiMessage> history = const <AiMessage>[],
+  }) => _service.ask(question, history: history);
 
   void dispose() => _service.dispose();
 }

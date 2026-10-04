@@ -28,14 +28,15 @@ class Hadith {
   final List<String> topics;
 
   factory Hadith.fromJson(Map<String, Object?> json) => Hadith(
-        id: json['id'] as int,
-        arabic: json['ar'] as String? ?? '',
-        turkish: json['tr'] as String? ?? '',
-        reference: json['ref'] as String? ?? '',
-        primarySource: json['src'] as String? ?? '',
-        topics: (json['topics'] as List<Object?>?)?.cast<String>() ??
-            const <String>['Genel'],
-      );
+    id: json['id'] as int,
+    arabic: json['ar'] as String? ?? '',
+    turkish: json['tr'] as String? ?? '',
+    reference: json['ref'] as String? ?? '',
+    primarySource: json['src'] as String? ?? '',
+    topics:
+        (json['topics'] as List<Object?>?)?.cast<String>() ??
+        const <String>['Genel'],
+  );
 
   /// Meali kısaltılmış özet (ana ekran kartları için).
   String get shortTurkish {
@@ -89,7 +90,8 @@ class HadithCollection {
         author: json['author'] as String? ?? '',
         translator: json['translator'] as String? ?? '',
         count: json['count'] as int? ?? 0,
-        topics: (json['topics'] as List<Object?>?)?.cast<String>() ??
+        topics:
+            (json['topics'] as List<Object?>?)?.cast<String>() ??
             const <String>[],
         note: json['note'] as String? ?? '',
       );

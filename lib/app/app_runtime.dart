@@ -78,8 +78,9 @@ class AppRuntime {
   /// Tüm servisleri hazırlar. Kritik olmayan adımlar (bildirim, reklam,
   /// faturalandırma) başarısız olsa bile uygulama açılır — kullanıcı boş
   /// ekranla kalmaz.
-  static Future<AppRuntime> create(
-      {bool initializePlatformServices = true}) async {
+  static Future<AppRuntime> create({
+    bool initializePlatformServices = true,
+  }) async {
     final AppDatabase database = await AppDatabase.open();
     final PreferencesService preferences = await PreferencesService.create();
     final AppSettings settings = AppSettings.fromPrefs(
@@ -87,8 +88,9 @@ class AppRuntime {
     );
 
     final HijriCalendar hijri = await HijriCalendar.load();
-    final ConnectivityService connectivity =
-        ConnectivityService(Connectivity());
+    final ConnectivityService connectivity = ConnectivityService(
+      Connectivity(),
+    );
     final NotificationService notifications = NotificationService();
     final AppAudioService audio = AppAudioService();
     final AdsService ads = AdsService();
@@ -141,12 +143,15 @@ class AppRuntime {
       'bağlantı izleme',
       () => connectivity.start((bool online) {
         AppLog.debug(
-            online ? 'Ağ bağlantısı kuruldu.' : 'Ağ bağlantısı kesildi.');
+          online ? 'Ağ bağlantısı kuruldu.' : 'Ağ bağlantısı kesildi.',
+        );
       }),
     );
     await _safely('bildirimler', () => notifications.initialize());
-    await _safely('ses motoru',
-        () => audio.initialize(ducking: initialSettings.adhanPlaybackDucking));
+    await _safely(
+      'ses motoru',
+      () => audio.initialize(ducking: initialSettings.adhanPlaybackDucking),
+    );
     await _safely('faturalandırma', () => billing.initialize());
     ads.setPremium(false);
   }
@@ -180,17 +185,20 @@ class AppRuntime {
 
   /// Durum bilgisi (ayarlar > hakkında ekranı için).
   Map<String, String> diagnostics() => <String, String>{
-        'Vakit verisi': AppConfig.hasBackend
-            ? 'Backend yapılandırıldı'
-            : 'Resmî servis + yerel hesap',
-        'AI asistan':
-            AppConfig.hasBackend ? 'Sunucu bağlı' : 'Çevrimdışı bilgi tabanı',
-        'Bulut senkron': AppConfig.hasSupabase ? 'Etkin' : 'Kapalı',
-        'İlahi kataloğu':
-            AppConfig.hasIlahiCatalog ? 'Bağlı' : 'Yalnızca cihazdaki sesler',
-        'Reklamlar':
-            AppConfig.adsConfigured ? 'Etkin' : 'Kapalı (kimlik tanımlı değil)',
-      };
+    'Vakit verisi': AppConfig.hasBackend
+        ? 'Backend yapılandırıldı'
+        : 'Resmî servis + yerel hesap',
+    'AI asistan': AppConfig.hasBackend
+        ? 'Sunucu bağlı'
+        : 'Çevrimdışı bilgi tabanı',
+    'Bulut senkron': AppConfig.hasSupabase ? 'Etkin' : 'Kapalı',
+    'İlahi kataloğu': AppConfig.hasIlahiCatalog
+        ? 'Bağlı'
+        : 'Yalnızca cihazdaki sesler',
+    'Reklamlar': AppConfig.adsConfigured
+        ? 'Etkin'
+        : 'Kapalı (kimlik tanımlı değil)',
+  };
 
   @visibleForTesting
   bool get isDisposed => _disposed;

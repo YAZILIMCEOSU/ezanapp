@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/utils/app_time.dart';
-import '../../data/models/app_settings.dart';
 import '../../data/models/prayer.dart';
 import '../../data/models/prayer_times_day.dart';
 import '../../state/providers.dart';
@@ -19,7 +18,8 @@ class PrayerCountdownChip extends ConsumerWidget {
 
     return times.maybeWhen(
       data: (TodayTimes value) {
-        final PrayerTimesDay day = now.isBefore(value.tomorrow.date) &&
+        final PrayerTimesDay day =
+            now.isBefore(value.tomorrow.date) &&
                 now.isAfter(value.day.times[Prayer.yatsi] ?? value.day.date)
             ? value.tomorrow
             : value.day;
@@ -42,10 +42,10 @@ class PrayerCountdownChip extends ConsumerWidget {
                 Text(
                   '${next.prayer.label} ${AppTime.formatTime(next.time, use24Hour: use24Hour)}'
                   ' · ${AppTime.formatCountdown(remaining)}',
-                  style: Theme.of(context)
-                      .textTheme
-                      .labelMedium
-                      ?.copyWith(fontWeight: FontWeight.w700, color: next.prayer.color),
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: next.prayer.color,
+                  ),
                 ),
               ],
             ),

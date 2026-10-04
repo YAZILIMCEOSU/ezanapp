@@ -30,11 +30,11 @@ enum AiSourceKind {
   }
 
   String get iconAsset => switch (this) {
-        AiSourceKind.quran => 'quran',
-        AiSourceKind.hadith => 'hadith',
-        AiSourceKind.fiqh => 'fiqh',
-        AiSourceKind.other => 'other',
-      };
+    AiSourceKind.quran => 'quran',
+    AiSourceKind.hadith => 'hadith',
+    AiSourceKind.fiqh => 'fiqh',
+    AiSourceKind.other => 'other',
+  };
 }
 
 /// Cevapta gösterilen tekil kaynak.
@@ -55,18 +55,18 @@ class AiSource {
   final String? url;
 
   Map<String, Object?> toJson() => <String, Object?>{
-        'kind': kind.name,
-        'label': label,
-        if (detail != null) 'detail': detail,
-        if (url != null) 'url': url,
-      };
+    'kind': kind.name,
+    'label': label,
+    if (detail != null) 'detail': detail,
+    if (url != null) 'url': url,
+  };
 
   factory AiSource.fromJson(Map<String, Object?> json) => AiSource(
-        kind: AiSourceKind.fromJson(json['kind']),
-        label: json['label']?.toString() ?? '',
-        detail: json['detail']?.toString(),
-        url: json['url']?.toString(),
-      );
+    kind: AiSourceKind.fromJson(json['kind']),
+    label: json['label']?.toString() ?? '',
+    detail: json['detail']?.toString(),
+    url: json['url']?.toString(),
+  );
 }
 
 /// Cevabın üretim biçimi.
@@ -78,9 +78,9 @@ enum AiAnswerMode {
   remote;
 
   String get label => switch (this) {
-        AiAnswerMode.offline => 'Çevrimdışı bilgi tabanı',
-        AiAnswerMode.remote => 'AI destekli yanıt',
-      };
+    AiAnswerMode.offline => 'Çevrimdışı bilgi tabanı',
+    AiAnswerMode.remote => 'AI destekli yanıt',
+  };
 }
 
 /// Sohbetteki tekil mesaj.
@@ -111,11 +111,11 @@ class AiMessage {
   final bool failed;
 
   Map<String, Object?> toJson() => <String, Object?>{
-        'role': fromUser ? 'user' : 'assistant',
-        'text': text,
-        if (sources.isNotEmpty)
-          'sources': sources.map((AiSource s) => s.toJson()).toList(),
-      };
+    'role': fromUser ? 'user' : 'assistant',
+    'text': text,
+    if (sources.isNotEmpty)
+      'sources': sources.map((AiSource s) => s.toJson()).toList(),
+  };
 }
 
 /// Asistanın ürettiği cevap.
@@ -178,12 +178,14 @@ class AiConversation {
   final List<AiMessage> messages;
   final DateTime updatedAt;
 
-  AiConversation copyWith(
-          {String? title, List<AiMessage>? messages, DateTime? updatedAt}) =>
-      AiConversation(
-        id: id,
-        title: title ?? this.title,
-        messages: messages ?? this.messages,
-        updatedAt: updatedAt ?? this.updatedAt,
-      );
+  AiConversation copyWith({
+    String? title,
+    List<AiMessage>? messages,
+    DateTime? updatedAt,
+  }) => AiConversation(
+    id: id,
+    title: title ?? this.title,
+    messages: messages ?? this.messages,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
 }

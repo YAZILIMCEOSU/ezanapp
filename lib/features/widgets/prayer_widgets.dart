@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../core/utils/app_time.dart';
-import '../../data/models/app_settings.dart';
 import '../../data/models/prayer.dart';
 import '../../data/models/prayer_times_day.dart';
 import '../../design/app_colors.dart';
@@ -38,13 +37,23 @@ class PrayerTile extends StatelessWidget {
       child: AnimatedContainer(
         duration: AppMotion.medium,
         curve: AppMotion.standard,
-        margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 3),
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
+        margin: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.lg,
+          vertical: 3,
+        ),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.lg,
+          vertical: AppSpacing.md,
+        ),
         decoration: BoxDecoration(
-          color: highlighted ? prayer.color.withValues(alpha: 0.10) : Colors.transparent,
+          color: highlighted
+              ? prayer.color.withValues(alpha: 0.10)
+              : Colors.transparent,
           borderRadius: AppRadius.allMd,
           border: Border.all(
-            color: highlighted ? prayer.color.withValues(alpha: 0.35) : Colors.transparent,
+            color: highlighted
+                ? prayer.color.withValues(alpha: 0.35)
+                : Colors.transparent,
           ),
         ),
         child: Row(
@@ -66,37 +75,42 @@ class PrayerTile extends StatelessWidget {
                   Text(
                     prayer.label,
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: highlighted ? prayer.color : scheme.onSurface,
-                        ),
+                      fontWeight: FontWeight.w700,
+                      color: highlighted ? prayer.color : scheme.onSurface,
+                    ),
                   ),
                   if (isCurrent)
                     Text(
                       'Şu anki vakit',
-                      style: Theme.of(context)
-                          .textTheme
-                          .labelSmall
-                          ?.copyWith(color: prayer.color, fontWeight: FontWeight.w600),
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: prayer.color,
+                        fontWeight: FontWeight.w600,
+                      ),
                     )
                   else if (isNext)
                     Text(
                       'Sıradaki vakit',
-                      style: Theme.of(context)
-                          .textTheme
-                          .labelSmall
-                          ?.copyWith(color: prayer.color, fontWeight: FontWeight.w600),
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: prayer.color,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                 ],
               ),
             ),
             Text(
-              time == null ? '--:--' : AppTime.formatTime(time!, use24Hour: use24Hour),
+              time == null
+                  ? '--:--'
+                  : AppTime.formatTime(time!, use24Hour: use24Hour),
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    fontFeatures: const <FontFeature>[FontFeature.tabularFigures()],
-                  ),
+                fontWeight: FontWeight.w700,
+                fontFeatures: const <FontFeature>[FontFeature.tabularFigures()],
+              ),
             ),
-            if (trailing != null) ...<Widget>[const SizedBox(width: AppSpacing.sm), trailing!],
+            if (trailing != null) ...<Widget>[
+              const SizedBox(width: AppSpacing.sm),
+              trailing!,
+            ],
           ],
         ),
       ),
@@ -127,7 +141,9 @@ class NextPrayerCountdownCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final Prayer current = day.currentPrayer(now);
     final PrayerTime? next = day.nextPrayer(now);
-    final Duration remaining = next == null ? Duration.zero : next.time.difference(now);
+    final Duration remaining = next == null
+        ? Duration.zero
+        : next.time.difference(now);
     final Color accent = next?.prayer.color ?? current.color;
     final double progress = next == null
         ? 1
@@ -159,18 +175,20 @@ class NextPrayerCountdownCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        current.isPrayerTime ? '${current.label} vakti' : current.label,
+                        current.isPrayerTime
+                            ? '${current.label} vakti'
+                            : current.label,
                         style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                              color: Colors.white.withValues(alpha: 0.85),
-                              fontWeight: FontWeight.w600,
-                            ),
+                          color: Colors.white.withValues(alpha: 0.85),
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                       const SizedBox(height: 2),
                       Text(
                         locationLabel,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Colors.white.withValues(alpha: 0.7),
-                            ),
+                          color: Colors.white.withValues(alpha: 0.7),
+                        ),
                       ),
                     ],
                   ),
@@ -179,7 +197,10 @@ class NextPrayerCountdownCard extends StatelessWidget {
                   IconButton(
                     tooltip: 'Vakitleri yenile',
                     onPressed: () => onRefresh!.call(),
-                    icon: Icon(Icons.refresh_rounded, color: Colors.white.withValues(alpha: 0.85)),
+                    icon: Icon(
+                      Icons.refresh_rounded,
+                      color: Colors.white.withValues(alpha: 0.85),
+                    ),
                   ),
               ],
             ),
@@ -187,10 +208,10 @@ class NextPrayerCountdownCard extends StatelessWidget {
             Text(
               next == null ? 'Yatsı sonrası' : next.prayer.label,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: -0.4,
-                  ),
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+                letterSpacing: -0.4,
+              ),
             ),
             const SizedBox(height: AppSpacing.xs),
             Row(
@@ -200,20 +221,21 @@ class NextPrayerCountdownCard extends StatelessWidget {
                 Text(
                   next == null ? '--:--' : AppTime.formatClock(remaining),
                   style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        fontFeatures: const <FontFeature>[FontFeature.tabularFigures()],
-                        letterSpacing: -1.2,
-                      ),
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    fontFeatures: const <FontFeature>[
+                      FontFeature.tabularFigures(),
+                    ],
+                    letterSpacing: -1.2,
+                  ),
                 ),
                 const SizedBox(width: AppSpacing.md),
                 Text(
                   next == null
                       ? 'sonraki vakit yarın'
                       : 'kaldı · ${AppTime.formatTime(next.time, use24Hour: use24Hour)}',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.white.withValues(alpha: 0.8),
-                      ),
+                  style: Theme.of(context).textTheme.bodyMedium
+                      ?.copyWith(color: Colors.white.withValues(alpha: 0.8)),
                 ),
               ],
             ),
@@ -231,13 +253,16 @@ class NextPrayerCountdownCard extends StatelessWidget {
               const SizedBox(height: AppSpacing.md),
               Row(
                 children: <Widget>[
-                  Icon(Icons.verified_outlined, size: 13, color: Colors.white.withValues(alpha: 0.7)),
+                  Icon(
+                    Icons.verified_outlined,
+                    size: 13,
+                    color: Colors.white.withValues(alpha: 0.7),
+                  ),
                   const SizedBox(width: 6),
                   Text(
                     sourceLabel!,
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: Colors.white.withValues(alpha: 0.7),
-                        ),
+                    style: Theme.of(context).textTheme.labelSmall
+                        ?.copyWith(color: Colors.white.withValues(alpha: 0.7)),
                   ),
                 ],
               ),
@@ -291,20 +316,30 @@ class PrayerSourceNote extends StatelessWidget {
         ? null
         : AppTime.formatTime(day.cachedAt!, use24Hour: use24Hour);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(AppSpacing.xl, 0, AppSpacing.xl, AppSpacing.md),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.xl,
+        0,
+        AppSpacing.xl,
+        AppSpacing.md,
+      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Icon(
-            warning == null ? Icons.cloud_done_outlined : Icons.cloud_off_rounded,
+            warning == null
+                ? Icons.cloud_done_outlined
+                : Icons.cloud_off_rounded,
             size: 14,
             color: warning == null ? AppColors.success : AppColors.warning,
           ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
-              warning ?? '${day.sourceLabel}${cachedAt == null ? '' : ' · güncelleme $cachedAt'}',
-              style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+              warning ??
+                  '${day.sourceLabel}${cachedAt == null ? '' : ' · güncelleme $cachedAt'}',
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
             ),
           ),
         ],
@@ -336,7 +371,10 @@ class PrayerTableRow extends StatelessWidget {
       onTap: onTap,
       child: Container(
         color: isToday ? scheme.primary.withValues(alpha: 0.07) : null,
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.lg,
+          vertical: AppSpacing.sm,
+        ),
         child: Row(
           children: <Widget>[
             SizedBox(
@@ -347,15 +385,14 @@ class PrayerTableRow extends StatelessWidget {
                   Text(
                     '${day.date.day} ${AppTime.turkishMonths[day.date.month - 1].substring(0, 3)}',
                     style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: isToday ? scheme.primary : null,
-                        ),
+                      fontWeight: FontWeight.w700,
+                      color: isToday ? scheme.primary : null,
+                    ),
                   ),
                   Text(
                     AppTime.weekdayShort(day.date),
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: scheme.onSurfaceVariant,
-                        ),
+                    style: Theme.of(context).textTheme.labelSmall
+                        ?.copyWith(color: scheme.onSurfaceVariant),
                   ),
                 ],
               ),
@@ -365,12 +402,17 @@ class PrayerTableRow extends StatelessWidget {
                 child: Text(
                   day.times[prayer] == null
                       ? '--:--'
-                      : AppTime.formatTime(day.times[prayer]!, use24Hour: use24Hour),
+                      : AppTime.formatTime(
+                          day.times[prayer]!,
+                          use24Hour: use24Hour,
+                        ),
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        fontFeatures: const <FontFeature>[FontFeature.tabularFigures()],
-                        fontWeight: isToday ? FontWeight.w700 : FontWeight.w500,
-                      ),
+                    fontFeatures: const <FontFeature>[
+                      FontFeature.tabularFigures(),
+                    ],
+                    fontWeight: isToday ? FontWeight.w700 : FontWeight.w500,
+                  ),
                 ),
               ),
           ],

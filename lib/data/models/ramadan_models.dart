@@ -18,22 +18,25 @@ class RamadanDayLog {
   final String? note;
 
   factory RamadanDayLog.fromRow(Map<String, Object?> row) => RamadanDayLog(
-        date: DateTime.parse(row['date']! as String),
-        fasted: (row['fasted'] as num?)?.toInt() == 1,
-        tarawih: (row['tarawih'] as num?)?.toInt() == 1,
-        quranPages: (row['quran_pages'] as num?)?.toInt() ?? 0,
-        note: row['note'] as String?,
-      );
+    date: DateTime.parse(row['date']! as String),
+    fasted: (row['fasted'] as num?)?.toInt() == 1,
+    tarawih: (row['tarawih'] as num?)?.toInt() == 1,
+    quranPages: (row['quran_pages'] as num?)?.toInt() ?? 0,
+    note: row['note'] as String?,
+  );
 
-  RamadanDayLog copyWith(
-          {bool? fasted, bool? tarawih, int? quranPages, String? note}) =>
-      RamadanDayLog(
-        date: date,
-        fasted: fasted ?? this.fasted,
-        tarawih: tarawih ?? this.tarawih,
-        quranPages: quranPages ?? this.quranPages,
-        note: note ?? this.note,
-      );
+  RamadanDayLog copyWith({
+    bool? fasted,
+    bool? tarawih,
+    int? quranPages,
+    String? note,
+  }) => RamadanDayLog(
+    date: date,
+    fasted: fasted ?? this.fasted,
+    tarawih: tarawih ?? this.tarawih,
+    quranPages: quranPages ?? this.quranPages,
+    note: note ?? this.note,
+  );
 }
 
 /// Hatim takibi için cüz durumu.
@@ -46,9 +49,10 @@ enum JuzStatus {
 
   final String label;
 
-  static JuzStatus fromName(String? name) =>
-      JuzStatus.values.firstWhere((JuzStatus s) => s.name == name,
-          orElse: () => JuzStatus.pending);
+  static JuzStatus fromName(String? name) => JuzStatus.values.firstWhere(
+    (JuzStatus s) => s.name == name,
+    orElse: () => JuzStatus.pending,
+  );
 }
 
 /// Tek bir cüzün durumu.
@@ -69,15 +73,16 @@ class JuzProgress {
   final DateTime? updatedAt;
 
   factory JuzProgress.fromRow(Map<String, Object?> row) => JuzProgress(
-        juz: row['juz']! as int,
-        status: JuzStatus.fromName(row['status'] as String?),
-        surah: (row['surah'] as num?)?.toInt(),
-        ayah: (row['ayah'] as num?)?.toInt(),
-        updatedAt: row['updated_at'] == null
-            ? null
-            : DateTime.fromMillisecondsSinceEpoch(
-                (row['updated_at'] as num).toInt()),
-      );
+    juz: row['juz']! as int,
+    status: JuzStatus.fromName(row['status'] as String?),
+    surah: (row['surah'] as num?)?.toInt(),
+    ayah: (row['ayah'] as num?)?.toInt(),
+    updatedAt: row['updated_at'] == null
+        ? null
+        : DateTime.fromMillisecondsSinceEpoch(
+            (row['updated_at'] as num).toInt(),
+          ),
+  );
 }
 
 /// Kaza orucu kaydı.
@@ -98,15 +103,16 @@ class KazaFast {
   final DateTime? completedAt;
 
   factory KazaFast.fromRow(Map<String, Object?> row) => KazaFast(
-        id: row['id']! as int,
-        completed: (row['completed'] as num?)?.toInt() == 1,
-        dueDate: row['due_date'] as String?,
-        note: row['note'] as String?,
-        completedAt: row['completed_at'] == null
-            ? null
-            : DateTime.fromMillisecondsSinceEpoch(
-                (row['completed_at'] as num).toInt()),
-      );
+    id: row['id']! as int,
+    completed: (row['completed'] as num?)?.toInt() == 1,
+    dueDate: row['due_date'] as String?,
+    note: row['note'] as String?,
+    completedAt: row['completed_at'] == null
+        ? null
+        : DateTime.fromMillisecondsSinceEpoch(
+            (row['completed_at'] as num).toInt(),
+          ),
+  );
 }
 
 /// Ramazan ayı özeti.

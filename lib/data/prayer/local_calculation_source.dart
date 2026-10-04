@@ -47,7 +47,8 @@ class LocalCalculationSource implements PrayerTimesSource {
     int guard = 0;
     while (!cursor.isAfter(last) && guard < 400) {
       days.add(
-          await fetchDay(location: location, date: cursor, method: method));
+        await fetchDay(location: location, date: cursor, method: method),
+      );
       cursor = cursor.add(const Duration(days: 1));
       guard++;
     }
@@ -55,7 +56,10 @@ class LocalCalculationSource implements PrayerTimesSource {
   }
 
   PrayerTimesDay _calculate(
-      UserLocation location, DateTime date, CalculationMethod method) {
+    UserLocation location,
+    DateTime date,
+    CalculationMethod method,
+  ) {
     final CalculatedTimes times = PrayerCalculator.calculate(
       date: date,
       latitude: location.latitude,
@@ -77,13 +81,13 @@ class LocalCalculationSource implements PrayerTimesSource {
   }
 
   Map<Prayer, double> _asMap(CalculatedTimes times) => <Prayer, double>{
-        Prayer.imsak: times.imsak,
-        Prayer.gunes: times.gunes,
-        Prayer.ogle: times.ogle,
-        Prayer.ikindi: times.ikindi,
-        Prayer.aksam: times.aksam,
-        Prayer.yatsi: times.yatsi,
-      };
+    Prayer.imsak: times.imsak,
+    Prayer.gunes: times.gunes,
+    Prayer.ogle: times.ogle,
+    Prayer.ikindi: times.ikindi,
+    Prayer.aksam: times.aksam,
+    Prayer.yatsi: times.yatsi,
+  };
 
   /// Dakikayı (gece yarısından itibaren) tarihe dönüştürür.
   ///
@@ -94,8 +98,11 @@ class LocalCalculationSource implements PrayerTimesSource {
     final int hour = (totalMinutes ~/ 60) % 24;
     final int minute = totalMinutes % 60;
     final int dayShift = totalMinutes < 0 ? -1 : (totalMinutes >= 1440 ? 1 : 0);
-    final DateTime base =
-        DateTime(date.year, date.month, date.day).add(Duration(days: dayShift));
+    final DateTime base = DateTime(
+      date.year,
+      date.month,
+      date.day,
+    ).add(Duration(days: dayShift));
     return DateTime(base.year, base.month, base.day, hour, minute);
   }
 }

@@ -17,12 +17,12 @@ class ConnectivityService {
       _connectivity.onConnectivityChanged.map(_hasConnection);
 
   static bool _hasConnection(List<ConnectivityResult> results) => results.any(
-        (ConnectivityResult r) =>
-            r == ConnectivityResult.wifi ||
-            r == ConnectivityResult.mobile ||
-            r == ConnectivityResult.ethernet ||
-            r == ConnectivityResult.vpn,
-      );
+    (ConnectivityResult r) =>
+        r == ConnectivityResult.wifi ||
+        r == ConnectivityResult.mobile ||
+        r == ConnectivityResult.ethernet ||
+        r == ConnectivityResult.vpn,
+  );
 
   /// İlk durumu okur ve akışa abone olur.
   Future<void> start(void Function(bool online) onChanged) async {

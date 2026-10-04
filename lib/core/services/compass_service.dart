@@ -45,8 +45,9 @@ class CompassReading {
   bool get needsCalibration => accuracy > 20 || tilt.abs() > 45;
 
   CompassReading withQibla(double qiblaDirection) {
-    final double difference =
-        GeoUtils.normalizeSigned(qiblaDirection - heading);
+    final double difference = GeoUtils.normalizeSigned(
+      qiblaDirection - heading,
+    );
     return CompassReading(
       heading: heading,
       accuracy: accuracy,
@@ -65,9 +66,8 @@ class CompassReading {
 /// (kullanıcı döndürmeli) kıble moduna geçer.
 class CompassService {
   CompassService({EventChannel? channel, MethodChannel? methodChannel})
-      : _channel = channel ?? const EventChannel('ezanai/sensors'),
-        _methods =
-            methodChannel ?? const MethodChannel('ezanai/sensors/methods');
+    : _channel = channel ?? const EventChannel('ezanai/sensors'),
+      _methods = methodChannel ?? const MethodChannel('ezanai/sensors/methods');
 
   final EventChannel _channel;
   final MethodChannel _methods;
@@ -116,8 +116,9 @@ class CompassService {
               tilt: tilt,
               roll: roll,
             );
-            if (qiblaDirection != null)
+            if (qiblaDirection != null) {
               reading = reading.withQibla(qiblaDirection);
+            }
             if (!_controller.isClosed) _controller.add(reading);
           }
         },
@@ -150,11 +151,15 @@ class CompassService {
   /// ölçüm kararlılığını değerlendirir.
   static double headingStability(List<double> recentHeadings) {
     if (recentHeadings.length < 3) return 180;
-    final double mean = recentHeadings.reduce((double a, double b) => a + b) /
+    final double mean =
+        recentHeadings.reduce((double a, double b) => a + b) /
         recentHeadings.length;
-    final double variance = recentHeadings
-            .map((double h) =>
-                math.pow(GeoUtils.normalizeSigned(h - mean), 2).toDouble())
+    final double variance =
+        recentHeadings
+            .map(
+              (double h) =>
+                  math.pow(GeoUtils.normalizeSigned(h - mean), 2).toDouble(),
+            )
             .reduce((double a, double b) => a + b) /
         recentHeadings.length;
     return math.sqrt(variance);

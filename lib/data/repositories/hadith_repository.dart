@@ -13,7 +13,7 @@ import '../models/hadith_models.dart';
 /// Hadisler gömülüdür: çevrimdışı okunur, aranır ve favorilere eklenir.
 class HadithRepository {
   HadithRepository(this._database, {AssetBundle? bundle})
-      : _bundle = bundle ?? rootBundle;
+    : _bundle = bundle ?? rootBundle;
 
   final AppDatabase _database;
   final AssetBundle _bundle;
@@ -35,25 +35,32 @@ class HadithRepository {
   Future<void> _ensureLoaded() async {
     if (_hadiths != null) return;
     try {
-      final String raw =
-          await _bundle.loadString('assets/data/hadith_riyazus_salihin.json');
-      final Map<String, Object?> json =
-          (jsonDecode(raw) as Map).cast<String, Object?>();
+      final String raw = await _bundle.loadString(
+        'assets/data/hadith_riyazus_salihin.json',
+      );
+      final Map<String, Object?> json = (jsonDecode(raw) as Map)
+          .cast<String, Object?>();
       _collection = HadithCollection.fromJson(json);
       final List<Object?> items = (json['hadiths'] as List?) ?? <Object?>[];
       _hadiths = items
           .whereType<Map<Object?, Object?>>()
-          .map((Map<Object?, Object?> m) =>
-              Hadith.fromJson(m.cast<String, Object?>()))
+          .map(
+            (Map<Object?, Object?> m) =>
+                Hadith.fromJson(m.cast<String, Object?>()),
+          )
           .toList();
       _dailyPool = _hadiths!
           .where(
-              (Hadith h) => h.turkish.length > 180 && h.turkish.length < 1200)
+            (Hadith h) => h.turkish.length > 180 && h.turkish.length < 1200,
+          )
           .toList();
       AppLog.debug('Hadis verisi yüklendi: ${_hadiths!.length} kayıt');
     } catch (error, stackTrace) {
-      AppLog.error('Hadis verisi yüklenemedi',
-          error: error, stackTrace: stackTrace);
+      AppLog.error(
+        'Hadis verisi yüklenemedi',
+        error: error,
+        stackTrace: stackTrace,
+      );
       _collection = const HadithCollection(
         name: 'Riyâzü\'s-sâlihîn',
         author: '',
@@ -79,8 +86,9 @@ class HadithRepository {
   /// Günün hadisi: aynı gün içinde deterministik seçim yapılır.
   Future<Hadith?> dailyHadith(DateTime date) async {
     await _ensureLoaded();
-    final List<Hadith> pool =
-        (_dailyPool?.isNotEmpty ?? false) ? _dailyPool! : _hadiths!;
+    final List<Hadith> pool = (_dailyPool?.isNotEmpty ?? false)
+        ? _dailyPool!
+        : _hadiths!;
     if (pool.isEmpty) return null;
     final int dayIndex = _dayOfYear(date);
     final int index = ((dayIndex * 7919) + date.year * 31) % pool.length;
@@ -90,8 +98,9 @@ class HadithRepository {
   /// Rastgele hadis (keşfet butonu).
   Future<Hadith?> random({math.Random? random}) async {
     await _ensureLoaded();
-    final List<Hadith> pool =
-        (_dailyPool?.isNotEmpty ?? false) ? _dailyPool! : _hadiths!;
+    final List<Hadith> pool = (_dailyPool?.isNotEmpty ?? false)
+        ? _dailyPool!
+        : _hadiths!;
     if (pool.isEmpty) return null;
     return pool[(random ?? math.Random()).nextInt(pool.length)];
   }
@@ -125,8 +134,9 @@ class HadithRepository {
   // ------------------------------------------------------------- Favoriler
 
   Future<Set<int>> favoriteIds() async {
-    final List<Map<String, Object?>> rows =
-        await _database.raw.query('hadith_favorites');
+    final List<Map<String, Object?>> rows = await _database.raw.query(
+      'hadith_favorites',
+    );
     return rows
         .map((Map<String, Object?> row) => row['hadith_id']! as int)
         .toSet();
@@ -144,11 +154,13 @@ class HadithRepository {
       where: 'hadith_id = ?',
       whereArgs: <Object?>[id],
       limit: 1,
-    ))
-        .isNotEmpty;
+    )).isNotEmpty;
     if (exists) {
-      await _database.raw.delete('hadith_favorites',
-          where: 'hadith_id = ?', whereArgs: <Object?>[id]);
+      await _database.raw.delete(
+        'hadith_favorites',
+        where: 'hadith_id = ?',
+        whereArgs: <Object?>[id],
+      );
       return false;
     }
     await _database.raw.insert('hadith_favorites', <String, Object?>{

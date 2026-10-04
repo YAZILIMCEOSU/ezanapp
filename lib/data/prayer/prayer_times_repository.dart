@@ -26,16 +26,14 @@ import 'prayer_times_source.dart';
 /// durumda bile yerel hesap sonuç üretir ve durum `source` alanıyla bildirilir.
 class PrayerTimesRepository {
   PrayerTimesRepository({
-    required PrayerTimesCache cache,
-    required ConnectivityService connectivity,
+    required this._cache,
+    required this._connectivity,
     DiyanetApiSource? diyanet,
     AladhanApiSource? aladhan,
     LocalCalculationSource? local,
-  })  : _cache = cache,
-        _connectivity = connectivity,
-        _diyanet = diyanet ?? DiyanetApiSource(),
-        _aladhan = aladhan ?? AladhanApiSource(),
-        _local = local ?? const LocalCalculationSource();
+  }) : _diyanet = diyanet ?? DiyanetApiSource(),
+       _aladhan = aladhan ?? AladhanApiSource(),
+       _local = local ?? const LocalCalculationSource();
 
   final PrayerTimesCache _cache;
   final ConnectivityService _connectivity;
@@ -52,8 +50,11 @@ class PrayerTimesRepository {
   String? lastWarning;
 
   /// Kaynak zinciri (öncelik sırası).
-  List<PrayerTimesSource> get sources =>
-      <PrayerTimesSource>[_diyanet, _aladhan, _local];
+  List<PrayerTimesSource> get sources => <PrayerTimesSource>[
+    _diyanet,
+    _aladhan,
+    _local,
+  ];
 
   /// Tek gün vakitleri.
   Future<PrayerTimesDay> getDay({
@@ -69,8 +70,10 @@ class PrayerTimesRepository {
       final PrayerTimesDay? memo = _memory[key];
       if (memo != null && !_isStale(memo)) return memo;
 
-      final PrayerTimesDay? cached =
-          await _cache.get(_locationKey(location, method), date);
+      final PrayerTimesDay? cached = await _cache.get(
+        _locationKey(location, method),
+        date,
+      );
       if (cached != null && !_isStale(cached)) {
         final PrayerTimesDay resolved = cached.copyWith(source: 'cache');
         _memory[key] = resolved;
@@ -84,8 +87,8 @@ class PrayerTimesRepository {
 
     final List<PrayerTimesSource> chain =
         _connectivity.isOnline && location.city != null
-            ? <PrayerTimesSource>[_diyanet, _aladhan, _local]
-            : <PrayerTimesSource>[_local];
+        ? <PrayerTimesSource>[_diyanet, _aladhan, _local]
+        : <PrayerTimesSource>[_local];
 
     final List<String> failures = <String>[];
     for (final PrayerTimesSource source in chain) {
@@ -140,8 +143,11 @@ class PrayerTimesRepository {
     }
 
     final String locationKey = _locationKey(location, method);
-    final List<PrayerTimesDay> cached =
-        await _cache.getRange(locationKey, startDate, endDate);
+    final List<PrayerTimesDay> cached = await _cache.getRange(
+      locationKey,
+      startDate,
+      endDate,
+    );
     final bool cacheCoversRange =
         cached.length >= endDate.difference(startDate).inDays;
 
@@ -150,7 +156,7 @@ class PrayerTimesRepository {
         (!cacheCoversRange || forceRefresh)) {
       for (final PrayerTimesSource source in <PrayerTimesSource>[
         _diyanet,
-        _aladhan
+        _aladhan,
       ]) {
         try {
           final List<PrayerTimesDay> fetched = await source.fetchRange(
@@ -242,11 +248,18 @@ class PrayerTimesRepository {
   }
 
   String _cacheKey(
-          UserLocation location, CalculationMethod method, DateTime date) =>
+    UserLocation location,
+    CalculationMethod method,
+    DateTime date,
+  ) =>
       '${_locationKey(location, method)}|${method.id}|${date.year}-${date.month}-${date.day}';
 
-  String _rangeKey(UserLocation location, CalculationMethod method,
-          DateTime start, DateTime end) =>
+  String _rangeKey(
+    UserLocation location,
+    CalculationMethod method,
+    DateTime start,
+    DateTime end,
+  ) =>
       '${_locationKey(location, method)}|${method.id}|range|${start.year}${start.month}${start.day}-${end.year}${end.month}${end.day}';
 
   String _relative(DateTime time) {

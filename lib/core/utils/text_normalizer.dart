@@ -48,8 +48,10 @@ abstract final class TextNormalizer {
   /// Normalize edilip kelimelere ayrılmış hâli (2+ harfli kelimeler).
   static List<String> tokens(String value) {
     final String normalized = normalize(value);
-    final String cleaned =
-        normalized.replaceAll(RegExp(r'[^a-z0-9\u0600-\u06ff ]'), ' ');
+    final String cleaned = normalized.replaceAll(
+      RegExp(r'[^a-z0-9\u0600-\u06ff ]'),
+      ' ',
+    );
     return cleaned
         .split(RegExp(r'\s+'))
         .where((String token) => token.length >= 2)
@@ -133,8 +135,9 @@ abstract final class TextNormalizer {
     for (final String needleToken in needleTokens) {
       final String needleStem = stem(needleToken);
       final bool found = haystackTokens.any((String token) {
-        if (token.contains(needleToken) || needleToken.contains(token))
+        if (token.contains(needleToken) || needleToken.contains(token)) {
           return true;
+        }
         return needleStem == stem(token);
       });
       if (found) hits++;

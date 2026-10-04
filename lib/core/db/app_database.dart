@@ -19,8 +19,10 @@ class AppDatabase {
 
   static AppDatabase? _instance;
 
-  static Future<AppDatabase> open(
-      {String? path, DatabaseFactory? factory}) async {
+  static Future<AppDatabase> open({
+    String? path,
+    DatabaseFactory? factory,
+  }) async {
     if (_instance != null && path == null) return _instance!;
     final DatabaseFactory dbFactory = factory ?? databaseFactory;
     final String dbPath =
@@ -267,8 +269,9 @@ class AppDatabase {
       _db.transaction<T>(action);
 
   Future<int> count(String table) async {
-    final List<Map<String, Object?>> rows =
-        await _db.rawQuery('SELECT COUNT(*) AS c FROM $table');
+    final List<Map<String, Object?>> rows = await _db.rawQuery(
+      'SELECT COUNT(*) AS c FROM $table',
+    );
     return (rows.first['c'] as int?) ?? 0;
   }
 

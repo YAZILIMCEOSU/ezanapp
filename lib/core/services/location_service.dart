@@ -48,15 +48,17 @@ class LocationService {
       final LocationPermission permission = await Geolocator.checkPermission();
       return switch (permission) {
         LocationPermission.always ||
-        LocationPermission.whileInUse =>
-          LocationStatus.granted,
+        LocationPermission.whileInUse => LocationStatus.granted,
         LocationPermission.deniedForever => LocationStatus.deniedForever,
         LocationPermission.denied => LocationStatus.denied,
         _ => LocationStatus.denied,
       };
     } catch (error, stackTrace) {
-      AppLog.error('Konum durumu okunamadı',
-          error: error, stackTrace: stackTrace);
+      AppLog.error(
+        'Konum durumu okunamadı',
+        error: error,
+        stackTrace: stackTrace,
+      );
       return LocationStatus.serviceDisabled;
     }
   }
@@ -71,14 +73,16 @@ class LocationService {
       }
       return switch (permission) {
         LocationPermission.always ||
-        LocationPermission.whileInUse =>
-          LocationStatus.granted,
+        LocationPermission.whileInUse => LocationStatus.granted,
         LocationPermission.deniedForever => LocationStatus.deniedForever,
         _ => LocationStatus.denied,
       };
     } catch (error, stackTrace) {
-      AppLog.error('Konum izni istenemedi',
-          error: error, stackTrace: stackTrace);
+      AppLog.error(
+        'Konum izni istenemedi',
+        error: error,
+        stackTrace: stackTrace,
+      );
       return LocationStatus.denied;
     }
   }
@@ -128,12 +132,12 @@ class LocationService {
   }
 
   LocationFix _toFix(Position position) => LocationFix(
-        latitude: position.latitude,
-        longitude: position.longitude,
-        accuracyMeters: position.accuracy,
-        altitudeMeters: position.altitude,
-        timestamp: position.timestamp,
-      );
+    latitude: position.latitude,
+    longitude: position.longitude,
+    accuracyMeters: position.accuracy,
+    altitudeMeters: position.altitude,
+    timestamp: position.timestamp,
+  );
 
   /// Ayarlar sayfasından konum ayarlarını açmak için.
   Future<void> openAppSettings() => Geolocator.openAppSettings();
@@ -142,6 +146,9 @@ class LocationService {
 
   /// İki nokta arası mesafe (km).
   static double distanceKm(
-          double lat1, double lon1, double lat2, double lon2) =>
-      Geolocator.distanceBetween(lat1, lon1, lat2, lon2) / 1000.0;
+    double lat1,
+    double lon1,
+    double lat2,
+    double lon2,
+  ) => Geolocator.distanceBetween(lat1, lon1, lat2, lon2) / 1000.0;
 }

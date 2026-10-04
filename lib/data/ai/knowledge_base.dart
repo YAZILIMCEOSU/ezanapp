@@ -57,7 +57,7 @@ abstract final class KnowledgeBase {
         'sabah namazi',
         'yatsi',
         'ikindi',
-        'ogle'
+        'ogle',
       ],
       answer:
           'Sünnetleriyle birlikte günlük vakit namazları toplam 40 rekâttır '
@@ -88,7 +88,7 @@ abstract final class KnowledgeBase {
         'nasil abdest',
         'gustül',
         'gusul',
-        'teyemmum'
+        'teyemmum',
       ],
       answer:
           'Abdest sırasıyla: elleri yıkamak, ağza ve burna su vermek, yüzü yıkamak, '
@@ -119,7 +119,7 @@ abstract final class KnowledgeBase {
         'ifta',
         'sahur',
         'oruc ne zaman',
-        'imsak vakti'
+        'imsak vakti',
       ],
       answer:
           'Oruç, imsak vaktiyle başlar ve akşam (güneşin batışı) ile biter. '
@@ -144,9 +144,10 @@ abstract final class KnowledgeBase {
         'oruc bozulur',
         'kaza',
         'kasıtlı',
-        'unutusuz'
+        'unutusuz',
       ],
-      answer: 'Orucu bozan başlıca durumlar: yeme-içme, cinsel ilişki, '
+      answer:
+          'Orucu bozan başlıca durumlar: yeme-içme, cinsel ilişki, '
           'kan aldırıp kan dolaşımına ulaşan serum, unutarak yiyip içtikten sonra kasıtlı devam etme.',
       details: <String>[
         'Unutarak yiyip içmek orucu bozmaz; hatırladığında hemen bırakılır (Buhârî, Savm 26).',
@@ -173,7 +174,7 @@ abstract final class KnowledgeBase {
         'sabah namazi',
         'kaza namazi',
         'namazi kacirdim',
-        'uyandim gecti'
+        'uyandim gecti',
       ],
       answer:
           'Vakti geçen namaz kaza edilir. Sabah namazı için: hatırlar hatırlamaz '
@@ -203,7 +204,7 @@ abstract final class KnowledgeBase {
         'yolculuk',
         'mukim',
         'yolcu',
-        'seferi namaz'
+        'seferi namaz',
       ],
       answer:
           'Hanefî’ye göre en az 90 km’lik bir mesafeye yolculuğa çıkan kişi, '
@@ -233,7 +234,7 @@ abstract final class KnowledgeBase {
         'cuma namazi',
         'hutbe',
         'cumа farz',
-        'cuma kilinmaz'
+        'cuma kilinmaz',
       ],
       answer:
           'Cuma namazı; erkek, akıl-bâliğ, mukim (misafir olmayan), sağlıklı ve '
@@ -263,7 +264,7 @@ abstract final class KnowledgeBase {
         'zekat orani',
         'kirkta bir',
         'fitre',
-        'sadaka'
+        'sadaka',
       ],
       answer:
           'Zekât, nisab miktarına ulaşan malın üzerinden bir hicri yıl geçtikten sonra '
@@ -284,7 +285,8 @@ abstract final class KnowledgeBase {
       id: 'vitir_teravih',
       title: 'Vitir ve teravih namazı kaç rekâttır?',
       keywords: <String>['vitir', 'teravih', 'gece namazi', 'teheccud'],
-      answer: 'Vitir 3 rekâttır ve yatsıdan sonra kılınır. Teravih 20 rekâttır '
+      answer:
+          'Vitir 3 rekâttır ve yatsıdan sonra kılınır. Teravih 20 rekâttır '
           '(Hanefî’de sünnet), Ramazan’da yatsıdan sonra kılınır.',
       details: <String>[
         'Teravih 2’şer rekât hâlinde kılınır; 20 rekât genel kabuldür.',
@@ -387,7 +389,7 @@ abstract final class KnowledgeBase {
         'tecvid',
         'hatim',
         'meal',
-        'kurani kerim'
+        'kurani kerim',
       ],
       answer:
           'Kur\'an okumak en faziletli zikirlerdendir; her harfine ayrı sevap vardır. '
@@ -416,9 +418,7 @@ abstract final class KnowledgeBase {
         'Hatim sonunda dua etmek müstehaptır.',
         'Yarıda kalan hatim, kaldığınız yerden devam edilerek tamamlanabilir.',
       ],
-      citations: <String>[
-        'Tirmizî, Kırâât 13; Dârimî, Fedâilü\'l-Kur\'ân 33',
-      ],
+      citations: <String>['Tirmizî, Kırâât 13; Dârimî, Fedâilü\'l-Kur\'ân 33'],
       related: <String>['kuran_okuma'],
       category: 'Kur\'an',
     ),
@@ -430,7 +430,7 @@ abstract final class KnowledgeBase {
         'kible yonu',
         'pusula',
         'kabe yonu',
-        'namaz yonum'
+        'namaz yonum',
       ],
       answer:
           'Türkiye’den Kâbe güneydoğu yönündedir (İstanbul için yaklaşık 152°, '
@@ -440,9 +440,7 @@ abstract final class KnowledgeBase {
         'Metâl eşyalardan ve mıknatıslardan uzak durun.',
         'Pusula yoksa güneşin konumundan da yön bulunabilir.',
       ],
-      citations: <String>[
-        'Kur\'an-ı Kerim, Bakara 2/144',
-      ],
+      citations: <String>['Kur\'an-ı Kerim, Bakara 2/144'],
       related: <String>['namaz_rekat'],
       category: 'Kıble',
     ),
@@ -458,10 +456,7 @@ abstract final class KnowledgeBase {
         'Kabir üzerine taş dikmek, üzerine basmamak, mezbeleyi temiz tutmak âdâbtır.',
         'Ölüden medet ummak, kurban kesip adakta bulunmak dinen caiz değildir.',
       ],
-      citations: <String>[
-        'Müslim, Cenâiz 104',
-        'İbn Mâce, Cenâiz 47',
-      ],
+      citations: <String>['Müslim, Cenâiz 104', 'İbn Mâce, Cenâiz 47'],
       related: <String>['dua_adab'],
       category: 'Ahlak',
     ),
@@ -475,7 +470,7 @@ abstract final class KnowledgeBase {
         'ticaret',
         'bankayi',
         'kredi',
-        'enflasyon'
+        'enflasyon',
       ],
       answer:
           'Faiz kesin olarak haramdır. Kazanç; ticaret, emek, ortaklık ve gelir ortaklığı '
@@ -501,7 +496,7 @@ abstract final class KnowledgeBase {
         'lohusa',
         'nifas',
         'kadin',
-        'büyük hâl'
+        'büyük hâl',
       ],
       answer:
           'Hayız ve nifas (lohusalık) hâlinde kılınmamış namazlar kaza edilmez, '
@@ -511,9 +506,7 @@ abstract final class KnowledgeBase {
         'Hâl sona erince gusül ile ibadetlere dönülür.',
         'İbadet vakitlerinin takibi uygulamadan hatırlatılabilir.',
       ],
-      citations: <String>[
-        'Müslim, Hayz 65-69; Buhârî, Hayz 6',
-      ],
+      citations: <String>['Müslim, Hayz 65-69; Buhârî, Hayz 6'],
       related: <String>['abdest', 'oruc_bozan'],
       category: 'Fıkıh',
     ),
@@ -527,7 +520,7 @@ abstract final class KnowledgeBase {
         'regi̇b',
         'berat',
         'mirac',
-        'kutlama'
+        'kutlama',
       ],
       answer:
           'Kandil geceleri, ibadet ve dua ile değerlendirilmesi güzel olan mübarek zamanlardır. '
@@ -553,9 +546,10 @@ abstract final class KnowledgeBase {
         'yontem',
         'diyanet',
         'hesaplama',
-        'vakitler nasil'
+        'vakitler nasil',
       ],
-      answer: 'Vakitler, güneşin konumuna göre astronomik olarak hesaplanır; '
+      answer:
+          'Vakitler, güneşin konumuna göre astronomik olarak hesaplanır; '
           'Diyanet İşleri Başkanlığı temkin (tedbir) düzeltmeleri uygular.',
       details: <String>[
         'İmsak: şafak açısı (Diyanet ~18°), Yatsı ~17°.',
@@ -589,7 +583,7 @@ abstract final class KnowledgeBase {
 
   static List<String> get categories {
     final Set<String> values = <String>{
-      for (final KnowledgeEntry e in entries) e.category
+      for (final KnowledgeEntry e in entries) e.category,
     };
     return values.toList()..sort();
   }

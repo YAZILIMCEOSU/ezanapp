@@ -1,12 +1,10 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../../core/services/ads_service.dart';
-import '../../state/providers.dart';
 import '../../design/app_spacing.dart';
+import '../../state/providers.dart';
 
 /// Alt banner reklam alanı.
 ///
@@ -14,7 +12,10 @@ import '../../design/app_spacing.dart';
 ///   böylece arayüzde boş alan kalmaz.
 /// * Yüklenemezse sessizce kaybolur (kullanıcıyı hata mesajıyla yormaz).
 class AdBanner extends ConsumerStatefulWidget {
-  const AdBanner({this.margin = const EdgeInsets.symmetric(horizontal: AppSpacing.lg), super.key});
+  const AdBanner({
+    this.margin = const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+    super.key,
+  });
 
   final EdgeInsets margin;
 

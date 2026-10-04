@@ -49,7 +49,8 @@ class ErrorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ColorScheme scheme = Theme.of(context).colorScheme;
-    final bool retryable = error is! AppException || (error as AppException).isRetryable;
+    final bool retryable =
+        error is! AppException || (error as AppException).isRetryable;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.xxl),
@@ -62,21 +63,24 @@ class ErrorView extends StatelessWidget {
                 color: scheme.errorContainer.withValues(alpha: 0.4),
                 shape: BoxShape.circle,
               ),
-              child: Icon(Icons.error_outline_rounded, size: 32, color: scheme.error),
+              child: Icon(
+                Icons.error_outline_rounded,
+                size: 32,
+                color: scheme.error,
+              ),
             ),
             const SizedBox(height: AppSpacing.lg),
             Text(
               title,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+              style: Theme.of(context).textTheme.titleMedium
+                  ?.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
               messageFor(error),
               textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
+              style: Theme.of(context).textTheme.bodyMedium
                   ?.copyWith(color: scheme.onSurfaceVariant),
             ),
             if (onRetry != null && retryable) ...<Widget>[
@@ -118,21 +122,24 @@ class EmptyView extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(icon, size: 44, color: scheme.onSurfaceVariant.withValues(alpha: 0.7)),
+            Icon(
+              icon,
+              size: 44,
+              color: scheme.onSurfaceVariant.withValues(alpha: 0.7),
+            ),
             const SizedBox(height: AppSpacing.lg),
             Text(
               title,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+              style: Theme.of(context).textTheme.titleMedium
+                  ?.copyWith(fontWeight: FontWeight.w700),
             ),
             if (message != null) ...<Widget>[
               const SizedBox(height: AppSpacing.sm),
               Text(
                 message!,
                 textAlign: TextAlign.center,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium
+                style: Theme.of(context).textTheme.bodyMedium
                     ?.copyWith(color: scheme.onSurfaceVariant),
               ),
             ],
@@ -165,10 +172,20 @@ class StatusBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ColorScheme scheme = Theme.of(context).colorScheme;
-    final Color foreground = tonal ? scheme.onSecondaryContainer : scheme.onSurface;
+    final Color foreground = tonal
+        ? scheme.onSecondaryContainer
+        : scheme.onSurface;
     return Container(
-      margin: const EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.md),
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
+      margin: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        0,
+        AppSpacing.lg,
+        AppSpacing.md,
+      ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.md,
+      ),
       decoration: BoxDecoration(
         color: tonal
             ? scheme.secondaryContainer.withValues(alpha: 0.55)
@@ -183,10 +200,11 @@ class StatusBanner extends StatelessWidget {
           Expanded(
             child: Text(
               message,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: foreground),
+              style: Theme.of(context).textTheme.bodySmall
+                  ?.copyWith(color: foreground),
             ),
           ),
-          if (action != null) action!,
+          ?action,
         ],
       ),
     );

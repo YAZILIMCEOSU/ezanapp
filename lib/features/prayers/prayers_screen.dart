@@ -54,7 +54,12 @@ class PrayersScreen extends ConsumerWidget {
       body: Column(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.sm, AppSpacing.lg, AppSpacing.md),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              AppSpacing.sm,
+              AppSpacing.lg,
+              AppSpacing.md,
+            ),
             child: SegmentedButton<PrayerRangeView>(
               segments: <ButtonSegment<PrayerRangeView>>[
                 for (final PrayerRangeView item in PrayerRangeView.values)
@@ -65,15 +70,17 @@ class PrayersScreen extends ConsumerWidget {
                   ),
               ],
               selected: <PrayerRangeView>{view},
-              onSelectionChanged: (Set<PrayerRangeView> selection) =>
-                  ref.read(prayerRangeViewProvider.notifier).select(selection.first),
+              onSelectionChanged: (Set<PrayerRangeView> selection) => ref
+                  .read(prayerRangeViewProvider.notifier)
+                  .select(selection.first),
               showSelectedIcon: false,
             ),
           ),
           Expanded(
             child: switch (view) {
               PrayerRangeView.today => const _TodayView(),
-              PrayerRangeView.week || PrayerRangeView.month => const _RangeView(),
+              PrayerRangeView.week ||
+              PrayerRangeView.month => const _RangeView(),
             },
           ),
           const _MethodFooter(),
@@ -124,17 +131,15 @@ class _TodayView extends ConsumerWidget {
                   Expanded(
                     child: Text(
                       'Vakit listesi',
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium
+                      style: Theme.of(context).textTheme.titleMedium
                           ?.copyWith(fontWeight: FontWeight.w700),
                     ),
                   ),
                   Text(
                     'Uzun basıp düzeltme ekleyin',
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ],
               ),
@@ -148,16 +153,27 @@ class _TodayView extends ConsumerWidget {
                 isCurrent: current == prayer,
                 isNext: next?.prayer == prayer,
                 onTap: () => _showActions(context, ref, prayer, day),
-                trailing: _OffsetBadge(offset: settings.manualOffsets[prayer.key] ?? 0),
+                trailing: _OffsetBadge(
+                  offset: settings.manualOffsets[prayer.key] ?? 0,
+                ),
               ),
-            PrayerSourceNote(day: day, use24Hour: settings.use24Hour, warning: value.warning),
+            PrayerSourceNote(
+              day: day,
+              use24Hour: settings.use24Hour,
+              warning: value.warning,
+            ),
           ],
         );
       },
     );
   }
 
-  void _showActions(BuildContext context, WidgetRef ref, Prayer prayer, PrayerTimesDay day) {
+  void _showActions(
+    BuildContext context,
+    WidgetRef ref,
+    Prayer prayer,
+    PrayerTimesDay day,
+  ) {
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
@@ -167,8 +183,12 @@ class _TodayView extends ConsumerWidget {
           children: <Widget>[
             ListTile(
               leading: Icon(prayer.icon, color: prayer.color),
-              title: Text('${prayer.label} — ${day.timeOf(prayer) == null ? '--:--' : AppTime.formatTime(day.timeOf(prayer)!)}'),
-              subtitle: Text(prayer.hasAdhan ? 'Ezan okunan vakit' : 'Ezan okunmaz'),
+              title: Text(
+                '${prayer.label} — ${day.timeOf(prayer) == null ? '--:--' : AppTime.formatTime(day.timeOf(prayer)!)}',
+              ),
+              subtitle: Text(
+                prayer.hasAdhan ? 'Ezan okunan vakit' : 'Ezan okunmaz',
+              ),
             ),
             const Divider(height: 1),
             ListTile(
@@ -183,7 +203,9 @@ class _TodayView extends ConsumerWidget {
             ListTile(
               leading: const Icon(Icons.tune_rounded),
               title: const Text('Manuel düzeltme (dakika)'),
-              subtitle: const Text('Bu vakit için -30…+30 dakika arası ayarlayın'),
+              subtitle: const Text(
+                'Bu vakit için -30…+30 dakika arası ayarlayın',
+              ),
               onTap: () {
                 Navigator.of(sheetContext).pop();
                 _showOffsetSheet(context, ref, prayer);
@@ -212,12 +234,16 @@ class _TodayView extends ConsumerWidget {
               children: <Widget>[
                 Text(
                   '${prayer.label} düzeltmesi',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+                  style: Theme.of(context).textTheme.titleMedium
+                      ?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
-                  value == 0 ? 'Düzeltme yok' : '${value > 0 ? '+' : ''}$value dakika',
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+                  value == 0
+                      ? 'Düzeltme yok'
+                      : '${value > 0 ? '+' : ''}$value dakika',
+                  style: Theme.of(context).textTheme.headlineSmall
+                      ?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 Slider(
                   value: value.toDouble(),
@@ -225,7 +251,8 @@ class _TodayView extends ConsumerWidget {
                   max: 30,
                   divisions: 60,
                   label: '$value dk',
-                  onChanged: (double next) => setState(() => value = next.round()),
+                  onChanged: (double next) =>
+                      setState(() => value = next.round()),
                 ),
                 Row(
                   children: <Widget>[
@@ -239,10 +266,13 @@ class _TodayView extends ConsumerWidget {
                     Expanded(
                       child: FilledButton(
                         onPressed: () async {
-                          await ref.read(settingsControllerProvider.notifier).setManualOffset(prayer.key, value);
+                          await ref
+                              .read(settingsControllerProvider.notifier)
+                              .setManualOffset(prayer.key, value);
                           ref.invalidate(prayerTimesProvider);
                           ref.invalidate(prayerRangeProvider);
-                          if (sheetContext.mounted) Navigator.of(sheetContext).pop();
+                          if (sheetContext.mounted)
+                            Navigator.of(sheetContext).pop();
                         },
                         child: const Text('Kaydet'),
                       ),
@@ -274,10 +304,8 @@ class _OffsetBadge extends StatelessWidget {
       ),
       child: Text(
         '${offset > 0 ? '+' : ''}$offset dk',
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: AppColors.warning,
-            ),
+        style: Theme.of(context).textTheme.labelSmall
+            ?.copyWith(fontWeight: FontWeight.w700, color: AppColors.warning),
       ),
     );
   }
@@ -289,13 +317,19 @@ class _RangeView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<List<PrayerTimesDay>> range = ref.watch(prayerRangeProvider);
+    final AsyncValue<List<PrayerTimesDay>> range = ref.watch(
+      prayerRangeProvider,
+    );
     final DateTime now = ref.watch(clockProvider).value ?? DateTime.now();
     final AppSettings settings = ref.watch(settingsProvider);
     final PrayerRangeView view = ref.watch(prayerRangeViewProvider);
 
     return range.when(
-      loading: () => LoadingView(message: view == PrayerRangeView.week ? 'Haftalık tablo hazırlanıyor…' : 'Aylık tablo hazırlanıyor…'),
+      loading: () => LoadingView(
+        message: view == PrayerRangeView.week
+            ? 'Haftalık tablo hazırlanıyor…'
+            : 'Aylık tablo hazırlanıyor…',
+      ),
       error: (Object error, StackTrace stackTrace) => ErrorView(
         error: error,
         onRetry: () => ref.invalidate(prayerRangeProvider),
@@ -312,7 +346,12 @@ class _RangeView extends ConsumerWidget {
         return Column(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.sm),
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.lg,
+                0,
+                AppSpacing.lg,
+                AppSpacing.sm,
+              ),
               child: Row(
                 children: <Widget>[
                   const SizedBox(width: 62, child: Text('')),
@@ -322,9 +361,9 @@ class _RangeView extends ConsumerWidget {
                         prayer.shortLabel,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                              fontWeight: FontWeight.w700,
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                            ),
+                          fontWeight: FontWeight.w700,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                       ),
                     ),
                 ],
@@ -335,28 +374,37 @@ class _RangeView extends ConsumerWidget {
                 itemCount: days.length,
                 separatorBuilder: (BuildContext context, int index) => Divider(
                   height: 1,
-                  color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.4),
+                  color: Theme.of(context).colorScheme.outlineVariant
+                      .withValues(alpha: 0.4),
                 ),
-                itemBuilder: (BuildContext context, int index) => PrayerTableRow(
-                  day: days[index],
-                  now: now,
-                  use24Hour: settings.use24Hour,
-                  onTap: () => context.push(AppRoutes.ramadan),
-                ),
+                itemBuilder: (BuildContext context, int index) =>
+                    PrayerTableRow(
+                      day: days[index],
+                      now: now,
+                      use24Hour: settings.use24Hour,
+                      onTap: () => context.push(AppRoutes.ramadan),
+                    ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: AppSpacing.sm),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.xl,
+                vertical: AppSpacing.sm,
+              ),
               child: Row(
                 children: <Widget>[
-                  Icon(Icons.info_outline_rounded, size: 14, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                  Icon(
+                    Icons.info_outline_rounded,
+                    size: 14,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                   const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Text(
                       '$sourceLabel · ${days.length} gün listeleniyor',
                       style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   ),
                 ],
@@ -381,10 +429,15 @@ class _MethodFooter extends ConsumerWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: AppSpacing.md),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.xl,
+        vertical: AppSpacing.md,
+      ),
       decoration: BoxDecoration(
         color: scheme.surfaceContainerHighest.withValues(alpha: 0.45),
-        border: Border(top: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.5))),
+        border: Border(
+          top: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.5)),
+        ),
       ),
       child: Row(
         children: <Widget>[
@@ -396,11 +449,13 @@ class _MethodFooter extends ConsumerWidget {
               children: <Widget>[
                 Text(
                   method.name,
-                  style: Theme.of(context).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w700),
+                  style: Theme.of(context).textTheme.labelMedium
+                      ?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 Text(
                   sourceInfo.value ?? method.description,
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant),
+                  style: Theme.of(context).textTheme.labelSmall
+                      ?.copyWith(color: scheme.onSurfaceVariant),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -425,56 +480,76 @@ class _MethodFooter extends ConsumerWidget {
       builder: (BuildContext sheetContext) => DraggableScrollableSheet(
         expand: false,
         initialChildSize: 0.72,
-        builder: (BuildContext context, ScrollController controller) => ListView(
-          controller: controller,
-          padding: const EdgeInsets.only(bottom: AppSpacing.xl),
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.fromLTRB(AppSpacing.xl, 0, AppSpacing.xl, AppSpacing.md),
-              child: Text(
-                'Hesaplama yöntemi',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-              ),
-            ),
-            SwitchListTile(
-              value: settings.asrHanafi,
-              onChanged: (bool value) async {
-                await ref.read(settingsControllerProvider.notifier).setAsrHanafi(value);
-                ref.invalidate(prayerTimesProvider);
-                ref.invalidate(prayerRangeProvider);
-              },
-              title: const Text('Hanefî ikindi (asr-ı sânî)'),
-              subtitle: const Text('İkindi vakti gölge uzunluğuna göre hesaplanır'),
-            ),
-            const Divider(height: 1),
-            for (final CalculationMethod method in CalculationMethod.all)
-              ListTile(
-                leading: Icon(
-                  settings.calculationMethodId == method.id
-                      ? Icons.radio_button_checked_rounded
-                      : Icons.radio_button_unchecked_rounded,
-                  color: settings.calculationMethodId == method.id
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.onSurfaceVariant,
+        builder: (BuildContext context, ScrollController controller) =>
+            ListView(
+              controller: controller,
+              padding: const EdgeInsets.only(bottom: AppSpacing.xl),
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.xl,
+                    0,
+                    AppSpacing.xl,
+                    AppSpacing.md,
+                  ),
+                  child: Text(
+                    'Hesaplama yöntemi',
+                    style: Theme.of(context).textTheme.titleLarge
+                        ?.copyWith(fontWeight: FontWeight.w700),
+                  ),
                 ),
-                title: Text(method.name),
-                subtitle: Text(method.description, maxLines: 2, overflow: TextOverflow.ellipsis),
-                onTap: () async {
-                  await ref.read(settingsControllerProvider.notifier).setMethod(method.id);
-                  ref.invalidate(prayerTimesProvider);
-                  ref.invalidate(prayerRangeProvider);
-                  if (sheetContext.mounted) Navigator.of(sheetContext).pop();
-                },
-              ),
-          ],
-        ),
+                SwitchListTile(
+                  value: settings.asrHanafi,
+                  onChanged: (bool value) async {
+                    await ref
+                        .read(settingsControllerProvider.notifier)
+                        .setAsrHanafi(value);
+                    ref.invalidate(prayerTimesProvider);
+                    ref.invalidate(prayerRangeProvider);
+                  },
+                  title: const Text('Hanefî ikindi (asr-ı sânî)'),
+                  subtitle: const Text(
+                    'İkindi vakti gölge uzunluğuna göre hesaplanır',
+                  ),
+                ),
+                const Divider(height: 1),
+                for (final CalculationMethod method in CalculationMethod.all)
+                  ListTile(
+                    leading: Icon(
+                      settings.calculationMethodId == method.id
+                          ? Icons.radio_button_checked_rounded
+                          : Icons.radio_button_unchecked_rounded,
+                      color: settings.calculationMethodId == method.id
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                    title: Text(method.name),
+                    subtitle: Text(
+                      method.description,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    onTap: () async {
+                      await ref
+                          .read(settingsControllerProvider.notifier)
+                          .setMethod(method.id);
+                      ref.invalidate(prayerTimesProvider);
+                      ref.invalidate(prayerRangeProvider);
+                      if (sheetContext.mounted)
+                        Navigator.of(sheetContext).pop();
+                    },
+                  ),
+              ],
+            ),
       ),
     );
   }
 }
 
 /// Aktif vakit verisi kaynağı bilgisi.
-final FutureProvider<String> activeSourceInfoProvider = FutureProvider<String>((Ref ref) async {
+final FutureProvider<String> activeSourceInfoProvider = FutureProvider<String>((
+  Ref ref,
+) async {
   final UserLocation location = ref.watch(activeLocationProvider);
   return ref.watch(runtimeProvider).prayerTimes.describeActiveSource(location);
 });

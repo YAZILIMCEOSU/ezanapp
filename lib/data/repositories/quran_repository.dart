@@ -14,7 +14,7 @@ import '../models/quran_models.dart';
 /// - Favoriler, son okunan ayet ve okuma geçmişi SQLite'ta tutulur.
 class QuranRepository {
   QuranRepository(this._database, {AssetBundle? bundle})
-      : _bundle = bundle ?? rootBundle;
+    : _bundle = bundle ?? rootBundle;
 
   final AppDatabase _database;
   final AssetBundle _bundle;
@@ -26,13 +26,15 @@ class QuranRepository {
   Future<List<Surah>> surahs() async {
     if (_surahs != null) return _surahs!;
     final String raw = await _bundle.loadString('assets/data/surah_meta.json');
-    final Map<String, Object?> json =
-        (jsonDecode(raw) as Map).cast<String, Object?>();
+    final Map<String, Object?> json = (jsonDecode(raw) as Map)
+        .cast<String, Object?>();
     final List<Object?> items = (json['surahs'] as List?) ?? <Object?>[];
     _surahs = items
         .whereType<Map<Object?, Object?>>()
-        .map((Map<Object?, Object?> m) =>
-            Surah.fromJson(m.cast<String, Object?>()))
+        .map(
+          (Map<Object?, Object?> m) =>
+              Surah.fromJson(m.cast<String, Object?>()),
+        )
         .toList();
     return _surahs!;
   }
@@ -66,10 +68,11 @@ class QuranRepository {
       );
     }
     try {
-      final String raw =
-          await _bundle.loadString('assets/data/quran/$number.json');
-      final Map<String, Object?> json =
-          (jsonDecode(raw) as Map).cast<String, Object?>();
+      final String raw = await _bundle.loadString(
+        'assets/data/quran/$number.json',
+      );
+      final Map<String, Object?> json = (jsonDecode(raw) as Map)
+          .cast<String, Object?>();
       final List<String> arabic = (json['ar'] as List<Object?>).cast<String>();
       final List<String> turkish = (json['tr'] as List<Object?>).cast<String>();
       final List<Ayah> ayahs = <Ayah>[
@@ -85,8 +88,11 @@ class QuranRepository {
       _cache[number] = content;
       return content;
     } catch (error, stackTrace) {
-      AppLog.error('Sure yüklenemedi: $number',
-          error: error, stackTrace: stackTrace);
+      AppLog.error(
+        'Sure yüklenemedi: $number',
+        error: error,
+        stackTrace: stackTrace,
+      );
       return SurahContent(surah: meta, ayahs: const <Ayah>[]);
     }
   }
@@ -111,18 +117,25 @@ class QuranRepository {
 
     for (final Surah surah in all) {
       if (results.length >= limit) break;
-      final bool nameMatches = _normalize(surah.nameTurkish).contains(needle) ||
+      final bool nameMatches =
+          _normalize(surah.nameTurkish).contains(needle) ||
           _normalize(surah.meaning).contains(needle) ||
           surah.transliteration.toLowerCase().contains(needle);
       final SurahContent content = await loadSurah(surah.number);
       for (final Ayah ayah in content.ayahs) {
         if (results.length >= limit) break;
-        final bool matches = _normalize(ayah.turkish).contains(needle) ||
+        final bool matches =
+            _normalize(ayah.turkish).contains(needle) ||
             ayah.arabic.contains(query.trim()) ||
             (nameMatches && ayah.number == 1);
         if (matches) {
-          results.add(AyahSearchResult(
-              ayah: ayah, surah: surah, matchedName: nameMatches));
+          results.add(
+            AyahSearchResult(
+              ayah: ayah,
+              surah: surah,
+              matchedName: nameMatches,
+            ),
+          );
         }
       }
     }
@@ -160,8 +173,7 @@ class QuranRepository {
       where: 'surah = ? AND ayah = ?',
       whereArgs: <Object?>[surah, ayahNumber],
       limit: 1,
-    ))
-        .length;
+    )).length;
     return count > 0;
   }
 
@@ -174,30 +186,22 @@ class QuranRepository {
       );
       return;
     }
-    await _database.raw.insert(
-      'quran_bookmarks',
-      <String, Object?>{
-        'surah': surah,
-        'ayah': ayahNumber,
-        'note': note,
-        'created_at': DateTime.now().millisecondsSinceEpoch,
-      },
-      conflictAlgorithm: null,
-    );
+    await _database.raw.insert('quran_bookmarks', <String, Object?>{
+      'surah': surah,
+      'ayah': ayahNumber,
+      'note': note,
+      'created_at': DateTime.now().millisecondsSinceEpoch,
+    }, conflictAlgorithm: null);
   }
 
   // ------------------------------------------------------------ Okuma geçmişi
 
   Future<void> saveProgress(int surah, int lastAyah) async {
-    await _database.raw.insert(
-      'reading_progress',
-      <String, Object?>{
-        'surah': surah,
-        'last_ayah': lastAyah,
-        'read_at': DateTime.now().millisecondsSinceEpoch,
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    await _database.raw.insert('reading_progress', <String, Object?>{
+      'surah': surah,
+      'last_ayah': lastAyah,
+      'read_at': DateTime.now().millisecondsSinceEpoch,
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<ReadingProgress?> lastProgress() async {
@@ -278,8 +282,11 @@ class QuranRepository {
   ];
 
   /// Paylaşılabilir metin üretir.
-  static String shareText(Ayah ayah, String surahName,
-      {bool withTurkish = true}) {
+  static String shareText(
+    Ayah ayah,
+    String surahName, {
+    bool withTurkish = true,
+  }) {
     final StringBuffer buffer = StringBuffer()
       ..writeln(ayah.arabic)
       ..writeln();
@@ -295,8 +302,11 @@ class QuranRepository {
 
 /// Arama sonucu.
 class AyahSearchResult {
-  const AyahSearchResult(
-      {required this.ayah, required this.surah, this.matchedName = false});
+  const AyahSearchResult({
+    required this.ayah,
+    required this.surah,
+    this.matchedName = false,
+  });
 
   final Ayah ayah;
   final Surah surah;

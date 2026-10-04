@@ -16,8 +16,8 @@ class HijriCalendar {
     required this.baseHijriYear,
     required this.baseHijriMonth,
     required this.baseJulianDay,
-    required List<int> monthLengths,
-  }) : _monthLengths = monthLengths;
+    required this._monthLengths,
+  });
 
   final int baseHijriYear;
   final int baseHijriMonth;
@@ -30,14 +30,16 @@ class HijriCalendar {
   static Future<HijriCalendar> load({AssetBundle? bundle}) async {
     if (_instance != null) return _instance!;
     final AssetBundle assets = bundle ?? rootBundle;
-    final String raw =
-        await assets.loadString('assets/data/hijri_ummalqura.json');
-    final Map<String, Object?> json =
-        (jsonDecode(raw) as Map).cast<String, Object?>();
+    final String raw = await assets.loadString(
+      'assets/data/hijri_ummalqura.json',
+    );
+    final Map<String, Object?> json = (jsonDecode(raw) as Map)
+        .cast<String, Object?>();
     final String encoded = json['monthLengths'] as String;
     final int zero = '0'.codeUnitAt(0);
-    final List<int> lengths =
-        encoded.codeUnits.map((int code) => code - zero + 27).toList();
+    final List<int> lengths = encoded.codeUnits
+        .map((int code) => code - zero + 27)
+        .toList();
     final DateTime base = DateTime.parse(json['baseGregorian'] as String);
     _instance = HijriCalendar._(
       baseHijriYear: json['baseHijriYear'] as int,
@@ -55,13 +57,12 @@ class HijriCalendar {
     required int baseHijriMonth,
     required int baseJulianDay,
     required List<int> monthLengths,
-  }) =>
-      HijriCalendar._(
-        baseHijriYear: baseHijriYear,
-        baseHijriMonth: baseHijriMonth,
-        baseJulianDay: baseJulianDay,
-        monthLengths: monthLengths,
-      );
+  }) => HijriCalendar._(
+    baseHijriYear: baseHijriYear,
+    baseHijriMonth: baseHijriMonth,
+    baseJulianDay: baseJulianDay,
+    monthLengths: monthLengths,
+  );
 
   /// Desteklenen aralık kontrolü.
   bool get supportsFullRange => _monthLengths.length > 1500 * 12;
@@ -92,7 +93,8 @@ class HijriCalendar {
       }
     }
     if (index >= _monthLengths.length) {
-      final int total = baseHijriYear * 12 +
+      final int total =
+          baseHijriYear * 12 +
           (baseHijriMonth - 1) +
           (_monthLengths.length) +
           (remaining / 29.530588).floor();
@@ -102,7 +104,12 @@ class HijriCalendar {
   }
 
   HijriDate _buildDate(
-      int year, int month, int day, DateTime gregorian, int dayOffset) {
+    int year,
+    int month,
+    int day,
+    DateTime gregorian,
+    int dayOffset,
+  ) {
     // Ay taşmalarını normalize et.
     int y = year;
     int m = month;

@@ -59,8 +59,9 @@ class PrayerTimesDay {
 
   /// Vakitler sıralı mı? (bozuk veri denetimi)
   bool get isSane {
-    final List<DateTime?> list =
-        Prayer.values.map((Prayer p) => times[p]).toList();
+    final List<DateTime?> list = Prayer.values
+        .map((Prayer p) => times[p])
+        .toList();
     for (final DateTime? value in list) {
       if (value == null) return false;
     }
@@ -71,15 +72,15 @@ class PrayerTimesDay {
   }
 
   Map<String, Object?> toJson() => <String, Object?>{
-        'date': date.toIso8601String(),
-        'source': source,
-        'hijri': hijriDate,
-        'cachedAt': cachedAt?.toIso8601String(),
-        'times': <String, String>{
-          for (final MapEntry<Prayer, DateTime> entry in times.entries)
-            entry.key.key: entry.value.toIso8601String(),
-        },
-      };
+    'date': date.toIso8601String(),
+    'source': source,
+    'hijri': hijriDate,
+    'cachedAt': cachedAt?.toIso8601String(),
+    'times': <String, String>{
+      for (final MapEntry<Prayer, DateTime> entry in times.entries)
+        entry.key.key: entry.value.toIso8601String(),
+    },
+  };
 
   factory PrayerTimesDay.fromJson(Map<String, Object?> json) {
     final Map<String, Object?> raw =
@@ -105,21 +106,20 @@ class PrayerTimesDay {
     String? source,
     String? hijriDate,
     DateTime? cachedAt,
-  }) =>
-      PrayerTimesDay(
-        date: date ?? this.date,
-        times: times ?? this.times,
-        source: source ?? this.source,
-        hijriDate: hijriDate ?? this.hijriDate,
-        cachedAt: cachedAt ?? this.cachedAt,
-      );
+  }) => PrayerTimesDay(
+    date: date ?? this.date,
+    times: times ?? this.times,
+    source: source ?? this.source,
+    hijriDate: hijriDate ?? this.hijriDate,
+    cachedAt: cachedAt ?? this.cachedAt,
+  );
 
   /// Bir aylık tablo için yardımcı: kaynak etiketinin okunabilir karşılığı.
   String get sourceLabel => switch (source) {
-        'diyanet' => 'Diyanet verisi',
-        'aladhan' => 'Uluslararası servis',
-        'calculation' => 'Çevrimdışı hesap',
-        'cache' => 'Önbellek',
-        _ => source,
-      };
+    'diyanet' => 'Diyanet verisi',
+    'aladhan' => 'Uluslararası servis',
+    'calculation' => 'Çevrimdışı hesap',
+    'cache' => 'Önbellek',
+    _ => source,
+  };
 }

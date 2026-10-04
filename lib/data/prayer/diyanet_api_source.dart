@@ -18,10 +18,10 @@ import 'prayer_times_source.dart';
 ///
 /// Zincir: önce `yearly` (tam yıl, tek istek), başarısızsa `monthly`.
 class DiyanetApiSource implements PrayerTimesSource {
-  DiyanetApiSource(
-      {http.Client? client,
-      this.baseUrl = 'https://ezanvakti.imsakiyem.com/api'})
-      : _client = client ?? http.Client();
+  DiyanetApiSource({
+    http.Client? client,
+    this.baseUrl = 'https://ezanvakti.imsakiyem.com/api',
+  }) : _client = client ?? http.Client();
 
   final http.Client _client;
   final String baseUrl;
@@ -51,14 +51,19 @@ class DiyanetApiSource implements PrayerTimesSource {
     final String? districtId = location.city?.id;
     if (districtId == null || districtId.isEmpty) {
       throw const PrayerTimesSourceException(
-          'diyanet', 'İlçe kimliği yok (konum seçilmemiş).');
+        'diyanet',
+        'İlçe kimliği yok (konum seçilmemiş).',
+      );
     }
     final List<PrayerTimesDay> days = await _fetch(districtId, 'monthly');
-    final PrayerTimesDay? day =
-        days.firstWhereOrNull((PrayerTimesDay d) => _sameDay(d.date, date));
+    final PrayerTimesDay? day = days.firstWhereOrNull(
+      (PrayerTimesDay d) => _sameDay(d.date, date),
+    );
     if (day == null) {
       throw const PrayerTimesSourceException(
-          'diyanet', 'İstenen gün resmî veride bulunamadı.');
+        'diyanet',
+        'İstenen gün resmî veride bulunamadı.',
+      );
     }
     return day;
   }
@@ -73,19 +78,25 @@ class DiyanetApiSource implements PrayerTimesSource {
     final String? districtId = location.city?.id;
     if (districtId == null || districtId.isEmpty) {
       throw const PrayerTimesSourceException(
-          'diyanet', 'İlçe kimliği yok (konum seçilmemiş).');
+        'diyanet',
+        'İlçe kimliği yok (konum seçilmemiş).',
+      );
     }
     final int daySpan = endDate.difference(startDate).inDays;
     // Uzun aralıklar için yıllık uç nokta tek istekle döner.
-    final List<PrayerTimesDay> days =
-        await _fetch(districtId, daySpan > 45 ? 'yearly' : 'monthly');
+    final List<PrayerTimesDay> days = await _fetch(
+      districtId,
+      daySpan > 45 ? 'yearly' : 'monthly',
+    );
     return days
         .where(
           (PrayerTimesDay d) =>
               !d.date.isBefore(
-                  DateTime(startDate.year, startDate.month, startDate.day)) &&
-              !d.date
-                  .isAfter(DateTime(endDate.year, endDate.month, endDate.day)),
+                DateTime(startDate.year, startDate.month, startDate.day),
+              ) &&
+              !d.date.isAfter(
+                DateTime(endDate.year, endDate.month, endDate.day),
+              ),
         )
         .toList();
   }
@@ -93,10 +104,12 @@ class DiyanetApiSource implements PrayerTimesSource {
   Future<List<PrayerTimesDay>> _fetch(String districtId, String period) async {
     final Uri uri = Uri.parse('$baseUrl/prayer-times/$districtId/$period');
     try {
-      final http.Response response = await _client.get(uri,
-          headers: const <String, String>{
-            'Accept': 'application/json'
-          }).timeout(_timeout);
+      final http.Response response = await _client
+          .get(
+            uri,
+            headers: const <String, String>{'Accept': 'application/json'},
+          )
+          .timeout(_timeout);
       if (response.statusCode != 200) {
         throw PrayerTimesSourceException(
           'diyanet',
@@ -109,16 +122,20 @@ class DiyanetApiSource implements PrayerTimesSource {
       if (records.isEmpty) {
         throw const PrayerTimesSourceException('diyanet', 'Yanıt boş.');
       }
-      final List<PrayerTimesDay> days = records
-          .map(_parseRecord)
-          .where((PrayerTimesDay? d) => d != null)
-          .cast<PrayerTimesDay>()
-          .toList()
-        ..sort(
-            (PrayerTimesDay a, PrayerTimesDay b) => a.date.compareTo(b.date));
+      final List<PrayerTimesDay> days =
+          records
+              .map(_parseRecord)
+              .where((PrayerTimesDay? d) => d != null)
+              .cast<PrayerTimesDay>()
+              .toList()
+            ..sort(
+              (PrayerTimesDay a, PrayerTimesDay b) => a.date.compareTo(b.date),
+            );
       if (days.isEmpty) {
         throw const PrayerTimesSourceException(
-            'diyanet', 'Kayıtlar çözümlenemedi.');
+          'diyanet',
+          'Kayıtlar çözümlenemedi.',
+        );
       }
       AppLog.debug('Diyanet API: ${days.length} gün alındı ($period)');
       return days;
@@ -154,7 +171,7 @@ class DiyanetApiSource implements PrayerTimesSource {
           'items',
           'records',
           'times',
-          'prayerTimes'
+          'prayerTimes',
         ]) {
           final List<Map<String, Object?>> found = castList(nested[key]);
           if (found.isNotEmpty) return found;
@@ -185,7 +202,8 @@ class DiyanetApiSource implements PrayerTimesSource {
   }
 
   PrayerTimesDay? _parseRecord(Map<String, Object?> record) {
-    final Object? rawDate = record['date'] ??
+    final Object? rawDate =
+        record['date'] ??
         record['miladiTarihKisaIso8601'] ??
         record['gregorianDate'];
     if (rawDate is! String) return null;
@@ -201,24 +219,27 @@ class DiyanetApiSource implements PrayerTimesSource {
       if (parts.length < 2) return null;
       final int? hour = int.tryParse(parts[0]);
       final int? minute = int.tryParse(parts[1]);
-      if (hour == null || minute == null || hour > 23 || minute > 59)
+      if (hour == null || minute == null || hour > 23 || minute > 59) {
         return null;
+      }
       return DateTime(date.year, date.month, date.day, hour, minute);
     }
 
     final Map<Prayer, DateTime> mapped = <Prayer, DateTime>{};
     for (final Prayer prayer in Prayer.values) {
-      final DateTime? parsed =
-          parseTime(times[prayer.key] ?? times[_alternativeKey(prayer)]);
+      final DateTime? parsed = parseTime(
+        times[prayer.key] ?? times[_alternativeKey(prayer)],
+      );
       if (parsed == null) return null;
       mapped[prayer] = parsed;
     }
 
     String? hijri;
-    final Map<String, Object?>? hijriRaw =
-        (record['hijri_date'] as Map?)?.cast<String, Object?>();
+    final Map<String, Object?>? hijriRaw = (record['hijri_date'] as Map?)
+        ?.cast<String, Object?>();
     if (hijriRaw != null) {
-      hijri = hijriRaw['full_date'] as String? ??
+      hijri =
+          hijriRaw['full_date'] as String? ??
           '${hijriRaw['day']} ${hijriRaw['month_name']} ${hijriRaw['year']}';
     } else {
       hijri = record['hicriTarihUzun'] as String?;
@@ -234,13 +255,13 @@ class DiyanetApiSource implements PrayerTimesSource {
   }
 
   String _alternativeKey(Prayer prayer) => switch (prayer) {
-        Prayer.imsak => 'Imsak',
-        Prayer.gunes => 'Sunrise',
-        Prayer.ogle => 'Dhuhr',
-        Prayer.ikindi => 'Asr',
-        Prayer.aksam => 'Maghrib',
-        Prayer.yatsi => 'Isha',
-      };
+    Prayer.imsak => 'Imsak',
+    Prayer.gunes => 'Sunrise',
+    Prayer.ogle => 'Dhuhr',
+    Prayer.ikindi => 'Asr',
+    Prayer.aksam => 'Maghrib',
+    Prayer.yatsi => 'Isha',
+  };
 
   static bool _sameDay(DateTime a, DateTime b) =>
       a.year == b.year && a.month == b.month && a.day == b.day;

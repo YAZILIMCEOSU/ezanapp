@@ -14,9 +14,10 @@ enum IlahiKind {
 
   final String label;
 
-  static IlahiKind fromName(String? name) =>
-      IlahiKind.values.firstWhere((IlahiKind k) => k.name == name,
-          orElse: () => IlahiKind.diger);
+  static IlahiKind fromName(String? name) => IlahiKind.values.firstWhere(
+    (IlahiKind k) => k.name == name,
+    orElse: () => IlahiKind.diger,
+  );
 }
 
 /// Katalogdaki tek bir ses kaydı.
@@ -70,66 +71,68 @@ class IlahiTrack {
   }
 
   factory IlahiTrack.fromJson(Map<String, Object?> json) => IlahiTrack(
-        id: json['id']?.toString() ?? '',
-        title: json['title'] as String? ?? '',
-        artist: json['artist'] as String? ?? '',
-        kind: IlahiKind.fromName(json['kind'] as String?),
-        categories: (json['categories'] as List<Object?>?)?.cast<String>() ??
-            const <String>[],
-        audioUrl: json['audioUrl'] as String? ?? json['url'] as String? ?? '',
-        album: json['album'] as String?,
-        durationSeconds: (json['duration'] as num?)?.toInt() ?? 0,
-        artUri: json['artUri'] as String?,
-        license: json['license'] as String? ?? '',
-        sourceUrl: json['sourceUrl'] as String? ?? '',
-        description: json['description'] as String? ?? '',
-        isLocal: json['isLocal'] as bool? ?? false,
-        localPath: json['localPath'] as String?,
-      );
+    id: json['id']?.toString() ?? '',
+    title: json['title'] as String? ?? '',
+    artist: json['artist'] as String? ?? '',
+    kind: IlahiKind.fromName(json['kind'] as String?),
+    categories:
+        (json['categories'] as List<Object?>?)?.cast<String>() ??
+        const <String>[],
+    audioUrl: json['audioUrl'] as String? ?? json['url'] as String? ?? '',
+    album: json['album'] as String?,
+    durationSeconds: (json['duration'] as num?)?.toInt() ?? 0,
+    artUri: json['artUri'] as String?,
+    license: json['license'] as String? ?? '',
+    sourceUrl: json['sourceUrl'] as String? ?? '',
+    description: json['description'] as String? ?? '',
+    isLocal: json['isLocal'] as bool? ?? false,
+    localPath: json['localPath'] as String?,
+  );
 
   Map<String, Object?> toJson() => <String, Object?>{
-        'id': id,
-        'title': title,
-        'artist': artist,
-        'kind': kind.name,
-        'categories': categories,
-        'audioUrl': audioUrl,
-        'album': album,
-        'duration': durationSeconds,
-        'artUri': artUri,
-        'license': license,
-        'sourceUrl': sourceUrl,
-        'description': description,
-        'isLocal': isLocal,
-        'localPath': localPath,
-      };
+    'id': id,
+    'title': title,
+    'artist': artist,
+    'kind': kind.name,
+    'categories': categories,
+    'audioUrl': audioUrl,
+    'album': album,
+    'duration': durationSeconds,
+    'artUri': artUri,
+    'license': license,
+    'sourceUrl': sourceUrl,
+    'description': description,
+    'isLocal': isLocal,
+    'localPath': localPath,
+  };
 
   IlahiTrack copyWith({String? localPath, bool? isLocal}) => IlahiTrack(
-        id: id,
-        title: title,
-        artist: artist,
-        kind: kind,
-        categories: categories,
-        audioUrl: audioUrl,
-        album: album,
-        durationSeconds: durationSeconds,
-        artUri: artUri,
-        license: license,
-        sourceUrl: sourceUrl,
-        description: description,
-        isLocal: isLocal ?? this.isLocal,
-        localPath: localPath ?? this.localPath,
-      );
+    id: id,
+    title: title,
+    artist: artist,
+    kind: kind,
+    categories: categories,
+    audioUrl: audioUrl,
+    album: album,
+    durationSeconds: durationSeconds,
+    artUri: artUri,
+    license: license,
+    sourceUrl: sourceUrl,
+    description: description,
+    isLocal: isLocal ?? this.isLocal,
+    localPath: localPath ?? this.localPath,
+  );
 }
 
 /// Çalma listesi.
 @immutable
 class Playlist {
-  const Playlist(
-      {required this.id,
-      required this.name,
-      required this.trackIds,
-      required this.createdAt});
+  const Playlist({
+    required this.id,
+    required this.name,
+    required this.trackIds,
+    required this.createdAt,
+  });
 
   final int id;
   final String name;
@@ -155,10 +158,11 @@ class DownloadedTrack {
   final DateTime downloadedAt;
 
   factory DownloadedTrack.fromRow(Map<String, Object?> row) => DownloadedTrack(
-        trackId: row['track_id']! as String,
-        filePath: row['file_path']! as String,
-        sizeBytes: (row['size_bytes'] as num?)?.toInt() ?? 0,
-        downloadedAt:
-            DateTime.fromMillisecondsSinceEpoch(row['downloaded_at']! as int),
-      );
+    trackId: row['track_id']! as String,
+    filePath: row['file_path']! as String,
+    sizeBytes: (row['size_bytes'] as num?)?.toInt() ?? 0,
+    downloadedAt: DateTime.fromMillisecondsSinceEpoch(
+      row['downloaded_at']! as int,
+    ),
+  );
 }

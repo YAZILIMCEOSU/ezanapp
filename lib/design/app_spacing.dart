@@ -16,10 +16,14 @@ abstract final class AppSpacing {
   static const EdgeInsets pageWide = EdgeInsets.symmetric(horizontal: xxl);
   static const EdgeInsets card = EdgeInsets.all(lg);
   static const EdgeInsets cardCompact = EdgeInsets.all(md);
-  static const EdgeInsets chip =
-      EdgeInsets.symmetric(horizontal: md, vertical: sm);
-  static const EdgeInsets listTile =
-      EdgeInsets.symmetric(horizontal: lg, vertical: sm);
+  static const EdgeInsets chip = EdgeInsets.symmetric(
+    horizontal: md,
+    vertical: sm,
+  );
+  static const EdgeInsets listTile = EdgeInsets.symmetric(
+    horizontal: lg,
+    vertical: sm,
+  );
 }
 
 /// Köşe yarıçapları.

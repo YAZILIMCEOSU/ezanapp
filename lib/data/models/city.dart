@@ -10,9 +10,10 @@ enum LocationMode {
   final String label;
   final String description;
 
-  static LocationMode fromName(String? name) =>
-      LocationMode.values.firstWhere((LocationMode m) => m.name == name,
-          orElse: () => LocationMode.gps);
+  static LocationMode fromName(String? name) => LocationMode.values.firstWhere(
+    (LocationMode m) => m.name == name,
+    orElse: () => LocationMode.gps,
+  );
 }
 
 /// Bir şehir/ilçe kaydı.
@@ -50,26 +51,26 @@ class City {
   String get subtitle => isTurkish ? (province ?? country) : country;
 
   Map<String, Object?> toJson() => <String, Object?>{
-        'id': id,
-        'name': name,
-        'lat': latitude,
-        'lon': longitude,
-        'province': province,
-        'country': country,
-        'tz': timeZoneOffsetHours,
-        'isTurkish': isTurkish,
-      };
+    'id': id,
+    'name': name,
+    'lat': latitude,
+    'lon': longitude,
+    'province': province,
+    'country': country,
+    'tz': timeZoneOffsetHours,
+    'isTurkish': isTurkish,
+  };
 
   factory City.fromJson(Map<String, Object?> json) => City(
-        id: json['id'] as String? ?? '',
-        name: json['name'] as String? ?? '',
-        latitude: (json['lat'] as num?)?.toDouble() ?? 0,
-        longitude: (json['lon'] as num?)?.toDouble() ?? 0,
-        province: json['province'] as String?,
-        country: json['country'] as String? ?? 'Türkiye',
-        timeZoneOffsetHours: (json['tz'] as num?)?.toDouble() ?? 3.0,
-        isTurkish: json['isTurkish'] as bool? ?? true,
-      );
+    id: json['id'] as String? ?? '',
+    name: json['name'] as String? ?? '',
+    latitude: (json['lat'] as num?)?.toDouble() ?? 0,
+    longitude: (json['lon'] as num?)?.toDouble() ?? 0,
+    province: json['province'] as String?,
+    country: json['country'] as String? ?? 'Türkiye',
+    timeZoneOffsetHours: (json['tz'] as num?)?.toDouble() ?? 3.0,
+    isTurkish: json['isTurkish'] as bool? ?? true,
+  );
 
   @override
   bool operator ==(Object other) =>
@@ -109,38 +110,39 @@ class UserLocation {
   String get coordinates =>
       '${latitude.toStringAsFixed(3)}°, ${longitude.toStringAsFixed(3)}°';
 
-  UserLocation copyWith(
-          {LocationMode? mode,
-          double? latitude,
-          double? longitude,
-          City? city}) =>
-      UserLocation(
-        mode: mode ?? this.mode,
-        latitude: latitude ?? this.latitude,
-        longitude: longitude ?? this.longitude,
-        city: city ?? this.city,
-        updatedAt: DateTime.now(),
-        gpsAccuracyMeters: gpsAccuracyMeters,
-      );
+  UserLocation copyWith({
+    LocationMode? mode,
+    double? latitude,
+    double? longitude,
+    City? city,
+  }) => UserLocation(
+    mode: mode ?? this.mode,
+    latitude: latitude ?? this.latitude,
+    longitude: longitude ?? this.longitude,
+    city: city ?? this.city,
+    updatedAt: DateTime.now(),
+    gpsAccuracyMeters: gpsAccuracyMeters,
+  );
 
   Map<String, Object?> toJson() => <String, Object?>{
-        'mode': mode.name,
-        'lat': latitude,
-        'lon': longitude,
-        'city': city?.toJson(),
-        'updatedAt': updatedAt?.toIso8601String(),
-      };
+    'mode': mode.name,
+    'lat': latitude,
+    'lon': longitude,
+    'city': city?.toJson(),
+    'updatedAt': updatedAt?.toIso8601String(),
+  };
 
   factory UserLocation.fromJson(Map<String, Object?> json) => UserLocation(
-        mode: LocationMode.fromName(json['mode'] as String?),
-        latitude: (json['lat'] as num).toDouble(),
-        longitude: (json['lon'] as num).toDouble(),
-        city: json['city'] == null
-            ? null
-            : City.fromJson((json['city']! as Map<Object?, Object?>)
-                .cast<String, Object?>()),
-        updatedAt: json['updatedAt'] == null
-            ? null
-            : DateTime.tryParse(json['updatedAt'] as String),
-      );
+    mode: LocationMode.fromName(json['mode'] as String?),
+    latitude: (json['lat'] as num).toDouble(),
+    longitude: (json['lon'] as num).toDouble(),
+    city: json['city'] == null
+        ? null
+        : City.fromJson(
+            (json['city']! as Map<Object?, Object?>).cast<String, Object?>(),
+          ),
+    updatedAt: json['updatedAt'] == null
+        ? null
+        : DateTime.tryParse(json['updatedAt'] as String),
+  );
 }

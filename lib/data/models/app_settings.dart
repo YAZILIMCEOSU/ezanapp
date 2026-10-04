@@ -26,9 +26,10 @@ enum AdhanSound {
 
   bool get isSilent => this == AdhanSound.silent;
 
-  static AdhanSound fromName(String? name) =>
-      AdhanSound.values.firstWhere((AdhanSound s) => s.name == name,
-          orElse: () => AdhanSound.tone1);
+  static AdhanSound fromName(String? name) => AdhanSound.values.firstWhere(
+    (AdhanSound s) => s.name == name,
+    orElse: () => AdhanSound.tone1,
+  );
 }
 
 /// Bildirim tercihleri.
@@ -146,72 +147,71 @@ class NotificationSettings {
     int? hatimReminderMinute,
     bool? inAppAdhanEnabled,
     int? daysToSchedule,
-  }) =>
-      NotificationSettings(
-        enabled: enabled ?? this.enabled,
-        prayerEnabled: prayerEnabled ?? this.prayerEnabled,
-        preReminderMinutes: preReminderMinutes ?? this.preReminderMinutes,
-        adhanSound: adhanSound ?? this.adhanSound,
-        adhanVolume: adhanVolume ?? this.adhanVolume,
-        vibrationEnabled: vibrationEnabled ?? this.vibrationEnabled,
-        quietHoursEnabled: quietHoursEnabled ?? this.quietHoursEnabled,
-        quietHoursStartMinutes:
-            quietHoursStartMinutes ?? this.quietHoursStartMinutes,
-        quietHoursEndMinutes: quietHoursEndMinutes ?? this.quietHoursEndMinutes,
-        sleepModeEnabled: sleepModeEnabled ?? this.sleepModeEnabled,
-        fridayNotification: fridayNotification ?? this.fridayNotification,
-        ramadanNotifications: ramadanNotifications ?? this.ramadanNotifications,
-        sahurReminderMinutes: sahurReminderMinutes ?? this.sahurReminderMinutes,
-        iftarReminderMinutes: iftarReminderMinutes ?? this.iftarReminderMinutes,
-        dailyContentEnabled: dailyContentEnabled ?? this.dailyContentEnabled,
-        dailyContentHour: dailyContentHour ?? this.dailyContentHour,
-        dailyContentMinute: dailyContentMinute ?? this.dailyContentMinute,
-        zikirReminderEnabled: zikirReminderEnabled ?? this.zikirReminderEnabled,
-        zikirReminderHour: zikirReminderHour ?? this.zikirReminderHour,
-        zikirReminderMinute: zikirReminderMinute ?? this.zikirReminderMinute,
-        hatimReminderEnabled: hatimReminderEnabled ?? this.hatimReminderEnabled,
-        hatimReminderHour: hatimReminderHour ?? this.hatimReminderHour,
-        hatimReminderMinute: hatimReminderMinute ?? this.hatimReminderMinute,
-        inAppAdhanEnabled: inAppAdhanEnabled ?? this.inAppAdhanEnabled,
-        daysToSchedule: daysToSchedule ?? this.daysToSchedule,
-      );
+  }) => NotificationSettings(
+    enabled: enabled ?? this.enabled,
+    prayerEnabled: prayerEnabled ?? this.prayerEnabled,
+    preReminderMinutes: preReminderMinutes ?? this.preReminderMinutes,
+    adhanSound: adhanSound ?? this.adhanSound,
+    adhanVolume: adhanVolume ?? this.adhanVolume,
+    vibrationEnabled: vibrationEnabled ?? this.vibrationEnabled,
+    quietHoursEnabled: quietHoursEnabled ?? this.quietHoursEnabled,
+    quietHoursStartMinutes:
+        quietHoursStartMinutes ?? this.quietHoursStartMinutes,
+    quietHoursEndMinutes: quietHoursEndMinutes ?? this.quietHoursEndMinutes,
+    sleepModeEnabled: sleepModeEnabled ?? this.sleepModeEnabled,
+    fridayNotification: fridayNotification ?? this.fridayNotification,
+    ramadanNotifications: ramadanNotifications ?? this.ramadanNotifications,
+    sahurReminderMinutes: sahurReminderMinutes ?? this.sahurReminderMinutes,
+    iftarReminderMinutes: iftarReminderMinutes ?? this.iftarReminderMinutes,
+    dailyContentEnabled: dailyContentEnabled ?? this.dailyContentEnabled,
+    dailyContentHour: dailyContentHour ?? this.dailyContentHour,
+    dailyContentMinute: dailyContentMinute ?? this.dailyContentMinute,
+    zikirReminderEnabled: zikirReminderEnabled ?? this.zikirReminderEnabled,
+    zikirReminderHour: zikirReminderHour ?? this.zikirReminderHour,
+    zikirReminderMinute: zikirReminderMinute ?? this.zikirReminderMinute,
+    hatimReminderEnabled: hatimReminderEnabled ?? this.hatimReminderEnabled,
+    hatimReminderHour: hatimReminderHour ?? this.hatimReminderHour,
+    hatimReminderMinute: hatimReminderMinute ?? this.hatimReminderMinute,
+    inAppAdhanEnabled: inAppAdhanEnabled ?? this.inAppAdhanEnabled,
+    daysToSchedule: daysToSchedule ?? this.daysToSchedule,
+  );
 
   Map<String, Object?> toJson() => <String, Object?>{
-        'enabled': enabled,
-        'prayerEnabled': <String, bool>{
-          for (final MapEntry<Prayer, bool> e in prayerEnabled.entries)
-            e.key.key: e.value,
-        },
-        'preReminderMinutes': preReminderMinutes,
-        'adhanSound': adhanSound.name,
-        'adhanVolume': adhanVolume,
-        'vibrationEnabled': vibrationEnabled,
-        'quietHoursEnabled': quietHoursEnabled,
-        'quietHoursStartMinutes': quietHoursStartMinutes,
-        'quietHoursEndMinutes': quietHoursEndMinutes,
-        'sleepModeEnabled': sleepModeEnabled,
-        'fridayNotification': fridayNotification,
-        'ramadanNotifications': ramadanNotifications,
-        'sahurReminderMinutes': sahurReminderMinutes,
-        'iftarReminderMinutes': iftarReminderMinutes,
-        'dailyContentEnabled': dailyContentEnabled,
-        'dailyContentHour': dailyContentHour,
-        'dailyContentMinute': dailyContentMinute,
-        'zikirReminderEnabled': zikirReminderEnabled,
-        'zikirReminderHour': zikirReminderHour,
-        'zikirReminderMinute': zikirReminderMinute,
-        'hatimReminderEnabled': hatimReminderEnabled,
-        'hatimReminderHour': hatimReminderHour,
-        'hatimReminderMinute': hatimReminderMinute,
-        'inAppAdhanEnabled': inAppAdhanEnabled,
-        'daysToSchedule': daysToSchedule,
-      };
+    'enabled': enabled,
+    'prayerEnabled': <String, bool>{
+      for (final MapEntry<Prayer, bool> e in prayerEnabled.entries)
+        e.key.key: e.value,
+    },
+    'preReminderMinutes': preReminderMinutes,
+    'adhanSound': adhanSound.name,
+    'adhanVolume': adhanVolume,
+    'vibrationEnabled': vibrationEnabled,
+    'quietHoursEnabled': quietHoursEnabled,
+    'quietHoursStartMinutes': quietHoursStartMinutes,
+    'quietHoursEndMinutes': quietHoursEndMinutes,
+    'sleepModeEnabled': sleepModeEnabled,
+    'fridayNotification': fridayNotification,
+    'ramadanNotifications': ramadanNotifications,
+    'sahurReminderMinutes': sahurReminderMinutes,
+    'iftarReminderMinutes': iftarReminderMinutes,
+    'dailyContentEnabled': dailyContentEnabled,
+    'dailyContentHour': dailyContentHour,
+    'dailyContentMinute': dailyContentMinute,
+    'zikirReminderEnabled': zikirReminderEnabled,
+    'zikirReminderHour': zikirReminderHour,
+    'zikirReminderMinute': zikirReminderMinute,
+    'hatimReminderEnabled': hatimReminderEnabled,
+    'hatimReminderHour': hatimReminderHour,
+    'hatimReminderMinute': hatimReminderMinute,
+    'inAppAdhanEnabled': inAppAdhanEnabled,
+    'daysToSchedule': daysToSchedule,
+  };
 
   factory NotificationSettings.fromJson(Map<String, Object?>? json) {
     if (json == null) return const NotificationSettings();
     final Map<String, Object?> prayers =
         (json['prayerEnabled'] as Map?)?.cast<String, Object?>() ??
-            <String, Object?>{};
+        <String, Object?>{};
     int intOr(String key, int fallback) =>
         (json[key] as num?)?.toInt() ?? fallback;
     bool boolOr(String key, bool fallback) => json[key] as bool? ?? fallback;
@@ -369,31 +369,31 @@ class AppSettings {
   }
 
   Map<String, Object?> toPrefs() => <String, Object?>{
-        'themeMode': themeMode.name,
-        'localeCode': localeCode,
-        'calculationMethodId': calculationMethodId,
-        'asrHanafi': asrHanafi,
-        'manualOffsets': manualOffsets,
-        'use24Hour': use24Hour,
-        'hijriOffsetDays': hijriOffsetDays,
-        'quranFontSize': quranFontSize,
-        'quranShowTranslation': quranShowTranslation,
-        'quranShowTransliteration': quranShowTransliteration,
-        'quranReciterId': quranReciterId,
-        'quranAutoScroll': quranAutoScroll,
-        'keepScreenOnWhileReading': keepScreenOnWhileReading,
-        'zikirVibrationEnabled': zikirVibrationEnabled,
-        'zikirSoundEnabled': zikirSoundEnabled,
-        'zikirAutoAdvance': zikirAutoAdvance,
-        'zikirDefaultTarget': zikirDefaultTarget,
-        'notifications': notifications.toJson(),
-        'lastHatimTarget': lastHatimTarget,
-        'hatimAutoAdvance': hatimAutoAdvance,
-        'analyticsEnabled': analyticsEnabled,
-        'crashReportingEnabled': crashReportingEnabled,
-        'streamingOnlyOnWifi': streamingOnlyOnWifi,
-        'adhanPlaybackDucking': adhanPlaybackDucking,
-      };
+    'themeMode': themeMode.name,
+    'localeCode': localeCode,
+    'calculationMethodId': calculationMethodId,
+    'asrHanafi': asrHanafi,
+    'manualOffsets': manualOffsets,
+    'use24Hour': use24Hour,
+    'hijriOffsetDays': hijriOffsetDays,
+    'quranFontSize': quranFontSize,
+    'quranShowTranslation': quranShowTranslation,
+    'quranShowTransliteration': quranShowTransliteration,
+    'quranReciterId': quranReciterId,
+    'quranAutoScroll': quranAutoScroll,
+    'keepScreenOnWhileReading': keepScreenOnWhileReading,
+    'zikirVibrationEnabled': zikirVibrationEnabled,
+    'zikirSoundEnabled': zikirSoundEnabled,
+    'zikirAutoAdvance': zikirAutoAdvance,
+    'zikirDefaultTarget': zikirDefaultTarget,
+    'notifications': notifications.toJson(),
+    'lastHatimTarget': lastHatimTarget,
+    'hatimAutoAdvance': hatimAutoAdvance,
+    'analyticsEnabled': analyticsEnabled,
+    'crashReportingEnabled': crashReportingEnabled,
+    'streamingOnlyOnWifi': streamingOnlyOnWifi,
+    'adhanPlaybackDucking': adhanPlaybackDucking,
+  };
 
   AppSettings copyWith({
     AppThemeMode? themeMode,
@@ -420,37 +420,34 @@ class AppSettings {
     bool? crashReportingEnabled,
     bool? streamingOnlyOnWifi,
     bool? adhanPlaybackDucking,
-  }) =>
-      AppSettings(
-        themeMode: themeMode ?? this.themeMode,
-        localeCode: localeCode ?? this.localeCode,
-        calculationMethodId: calculationMethodId ?? this.calculationMethodId,
-        asrHanafi: asrHanafi ?? this.asrHanafi,
-        manualOffsets: manualOffsets ?? this.manualOffsets,
-        use24Hour: use24Hour ?? this.use24Hour,
-        hijriOffsetDays: hijriOffsetDays ?? this.hijriOffsetDays,
-        quranFontSize: quranFontSize ?? this.quranFontSize,
-        quranShowTranslation: quranShowTranslation ?? this.quranShowTranslation,
-        quranShowTransliteration:
-            quranShowTransliteration ?? this.quranShowTransliteration,
-        quranReciterId: quranReciterId ?? this.quranReciterId,
-        quranAutoScroll: quranAutoScroll ?? this.quranAutoScroll,
-        keepScreenOnWhileReading:
-            keepScreenOnWhileReading ?? this.keepScreenOnWhileReading,
-        zikirVibrationEnabled:
-            zikirVibrationEnabled ?? this.zikirVibrationEnabled,
-        zikirSoundEnabled: zikirSoundEnabled ?? this.zikirSoundEnabled,
-        zikirAutoAdvance: zikirAutoAdvance ?? this.zikirAutoAdvance,
-        zikirDefaultTarget: zikirDefaultTarget ?? this.zikirDefaultTarget,
-        notifications: notifications ?? this.notifications,
-        lastHatimTarget: lastHatimTarget ?? this.lastHatimTarget,
-        hatimAutoAdvance: hatimAutoAdvance ?? this.hatimAutoAdvance,
-        analyticsEnabled: analyticsEnabled ?? this.analyticsEnabled,
-        crashReportingEnabled:
-            crashReportingEnabled ?? this.crashReportingEnabled,
-        streamingOnlyOnWifi: streamingOnlyOnWifi ?? this.streamingOnlyOnWifi,
-        adhanPlaybackDucking: adhanPlaybackDucking ?? this.adhanPlaybackDucking,
-      );
+  }) => AppSettings(
+    themeMode: themeMode ?? this.themeMode,
+    localeCode: localeCode ?? this.localeCode,
+    calculationMethodId: calculationMethodId ?? this.calculationMethodId,
+    asrHanafi: asrHanafi ?? this.asrHanafi,
+    manualOffsets: manualOffsets ?? this.manualOffsets,
+    use24Hour: use24Hour ?? this.use24Hour,
+    hijriOffsetDays: hijriOffsetDays ?? this.hijriOffsetDays,
+    quranFontSize: quranFontSize ?? this.quranFontSize,
+    quranShowTranslation: quranShowTranslation ?? this.quranShowTranslation,
+    quranShowTransliteration:
+        quranShowTransliteration ?? this.quranShowTransliteration,
+    quranReciterId: quranReciterId ?? this.quranReciterId,
+    quranAutoScroll: quranAutoScroll ?? this.quranAutoScroll,
+    keepScreenOnWhileReading:
+        keepScreenOnWhileReading ?? this.keepScreenOnWhileReading,
+    zikirVibrationEnabled: zikirVibrationEnabled ?? this.zikirVibrationEnabled,
+    zikirSoundEnabled: zikirSoundEnabled ?? this.zikirSoundEnabled,
+    zikirAutoAdvance: zikirAutoAdvance ?? this.zikirAutoAdvance,
+    zikirDefaultTarget: zikirDefaultTarget ?? this.zikirDefaultTarget,
+    notifications: notifications ?? this.notifications,
+    lastHatimTarget: lastHatimTarget ?? this.lastHatimTarget,
+    hatimAutoAdvance: hatimAutoAdvance ?? this.hatimAutoAdvance,
+    analyticsEnabled: analyticsEnabled ?? this.analyticsEnabled,
+    crashReportingEnabled: crashReportingEnabled ?? this.crashReportingEnabled,
+    streamingOnlyOnWifi: streamingOnlyOnWifi ?? this.streamingOnlyOnWifi,
+    adhanPlaybackDucking: adhanPlaybackDucking ?? this.adhanPlaybackDucking,
+  );
 
   /// Ayar dışa/içe aktarma (bulut senkronizasyonu ve yedekleme için).
   String exportJson() => jsonEncode(toPrefs());
@@ -465,11 +462,13 @@ class AppSettings {
   /// * Hanefî ikindi (asr-ı sânî) yalnızca ilgili yöntemlerde geçersiz kılınır.
   /// * Vakit bazlı manuel düzeltmeler hesap motoruna aktarılır.
   CalculationMethod resolvedMethod(CalculationMethod base) {
-    if (!_asrOverridable.contains(base.id) && manualOffsets.isEmpty)
+    if (!_asrOverridable.contains(base.id) && manualOffsets.isEmpty) {
       return base;
+    }
     return base.copyWith(
-      asrFactor:
-          asrHanafi && _asrOverridable.contains(base.id) ? 2.0 : base.asrFactor,
+      asrFactor: asrHanafi && _asrOverridable.contains(base.id)
+          ? 2.0
+          : base.asrFactor,
       manualOffsets: manualOffsets,
     );
   }

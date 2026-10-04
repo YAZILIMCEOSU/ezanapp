@@ -55,8 +55,9 @@ class DailyContentRepository {
     final int dayIndex =
         date.difference(DateTime(date.year)).inDays + date.year * 97;
     // Uzun surelerden ve kısa surelerden dengeli seçim yapılır.
-    final List<Surah> pool =
-        surahs.where((Surah s) => s.verseCount >= 3).toList();
+    final List<Surah> pool = surahs
+        .where((Surah s) => s.verseCount >= 3)
+        .toList();
     final Surah surah = pool[dayIndex % pool.length];
     final SurahContent content = await _quran.loadSurah(surah.number);
     if (content.ayahs.isEmpty) return null;
@@ -70,8 +71,10 @@ class DailyContentRepository {
     if (surahs.isEmpty) return null;
     final Surah surah = surahNumber == null
         ? surahs[DateTime.now().microsecond % surahs.length]
-        : surahs.firstWhere((Surah s) => s.number == surahNumber,
-            orElse: () => surahs.first);
+        : surahs.firstWhere(
+            (Surah s) => s.number == surahNumber,
+            orElse: () => surahs.first,
+          );
     final SurahContent content = await _quran.loadSurah(surah.number);
     if (content.ayahs.isEmpty) return null;
     return DailyAyah(
@@ -93,8 +96,9 @@ class DailyContentRepository {
     final Map<String, Object?> row = rows.first;
     try {
       final Map<String, Object?>? verseJson = _decode(row['verse'] as String?);
-      final Map<String, Object?>? hadithJson =
-          _decode(row['hadith'] as String?);
+      final Map<String, Object?>? hadithJson = _decode(
+        row['hadith'] as String?,
+      );
       final Map<String, Object?>? duaJson = _decode(row['dua'] as String?);
       return DailyContent(
         date: day,
@@ -102,7 +106,8 @@ class DailyContentRepository {
         hadith: hadithJson == null ? null : _hadithFromCache(hadithJson),
         dua: duaJson,
         fetchedAt: DateTime.fromMillisecondsSinceEpoch(
-            (row['fetched_at'] as num?)?.toInt() ?? 0),
+          (row['fetched_at'] as num?)?.toInt() ?? 0,
+        ),
         source: 'cache',
       );
     } catch (error) {
@@ -112,40 +117,38 @@ class DailyContentRepository {
   }
 
   Future<void> _save(DailyContent content) async {
-    await _database.raw.insert(
-      'daily_content_cache',
-      <String, Object?>{
-        'date': _dateKey(content.date),
-        'verse':
-            content.verse == null ? null : jsonEncode(content.verse!.toCache()),
-        'hadith': content.hadith == null
-            ? null
-            : jsonEncode(_hadithToCache(content.hadith!)),
-        'dua': content.dua == null ? null : jsonEncode(content.dua),
-        'fetched_at': content.fetchedAt.millisecondsSinceEpoch,
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    await _database.raw.insert('daily_content_cache', <String, Object?>{
+      'date': _dateKey(content.date),
+      'verse': content.verse == null
+          ? null
+          : jsonEncode(content.verse!.toCache()),
+      'hadith': content.hadith == null
+          ? null
+          : jsonEncode(_hadithToCache(content.hadith!)),
+      'dua': content.dua == null ? null : jsonEncode(content.dua),
+      'fetched_at': content.fetchedAt.millisecondsSinceEpoch,
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Map<String, Object?> _hadithToCache(Hadith hadith) => <String, Object?>{
-        'id': hadith.id,
-        'ar': hadith.arabic,
-        'tr': hadith.turkish,
-        'ref': hadith.reference,
-        'src': hadith.primarySource,
-        'topics': hadith.topics,
-      };
+    'id': hadith.id,
+    'ar': hadith.arabic,
+    'tr': hadith.turkish,
+    'ref': hadith.reference,
+    'src': hadith.primarySource,
+    'topics': hadith.topics,
+  };
 
   Hadith _hadithFromCache(Map<String, Object?> json) => Hadith(
-        id: (json['id'] as num).toInt(),
-        arabic: json['ar'] as String? ?? '',
-        turkish: json['tr'] as String? ?? '',
-        reference: json['ref'] as String? ?? '',
-        primarySource: json['src'] as String? ?? '',
-        topics: (json['topics'] as List<Object?>?)?.cast<String>() ??
-            const <String>['Genel'],
-      );
+    id: (json['id'] as num).toInt(),
+    arabic: json['ar'] as String? ?? '',
+    turkish: json['tr'] as String? ?? '',
+    reference: json['ref'] as String? ?? '',
+    primarySource: json['src'] as String? ?? '',
+    topics:
+        (json['topics'] as List<Object?>?)?.cast<String>() ??
+        const <String>['Genel'],
+  );
 
   Map<String, Object?>? _decode(String? raw) {
     if (raw == null || raw.isEmpty) return null;
@@ -170,36 +173,36 @@ class DailyAyah {
   final Surah surah;
 
   Map<String, Object?> toCache() => <String, Object?>{
-        's': surah.number,
-        'n': ayah.number,
-        'ar': ayah.arabic,
-        'tr': ayah.turkish,
-        'surahName': surah.nameTurkish,
-        'meaning': surah.meaning,
-        'revelation': surah.revelation,
-        'verseCount': surah.verseCount,
-        'translit': surah.transliteration,
-        'nameAr': surah.nameArabic,
-      };
+    's': surah.number,
+    'n': ayah.number,
+    'ar': ayah.arabic,
+    'tr': ayah.turkish,
+    'surahName': surah.nameTurkish,
+    'meaning': surah.meaning,
+    'revelation': surah.revelation,
+    'verseCount': surah.verseCount,
+    'translit': surah.transliteration,
+    'nameAr': surah.nameArabic,
+  };
 
   factory DailyAyah.fromCache(Map<String, Object?> json) => DailyAyah(
-        surah: Surah(
-          number: (json['s'] as num).toInt(),
-          nameArabic: json['nameAr'] as String? ?? '',
-          nameTurkish: json['surahName'] as String? ?? '',
-          meaning: json['meaning'] as String? ?? '',
-          transliteration: json['translit'] as String? ?? '',
-          verseCount: (json['verseCount'] as num?)?.toInt() ?? 0,
-          revelation: json['revelation'] as String? ?? 'Mekke',
-          juzStart: null,
-        ),
-        ayah: Ayah(
-          surah: (json['s'] as num).toInt(),
-          number: (json['n'] as num).toInt(),
-          arabic: json['ar'] as String? ?? '',
-          turkish: json['tr'] as String? ?? '',
-        ),
-      );
+    surah: Surah(
+      number: (json['s'] as num).toInt(),
+      nameArabic: json['nameAr'] as String? ?? '',
+      nameTurkish: json['surahName'] as String? ?? '',
+      meaning: json['meaning'] as String? ?? '',
+      transliteration: json['translit'] as String? ?? '',
+      verseCount: (json['verseCount'] as num?)?.toInt() ?? 0,
+      revelation: json['revelation'] as String? ?? 'Mekke',
+      juzStart: null,
+    ),
+    ayah: Ayah(
+      surah: (json['s'] as num).toInt(),
+      number: (json['n'] as num).toInt(),
+      arabic: json['ar'] as String? ?? '',
+      turkish: json['tr'] as String? ?? '',
+    ),
+  );
 
   String shareText() {
     final StringBuffer buffer = StringBuffer()

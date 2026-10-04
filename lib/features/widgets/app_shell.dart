@@ -10,13 +10,33 @@ class AppShell extends StatelessWidget {
 
   final StatefulNavigationShell navigationShell;
 
-  static const List<({String label, IconData icon, IconData activeIcon})> _tabs =
-      <({String label, IconData icon, IconData activeIcon})>[
-    (label: 'Ana Sayfa', icon: Icons.home_outlined, activeIcon: Icons.home_rounded),
-    (label: 'Vakitler', icon: Icons.schedule_outlined, activeIcon: Icons.schedule_rounded),
-    (label: 'Kur\'an', icon: Icons.menu_book_outlined, activeIcon: Icons.menu_book_rounded),
-    (label: 'İlahi', icon: Icons.library_music_outlined, activeIcon: Icons.library_music_rounded),
-    (label: 'Daha Fazla', icon: Icons.grid_view_outlined, activeIcon: Icons.grid_view_rounded),
+  static const List<({String label, IconData icon, IconData activeIcon})>
+  _tabs = <({String label, IconData icon, IconData activeIcon})>[
+    (
+      label: 'Ana Sayfa',
+      icon: Icons.home_outlined,
+      activeIcon: Icons.home_rounded,
+    ),
+    (
+      label: 'Vakitler',
+      icon: Icons.schedule_outlined,
+      activeIcon: Icons.schedule_rounded,
+    ),
+    (
+      label: 'Kur\'an',
+      icon: Icons.menu_book_outlined,
+      activeIcon: Icons.menu_book_rounded,
+    ),
+    (
+      label: 'İlahi',
+      icon: Icons.library_music_outlined,
+      activeIcon: Icons.library_music_rounded,
+    ),
+    (
+      label: 'Daha Fazla',
+      icon: Icons.grid_view_outlined,
+      activeIcon: Icons.grid_view_rounded,
+    ),
   ];
 
   @override
@@ -26,14 +46,18 @@ class AppShell extends StatelessWidget {
       bottomNavigationBar: DecoratedBox(
         decoration: BoxDecoration(
           border: Border(
-            top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.5)),
+            top: BorderSide(
+              color: Theme.of(context).colorScheme.outlineVariant
+                  .withValues(alpha: 0.5),
+            ),
           ),
         ),
         child: NavigationBar(
           selectedIndex: navigationShell.currentIndex,
           onDestinationSelected: _onSelect,
           destinations: <Widget>[
-            for (final ({String label, IconData icon, IconData activeIcon}) tab in _tabs)
+            for (final ({String label, IconData icon, IconData activeIcon}) tab
+                in _tabs)
               NavigationDestination(
                 icon: Icon(tab.icon),
                 selectedIcon: Icon(tab.activeIcon),
@@ -83,11 +107,16 @@ class AppBarHeader extends StatelessWidget implements PreferredSizeWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text(title, style: text.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
+          Text(
+            title,
+            style: text.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+          ),
           if (subtitle != null)
             Text(
               subtitle!,
-              style: text.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+              style: text.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
         ],
       ),
@@ -102,7 +131,12 @@ class AppBarHeader extends StatelessWidget implements PreferredSizeWidget {
 
 /// Bölüm başlığı + isteğe bağlı eylem.
 class SectionHeader extends StatelessWidget {
-  const SectionHeader({required this.title, this.action, this.padding = const EdgeInsets.fromLTRB(20, 24, 20, 12), super.key});
+  const SectionHeader({
+    required this.title,
+    this.action,
+    this.padding = const EdgeInsets.fromLTRB(20, 24, 20, 12),
+    super.key,
+  });
 
   final String title;
   final Widget? action;
@@ -117,13 +151,11 @@ class SectionHeader extends StatelessWidget {
           Expanded(
             child: Text(
               title,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
+              style: Theme.of(context).textTheme.titleMedium
                   ?.copyWith(fontWeight: FontWeight.w700, letterSpacing: -0.2),
             ),
           ),
-          if (action != null) action!,
+          ?action,
         ],
       ),
     );

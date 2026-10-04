@@ -41,7 +41,10 @@ class PrayerTimesCache {
   }
 
   Future<List<PrayerTimesDay>> getRange(
-      String locationKey, DateTime start, DateTime end) async {
+    String locationKey,
+    DateTime start,
+    DateTime end,
+  ) async {
     final List<Map<String, Object?>> rows = await _database.raw.query(
       'prayer_times_cache',
       where: 'district_id = ? AND date >= ? AND date <= ?',
@@ -94,8 +97,13 @@ class PrayerTimesCache {
     final DateTime date = DateTime.parse(row['date']! as String);
     DateTime build(String key) {
       final List<String> parts = (row[key]! as String).split(':');
-      return DateTime(date.year, date.month, date.day, int.parse(parts[0]),
-          int.parse(parts[1]));
+      return DateTime(
+        date.year,
+        date.month,
+        date.day,
+        int.parse(parts[0]),
+        int.parse(parts[1]),
+      );
     }
 
     return PrayerTimesDay(

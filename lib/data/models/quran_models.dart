@@ -34,15 +34,15 @@ class Surah {
   String get subtitle => '$meaning • $verseCount ayet • $revelation';
 
   factory Surah.fromJson(Map<String, Object?> json) => Surah(
-        number: json['n'] as int,
-        nameArabic: json['nameAr'] as String,
-        nameTurkish: json['nameTr'] as String,
-        meaning: json['meaningTr'] as String? ?? '',
-        transliteration: json['translit'] as String? ?? '',
-        verseCount: json['verses'] as int,
-        revelation: json['revelation'] as String? ?? 'Mekke',
-        juzStart: json['juzStart'] as int?,
-      );
+    number: json['n'] as int,
+    nameArabic: json['nameAr'] as String,
+    nameTurkish: json['nameTr'] as String,
+    meaning: json['meaningTr'] as String? ?? '',
+    transliteration: json['translit'] as String? ?? '',
+    verseCount: json['verses'] as int,
+    revelation: json['revelation'] as String? ?? 'Mekke',
+    juzStart: json['juzStart'] as int?,
+  );
 }
 
 /// Tek bir ayet (Arapça + Türkçe meal + isteğe bağlı okunuş).
@@ -103,12 +103,11 @@ class QuranBookmark {
   String get reference => '$surah:$number';
 
   factory QuranBookmark.fromRow(Map<String, Object?> row) => QuranBookmark(
-        surah: row['surah']! as int,
-        number: row['ayah']! as int,
-        createdAt:
-            DateTime.fromMillisecondsSinceEpoch(row['created_at']! as int),
-        note: row['note'] as String?,
-      );
+    surah: row['surah']! as int,
+    number: row['ayah']! as int,
+    createdAt: DateTime.fromMillisecondsSinceEpoch(row['created_at']! as int),
+    note: row['note'] as String?,
+  );
 }
 
 /// Sure bazında okuma ilerlemesi.
@@ -125,10 +124,10 @@ class ReadingProgress {
   final DateTime readAt;
 
   factory ReadingProgress.fromRow(Map<String, Object?> row) => ReadingProgress(
-        surah: row['surah']! as int,
-        lastAyah: row['last_ayah']! as int,
-        readAt: DateTime.fromMillisecondsSinceEpoch(row['read_at']! as int),
-      );
+    surah: row['surah']! as int,
+    lastAyah: row['last_ayah']! as int,
+    readAt: DateTime.fromMillisecondsSinceEpoch(row['read_at']! as int),
+  );
 }
 
 /// Kur'an tilavet okuyucusu (reciter).
@@ -161,53 +160,61 @@ abstract final class Reciters {
 
   static const List<Reciter> all = <Reciter>[
     Reciter(
-        id: 'ar.alafasy',
-        name: 'Mishary Rashid Alafasy',
-        arabicName: 'مشاري العفاسي',
-        style: 'Murattal',
-        bitrateFolder: 'Alafasy_128kbps'),
+      id: 'ar.alafasy',
+      name: 'Mishary Rashid Alafasy',
+      arabicName: 'مشاري العفاسي',
+      style: 'Murattal',
+      bitrateFolder: 'Alafasy_128kbps',
+    ),
     Reciter(
-        id: 'ar.abdulbasitmurattal',
-        name: 'Abdul Basit (Murattal)',
-        arabicName: 'عبد الباسط',
-        style: 'Murattal',
-        bitrateFolder: 'Abdul_Basit_Murattal_192kbps'),
+      id: 'ar.abdulbasitmurattal',
+      name: 'Abdul Basit (Murattal)',
+      arabicName: 'عبد الباسط',
+      style: 'Murattal',
+      bitrateFolder: 'Abdul_Basit_Murattal_192kbps',
+    ),
     Reciter(
-        id: 'ar.husary',
-        name: 'Mahmoud Khalil Al-Husary',
-        arabicName: 'محمود الحصري',
-        style: 'Murattal',
-        bitrateFolder: 'Husary_128kbps'),
+      id: 'ar.husary',
+      name: 'Mahmoud Khalil Al-Husary',
+      arabicName: 'محمود الحصري',
+      style: 'Murattal',
+      bitrateFolder: 'Husary_128kbps',
+    ),
     Reciter(
-        id: 'ar.minshawi',
-        name: 'Mohamed Siddiq El-Minshawi',
-        arabicName: 'محمد المنشاوي',
-        style: 'Murattal',
-        bitrateFolder: 'Minshawy_Murattal_128kbps'),
+      id: 'ar.minshawi',
+      name: 'Mohamed Siddiq El-Minshawi',
+      arabicName: 'محمد المنشاوي',
+      style: 'Murattal',
+      bitrateFolder: 'Minshawy_Murattal_128kbps',
+    ),
     Reciter(
-        id: 'ar.mahermuaiqly',
-        name: 'Maher Al Muaiqly',
-        arabicName: 'ماهر المعيقلي',
-        style: 'Murattal',
-        bitrateFolder: 'Maher_AlMuaiqly_64kbps'),
+      id: 'ar.mahermuaiqly',
+      name: 'Maher Al Muaiqly',
+      arabicName: 'ماهر المعيقلي',
+      style: 'Murattal',
+      bitrateFolder: 'Maher_AlMuaiqly_64kbps',
+    ),
     Reciter(
-        id: 'ar.shaatree',
-        name: 'Abu Bakr Ash-Shaatree',
-        arabicName: 'أبو بكر الشاطري',
-        style: 'Murattal',
-        bitrateFolder: 'Abu_Bakr_Ash-Shaatree_128kbps'),
+      id: 'ar.shaatree',
+      name: 'Abu Bakr Ash-Shaatree',
+      arabicName: 'أبو بكر الشاطري',
+      style: 'Murattal',
+      bitrateFolder: 'Abu_Bakr_Ash-Shaatree_128kbps',
+    ),
     Reciter(
-        id: 'ar.hudhaify',
-        name: 'Ali Al-Hudhaify',
-        arabicName: 'علي الحذيفي',
-        style: 'Murattal',
-        bitrateFolder: 'Hudhaify_128kbps'),
+      id: 'ar.hudhaify',
+      name: 'Ali Al-Hudhaify',
+      arabicName: 'علي الحذيفي',
+      style: 'Murattal',
+      bitrateFolder: 'Hudhaify_128kbps',
+    ),
     Reciter(
-        id: 'ar.shaikhsudays',
-        name: 'Abdurrahman As-Sudais',
-        arabicName: 'عبد الرحمن السديس',
-        style: 'Murattal',
-        bitrateFolder: 'Abdurrahmaan_As-Sudais_192kbps'),
+      id: 'ar.shaikhsudays',
+      name: 'Abdurrahman As-Sudais',
+      arabicName: 'عبد الرحمن السديس',
+      style: 'Murattal',
+      bitrateFolder: 'Abdurrahmaan_As-Sudais_192kbps',
+    ),
   ];
 
   static Reciter byId(String? id) =>

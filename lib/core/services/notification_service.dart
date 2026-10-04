@@ -63,7 +63,7 @@ abstract final class NotificationIds {
 /// zamanlamaları geri yükler.
 class NotificationService {
   NotificationService({FlutterLocalNotificationsPlugin? plugin})
-      : _plugin = plugin ?? FlutterLocalNotificationsPlugin();
+    : _plugin = plugin ?? FlutterLocalNotificationsPlugin();
 
   final FlutterLocalNotificationsPlugin _plugin;
 
@@ -83,8 +83,9 @@ class NotificationService {
   Future<void> initialize() async {
     if (_initialized) return;
 
-    const AndroidInitializationSettings android =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+    const AndroidInitializationSettings android = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
     const DarwinInitializationSettings ios = DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
@@ -161,13 +162,18 @@ class NotificationService {
   }
 
   Future<void> _createAndroidChannels() async {
-    final AndroidFlutterLocalNotificationsPlugin? android =
-        _plugin.resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
+    final AndroidFlutterLocalNotificationsPlugin? android = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
     if (android == null) return;
 
-    Future<void> channel(String id, String name, String description,
-        {bool silent = false}) async {
+    Future<void> channel(
+      String id,
+      String name,
+      String description, {
+      bool silent = false,
+    }) async {
       await android.createNotificationChannel(
         AndroidNotificationChannel(
           id,
@@ -224,17 +230,23 @@ class NotificationService {
     await initialize();
     bool granted = true;
     if (Platform.isAndroid) {
-      final AndroidFlutterLocalNotificationsPlugin? android =
-          _plugin.resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>();
+      final AndroidFlutterLocalNotificationsPlugin? android = _plugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
       granted = await android?.requestNotificationsPermission() ?? true;
       await android?.requestExactAlarmsPermission();
     } else if (Platform.isIOS) {
-      final IOSFlutterLocalNotificationsPlugin? ios =
-          _plugin.resolvePlatformSpecificImplementation<
-              IOSFlutterLocalNotificationsPlugin>();
-      granted = await ios?.requestPermissions(
-              alert: true, badge: true, sound: true) ??
+      final IOSFlutterLocalNotificationsPlugin? ios = _plugin
+          .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin
+          >();
+      granted =
+          await ios?.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+          ) ??
           true;
     }
     return granted;
@@ -244,9 +256,10 @@ class NotificationService {
   Future<bool> hasPermission() async {
     await initialize();
     if (Platform.isAndroid) {
-      final AndroidFlutterLocalNotificationsPlugin? android =
-          _plugin.resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>();
+      final AndroidFlutterLocalNotificationsPlugin? android = _plugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
       return await android?.areNotificationsEnabled() ?? true;
     }
     return true;
@@ -256,7 +269,8 @@ class NotificationService {
     if (Platform.isAndroid) {
       await _plugin
           .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>()
+            AndroidFlutterLocalNotificationsPlugin
+          >()
           ?.requestNotificationsPermission();
     }
   }
@@ -278,9 +292,11 @@ class NotificationService {
     int scheduled = 0;
     final DateTime now = DateTime.now();
 
-    for (int dayIndex = 0;
-        dayIndex < days.length && dayIndex < settings.daysToSchedule;
-        dayIndex++) {
+    for (
+      int dayIndex = 0;
+      dayIndex < days.length && dayIndex < settings.daysToSchedule;
+      dayIndex++
+    ) {
       final PrayerTimesDay day = days[dayIndex];
       for (final Prayer prayer in Prayer.values) {
         if (!settings.isEnabledFor(prayer)) continue;
@@ -310,8 +326,9 @@ class NotificationService {
 
         // Öncesi hatırlatma
         if (settings.preReminderMinutes > 0 && prayer.isPrayerTime) {
-          final DateTime remindAt =
-              when.subtract(Duration(minutes: settings.preReminderMinutes));
+          final DateTime remindAt = when.subtract(
+            Duration(minutes: settings.preReminderMinutes),
+          );
           if (remindAt.isAfter(now)) {
             await _schedule(
               id: NotificationIds.pre(dayIndex, prayer),
@@ -321,8 +338,9 @@ class NotificationService {
               when: remindAt,
               channelId: NotificationChannels.prayer,
               settings: settings,
-              quiet:
-                  settings.isInQuietHours(remindAt.hour * 60 + remindAt.minute),
+              quiet: settings.isInQuietHours(
+                remindAt.hour * 60 + remindAt.minute,
+              ),
               payload: NotificationRoute.times.value,
               hijriOffsetDays: hijriOffsetDays,
             );
@@ -369,8 +387,9 @@ class NotificationService {
     final DateTime? aksam = today.timeOf(Prayer.aksam);
 
     if (imsak != null) {
-      final DateTime remind =
-          imsak.subtract(Duration(minutes: settings.sahurReminderMinutes));
+      final DateTime remind = imsak.subtract(
+        Duration(minutes: settings.sahurReminderMinutes),
+      );
       if (remind.isAfter(now)) {
         await _schedule(
           id: NotificationIds.ramadanSahur,
@@ -386,8 +405,9 @@ class NotificationService {
       }
     }
     if (aksam != null) {
-      final DateTime remind =
-          aksam.subtract(Duration(minutes: settings.iftarReminderMinutes));
+      final DateTime remind = aksam.subtract(
+        Duration(minutes: settings.iftarReminderMinutes),
+      );
       if (remind.isAfter(now)) {
         await _schedule(
           id: NotificationIds.ramadanIftar,
@@ -496,8 +516,11 @@ class NotificationService {
       id: id,
       title: title,
       body: body,
-      notificationDetails:
-          _details(channelId, const NotificationSettings(), silent: true),
+      notificationDetails: _details(
+        channelId,
+        const NotificationSettings(),
+        silent: true,
+      ),
       payload: payload,
     );
   }
@@ -520,8 +543,8 @@ class NotificationService {
   /// Zamanlanmış bildirim sayısı (ayarlar ekranında gösterilir).
   Future<int> pendingCount() async {
     try {
-      final List<PendingNotificationRequest> pending =
-          await _plugin.pendingNotificationRequests();
+      final List<PendingNotificationRequest> pending = await _plugin
+          .pendingNotificationRequests();
       return pending.length;
     } catch (_) {
       return 0;
@@ -554,7 +577,8 @@ class NotificationService {
     } on PlatformException catch (error) {
       // Tam alarm izni yoksa (Android 12+) esnek zamanlamaya düşeriz.
       AppLog.warning(
-          'Tam alarm zamanlanamadı, esnek moda geçildi: ${error.code}');
+        'Tam alarm zamanlanamadı, esnek moda geçildi: ${error.code}',
+      );
       await _plugin.zonedSchedule(
         id: id,
         title: title,
@@ -567,8 +591,11 @@ class NotificationService {
     }
   }
 
-  NotificationDetails _details(String channelId, NotificationSettings settings,
-      {required bool silent}) {
+  NotificationDetails _details(
+    String channelId,
+    NotificationSettings settings, {
+    required bool silent,
+  }) {
     final AdhanSound sound = silent ? AdhanSound.silent : settings.adhanSound;
     AndroidNotificationSound? androidSound;
     if (!sound.isSilent) {
@@ -601,31 +628,31 @@ class NotificationService {
   }
 
   String _channelTitle(String channelId) => switch (channelId) {
-        NotificationChannels.adhan => 'Ezan ve vakit bildirimleri',
-        NotificationChannels.prayer => 'Namaz vakti hatırlatmaları',
-        NotificationChannels.ramadan => 'Ramazan bildirimleri',
-        NotificationChannels.daily => 'Günün içeriği',
-        NotificationChannels.zikir => 'Zikir ve hatim hatırlatmaları',
-        _ => 'Uygulama bildirimleri',
-      };
+    NotificationChannels.adhan => 'Ezan ve vakit bildirimleri',
+    NotificationChannels.prayer => 'Namaz vakti hatırlatmaları',
+    NotificationChannels.ramadan => 'Ramazan bildirimleri',
+    NotificationChannels.daily => 'Günün içeriği',
+    NotificationChannels.zikir => 'Zikir ve hatim hatırlatmaları',
+    _ => 'Uygulama bildirimleri',
+  };
 
   String _channelDescription(String channelId) => switch (channelId) {
-        NotificationChannels.adhan => 'Namaz vakti girdiğinde gösterilir.',
-        NotificationChannels.prayer => 'Vakit girdiğinde sessiz bilgilendirme.',
-        NotificationChannels.ramadan => 'Sahur ve iftar hatırlatmaları.',
-        NotificationChannels.daily => 'Günün ayeti ve hadisi.',
-        NotificationChannels.zikir => 'Zikir ve hatim hedefleri.',
-        _ => 'Genel bilgilendirmeler.',
-      };
+    NotificationChannels.adhan => 'Namaz vakti girdiğinde gösterilir.',
+    NotificationChannels.prayer => 'Vakit girdiğinde sessiz bilgilendirme.',
+    NotificationChannels.ramadan => 'Sahur ve iftar hatırlatmaları.',
+    NotificationChannels.daily => 'Günün ayeti ve hadisi.',
+    NotificationChannels.zikir => 'Zikir ve hatim hedefleri.',
+    _ => 'Genel bilgilendirmeler.',
+  };
 
   String _titleFor(Prayer prayer, bool quiet) => switch (prayer) {
-        Prayer.imsak => 'İmsak vakti girdi',
-        Prayer.gunes => 'Güneş doğdu',
-        Prayer.ogle => 'Öğle vakti girdi',
-        Prayer.ikindi => 'İkindi vakti girdi',
-        Prayer.aksam => 'Akşam vakti girdi — iftar vakti',
-        Prayer.yatsi => 'Yatsı vakti girdi',
-      };
+    Prayer.imsak => 'İmsak vakti girdi',
+    Prayer.gunes => 'Güneş doğdu',
+    Prayer.ogle => 'Öğle vakti girdi',
+    Prayer.ikindi => 'İkindi vakti girdi',
+    Prayer.aksam => 'Akşam vakti girdi — iftar vakti',
+    Prayer.yatsi => 'Yatsı vakti girdi',
+  };
 
   String _bodyFor(Prayer prayer, String locationLabel, PrayerTimesDay day) {
     final DateTime? time = day.timeOf(prayer);
@@ -642,8 +669,14 @@ class NotificationService {
 
   tz.TZDateTime _nextInstanceOf(int? weekday, int hour, int minute) {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-    tz.TZDateTime scheduled =
-        tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
+    tz.TZDateTime scheduled = tz.TZDateTime(
+      tz.local,
+      now.year,
+      now.month,
+      now.day,
+      hour,
+      minute,
+    );
     if (weekday != null) {
       while (scheduled.weekday != weekday) {
         scheduled = scheduled.add(const Duration(days: 1));

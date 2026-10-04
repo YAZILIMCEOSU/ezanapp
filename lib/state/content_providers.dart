@@ -20,18 +20,22 @@ import 'providers.dart';
 // ------------------------------------------------------------------ Günlük
 
 /// Günün ayeti + hadisi + duası (önbellekten veya yerel veriden).
-final FutureProvider<DailyContent> dailyContentProvider = FutureProvider<DailyContent>(
-  (Ref ref) => ref.watch(runtimeProvider).dailyContent.load(DateTime.now()),
-);
+final FutureProvider<DailyContent> dailyContentProvider =
+    FutureProvider<DailyContent>(
+      (Ref ref) => ref.watch(runtimeProvider).dailyContent.load(DateTime.now()),
+    );
 
 /// Bugünün zikir özeti.
 final FutureProvider<ZikirDailySummary> zikirDailySummaryProvider =
     FutureProvider<ZikirDailySummary>((Ref ref) async {
-  final ZikirDailySummary summary = await ref.watch(runtimeProvider).zikir.todaySummary(
-        target: ref.watch(settingsProvider).zikirDefaultTarget * 3,
-      );
-  return summary;
-});
+      final ZikirDailySummary summary = await ref
+          .watch(runtimeProvider)
+          .zikir
+          .todaySummary(
+            target: ref.watch(settingsProvider).zikirDefaultTarget * 3,
+          );
+      return summary;
+    });
 
 /// Günün hadisi (günlük içerikten).
 final FutureProvider<Hadith?> dailyHadithProvider = FutureProvider<Hadith?>(
@@ -40,24 +44,30 @@ final FutureProvider<Hadith?> dailyHadithProvider = FutureProvider<Hadith?>(
 
 // ------------------------------------------------------------------- Hadis
 
-final FutureProvider<HadithCollection> hadithCollectionProvider = FutureProvider<HadithCollection>(
-  (Ref ref) => ref.watch(runtimeProvider).hadith.collection(),
-);
+final FutureProvider<HadithCollection> hadithCollectionProvider =
+    FutureProvider<HadithCollection>(
+      (Ref ref) => ref.watch(runtimeProvider).hadith.collection(),
+    );
 
-final FutureProvider<List<Hadith>> hadithFavoritesProvider = FutureProvider<List<Hadith>>(
-  (Ref ref) => ref.watch(runtimeProvider).hadith.favorites(),
-);
+final FutureProvider<List<Hadith>> hadithFavoritesProvider =
+    FutureProvider<List<Hadith>>(
+      (Ref ref) => ref.watch(runtimeProvider).hadith.favorites(),
+    );
 
 /// Konuya göre hadis listesi (arama ile birlikte kullanılır).
 final FutureProviderFamily<List<Hadith>, HadithQuery> hadithQueryProvider =
-    FutureProvider.family<List<Hadith>, HadithQuery>((Ref ref, HadithQuery query) {
-  final runtime = ref.watch(runtimeProvider);
-  if (query.text.trim().isNotEmpty) return runtime.hadith.search(query.text);
-  if (query.topic != null && query.topic != HadithQuery.allTopics) {
-    return runtime.hadith.byTopic(query.topic!);
-  }
-  return runtime.hadith.all();
-});
+    FutureProvider.family<List<Hadith>, HadithQuery>((
+      Ref ref,
+      HadithQuery query,
+    ) {
+      final runtime = ref.watch(runtimeProvider);
+      if (query.text.trim().isNotEmpty)
+        return runtime.hadith.search(query.text);
+      if (query.topic != null && query.topic != HadithQuery.allTopics) {
+        return runtime.hadith.byTopic(query.topic!);
+      }
+      return runtime.hadith.all();
+    });
 
 /// Hadis sorgusu (konu + serbest metin).
 class HadithQuery {
@@ -80,42 +90,52 @@ class HadithQuery {
 }
 
 /// Favori hadis kimlikleri (hızlı işaretleme için).
-final FutureProvider<Set<int>> hadithFavoriteIdsProvider = FutureProvider<Set<int>>(
-  (Ref ref) => ref.watch(runtimeProvider).hadith.favoriteIds(),
-);
+final FutureProvider<Set<int>> hadithFavoriteIdsProvider =
+    FutureProvider<Set<int>>(
+      (Ref ref) => ref.watch(runtimeProvider).hadith.favoriteIds(),
+    );
 
 // ------------------------------------------------------------------ Kur'an
 
-final FutureProvider<List<Surah>> surahListProvider = FutureProvider<List<Surah>>(
-  (Ref ref) => ref.watch(runtimeProvider).quran.surahs(),
-);
+final FutureProvider<List<Surah>> surahListProvider =
+    FutureProvider<List<Surah>>(
+      (Ref ref) => ref.watch(runtimeProvider).quran.surahs(),
+    );
 
 final FutureProviderFamily<SurahContent, int> surahContentProvider =
     FutureProvider.family<SurahContent, int>(
-  (Ref ref, int number) => ref.watch(runtimeProvider).quran.loadSurah(number),
-);
+      (Ref ref, int number) =>
+          ref.watch(runtimeProvider).quran.loadSurah(number),
+    );
 
-final FutureProvider<List<QuranBookmark>> quranBookmarksProvider = FutureProvider<List<QuranBookmark>>(
-  (Ref ref) => ref.watch(runtimeProvider).quran.bookmarks(),
-);
+final FutureProvider<List<QuranBookmark>> quranBookmarksProvider =
+    FutureProvider<List<QuranBookmark>>(
+      (Ref ref) => ref.watch(runtimeProvider).quran.bookmarks(),
+    );
 
-final FutureProvider<ReadingProgress?> quranProgressProvider = FutureProvider<ReadingProgress?>(
-  (Ref ref) => ref.watch(runtimeProvider).quran.lastProgress(),
-);
+final FutureProvider<ReadingProgress?> quranProgressProvider =
+    FutureProvider<ReadingProgress?>(
+      (Ref ref) => ref.watch(runtimeProvider).quran.lastProgress(),
+    );
 
-final FutureProvider<List<ReadingProgress>> quranHistoryProvider = FutureProvider<List<ReadingProgress>>(
-  (Ref ref) => ref.watch(runtimeProvider).quran.history(),
-);
+final FutureProvider<List<ReadingProgress>> quranHistoryProvider =
+    FutureProvider<List<ReadingProgress>>(
+      (Ref ref) => ref.watch(runtimeProvider).quran.history(),
+    );
 
 final FutureProvider<int> quranCompletedJuzProvider = FutureProvider<int>(
   (Ref ref) => ref.watch(runtimeProvider).quran.completedJuzCount(),
 );
 
 final FutureProviderFamily<List<AyahSearchResult>, String> quranSearchProvider =
-    FutureProvider.family<List<AyahSearchResult>, String>((Ref ref, String query) {
-  if (query.trim().length < 2) return Future<List<AyahSearchResult>>.value(const <AyahSearchResult>[]);
-  return ref.watch(runtimeProvider).quran.search(query);
-});
+    FutureProvider.family<List<AyahSearchResult>, String>((
+      Ref ref,
+      String query,
+    ) {
+      if (query.trim().length < 2)
+        return Future<List<AyahSearchResult>>.value(const <AyahSearchResult>[]);
+      return ref.watch(runtimeProvider).quran.search(query);
+    });
 
 /// Seçili okuyucu (ayet sesi için).
 final Provider<Reciter> selectedReciterProvider = Provider<Reciter>(
@@ -123,32 +143,42 @@ final Provider<Reciter> selectedReciterProvider = Provider<Reciter>(
 );
 
 /// Favori ayet kimlikleri.
-final FutureProvider<Set<int>> quranBookmarkIdsProvider = FutureProvider<Set<int>>((Ref ref) async {
-  final List<QuranBookmark> bookmarks = await ref.watch(runtimeProvider).quran.bookmarks();
-  return <int>{
-    for (final QuranBookmark bookmark in bookmarks) bookmark.surah * 1000 + bookmark.number,
-  };
-});
+final FutureProvider<Set<int>> quranBookmarkIdsProvider =
+    FutureProvider<Set<int>>((Ref ref) async {
+      final List<QuranBookmark> bookmarks = await ref
+          .watch(runtimeProvider)
+          .quran
+          .bookmarks();
+      return <int>{
+        for (final QuranBookmark bookmark in bookmarks)
+          bookmark.surah * 1000 + bookmark.number,
+      };
+    });
 
 // ------------------------------------------------------------------ Zikir
 
-final FutureProvider<List<Zikir>> zikirListProvider = FutureProvider<List<Zikir>>((Ref ref) async {
-  final runtime = ref.watch(runtimeProvider);
-  final List<Zikir> builtIn = await runtime.zikir.zikirler();
-  final List<Zikir> custom = await runtime.zikir.customZikirler();
-  return <Zikir>[...builtIn, ...custom];
-});
+final FutureProvider<List<Zikir>> zikirListProvider =
+    FutureProvider<List<Zikir>>((Ref ref) async {
+      final runtime = ref.watch(runtimeProvider);
+      final List<Zikir> builtIn = await runtime.zikir.zikirler();
+      final List<Zikir> custom = await runtime.zikir.customZikirler();
+      return <Zikir>[...builtIn, ...custom];
+    });
 
 final FutureProvider<List<Map<String, Object?>>> duaListProvider =
-    FutureProvider<List<Map<String, Object?>>>((Ref ref) => ref.watch(runtimeProvider).zikir.dualar());
+    FutureProvider<List<Map<String, Object?>>>(
+      (Ref ref) => ref.watch(runtimeProvider).zikir.dualar(),
+    );
 
-final FutureProvider<List<ZikirStatPoint>> zikirHistoryProvider = FutureProvider<List<ZikirStatPoint>>(
-  (Ref ref) => ref.watch(runtimeProvider).zikir.history(days: 14),
-);
+final FutureProvider<List<ZikirStatPoint>> zikirHistoryProvider =
+    FutureProvider<List<ZikirStatPoint>>(
+      (Ref ref) => ref.watch(runtimeProvider).zikir.history(days: 14),
+    );
 
-final FutureProvider<Map<String, int>> zikirTotalsProvider = FutureProvider<Map<String, int>>(
-  (Ref ref) => ref.watch(runtimeProvider).zikir.totalsByZikir(days: 30),
-);
+final FutureProvider<Map<String, int>> zikirTotalsProvider =
+    FutureProvider<Map<String, int>>(
+      (Ref ref) => ref.watch(runtimeProvider).zikir.totalsByZikir(days: 30),
+    );
 
 final FutureProvider<int> zikirTotalCountProvider = FutureProvider<int>(
   (Ref ref) => ref.watch(runtimeProvider).zikir.totalCount(),
@@ -156,119 +186,155 @@ final FutureProvider<int> zikirTotalCountProvider = FutureProvider<int>(
 
 // ------------------------------------------------------------------ İlahi
 
-final FutureProvider<List<IlahiTrack>> ilahiCatalogProvider = FutureProvider<List<IlahiTrack>>(
-  (Ref ref) => ref.watch(runtimeProvider).ilahi.catalog(),
-);
+final FutureProvider<List<IlahiTrack>> ilahiCatalogProvider =
+    FutureProvider<List<IlahiTrack>>(
+      (Ref ref) => ref.watch(runtimeProvider).ilahi.catalog(),
+    );
 
-final FutureProvider<List<IlahiTrack>> ilahiDownloadsProvider = FutureProvider<List<IlahiTrack>>(
-  (Ref ref) => ref.watch(runtimeProvider).ilahi.downloaded(),
-);
+final FutureProvider<List<IlahiTrack>> ilahiDownloadsProvider =
+    FutureProvider<List<IlahiTrack>>(
+      (Ref ref) => ref.watch(runtimeProvider).ilahi.downloaded(),
+    );
 
-final FutureProvider<List<IlahiTrack>> ilahiLocalProvider = FutureProvider<List<IlahiTrack>>(
-  (Ref ref) => ref.watch(runtimeProvider).ilahi.localTracks(),
-);
+final FutureProvider<List<IlahiTrack>> ilahiLocalProvider =
+    FutureProvider<List<IlahiTrack>>(
+      (Ref ref) => ref.watch(runtimeProvider).ilahi.localTracks(),
+    );
 
-final FutureProvider<List<IlahiTrack>> ilahiRecentsProvider = FutureProvider<List<IlahiTrack>>(
-  (Ref ref) => ref.watch(runtimeProvider).ilahi.recents(),
-);
+final FutureProvider<List<IlahiTrack>> ilahiRecentsProvider =
+    FutureProvider<List<IlahiTrack>>(
+      (Ref ref) => ref.watch(runtimeProvider).ilahi.recents(),
+    );
 
-final FutureProvider<Set<String>> ilahiFavoriteIdsProvider = FutureProvider<Set<String>>(
-  (Ref ref) => ref.watch(runtimeProvider).ilahi.favoriteIds(),
-);
+final FutureProvider<Set<String>> ilahiFavoriteIdsProvider =
+    FutureProvider<Set<String>>(
+      (Ref ref) => ref.watch(runtimeProvider).ilahi.favoriteIds(),
+    );
 
-final FutureProvider<List<Playlist>> playlistsProvider = FutureProvider<List<Playlist>>(
-  (Ref ref) => ref.watch(runtimeProvider).ilahi.playlists(),
-);
+final FutureProvider<List<Playlist>> playlistsProvider =
+    FutureProvider<List<Playlist>>(
+      (Ref ref) => ref.watch(runtimeProvider).ilahi.playlists(),
+    );
 
 final FutureProviderFamily<List<IlahiTrack>, int> playlistTracksProvider =
-    FutureProvider.family<List<IlahiTrack>, int>((Ref ref, int playlistId) async {
-  final runtime = ref.watch(runtimeProvider);
-  final List<Playlist> lists = await runtime.ilahi.playlists();
-  Playlist? playlist;
-  for (final Playlist candidate in lists) {
-    if (candidate.id == playlistId) {
-      playlist = candidate;
-      break;
-    }
-  }
-  if (playlist == null) return const <IlahiTrack>[];
-  final List<IlahiTrack> all = <IlahiTrack>[
-    ...await runtime.ilahi.catalog(),
-    ...await runtime.ilahi.localTracks(),
-  ];
-  return <IlahiTrack>[
-    for (final String id in playlist.trackIds)
-      ...all.where((IlahiTrack track) => track.id == id),
-  ];
-});
+    FutureProvider.family<List<IlahiTrack>, int>((
+      Ref ref,
+      int playlistId,
+    ) async {
+      final runtime = ref.watch(runtimeProvider);
+      final List<Playlist> lists = await runtime.ilahi.playlists();
+      Playlist? playlist;
+      for (final Playlist candidate in lists) {
+        if (candidate.id == playlistId) {
+          playlist = candidate;
+          break;
+        }
+      }
+      if (playlist == null) return const <IlahiTrack>[];
+      final List<IlahiTrack> all = <IlahiTrack>[
+        ...await runtime.ilahi.catalog(),
+        ...await runtime.ilahi.localTracks(),
+      ];
+      return <IlahiTrack>[
+        for (final String id in playlist.trackIds)
+          ...all.where((IlahiTrack track) => track.id == id),
+      ];
+    });
 
 /// Katalog içindeki kategori ve sanatçı listesi.
-final FutureProvider<({List<String> categories, List<String> artists})> ilahiFacetsProvider =
+final FutureProvider<({List<String> categories, List<String> artists})>
+ilahiFacetsProvider =
     FutureProvider<({List<String> categories, List<String> artists})>(
-  (Ref ref) => ref.watch(runtimeProvider).ilahi.facets(),
-);
+      (Ref ref) => ref.watch(runtimeProvider).ilahi.facets(),
+    );
 
 // ---------------------------------------------------------------- Ramazan
 
-final FutureProvider<HijriDate> ramadanHijriProvider = FutureProvider<HijriDate>((Ref ref) async {
-  final runtime = ref.watch(runtimeProvider);
-  final int offset = ref.watch(settingsProvider).hijriOffsetDays;
-  return runtime.hijri.toHijri(DateTime.now(), dayOffset: offset);
-});
+final FutureProvider<HijriDate> ramadanHijriProvider =
+    FutureProvider<HijriDate>((Ref ref) async {
+      final runtime = ref.watch(runtimeProvider);
+      final int offset = ref.watch(settingsProvider).hijriOffsetDays;
+      return runtime.hijri.toHijri(DateTime.now(), dayOffset: offset);
+    });
 
 /// Sahur/iftar zamanları ve geri sayım verisi.
 final FutureProvider<
-    ({PrayerTimesDay today, PrayerTimesDay tomorrow, DateTime imsak, DateTime iftar})> ramadanTodayProvider =
+  ({
+    PrayerTimesDay today,
+    PrayerTimesDay tomorrow,
+    DateTime imsak,
+    DateTime iftar,
+  })
+>
+ramadanTodayProvider =
     FutureProvider<
-        ({PrayerTimesDay today, PrayerTimesDay tomorrow, DateTime imsak, DateTime iftar})>((Ref ref) {
-  final runtime = ref.watch(runtimeProvider);
-  return runtime.ramadan.todayTimes(
-    location: ref.watch(activeLocationProvider),
-    method: ref.watch(calculationMethodProvider),
-  );
-});
-
-/// Ramazan imsakiyesi (tüm ay).
-final FutureProvider<List<PrayerTimesDay>> imsakiyeProvider = FutureProvider<List<PrayerTimesDay>>(
-  (Ref ref) => ref.watch(runtimeProvider).ramadan.imsakiye(
+      ({
+        PrayerTimesDay today,
+        PrayerTimesDay tomorrow,
+        DateTime imsak,
+        DateTime iftar,
+      })
+    >((Ref ref) {
+      final runtime = ref.watch(runtimeProvider);
+      return runtime.ramadan.todayTimes(
         location: ref.watch(activeLocationProvider),
         method: ref.watch(calculationMethodProvider),
-      ),
-);
+      );
+    });
 
-final FutureProvider<List<JuzProgress>> hatimProgressProvider = FutureProvider<List<JuzProgress>>(
-  (Ref ref) => ref.watch(runtimeProvider).ramadan.juzProgress(),
-);
+/// Ramazan imsakiyesi (tüm ay).
+final FutureProvider<List<PrayerTimesDay>> imsakiyeProvider =
+    FutureProvider<List<PrayerTimesDay>>(
+      (Ref ref) => ref
+          .watch(runtimeProvider)
+          .ramadan
+          .imsakiye(
+            location: ref.watch(activeLocationProvider),
+            method: ref.watch(calculationMethodProvider),
+          ),
+    );
 
-final FutureProvider<List<RamadanDayLog>> ramadanLogsProvider = FutureProvider<List<RamadanDayLog>>(
-  (Ref ref) => ref.watch(runtimeProvider).ramadan.monthLogs(),
-);
+final FutureProvider<List<JuzProgress>> hatimProgressProvider =
+    FutureProvider<List<JuzProgress>>(
+      (Ref ref) => ref.watch(runtimeProvider).ramadan.juzProgress(),
+    );
 
-final FutureProvider<RamadanDayLog?> todayLogProvider = FutureProvider<RamadanDayLog?>(
-  (Ref ref) => ref.watch(runtimeProvider).ramadan.dayLog(DateTime.now()),
-);
+final FutureProvider<List<RamadanDayLog>> ramadanLogsProvider =
+    FutureProvider<List<RamadanDayLog>>(
+      (Ref ref) => ref.watch(runtimeProvider).ramadan.monthLogs(),
+    );
 
-final FutureProvider<List<KazaFast>> kazaFastsProvider = FutureProvider<List<KazaFast>>(
-  (Ref ref) => ref.watch(runtimeProvider).ramadan.kazaFasts(),
-);
+final FutureProvider<RamadanDayLog?> todayLogProvider =
+    FutureProvider<RamadanDayLog?>(
+      (Ref ref) => ref.watch(runtimeProvider).ramadan.dayLog(DateTime.now()),
+    );
 
-final FutureProvider<RamadanSummary> ramadanSummaryProvider = FutureProvider<RamadanSummary>(
-  (Ref ref) => ref.watch(runtimeProvider).ramadan.summary(),
-);
+final FutureProvider<List<KazaFast>> kazaFastsProvider =
+    FutureProvider<List<KazaFast>>(
+      (Ref ref) => ref.watch(runtimeProvider).ramadan.kazaFasts(),
+    );
 
-final FutureProvider<List<({String title, DateTime date, String description})>> specialDaysProvider =
+final FutureProvider<RamadanSummary> ramadanSummaryProvider =
+    FutureProvider<RamadanSummary>(
+      (Ref ref) => ref.watch(runtimeProvider).ramadan.summary(),
+    );
+
+final FutureProvider<List<({String title, DateTime date, String description})>>
+specialDaysProvider =
     FutureProvider<List<({String title, DateTime date, String description})>>(
-  (Ref ref) => Future<List<({String title, DateTime date, String description})>>.value(
-    ref.watch(runtimeProvider).ramadan.upcomingSpecialDays(),
-  ),
-);
+      (Ref ref) =>
+          Future<
+            List<({String title, DateTime date, String description})>
+          >.value(ref.watch(runtimeProvider).ramadan.upcomingSpecialDays()),
+    );
 
 // ------------------------------------------------------------- AI asistan
 
 /// Sohbet geçmişi listesi.
-final FutureProvider<List<AiConversation>> aiConversationsProvider = FutureProvider<List<AiConversation>>(
-  (Ref ref) => ref.watch(runtimeProvider).ai.conversations(),
-);
+final FutureProvider<List<AiConversation>> aiConversationsProvider =
+    FutureProvider<List<AiConversation>>(
+      (Ref ref) => ref.watch(runtimeProvider).ai.conversations(),
+    );
 
 /// Bugünkü AI kullanım sayısı.
 final FutureProvider<int> aiUsageProvider = FutureProvider<int>(
@@ -280,7 +346,9 @@ class ChatController extends AsyncNotifier<AiConversation?> {
   @override
   Future<AiConversation?> build() async {
     final runtime = ref.watch(runtimeProvider);
-    final List<AiConversation> existing = await runtime.ai.conversations(limit: 1);
+    final List<AiConversation> existing = await runtime.ai.conversations(
+      limit: 1,
+    );
     if (existing.isEmpty) return null;
     final AiConversation conversation = existing.first;
     final List<AiMessage> messages = await runtime.ai.messages(conversation.id);
@@ -333,7 +401,8 @@ class ChatController extends AsyncNotifier<AiConversation?> {
             userMessage,
             AiMessage(
               id: 'limit${DateTime.now().microsecondsSinceEpoch}',
-              text: 'Bugünkü ücretsiz soru hakkınız doldu. Premium ile sınırsız '
+              text:
+                  'Bugünkü ücretsiz soru hakkınız doldu. Premium ile sınırsız '
                   'soru sorabilir veya yarın tekrar deneyebilirsiniz.',
               fromUser: false,
               createdAt: DateTime.now(),
@@ -347,7 +416,9 @@ class ChatController extends AsyncNotifier<AiConversation?> {
     }
 
     try {
-      final List<AiMessage> history = conversation.messages.reversed.take(6).toList();
+      final List<AiMessage> history = conversation.messages.reversed
+          .take(6)
+          .toList();
       final AiAnswer answer = await runtime.ai.ask(text, history: history);
       await runtime.ai.incrementUsage();
 
@@ -381,7 +452,8 @@ class ChatController extends AsyncNotifier<AiConversation?> {
             userMessage,
             AiMessage(
               id: 'e${DateTime.now().microsecondsSinceEpoch}',
-              text: 'Şu anda yanıt üretemedim. İnternet bağlantınızı kontrol edip '
+              text:
+                  'Şu anda yanıt üretemedim. İnternet bağlantınızı kontrol edip '
                   'tekrar deneyin; çevrimdışıyken de temel bilgi tabanı çalışır.',
               fromUser: false,
               createdAt: DateTime.now(),
@@ -412,7 +484,13 @@ class ChatController extends AsyncNotifier<AiConversation?> {
       }
     }
     state = AsyncValue<AiConversation?>.data(
-      (found ?? AiConversation(id: id, title: 'Sohbet', messages: messages, updatedAt: DateTime.now()))
+      (found ??
+              AiConversation(
+                id: id,
+                title: 'Sohbet',
+                messages: messages,
+                updatedAt: DateTime.now(),
+              ))
           .copyWith(messages: messages),
     );
   }
@@ -421,12 +499,15 @@ class ChatController extends AsyncNotifier<AiConversation?> {
       question.length <= 38 ? question : '${question.substring(0, 35)}…';
 }
 
-final AsyncNotifierProvider<ChatController, AiConversation?> chatControllerProvider =
-    AsyncNotifierProvider<ChatController, AiConversation?>(ChatController.new);
+final AsyncNotifierProvider<ChatController, AiConversation?>
+chatControllerProvider = AsyncNotifierProvider<ChatController, AiConversation?>(
+  ChatController.new,
+);
 
 // ------------------------------------------------------------- Yardımcılar
 
 /// Konum izni durumunu sorgular (ekranlarda uyarı göstermek için).
-final FutureProvider<LocationStatus> locationStatusProvider = FutureProvider<LocationStatus>(
-  (Ref ref) => ref.watch(runtimeProvider).location.checkStatus(),
-);
+final FutureProvider<LocationStatus> locationStatusProvider =
+    FutureProvider<LocationStatus>(
+      (Ref ref) => ref.watch(runtimeProvider).location.checkStatus(),
+    );

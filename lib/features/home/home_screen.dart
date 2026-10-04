@@ -45,7 +45,12 @@ class HomeScreen extends ConsumerWidget {
             slivers: <Widget>[
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(AppSpacing.xl, AppSpacing.lg, AppSpacing.lg, 0),
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.xl,
+                    AppSpacing.lg,
+                    AppSpacing.lg,
+                    0,
+                  ),
                   child: Row(
                     children: <Widget>[
                       const BrandMark(size: 26),
@@ -59,20 +64,26 @@ class HomeScreen extends ConsumerWidget {
                                 now,
                                 afterMaghrib: times.maybeWhen(
                                   data: (TodayTimes value) =>
-                                      value.day.currentPrayer(now) == Prayer.aksam ||
-                                      value.day.currentPrayer(now) == Prayer.yatsi,
+                                      value.day.currentPrayer(now) ==
+                                          Prayer.aksam ||
+                                      value.day.currentPrayer(now) ==
+                                          Prayer.yatsi,
                                   orElse: () => false,
                                 ),
                               ),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge
-                                  ?.copyWith(fontWeight: FontWeight.w700, letterSpacing: -0.3),
+                              style: Theme.of(context).textTheme.titleLarge
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: -0.3,
+                                  ),
                             ),
                             Text(
                               '${hijri.longFormatted} · ${AppTime.formatDateLong(now)}',
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
                                   ),
                             ),
                           ],
@@ -104,7 +115,9 @@ class HomeScreen extends ConsumerWidget {
                         StatusBanner(
                           message: value.warning!,
                           action: TextButton(
-                            onPressed: () => ref.read(prayerTimesProvider.notifier).refresh(),
+                            onPressed: () => ref
+                                .read(prayerTimesProvider.notifier)
+                                .refresh(),
                             child: const Text('Yenile'),
                           ),
                         ),
@@ -114,9 +127,14 @@ class HomeScreen extends ConsumerWidget {
                         use24Hour: settings.use24Hour,
                         locationLabel: value.locationLabel,
                         sourceLabel: value.day.sourceLabel,
-                        onRefresh: () => ref.read(prayerTimesProvider.notifier).refresh(),
+                        onRefresh: () =>
+                            ref.read(prayerTimesProvider.notifier).refresh(),
                       ),
-                      _TodayTimesCard(times_: value, now: now, use24Hour: settings.use24Hour),
+                      _TodayTimesCard(
+                        times_: value,
+                        now: now,
+                        use24Hour: settings.use24Hour,
+                      ),
                       if (isRamadan) const _RamadanCard(),
                     ],
                   ),
@@ -139,7 +157,11 @@ class HomeScreen extends ConsumerWidget {
 
 /// Bugünün altı vakti.
 class _TodayTimesCard extends StatelessWidget {
-  const _TodayTimesCard({required this.times_, required this.now, required this.use24Hour});
+  const _TodayTimesCard({
+    required this.times_,
+    required this.now,
+    required this.use24Hour,
+  });
 
   final TodayTimes times_;
   final DateTime now;
@@ -156,7 +178,12 @@ class _TodayTimesCard extends StatelessWidget {
       children: <Widget>[
         SectionHeader(
           title: 'Bugünün vakitleri',
-          padding: const EdgeInsets.fromLTRB(AppSpacing.xl, AppSpacing.lg, AppSpacing.xl, AppSpacing.sm),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.xl,
+            AppSpacing.lg,
+            AppSpacing.xl,
+            AppSpacing.sm,
+          ),
           action: TextButton.icon(
             onPressed: () => context.go(AppRoutes.prayers),
             icon: const Icon(Icons.table_chart_outlined, size: 16),
@@ -174,10 +201,15 @@ class _TodayTimesCard extends StatelessWidget {
             trailing: Icon(
               Icons.notifications_active_outlined,
               size: 17,
-              color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+              color: Theme.of(context).colorScheme.onSurfaceVariant
+                  .withValues(alpha: 0.6),
             ),
           ),
-        PrayerSourceNote(day: day, use24Hour: use24Hour, warning: times_.warning),
+        PrayerSourceNote(
+          day: day,
+          use24Hour: use24Hour,
+          warning: times_.warning,
+        ),
       ],
     );
   }
@@ -190,15 +222,42 @@ class _QuickActions extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bool isRamadan = ref.watch(runtimeProvider).ramadan.isRamadan;
-    final List<({IconData icon, String label, String route, Color color})> actions =
-        <({IconData icon, String label, String route, Color color})>[
-      (icon: Icons.explore_outlined, label: 'Kıble', route: AppRoutes.qibla, color: AppColors.emerald500),
-      (icon: Icons.auto_awesome_outlined, label: 'AI Asistan', route: AppRoutes.ai, color: AppColors.gold500),
-      (icon: Icons.menu_book_outlined, label: 'Kur\'an', route: AppRoutes.quran, color: AppColors.info),
-      (icon: Icons.fingerprint_rounded, label: 'Tesbih', route: AppRoutes.zikir, color: AppColors.emerald600),
-      (icon: Icons.format_quote_outlined, label: 'Hadis', route: AppRoutes.hadith, color: AppColors.aksam),
+    final List<({IconData icon, String label, String route, Color color})>
+    actions = <({IconData icon, String label, String route, Color color})>[
       (
-        icon: isRamadan ? Icons.nightlight_outlined : Icons.star_outline_rounded,
+        icon: Icons.explore_outlined,
+        label: 'Kıble',
+        route: AppRoutes.qibla,
+        color: AppColors.emerald500,
+      ),
+      (
+        icon: Icons.auto_awesome_outlined,
+        label: 'AI Asistan',
+        route: AppRoutes.ai,
+        color: AppColors.gold500,
+      ),
+      (
+        icon: Icons.menu_book_outlined,
+        label: 'Kur\'an',
+        route: AppRoutes.quran,
+        color: AppColors.info,
+      ),
+      (
+        icon: Icons.fingerprint_rounded,
+        label: 'Tesbih',
+        route: AppRoutes.zikir,
+        color: AppColors.emerald600,
+      ),
+      (
+        icon: Icons.format_quote_outlined,
+        label: 'Hadis',
+        route: AppRoutes.hadith,
+        color: AppColors.aksam,
+      ),
+      (
+        icon: isRamadan
+            ? Icons.nightlight_outlined
+            : Icons.star_outline_rounded,
         label: isRamadan ? 'Ramazan' : 'Ramazan Modu',
         route: AppRoutes.ramadan,
         color: AppColors.imsak,
@@ -215,7 +274,9 @@ class _QuickActions extends ConsumerWidget {
         crossAxisSpacing: AppSpacing.md,
         childAspectRatio: 1.15,
         children: <Widget>[
-          for (final ({Color color, IconData icon, String label, String route}) action in actions)
+          for (final ({Color color, IconData icon, String label, String route})
+              action
+              in actions)
             _QuickActionTile(
               icon: action.icon,
               label: action.label,
@@ -267,10 +328,10 @@ class _QuickActionTile extends StatelessWidget {
               const Spacer(),
               Text(
                 label,
-                style: Theme.of(context)
-                    .textTheme
-                    .labelMedium
-                    ?.copyWith(fontWeight: FontWeight.w700, letterSpacing: -0.1),
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: -0.1,
+                ),
               ),
             ],
           ),
@@ -291,13 +352,20 @@ class _DailyVerseCard extends ConsumerWidget {
     if (verse == null) return const SizedBox.shrink();
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.xxl, AppSpacing.lg, 0),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.xxl,
+        AppSpacing.lg,
+        0,
+      ),
       child: Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+          color: Theme.of(context).colorScheme.surfaceContainerHighest
+              .withValues(alpha: 0.5),
           borderRadius: AppRadius.allLg,
           border: Border.all(
-            color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.6),
+            color: Theme.of(context).colorScheme.outlineVariant
+                .withValues(alpha: 0.6),
           ),
         ),
         padding: const EdgeInsets.all(AppSpacing.xl),
@@ -311,9 +379,7 @@ class _DailyVerseCard extends ConsumerWidget {
                 Expanded(
                   child: Text(
                     'Günün ayeti',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleSmall
+                    style: Theme.of(context).textTheme.titleSmall
                         ?.copyWith(fontWeight: FontWeight.w700),
                   ),
                 ),
@@ -321,7 +387,10 @@ class _DailyVerseCard extends ConsumerWidget {
                   tooltip: 'Paylaş',
                   visualDensity: VisualDensity.compact,
                   onPressed: () => SharePlus.instance.share(
-                    ShareParams(text: verse.shareText(), subject: 'Günün ayeti'),
+                    ShareParams(
+                      text: verse.shareText(),
+                      subject: 'Günün ayeti',
+                    ),
                   ),
                   icon: const Icon(Icons.ios_share_rounded, size: 18),
                 ),
@@ -337,7 +406,8 @@ class _DailyVerseCard extends ConsumerWidget {
             const SizedBox(height: AppSpacing.md),
             Text(
               verse.ayah.turkish,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.55),
+              style: Theme.of(context).textTheme.bodyLarge
+                  ?.copyWith(height: 1.55),
             ),
             const SizedBox(height: AppSpacing.md),
             Row(
@@ -346,12 +416,17 @@ class _DailyVerseCard extends ConsumerWidget {
                   child: Text(
                     '${verse.surah.nameTurkish} Suresi, ${verse.ayah.number}. ayet',
                     style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ),
                 TextButton(
-                  onPressed: () => context.push(AppRoutes.surah(verse.surah.number, ayah: verse.ayah.number)),
+                  onPressed: () => context.push(
+                    AppRoutes.surah(
+                      verse.surah.number,
+                      ayah: verse.ayah.number,
+                    ),
+                  ),
                   child: const Text('Sureyi oku'),
                 ),
               ],
@@ -375,13 +450,20 @@ class _DailyHadithCard extends ConsumerWidget {
     if (hadith == null) return const SizedBox.shrink();
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 0),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.lg,
+        AppSpacing.lg,
+        0,
+      ),
       child: Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+          color: Theme.of(context).colorScheme.surfaceContainerHighest
+              .withValues(alpha: 0.5),
           borderRadius: AppRadius.allLg,
           border: Border.all(
-            color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.6),
+            color: Theme.of(context).colorScheme.outlineVariant
+                .withValues(alpha: 0.6),
           ),
         ),
         padding: const EdgeInsets.all(AppSpacing.xl),
@@ -395,9 +477,7 @@ class _DailyHadithCard extends ConsumerWidget {
                 Expanded(
                   child: Text(
                     'Günün hadisi',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleSmall
+                    style: Theme.of(context).textTheme.titleSmall
                         ?.copyWith(fontWeight: FontWeight.w700),
                   ),
                 ),
@@ -405,7 +485,10 @@ class _DailyHadithCard extends ConsumerWidget {
                   tooltip: 'Paylaş',
                   visualDensity: VisualDensity.compact,
                   onPressed: () => SharePlus.instance.share(
-                    ShareParams(text: hadith.shareText(), subject: 'Günün hadisi'),
+                    ShareParams(
+                      text: hadith.shareText(),
+                      subject: 'Günün hadisi',
+                    ),
                   ),
                   icon: const Icon(Icons.ios_share_rounded, size: 18),
                 ),
@@ -416,11 +499,15 @@ class _DailyHadithCard extends ConsumerWidget {
               hadith.turkish,
               maxLines: 6,
               overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.55),
+              style: Theme.of(context).textTheme.bodyLarge
+                  ?.copyWith(height: 1.55),
             ),
             const SizedBox(height: AppSpacing.md),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 6),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: 6,
+              ),
               decoration: BoxDecoration(
                 color: AppColors.gold500.withValues(alpha: 0.14),
                 borderRadius: BorderRadius.circular(999),
@@ -428,16 +515,17 @@ class _DailyHadithCard extends ConsumerWidget {
               child: Text(
                 hadith.reference,
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: Theme.of(context).colorScheme.onSecondaryContainer,
-                    ),
+                  fontWeight: FontWeight.w700,
+                  color: Theme.of(context).colorScheme.onSecondaryContainer,
+                ),
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
-                onPressed: () => context.push(AppRoutes.hadithDetail(hadith.id)),
+                onPressed: () =>
+                    context.push(AppRoutes.hadithDetail(hadith.id)),
                 child: const Text('Hadisi aç'),
               ),
             ),
@@ -454,12 +542,19 @@ class _ZikirSummaryCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<ZikirDailySummary> summary = ref.watch(zikirDailySummaryProvider);
+    final AsyncValue<ZikirDailySummary> summary = ref.watch(
+      zikirDailySummaryProvider,
+    );
     final ZikirDailySummary? value = summary.value;
     if (value == null) return const SizedBox.shrink();
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 0),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.lg,
+        AppSpacing.lg,
+        0,
+      ),
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -469,7 +564,9 @@ class _ZikirSummaryCard extends ConsumerWidget {
             ],
           ),
           borderRadius: AppRadius.allLg,
-          border: Border.all(color: AppColors.emerald500.withValues(alpha: 0.28)),
+          border: Border.all(
+            color: AppColors.emerald500.withValues(alpha: 0.28),
+          ),
         ),
         padding: const EdgeInsets.all(AppSpacing.xl),
         child: Column(
@@ -477,19 +574,24 @@ class _ZikirSummaryCard extends ConsumerWidget {
           children: <Widget>[
             Row(
               children: <Widget>[
-                const Icon(Icons.fingerprint_rounded, size: 18, color: AppColors.emerald500),
+                const Icon(
+                  Icons.fingerprint_rounded,
+                  size: 18,
+                  color: AppColors.emerald500,
+                ),
                 const SizedBox(width: AppSpacing.sm),
                 Text(
                   'Günlük zikir',
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+                  style: Theme.of(context).textTheme.titleSmall
+                      ?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 const Spacer(),
                 Text(
                   '${value.totalCount} / ${value.target}',
                   style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.emerald500,
-                      ),
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.emerald500,
+                  ),
                 ),
               ],
             ),
@@ -499,7 +601,9 @@ class _ZikirSummaryCard extends ConsumerWidget {
               child: LinearProgressIndicator(
                 value: value.progress,
                 minHeight: 6,
-                backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                backgroundColor: Theme.of(context)
+                    .colorScheme
+                    .surfaceContainerHighest,
               ),
             ),
             const SizedBox(height: AppSpacing.md),
@@ -532,8 +636,15 @@ class _RamadanCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<({PrayerTimesDay today, PrayerTimesDay tomorrow, DateTime imsak, DateTime iftar})>
-        data = ref.watch(ramadanTodayProvider);
+    final AsyncValue<
+      ({
+        PrayerTimesDay today,
+        PrayerTimesDay tomorrow,
+        DateTime imsak,
+        DateTime iftar,
+      })
+    >
+    data = ref.watch(ramadanTodayProvider);
     final DateTime now = ref.watch(clockProvider).value ?? DateTime.now();
 
     return data.maybeWhen(
@@ -544,7 +655,12 @@ class _RamadanCard extends ConsumerWidget {
         final Duration remaining = target.difference(now);
 
         return Padding(
-          padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 0),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.lg,
+            AppSpacing.lg,
+            AppSpacing.lg,
+            0,
+          ),
           child: Material(
             color: AppColors.aksam.withValues(alpha: 0.14),
             borderRadius: AppRadius.allLg,
@@ -561,7 +677,11 @@ class _RamadanCard extends ConsumerWidget {
                         color: AppColors.aksam.withValues(alpha: 0.2),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.nightlight_round, color: AppColors.aksam, size: 20),
+                      child: const Icon(
+                        Icons.nightlight_round,
+                        color: AppColors.aksam,
+                        size: 20,
+                      ),
                     ),
                     const SizedBox(width: AppSpacing.lg),
                     Expanded(
@@ -570,16 +690,17 @@ class _RamadanCard extends ConsumerWidget {
                         children: <Widget>[
                           Text(
                             label,
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelMedium
+                            style: Theme.of(context).textTheme.labelMedium
                                 ?.copyWith(fontWeight: FontWeight.w700),
                           ),
                           Text(
                             '${AppTime.formatClock(remaining)} · ${AppTime.formatTime(target, use24Hour: true)}',
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
                                   fontWeight: FontWeight.w700,
-                                  fontFeatures: const <FontFeature>[FontFeature.tabularFigures()],
+                                  fontFeatures: const <FontFeature>[
+                                    FontFeature.tabularFigures(),
+                                  ],
                                 ),
                           ),
                         ],
@@ -597,7 +718,15 @@ class _RamadanCard extends ConsumerWidget {
     );
   }
 
-  DateTime _nextDayImsak(({PrayerTimesDay today, PrayerTimesDay tomorrow, DateTime imsak, DateTime iftar}) value) {
+  DateTime _nextDayImsak(
+    ({
+      PrayerTimesDay today,
+      PrayerTimesDay tomorrow,
+      DateTime imsak,
+      DateTime iftar,
+    })
+    value,
+  ) {
     final DateTime? tomorrowImsak = value.tomorrow.timeOf(Prayer.imsak);
     if (tomorrowImsak != null) return tomorrowImsak;
     return value.imsak.add(const Duration(days: 1));
@@ -610,13 +739,22 @@ class _KadirNightHint extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final int ramadanDay = ref.watch(runtimeProvider).ramadan.ramadanDayNumber();
+    final int ramadanDay = ref
+        .watch(runtimeProvider)
+        .ramadan
+        .ramadanDayNumber();
     if (ramadanDay < 25) return const SizedBox.shrink();
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 0),
+    return const Padding(
+      padding: EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.lg,
+        AppSpacing.lg,
+        0,
+      ),
       child: StatusBanner(
         icon: Icons.auto_awesome_rounded,
-        message: 'Kadir gecesi Ramazanın son on gününde aranır. Bu geceleri dua ve '
+        message:
+            'Kadir gecesi Ramazanın son on gününde aranır. Bu geceleri dua ve '
             'Kur\'an ile değerlendirmek tavsiye edilir.',
       ),
     );
@@ -632,7 +770,7 @@ class SupportRow extends StatelessWidget {
     return ListTile(
       leading: const Icon(Icons.help_outline_rounded),
       title: const Text('Destek ve geri bildirim'),
-      subtitle: Text(AppConstants.supportEmail),
+      subtitle: const Text(AppConstants.supportEmail),
       trailing: const Icon(Icons.chevron_right_rounded),
       onTap: () => context.push(AppRoutes.about),
     );

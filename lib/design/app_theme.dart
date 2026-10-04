@@ -23,30 +23,30 @@ abstract final class AppTheme {
   static const String arabicFontFamily = 'Amiri';
 
   static ThemeData light() => _build(
-        brightness: Brightness.light,
-        background: AppColors.lightBackground,
-        surface: AppColors.lightSurface,
-        surfaceVariant: AppColors.lightSurfaceVariant,
-        outline: AppColors.lightOutline,
-        onSurface: AppColors.ink,
-        onSurfaceVariant: AppColors.inkSoft,
-        primary: AppColors.emerald600,
-        onPrimary: Colors.white,
-        secondary: AppColors.gold500,
-      );
+    brightness: Brightness.light,
+    background: AppColors.lightBackground,
+    surface: AppColors.lightSurface,
+    surfaceVariant: AppColors.lightSurfaceVariant,
+    outline: AppColors.lightOutline,
+    onSurface: AppColors.ink,
+    onSurfaceVariant: AppColors.inkSoft,
+    primary: AppColors.emerald600,
+    onPrimary: Colors.white,
+    secondary: AppColors.gold500,
+  );
 
   static ThemeData dark() => _build(
-        brightness: Brightness.dark,
-        background: AppColors.darkBackground,
-        surface: AppColors.darkSurface,
-        surfaceVariant: AppColors.darkSurfaceVariant,
-        outline: AppColors.darkOutline,
-        onSurface: AppColors.cream,
-        onSurfaceVariant: const Color(0xFFA9BDB6),
-        primary: AppColors.emerald300,
-        onPrimary: AppColors.emerald900,
-        secondary: AppColors.gold400,
-      );
+    brightness: Brightness.dark,
+    background: AppColors.darkBackground,
+    surface: AppColors.darkSurface,
+    surfaceVariant: AppColors.darkSurfaceVariant,
+    outline: AppColors.darkOutline,
+    onSurface: AppColors.cream,
+    onSurfaceVariant: const Color(0xFFA9BDB6),
+    primary: AppColors.emerald300,
+    onPrimary: AppColors.emerald900,
+    secondary: AppColors.gold400,
+  );
 
   static ThemeData amoled() {
     final ThemeData base = dark();
@@ -58,27 +58,31 @@ abstract final class AppTheme {
         outlineVariant: AppColors.amoledOutline,
       ),
       cardTheme: base.cardTheme.copyWith(color: AppColors.amoledSurface),
-      appBarTheme: base.appBarTheme
-          .copyWith(backgroundColor: AppColors.amoledBackground),
-      bottomNavigationBarTheme: base.bottomNavigationBarTheme
-          .copyWith(backgroundColor: AppColors.amoledSurface),
+      appBarTheme: base.appBarTheme.copyWith(
+        backgroundColor: AppColors.amoledBackground,
+      ),
+      bottomNavigationBarTheme: base.bottomNavigationBarTheme.copyWith(
+        backgroundColor: AppColors.amoledSurface,
+      ),
       navigationBarTheme: base.navigationBarTheme.copyWith(
         backgroundColor: AppColors.amoledSurface,
         surfaceTintColor: Colors.transparent,
       ),
-      dialogTheme:
-          base.dialogTheme.copyWith(backgroundColor: AppColors.amoledSurface),
-      bottomSheetTheme: base.bottomSheetTheme
-          .copyWith(backgroundColor: AppColors.amoledSurface),
+      dialogTheme: base.dialogTheme.copyWith(
+        backgroundColor: AppColors.amoledSurface,
+      ),
+      bottomSheetTheme: base.bottomSheetTheme.copyWith(
+        backgroundColor: AppColors.amoledSurface,
+      ),
     );
   }
 
   static ThemeData resolve(AppThemeMode mode) => switch (mode) {
-        AppThemeMode.light => light(),
-        AppThemeMode.dark => dark(),
-        AppThemeMode.amoled => amoled(),
-        AppThemeMode.system => light(),
-      };
+    AppThemeMode.light => light(),
+    AppThemeMode.dark => dark(),
+    AppThemeMode.amoled => amoled(),
+    AppThemeMode.system => light(),
+  };
 
   static ThemeData _build({
     required Brightness brightness,
@@ -102,8 +106,9 @@ abstract final class AppTheme {
       secondary: secondary,
       onSecondary: isDark ? AppColors.emerald900 : Colors.white,
       secondaryContainer: isDark ? const Color(0xFF4A3B17) : AppColors.gold200,
-      onSecondaryContainer:
-          isDark ? AppColors.gold200 : const Color(0xFF4B3810),
+      onSecondaryContainer: isDark
+          ? AppColors.gold200
+          : const Color(0xFF4B3810),
       tertiary: AppColors.emerald500,
       onTertiary: Colors.white,
       error: AppColors.danger,
@@ -149,8 +154,9 @@ abstract final class AppTheme {
           fontWeight: FontWeight.w700,
           letterSpacing: -0.2,
         ),
-        systemOverlayStyle:
-            isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+        systemOverlayStyle: isDark
+            ? SystemUiOverlayStyle.light
+            : SystemUiOverlayStyle.dark,
       ),
       cardTheme: CardThemeData(
         color: surface,
@@ -175,8 +181,9 @@ abstract final class AppTheme {
           minimumSize: const Size(0, 52),
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
           shape: const RoundedRectangleBorder(borderRadius: AppRadius.allMd),
-          textStyle:
-              textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+          textStyle: textTheme.labelLarge?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
@@ -185,14 +192,16 @@ abstract final class AppTheme {
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
           side: BorderSide(color: outline),
           shape: const RoundedRectangleBorder(borderRadius: AppRadius.allMd),
-          textStyle:
-              textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
+          textStyle: textTheme.labelLarge?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          textStyle:
-              textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
+          textStyle: textTheme.labelLarge?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
       chipTheme: ChipThemeData(
@@ -206,9 +215,12 @@ abstract final class AppTheme {
         filled: true,
         fillColor: surfaceVariant,
         contentPadding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.lg, vertical: AppSpacing.lg),
-        hintStyle: textTheme.bodyMedium
-            ?.copyWith(color: onSurfaceVariant.withValues(alpha: 0.7)),
+          horizontal: AppSpacing.lg,
+          vertical: AppSpacing.lg,
+        ),
+        hintStyle: textTheme.bodyMedium?.copyWith(
+          color: onSurfaceVariant.withValues(alpha: 0.7),
+        ),
         border: const OutlineInputBorder(
           borderRadius: AppRadius.allMd,
           borderSide: BorderSide.none,
@@ -270,8 +282,9 @@ abstract final class AppTheme {
         backgroundColor: surface,
         surfaceTintColor: Colors.transparent,
         shape: const RoundedRectangleBorder(borderRadius: AppRadius.allLg),
-        titleTextStyle:
-            textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+        titleTextStyle: textTheme.titleLarge?.copyWith(
+          fontWeight: FontWeight.w700,
+        ),
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
@@ -327,67 +340,87 @@ abstract final class AppTheme {
     final Color soft = scheme.onSurfaceVariant;
     return TextTheme(
       displayLarge: TextStyle(
-          fontSize: 52,
-          fontWeight: FontWeight.w800,
-          letterSpacing: -1.5,
-          color: strong,
-          height: 1.05),
+        fontSize: 52,
+        fontWeight: FontWeight.w800,
+        letterSpacing: -1.5,
+        color: strong,
+        height: 1.05,
+      ),
       displayMedium: TextStyle(
-          fontSize: 42,
-          fontWeight: FontWeight.w800,
-          letterSpacing: -1.2,
-          color: strong,
-          height: 1.08),
+        fontSize: 42,
+        fontWeight: FontWeight.w800,
+        letterSpacing: -1.2,
+        color: strong,
+        height: 1.08,
+      ),
       displaySmall: TextStyle(
-          fontSize: 34,
-          fontWeight: FontWeight.w800,
-          letterSpacing: -0.8,
-          color: strong,
-          height: 1.12),
+        fontSize: 34,
+        fontWeight: FontWeight.w800,
+        letterSpacing: -0.8,
+        color: strong,
+        height: 1.12,
+      ),
       headlineMedium: TextStyle(
-          fontSize: 28,
-          fontWeight: FontWeight.w700,
-          letterSpacing: -0.5,
-          color: strong),
+        fontSize: 28,
+        fontWeight: FontWeight.w700,
+        letterSpacing: -0.5,
+        color: strong,
+      ),
       headlineSmall: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.w700,
-          letterSpacing: -0.3,
-          color: strong),
+        fontSize: 24,
+        fontWeight: FontWeight.w700,
+        letterSpacing: -0.3,
+        color: strong,
+      ),
       titleLarge: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.w700,
-          letterSpacing: -0.2,
-          color: strong),
-      titleMedium:
-          TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: strong),
-      titleSmall:
-          TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: strong),
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+        letterSpacing: -0.2,
+        color: strong,
+      ),
+      titleMedium: TextStyle(
+        fontSize: 17,
+        fontWeight: FontWeight.w600,
+        color: strong,
+      ),
+      titleSmall: TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w600,
+        color: strong,
+      ),
       bodyLarge: TextStyle(fontSize: 17, height: 1.5, color: strong),
       bodyMedium: TextStyle(fontSize: 15, height: 1.5, color: strong),
       bodySmall: TextStyle(fontSize: 13, height: 1.45, color: soft),
-      labelLarge:
-          TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: strong),
-      labelMedium:
-          TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: soft),
+      labelLarge: TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w600,
+        color: strong,
+      ),
+      labelMedium: TextStyle(
+        fontSize: 13,
+        fontWeight: FontWeight.w600,
+        color: soft,
+      ),
       labelSmall: TextStyle(
-          fontSize: 11.5,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.1,
-          color: soft),
+        fontSize: 11.5,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 0.1,
+        color: soft,
+      ),
     );
   }
 
   /// Kur'an metni için Arapça yazı stili.
-  static TextStyle arabic(TextTheme theme,
-          {double size = 26,
-          Color? color,
-          FontWeight weight = FontWeight.w400}) =>
-      TextStyle(
-        fontFamily: arabicFontFamily,
-        fontSize: size,
-        height: 2.05,
-        fontWeight: weight,
-        color: color ?? theme.bodyLarge?.color,
-      );
+  static TextStyle arabic(
+    TextTheme theme, {
+    double size = 26,
+    Color? color,
+    FontWeight weight = FontWeight.w400,
+  }) => TextStyle(
+    fontFamily: arabicFontFamily,
+    fontSize: size,
+    height: 2.05,
+    fontWeight: weight,
+    color: color ?? theme.bodyLarge?.color,
+  );
 }
