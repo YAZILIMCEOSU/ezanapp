@@ -1,4 +1,4 @@
-# CI raporu (2026-10-04 13:19 UTC)
+# CI raporu (2026-10-04 13:24 UTC)
 
 | adım | sonuç |
 |---|---|
@@ -94,125 +94,156 @@ Upgrading analysis_options.yaml to exclude build and platform directories.
 
 ## fmt
 ```
-Changed lib/core/services/connectivity_service.dart
-Changed lib/core/services/location_service.dart
-Changed lib/core/services/notification_service.dart
-Changed lib/core/services/preferences_service.dart
-Changed lib/core/utils/app_time.dart
-Changed lib/core/utils/geo.dart
-Changed lib/core/utils/logger.dart
-Changed lib/core/utils/text_normalizer.dart
-Changed lib/data/ai/ai_service.dart
-Changed lib/data/ai/knowledge_base.dart
-Changed lib/data/hijri/hijri_calendar.dart
-Changed lib/data/models/ai_models.dart
-Changed lib/data/models/app_settings.dart
-Changed lib/data/models/city.dart
-Changed lib/data/models/hadith_models.dart
-Changed lib/data/models/hijri_date.dart
-Changed lib/data/models/ilahi_models.dart
-Changed lib/data/models/prayer.dart
-Changed lib/data/models/prayer_times_day.dart
-Changed lib/data/models/quran_models.dart
-Changed lib/data/models/ramadan_models.dart
-Changed lib/data/models/zikir_models.dart
-Changed lib/data/prayer/aladhan_api_source.dart
-Changed lib/data/prayer/diyanet_api_source.dart
-Changed lib/data/prayer/local_calculation_source.dart
-Changed lib/data/prayer/prayer_calculator.dart
-Changed lib/data/prayer/prayer_times_cache.dart
-Changed lib/data/prayer/prayer_times_repository.dart
-Changed lib/data/prayer/prayer_times_source.dart
-Changed lib/data/repositories/ai_repository.dart
-Changed lib/data/repositories/daily_content_repository.dart
-Changed lib/data/repositories/hadith_repository.dart
-Changed lib/data/repositories/ilahi_repository.dart
-Changed lib/data/repositories/quran_repository.dart
-Changed lib/data/repositories/ramadan_repository.dart
-Changed lib/data/repositories/zikir_repository.dart
-Changed lib/design/app_colors.dart
-Changed lib/design/app_spacing.dart
-Changed lib/design/app_theme.dart
-Formatted 47 files (44 changed) in 0.14 seconds.
+== dart fix --apply ==
+  prefer_const_declarations - 1 fix
+
+lib/data/models/app_settings.dart
+  directives_ordering - 1 fix
+
+lib/data/models/hadith_models.dart
+  unnecessary_brace_in_string_interps - 1 fix
+
+lib/data/prayer/aladhan_api_source.dart
+  require_trailing_commas - 2 fixes
+
+lib/data/prayer/diyanet_api_source.dart
+  require_trailing_commas - 1 fix
+
+lib/data/prayer/prayer_calculator.dart
+  prefer_final_locals - 2 fixes
+
+lib/data/prayer/prayer_times_repository.dart
+  prefer_null_aware_operators - 1 fix
+
+lib/data/repositories/hadith_repository.dart
+  require_trailing_commas - 1 fix
+
+lib/data/repositories/ilahi_repository.dart
+  require_trailing_commas - 2 fixes
+
+lib/data/repositories/quran_repository.dart
+  prefer_const_constructors - 1 fix
+
+lib/data/repositories/ramadan_repository.dart
+  require_trailing_commas - 2 fixes
+
+lib/data/repositories/zikir_repository.dart
+  prefer_const_constructors - 1 fix
+  require_trailing_commas - 1 fix
+
+lib/state/providers.dart
+  prefer_null_aware_operators - 1 fix
+
+27 fixes made in 16 files.
+== dart format ==
+Formatted lib/data/prayer/aladhan_api_source.dart
+Formatted lib/data/prayer/diyanet_api_source.dart
+Formatted lib/data/prayer/local_calculation_source.dart
+Formatted lib/data/prayer/prayer_calculator.dart
+Formatted lib/data/prayer/prayer_times_cache.dart
+Formatted lib/data/prayer/prayer_times_repository.dart
+Formatted lib/data/prayer/prayer_times_source.dart
+Formatted lib/data/repositories/ai_repository.dart
+Formatted lib/data/repositories/city_repository.dart
+Formatted lib/data/repositories/daily_content_repository.dart
+Formatted lib/data/repositories/hadith_repository.dart
+Formatted lib/data/repositories/ilahi_repository.dart
+Formatted lib/data/repositories/quran_repository.dart
+Formatted lib/data/repositories/ramadan_repository.dart
+Formatted lib/data/repositories/zikir_repository.dart
+Formatted lib/design/app_colors.dart
+Formatted lib/design/app_spacing.dart
+Formatted lib/design/app_theme.dart
+Formatted lib/state/providers.dart
+Formatted 52 files (49 changed) in 0.18 seconds.
 ```
 
 ## analyze
 ```
-Analyzing ezanapp...                                            
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ai_repository.dart:78:75 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ai_repository.dart:80:62 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ai_repository.dart:108:61 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ai_repository.dart:108:62 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ai_repository.dart:108:63 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ai_repository.dart:135:71 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ai_repository.dart:188:57 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/city_repository.dart:30:69 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/city_repository.dart:137:48 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/city_repository.dart:185:33 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/city_repository.dart:275:61 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/daily_content_repository.dart:74:39 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/daily_content_repository.dart:105:54 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/hadith_repository.dart:47:57 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/hadith_repository.dart:51:78 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/hadith_repository.dart:56:47 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/hadith_repository.dart:151:59 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ilahi_repository.dart:85:61 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ilahi_repository.dart:123:61 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ilahi_repository.dart:150:64 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ilahi_repository.dart:150:65 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ilahi_repository.dart:164:50 • require_trailing_commas
+   info • Statements in an if should be enclosed in a block. Try wrapping the statement in a block • lib/data/repositories/ilahi_repository.dart:166:7 • curly_braces_in_flow_control_structures
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ilahi_repository.dart:176:70 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ilahi_repository.dart:203:47 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ilahi_repository.dart:223:61 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ilahi_repository.dart:277:47 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ilahi_repository.dart:313:63 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ilahi_repository.dart:410:67 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/quran_repository.dart:35:54 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/quran_repository.dart:89:47 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/quran_repository.dart:125:65 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/quran_repository.dart:125:66 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/quran_repository.dart:282:31 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/quran_repository.dart:299:73 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ramadan_repository.dart:150:29 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ramadan_repository.dart:193:52 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ramadan_repository.dart:246:21 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/zikir_repository.dart:32:56 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/zikir_repository.dart:36:47 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/zikir_repository.dart:156:7 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/zikir_repository.dart:212:70 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/design/app_colors.dart:64:3 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/design/app_colors.dart:68:3 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/design/app_colors.dart:72:3 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/design/app_theme.dart:209:63 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/design/app_theme.dart:334:23 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/design/app_theme.dart:340:23 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/design/app_theme.dart:346:23 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/design/app_theme.dart:351:24 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/design/app_theme.dart:356:24 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/design/app_theme.dart:361:24 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/design/app_theme.dart:377:22 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/design/app_theme.dart:385:46 • require_trailing_commas
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<bool>'. Try importing the library that defines 'valueOrNull', correcting the name to the name of an existing getter, or defining a getter or field named 'valueOrNull' • lib/state/providers.dart:37:39 • undefined_getter
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:48:43 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:64:79 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:89:41 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:106:41 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:110:41 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:130:41 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:134:41 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:138:41 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:142:41 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:180:32 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:274:72 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:280:51 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:353:19 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:430:32 • require_trailing_commas
+  error • Arguments of a constant creation must be constant expressions. Try making the argument a valid constant, or use 'new' to call the constructor • lib/state/providers.dart:434:17 • const_with_non_constant_argument
+  error • The getter 'tiles_rounded' isn't defined for the type 'Icons'. Try importing the library that defines 'tiles_rounded', correcting the name to the name of an existing getter, or defining a getter or field named 'tiles_rounded' • lib/state/providers.dart:434:23 • undefined_getter
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:453:38 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:488:32 • require_trailing_commas
+  error • Undefined class 'AutoDisposeStreamProvider'. Try changing the name to the name of an existing class, or creating a class with the name 'AutoDisposeStreamProvider' • lib/state/providers.dart:491:7 • undefined_class
+   info • Type could be non-nullable. Try changing the type to be non-nullable • lib/state/providers.dart:491:43 • unnecessary_nullable_for_final_variable_declarations
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:494:56 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:621:79 • require_trailing_commas
+   info • Missing a required trailing comma. Try adding a trailing comma • lib/state/providers.dart:634:67 • require_trailing_commas
 
-warning • Support for legacy plugins is deprecated, and will be removed in an upcoming version of Dart. See https://dart.dev/tools/analyzer-plugins for documentation regarding the new analyzer plugin system • analysis_options.yaml:14:3 • analysis_options_deprecated_plugins
-  error • The named parameter 'stackTrace' isn't defined. Try correcting the name to an existing named parameter's name, or defining a named parameter with the name 'stackTrace' • lib/core/audio/audio_service.dart:72:69 • undefined_named_parameter
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/core/audio/audio_service.dart:115:8 • require_trailing_commas
-warning • Unused import: 'package:flutter/foundation.dart'. Try removing the import directive • lib/core/services/notification_service.dart:5:8 • unused_import
-   info • The type of the right operand ('int') isn't a subtype or a supertype of the left operand ('Duration'). Try changing one or both of the operands • lib/core/services/notification_service.dart:148:45 • unrelated_type_equality_checks
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/core/services/notification_service.dart:179:76 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/core/services/notification_service.dart:181:63 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/core/services/notification_service.dart:183:41 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/core/services/notification_service.dart:185:65 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/core/services/notification_service.dart:187:82 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/core/services/notification_service.dart:189:59 • require_trailing_commas
-  error • The name 'PlatformException' isn't a type and can't be used in an on-catch clause. Try correcting the name to match an existing class • lib/core/services/notification_service.dart:503:10 • non_type_in_catch_clause
-   info • Local variables should be final. Try making the variable final • lib/core/services/notification_service.dart:590:5 • prefer_final_locals
-   info • Use 'const' for final variables initialized to a constant value. Try replacing 'final' with 'const' • lib/core/utils/geo.dart:28:5 • prefer_const_declarations
-  error • Undefined name 'AppLogger'. Try correcting the name to one that is defined, or defining the name • lib/data/ai/ai_service.dart:156:9 • undefined_identifier
-  error • Undefined name 'AppLogger'. Try correcting the name to one that is defined, or defining the name • lib/data/ai/ai_service.dart:157:9 • undefined_identifier
-   info • Use 'const' for final variables initialized to a constant value. Try replacing 'final' with 'const' • lib/data/ai/ai_service.dart:242:5 • prefer_const_declarations
-  error • A value of type 'List<double>' can't be assigned to a variable of type 'List<int>'. Try changing the type of the variable, or casting the right-hand type to 'List<int>' • lib/data/hijri/hijri_calendar.dart:37:9 • invalid_assignment
-  error • The method 'charCodeAt' isn't defined for the type 'String'. Try correcting the name to the name of an existing method, or defining a method named 'charCodeAt' • lib/data/hijri/hijri_calendar.dart:37:56 • undefined_method
-warning • Unused import: '../../core/constants/app_constants.dart'. Try removing the import directive • lib/data/models/app_settings.dart:6:8 • unused_import
-warning • The value of the field '_asrOverridable' isn't used. Try removing the field, or using it • lib/data/models/app_settings.dart:448:28 • unused_field
-   info • Unnecessary braces in a string interpolation. Try removing the braces • lib/data/models/hadith_models.dart:61:40 • unnecessary_brace_in_string_interps
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/prayer/aladhan_api_source.dart:57:52 • require_trailing_commas
-  error • The element type 'DateTime?' can't be assigned to the map value type 'DateTime' • lib/data/prayer/aladhan_api_source.dart:82:23 • map_value_type_not_assignable
-  error • The element type 'DateTime?' can't be assigned to the map value type 'DateTime' • lib/data/prayer/aladhan_api_source.dart:83:23 • map_value_type_not_assignable
-  error • The element type 'DateTime?' can't be assigned to the map value type 'DateTime' • lib/data/prayer/aladhan_api_source.dart:84:22 • map_value_type_not_assignable
-  error • The element type 'DateTime?' can't be assigned to the map value type 'DateTime' • lib/data/prayer/aladhan_api_source.dart:85:24 • map_value_type_not_assignable
-  error • The element type 'DateTime?' can't be assigned to the map value type 'DateTime' • lib/data/prayer/aladhan_api_source.dart:86:23 • map_value_type_not_assignable
-  error • The element type 'DateTime?' can't be assigned to the map value type 'DateTime' • lib/data/prayer/aladhan_api_source.dart:87:23 • map_value_type_not_assignable
-warning • The receiver can't be 'null' because of short-circuiting, so the null-aware operator '?[' can't be used. Try replacing the operator '?[' with '[' • lib/data/prayer/aladhan_api_source.dart:99:81 • invalid_null_aware_operator
-warning • The receiver can't be 'null' because of short-circuiting, so the null-aware operator '?[' can't be used. Try replacing the operator '?[' with '[' • lib/data/prayer/aladhan_api_source.dart:99:141 • invalid_null_aware_operator
-warning • The receiver can't be 'null' because of short-circuiting, so the null-aware operator '?[' can't be used. Try replacing the operator '?[' with '[' • lib/data/prayer/aladhan_api_source.dart:145:63 • invalid_null_aware_operator
-  error • The element type 'DateTime?' can't be assigned to the map value type 'DateTime' • lib/data/prayer/aladhan_api_source.dart:163:25 • map_value_type_not_assignable
-  error • The element type 'DateTime?' can't be assigned to the map value type 'DateTime' • lib/data/prayer/aladhan_api_source.dart:164:25 • map_value_type_not_assignable
-  error • The element type 'DateTime?' can't be assigned to the map value type 'DateTime' • lib/data/prayer/aladhan_api_source.dart:165:24 • map_value_type_not_assignable
-  error • The element type 'DateTime?' can't be assigned to the map value type 'DateTime' • lib/data/prayer/aladhan_api_source.dart:166:26 • map_value_type_not_assignable
-  error • The element type 'DateTime?' can't be assigned to the map value type 'DateTime' • lib/data/prayer/aladhan_api_source.dart:167:25 • map_value_type_not_assignable
-  error • The element type 'DateTime?' can't be assigned to the map value type 'DateTime' • lib/data/prayer/aladhan_api_source.dart:168:25 • map_value_type_not_assignable
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/prayer/aladhan_api_source.dart:176:12 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/prayer/diyanet_api_source.dart:78:80 • require_trailing_commas
-   info • Local variables should be final. Try making the variable final • lib/data/prayer/prayer_calculator.dart:344:5 • prefer_final_locals
-   info • Local variables should be final. Try making the variable final • lib/data/prayer/prayer_calculator.dart:345:5 • prefer_final_locals
-  error • The argument type 'int' can't be assigned to the parameter type 'double'.  • lib/data/prayer/prayer_calculator.dart:396:27 • argument_type_not_assignable
-  error • The argument type 'int' can't be assigned to the parameter type 'double'.  • lib/data/prayer/prayer_calculator.dart:397:27 • argument_type_not_assignable
-  error • The argument type 'int' can't be assigned to the parameter type 'double'.  • lib/data/prayer/prayer_calculator.dart:398:26 • argument_type_not_assignable
-  error • The argument type 'int' can't be assigned to the parameter type 'double'.  • lib/data/prayer/prayer_calculator.dart:399:29 • argument_type_not_assignable
-  error • The argument type 'int' can't be assigned to the parameter type 'double'.  • lib/data/prayer/prayer_calculator.dart:400:27 • argument_type_not_assignable
-  error • The argument type 'int' can't be assigned to the parameter type 'double'.  • lib/data/prayer/prayer_calculator.dart:401:27 • argument_type_not_assignable
-warning • Unused import: '../../core/services/location_service.dart'. Try removing the import directive • lib/data/prayer/prayer_times_repository.dart:6:8 • unused_import
-  error • The argument type 'String' can't be assigned to the parameter type 'CalculationMethod?'.  • lib/data/prayer/prayer_times_repository.dart:182:76 • argument_type_not_assignable
-   info • Use the null-aware operator '?.' rather than an explicit 'null' comparison. Try using '?.' • lib/data/prayer/prayer_times_repository.dart:201:18 • prefer_null_aware_operators
-  error • Undefined name 'AppLogger'. Try correcting the name to one that is defined, or defining the name • lib/data/repositories/ai_repository.dart:104:9 • undefined_identifier
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/hadith_repository.dart:108:56 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ilahi_repository.dart:233:8 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ilahi_repository.dart:351:8 • require_trailing_commas
-   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/data/repositories/quran_repository.dart:51:14 • prefer_const_constructors
-  error • Target of URI doesn't exist: 'prayer_times_repository.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/data/repositories/ramadan_repository.dart:9:8 • uri_does_not_exist
-  error • Undefined class 'PrayerTimesRepository'. Try changing the name to the name of an existing class, or creating a class with the name 'PrayerTimesRepository' • lib/data/repositories/ramadan_repository.dart:16:9 • undefined_class
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ramadan_repository.dart:243:66 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/ramadan_repository.dart:244:33 • require_trailing_commas
-   info • Missing a required trailing comma. Try adding a trailing comma • lib/data/repositories/zikir_repository.dart:73:14 • require_trailing_commas
-   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/data/repositories/zikir_repository.dart:106:34 • prefer_const_constructors
-  error • Invalid constant value • lib/design/app_theme.dart:134:31 • invalid_constant
-  error • The method 'CupertinoPageTransitionsBuilder' isn't defined for the type 'AppTheme'. Try correcting the name to the name of an existing method, or defining a method named 'CupertinoPageTransitionsBuilder' • lib/design/app_theme.dart:134:31 • undefined_method
-  error • The values in a const map literal must be constant. Try removing the keyword 'const' from the map literal • lib/design/app_theme.dart:134:31 • non_constant_map_value
-warning • The asset directory 'assets/images/' doesn't exist. Try creating the directory or fixing the path to the directory • pubspec.yaml:81:7 • asset_directory_does_not_exist
-
-66 issues found. (ran in 9.4s)
+206 issues found. (ran in 4.9s)
 ```
 
 ## test
 ```
-Error: unable to find directory entry in pubspec.yaml: /home/runner/work/ezanapp/ezanapp/assets/images/
 00:00 +0: loading /home/runner/work/ezanapp/ezanapp/test/placeholder_test.dart
 00:00 +0: placeholder
 00:00 +1: All tests passed!
@@ -246,8 +277,8 @@ An exception occurred applying plugin request [id: 'dev.flutter.flutter-gradle-p
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 1m 32s
-Running Gradle task 'assembleDebug'...                             94.6s
+BUILD FAILED in 1m 33s
+Running Gradle task 'assembleDebug'...                             95.5s
 
 ┌─ Flutter Fix ────────────────────────────────────────────────────────────────────────┐
 │ [!] Starting AGP 9+, only the new DSL interface will be read.                        │
