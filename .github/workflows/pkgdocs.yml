@@ -1,0 +1,68 @@
+name: pkgdocs
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ arena/01a1057d-ezanapp ]
+    paths:
+      - '.github/workflows/pkgdocs.yml'
+      - 'pubspec.yaml'
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: false
+      - name: Bağımlılıkları çöz
+        continue-on-error: true
+        run: |
+          flutter pub get 2>&1 | tee /tmp/pubget.log || true
+          flutter pub deps --style=compact > /tmp/deps.txt 2>&1 || true
+      - name: Paket dokümanlarını topla
+        run: |
+          mkdir -p .ci/pkgs
+          cp /tmp/pubget.log .ci/pubget.log
+          cp /tmp/deps.txt .ci/deps.txt
+          CACHE="$HOME/.pub-cache/hosted/pub.dev"
+          ls "$CACHE" > .ci/resolved_packages.txt 2>/dev/null || true
+          for pkg in flutter_riverpod go_router flutter_local_notifications just_audio just_audio_background google_mobile_ads share_plus fl_chart geolocator connectivity_plus vibration in_app_purchase supabase_flutter flutter_secure_storage audio_session scrollable_positioned_list timezone sqflite firebase_messaging firebase_remote_config; do
+            dir=$(ls -d "$CACHE"/${pkg}-* 2>/dev/null | tail -1)
+            [ -z "$dir" ] && { echo "## $pkg — bulunamadı" > .ci/pkgs/$pkg.md; continue; }
+            {
+              echo "# $pkg ($(basename "$dir"))"
+              echo
+              echo "## CHANGELOG (ilk 150 satır)"
+              echo '```'
+              head -150 "$dir/CHANGELOG.md" 2>/dev/null || echo "yok"
+              echo '```'
+              echo
+              echo "## README (ilk 200 satır)"
+              echo '```'
+              head -200 "$dir/README.md" 2>/dev/null || echo "yok"
+              echo '```'
+            } > .ci/pkgs/$pkg.md
+            # örnek uygulamalar
+            if [ -d "$dir/example" ]; then
+              mkdir -p .ci/pkgs/$pkg-example
+              find "$dir/example" -name '*.dart' | head -25 | while read -r f; do
+                rel=${f#"$dir"/}
+                mkdir -p ".ci/pkgs/$pkg-example/$(dirname "$rel")"
+                cp "$f" ".ci/pkgs/$pkg-example/$rel"
+              done
+            fi
+          done
+          du -sh .ci/pkgs
+      - name: Raporu commit et
+        run: |
+          git config user.name "ezanai-ci"
+          git config user.email "ci@ezanai.local"
+          git add -A .ci
+          git commit -m "ci(report): paket API dokümanları [skip ci]" || echo "değişiklik yok"
+          git push
