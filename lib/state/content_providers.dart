@@ -9,6 +9,7 @@ import '../data/models/hadith_models.dart';
 import '../data/models/hijri_date.dart';
 import '../data/models/ilahi_models.dart';
 import '../data/models/prayer_times_day.dart';
+import '../data/models/app_settings.dart';
 import '../data/models/quran_models.dart';
 import '../data/models/ramadan_models.dart';
 import '../data/models/zikir_models.dart';
@@ -55,14 +56,15 @@ final FutureProvider<List<Hadith>> hadithFavoritesProvider =
     );
 
 /// Konuya göre hadis listesi (arama ile birlikte kullanılır).
-final FutureProviderFamily<List<Hadith>, HadithQuery> hadithQueryProvider =
+final hadithQueryProvider =
     FutureProvider.family<List<Hadith>, HadithQuery>((
       Ref ref,
       HadithQuery query,
     ) {
       final runtime = ref.watch(runtimeProvider);
-      if (query.text.trim().isNotEmpty)
+      if (query.text.trim().isNotEmpty) {
         return runtime.hadith.search(query.text);
+      }
       if (query.topic != null && query.topic != HadithQuery.allTopics) {
         return runtime.hadith.byTopic(query.topic!);
       }
@@ -102,7 +104,7 @@ final FutureProvider<List<Surah>> surahListProvider =
       (Ref ref) => ref.watch(runtimeProvider).quran.surahs(),
     );
 
-final FutureProviderFamily<SurahContent, int> surahContentProvider =
+final surahContentProvider =
     FutureProvider.family<SurahContent, int>(
       (Ref ref, int number) =>
           ref.watch(runtimeProvider).quran.loadSurah(number),
@@ -127,13 +129,14 @@ final FutureProvider<int> quranCompletedJuzProvider = FutureProvider<int>(
   (Ref ref) => ref.watch(runtimeProvider).quran.completedJuzCount(),
 );
 
-final FutureProviderFamily<List<AyahSearchResult>, String> quranSearchProvider =
+final quranSearchProvider =
     FutureProvider.family<List<AyahSearchResult>, String>((
       Ref ref,
       String query,
     ) {
-      if (query.trim().length < 2)
+      if (query.trim().length < 2) {
         return Future<List<AyahSearchResult>>.value(const <AyahSearchResult>[]);
+      }
       return ref.watch(runtimeProvider).quran.search(query);
     });
 
@@ -216,7 +219,7 @@ final FutureProvider<List<Playlist>> playlistsProvider =
       (Ref ref) => ref.watch(runtimeProvider).ilahi.playlists(),
     );
 
-final FutureProviderFamily<List<IlahiTrack>, int> playlistTracksProvider =
+final playlistTracksProvider =
     FutureProvider.family<List<IlahiTrack>, int>((
       Ref ref,
       int playlistId,
@@ -511,3 +514,99 @@ final FutureProvider<LocationStatus> locationStatusProvider =
     FutureProvider<LocationStatus>(
       (Ref ref) => ref.watch(runtimeProvider).location.checkStatus(),
     );
+
+/// Kullanıcının tesbih ekranında seçtiği zikir.
+final NotifierProvider<SelectedZikirController, String> selectedZikirKeyProvider =
+    NotifierProvider<SelectedZikirController, String>(
+      SelectedZikirController.new,
+    );
+
+class SelectedZikirController extends Notifier<String> {
+  @override
+  String build() => 'subhanallah';
+
+  void select(String key) => state = key;
+}
+
+/// Sayaç oturumları (tesbih ekranı ve istatistikler için).
+final NotifierProvider<ZikirCounterController, ZikirCounterState>
+zikirCounterProvider = NotifierProvider<ZikirCounterController, ZikirCounterState>(
+  ZikirCounterController.new,
+);
+
+class ZikirCounterState {
+  const ZikirCounterState({
+    this.count = 0,
+    this.target = 33,
+    this.zikirKey = 'subhanallah',
+    this.completedSessions = 0,
+  });
+
+  final int count;
+  final int target;
+  final String zikirKey;
+  final int completedSessions;
+
+  double get progress => target <= 0 ? 0 : (count / target).clamp(0.0, 1);
+  bool get reached => count >= target;
+  int get remaining => (target - count).clamp(0, target);
+
+  ZikirCounterState copyWith({
+    int? count,
+    int? target,
+    String? zikirKey,
+    int? completedSessions,
+  }) => ZikirCounterState(
+    count: count ?? this.count,
+    target: target ?? this.target,
+    zikirKey: zikirKey ?? this.zikirKey,
+    completedSessions: completedSessions ?? this.completedSessions,
+  );
+}
+
+/// Zikir sayacı — her dokunuşta kaydeder, hedef dolunca oturumu kapatır.
+class ZikirCounterController extends Notifier<ZikirCounterState> {
+  @override
+  ZikirCounterState build() {
+    final AppSettings settings = ref.watch(settingsProvider);
+    return ZikirCounterState(
+      zikirKey: ref.watch(selectedZikirKeyProvider),
+      target: settings.zikirDefaultTarget,
+    );
+  }
+
+  Future<void> increment() async {
+    final ZikirCounterState next = state.copyWith(count: state.count + 1);
+    state = next;
+    await ref
+        .read(runtimeProvider)
+        .zikir
+        .recordCount(state.zikirKey, 1, target: state.target);
+    if (next.reached) {
+      state = next.copyWith(completedSessions: next.completedSessions + 1, count: 0);
+      ref.invalidate(zikirDailySummaryProvider);
+      ref.invalidate(zikirTotalCountProvider);
+    }
+  }
+
+  Future<void> decrement() async {
+    if (state.count == 0) return;
+    state = state.copyWith(count: state.count - 1);
+  }
+
+  Future<void> reset() async {
+    state = state.copyWith(count: 0);
+  }
+
+  void selectZikir(String key, int target) {
+    ref.read(selectedZikirKeyProvider.notifier).select(key);
+    state = ZikirCounterState(zikirKey: key, target: target);
+  }
+
+  void setTarget(int target) => state = state.copyWith(target: target.clamp(1, 10000));
+
+  Future<void> completeSession() async {
+    if (state.count == 0) return;
+    state = state.copyWith(completedSessions: state.completedSessions, count: 0);
+  }
+}

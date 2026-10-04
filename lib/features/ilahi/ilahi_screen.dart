@@ -40,12 +40,12 @@ class _IlahiScreenState extends ConsumerState<IlahiScreen> {
         actions: <Widget>[
           IconButton(
             tooltip: 'Çalma listeleri',
-            onPressed: () => context.push(AppRoutes.playlists),
+            onPressed: () => context.push(AppRoutes.ilahiPlaylists),
             icon: const Icon(Icons.queue_music_rounded, size: 20),
           ),
           IconButton(
             tooltip: 'İndirilenler ve içe aktarım',
-            onPressed: () => context.push(AppRoutes.downloads),
+            onPressed: () => context.push(AppRoutes.ilahiDownloads),
             icon: const Icon(Icons.download_done_rounded, size: 20),
           ),
         ],
@@ -182,7 +182,7 @@ class _IlahiScreenState extends ConsumerState<IlahiScreen> {
                           ),
                         ],
                       ),
-                      onTap: () => context.push(AppRoutes.player(track.id)),
+                      onTap: () => context.push(AppRoutes.player),
                     );
                   },
                 );

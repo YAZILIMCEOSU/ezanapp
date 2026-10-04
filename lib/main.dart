@@ -1,34 +1,45 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 
 import 'app/app.dart';
 import 'app/app_runtime.dart';
 import 'core/utils/logger.dart';
-import 'design/app_colors.dart';
 import 'design/app_spacing.dart';
 import 'design/app_theme.dart';
 import 'state/providers.dart';
-
-/// Arka planda ses oynatma kanalı (ilahi/Kur'an).
-const String _audioChannelId = 'com.yazilimceosu.ezanai.audio';
-const String _audioChannelName = 'Ses oynatma';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   FlutterError.onError = (FlutterErrorDetails details) {
-    AppLog.error('Yakalanmamış arayüz hatası', error: details.exception, stackTrace: details.stack);
-    FlutterError.presentError(details);
+    AppLog.error(
+      'Yakalanmamış arayüz hatası',
+      error: details.exception,
+      stackTrace: details.stack,
+    );
+    // Hata ayıklamada ayrıntılı kayıt; üretimde uygulama çalışmaya devam eder.
+    if (const bool.fromEnvironment('dart.vm.product') == false) {
+      FlutterError.presentError(details);
+    }
   };
 
-  // Arka plan ses bildirimi: başarısız olsa bile uygulama açılmaya devam eder.
+  // Cihaz yönleri: dikey + yatay (tablet uyumu), ters çevirme kapalı.
+  await SystemChrome.setPreferredOrientations(const <DeviceOrientation>[
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+  ]);
+
+  // Arka planda ses (Kur'an/ilahi) için kilit ekranı bildirimi.
+  // Başarısız olursa uygulama yine açılır, yalnızca arka plan çalma devre dışı kalır.
   try {
     await JustAudioBackground.init(
-      androidNotificationChannelId: _audioChannelId,
-      androidNotificationChannelName: _audioChannelName,
+      androidNotificationChannelId: 'com.yazilimceosu.ezanai.audio',
+      androidNotificationChannelName: 'Ses oynatma',
       androidNotificationOngoing: true,
       androidStopForegroundOnPause: true,
     );
@@ -50,9 +61,10 @@ Future<void> main() async {
   }
 }
 
-/// Uygulama açılışında ciddi bir sorun olursa gösterilen güvenli ekran.
+/// Açılış sırasında giderilemeyen bir sorun olursa gösterilen güvenli ekran.
 ///
-/// Kullanıcıya teknik ayrıntı yerine ne yapabileceği anlatılır.
+/// Kullanıcıya teknik ayrıntı yerine ne yapabileceği anlatılır; buradan
+/// uygulama yeniden başlatılamaz ama veri kaybı olmaz.
 class _StartupFailureApp extends StatelessWidget {
   const _StartupFailureApp({required this.message});
 
@@ -71,18 +83,24 @@ class _StartupFailureApp extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                const Icon(Icons.error_outline_rounded, size: 48, color: AppColors.danger),
+                Icon(
+                  Icons.error_outline_rounded,
+                  size: 48,
+                  color: theme.colorScheme.error,
+                ),
                 const SizedBox(height: AppSpacing.lg),
                 Text(
                   'EzanAI başlatılamadı',
-                  style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
-                  'Uygulamayı kapatıp yeniden açmayı deneyin. Sorun sürerse '
-                  'depolama alanınızı kontrol edin veya bize ulaşın.',
+                  'Uygulamayı kapatıp yeniden açmayı deneyin. Sorun sürerse depolama '
+                  'alanınızı kontrol edin veya destek ekibimize ulaşın.',
                   textAlign: TextAlign.center,
-                  style: theme.textTheme.bodyMedium,
+                  style: theme.textTheme.bodyMedium?.copyWith(height: 1.5),
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 SelectableText(

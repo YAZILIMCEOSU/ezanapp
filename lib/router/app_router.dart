@@ -8,11 +8,8 @@ import '../features/hadith/hadith_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/ilahi/ilahi_screen.dart';
 import '../features/ilahi/player_screen.dart';
-<<<<<<< HEAD
 import '../features/ilahi/playlist_screen.dart';
-=======
 import '../features/more/islamic_days_screen.dart';
->>>>>>> 730d593 (feat(ui): ana ekran, vakitler, kible, Kuran ve ilahi modulleri)
 import '../features/more/more_screen.dart';
 import '../features/more/onboarding_screen.dart';
 import '../features/more/premium_screen.dart';
@@ -23,10 +20,13 @@ import '../features/quran/quran_screen.dart';
 import '../features/quran/quran_search_screen.dart';
 import '../features/quran/surah_screen.dart';
 import '../features/ramadan/ramadan_screen.dart';
+import '../features/ilahi/downloads_screen.dart';
 import '../features/settings/about_screen.dart';
+import '../features/settings/adhan_sound_screen.dart';
 import '../features/settings/city_picker_screen.dart';
 import '../features/settings/notification_settings_screen.dart';
 import '../features/settings/settings_screen.dart';
+import '../features/widgets/app_shell.dart';
 import '../features/widgets/not_found_screen.dart';
 import '../features/zikir/zikir_screen.dart';
 import '../features/zikir/zikir_stats_screen.dart';
@@ -61,9 +61,12 @@ abstract final class AppRoutes {
   static const String quranBookmarks = '/kuran/favoriler';
   static const String ilahiPlaylists = '/ilahi/calma-listeleri';
   static const String player = '/ilahi/oynatici';
+  static const String ilahiDownloads = '/ilahi/indirilenler';
+  static const String adhanSounds = '/ayarlar/ezan-sesi';
 
-  static String surah(int number, {int? ayah}) =>
-      ayah == null ? '/kuran/sure/$number' : '/kuran/sure/$number/$ayah';
+  static String surah(int number, {int? ayah}) => ayah == null
+      ? '/kuran/sure/$number'
+      : '/kuran/sure/$number?ayet=$ayah';
 
   static String hadithDetail(int id) => '/hadis/$id';
 
@@ -246,6 +249,16 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.player,
       builder: (BuildContext context, GoRouterState state) =>
           const PlayerScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.ilahiDownloads,
+      builder: (BuildContext context, GoRouterState state) =>
+          const DownloadsScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.adhanSounds,
+      builder: (BuildContext context, GoRouterState state) =>
+          const AdhanSoundScreen(),
     ),
     GoRoute(
       path: AppRoutes.ilahiPlaylists,

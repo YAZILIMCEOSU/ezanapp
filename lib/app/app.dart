@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/audio/audio_service.dart';
+import '../core/constants/app_constants.dart';
 import '../core/services/notification_service.dart';
 import '../core/utils/logger.dart';
 import '../data/models/app_settings.dart';
@@ -46,7 +47,7 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp> {
     });
 
     // İlk açılışta hoş geldin ekranı ve konum izni akışı.
-    final bool onboardingDone = runtime.preferences.getBool('onboarding_done');
+    final bool onboardingDone = runtime.preferences.getBool(PrefKeys.onboardingDone);
     if (!onboardingDone) {
       appRouter.go(AppRoutes.onboarding);
     }
