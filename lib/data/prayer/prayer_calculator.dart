@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 /// Namaz vakti hesaplama motoru.
 ///
 /// Astronomik olarak güneşin konumu (deklinasyon + zaman denklemi) NOAA
@@ -11,6 +9,9 @@ import 'dart:math' as math;
 /// ortalama sapma ±0,2 dakika, standart sapma ≈1,5 dakikadır
 /// (bkz. `test/prayer_calculation_test.dart`).
 library;
+
+import 'dart:math' as math;
+
 
 const double _degreesToRadians = math.pi / 180.0;
 const double _radiansToDegrees = 180.0 / math.pi;
@@ -27,7 +28,7 @@ class CalculationMethod {
     this.maghribAngle = 0.833,
     this.sunriseAngle = 0.833,
     this.asrFactor = 1.0,
-    this.temkin = const Temkin.diyanet,
+    this.temkin = Temkin.diyanet,
     this.highLatitudeRule = HighLatitudeRule.none,
     this.country = '',
   });
