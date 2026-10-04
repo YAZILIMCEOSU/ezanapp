@@ -49,10 +49,16 @@ class _NotificationSettingsScreenState
     }
   }
 
-  Future<void> _update(NotificationSettings Function(NotificationSettings) change) async {
+  Future<void> _update(
+    NotificationSettings Function(NotificationSettings) change,
+  ) async {
     setState(() => _busy = true);
-    final SettingsController controller = ref.read(settingsControllerProvider.notifier);
-    final NotificationSettings current = ref.read(settingsProvider).notifications;
+    final SettingsController controller = ref.read(
+      settingsControllerProvider.notifier,
+    );
+    final NotificationSettings current = ref
+        .read(settingsProvider)
+        .notifications;
     await controller.updateNotifications(change(current));
     await _refreshStatus();
     if (mounted) setState(() => _busy = false);
@@ -60,7 +66,9 @@ class _NotificationSettingsScreenState
 
   @override
   Widget build(BuildContext context) {
-    final NotificationSettings settings = ref.watch(settingsProvider).notifications;
+    final NotificationSettings settings = ref
+        .watch(settingsProvider)
+        .notifications;
     final ThemeData theme = Theme.of(context);
 
     return Scaffold(
@@ -84,16 +92,25 @@ class _NotificationSettingsScreenState
           if (_systemPermission == false)
             StatusBanner(
               icon: Icons.notifications_off_outlined,
-              message: 'Bildirim izni verilmemiş. Vakit bildirimlerinin çalışması için '
+              message:
+                  'Bildirim izni verilmemiş. Vakit bildirimlerinin çalışması için '
                   'sistem ayarlarından izin vermeniz gerekir.',
               action: TextButton(
-                onPressed: () => ref.read(runtimeProvider).notifications.openSystemSettings(),
+                onPressed: () => ref
+                    .read(runtimeProvider)
+                    .notifications
+                    .openSystemSettings(),
                 child: const Text('Ayarları aç'),
               ),
             ),
           if (_systemPermission == true)
             Padding(
-              padding: const EdgeInsets.fromLTRB(AppSpacing.xl, AppSpacing.md, AppSpacing.xl, 0),
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.xl,
+                AppSpacing.md,
+                AppSpacing.xl,
+                0,
+              ),
               child: Text(
                 'Zamanlanmış bildirim: $_pending',
                 style: theme.textTheme.labelSmall?.copyWith(
@@ -104,11 +121,12 @@ class _NotificationSettingsScreenState
           SwitchListTile(
             secondary: const Icon(Icons.notifications_active_outlined),
             title: const Text('Bildirimleri etkinleştir'),
-            subtitle: const Text('Kapatırsanız hiçbir vakit bildirimi gösterilmez'),
-            value: settings.enabled,
-            onChanged: (bool value) => _update(
-              (NotificationSettings s) => s.copyWith(enabled: value),
+            subtitle: const Text(
+              'Kapatırsanız hiçbir vakit bildirimi gösterilmez',
             ),
+            value: settings.enabled,
+            onChanged: (bool value) =>
+                _update((NotificationSettings s) => s.copyWith(enabled: value)),
           ),
           const SectionHeader(title: 'Vakit bildirimleri'),
           for (final Prayer prayer in Prayer.values)
@@ -170,9 +188,11 @@ class _NotificationSettingsScreenState
               title: 'Önceden hatırlatma',
               values: const <int>[0, 5, 10, 15, 20, 30, 45, 60],
               current: settings.preReminderMinutes,
-              labelFor: (int value) => value == 0 ? 'Kapalı' : '$value dakika önce',
+              labelFor: (int value) =>
+                  value == 0 ? 'Kapalı' : '$value dakika önce',
               onPick: (int value) => _update(
-                (NotificationSettings s) => s.copyWith(preReminderMinutes: value),
+                (NotificationSettings s) =>
+                    s.copyWith(preReminderMinutes: value),
               ),
             ),
           ),
@@ -210,7 +230,8 @@ class _NotificationSettingsScreenState
             ),
             value: settings.ramadanNotifications,
             onChanged: (bool value) => _update(
-              (NotificationSettings s) => s.copyWith(ramadanNotifications: value),
+              (NotificationSettings s) =>
+                  s.copyWith(ramadanNotifications: value),
             ),
           ),
           if (settings.ramadanNotifications) ...<Widget>[
@@ -226,7 +247,8 @@ class _NotificationSettingsScreenState
                 current: settings.sahurReminderMinutes,
                 labelFor: (int value) => '$value dakika önce',
                 onPick: (int value) => _update(
-                  (NotificationSettings s) => s.copyWith(sahurReminderMinutes: value),
+                  (NotificationSettings s) =>
+                      s.copyWith(sahurReminderMinutes: value),
                 ),
               ),
             ),
@@ -242,7 +264,8 @@ class _NotificationSettingsScreenState
                 current: settings.iftarReminderMinutes,
                 labelFor: (int value) => '$value dakika önce',
                 onPick: (int value) => _update(
-                  (NotificationSettings s) => s.copyWith(iftarReminderMinutes: value),
+                  (NotificationSettings s) =>
+                      s.copyWith(iftarReminderMinutes: value),
                 ),
               ),
             ),
@@ -256,7 +279,8 @@ class _NotificationSettingsScreenState
             ),
             value: settings.dailyContentEnabled,
             onChanged: (bool value) => _update(
-              (NotificationSettings s) => s.copyWith(dailyContentEnabled: value),
+              (NotificationSettings s) =>
+                  s.copyWith(dailyContentEnabled: value),
             ),
           ),
           SwitchListTile(
@@ -267,7 +291,8 @@ class _NotificationSettingsScreenState
             ),
             value: settings.zikirReminderEnabled,
             onChanged: (bool value) => _update(
-              (NotificationSettings s) => s.copyWith(zikirReminderEnabled: value),
+              (NotificationSettings s) =>
+                  s.copyWith(zikirReminderEnabled: value),
             ),
           ),
           SwitchListTile(
@@ -278,7 +303,8 @@ class _NotificationSettingsScreenState
             ),
             value: settings.hatimReminderEnabled,
             onChanged: (bool value) => _update(
-              (NotificationSettings s) => s.copyWith(hatimReminderEnabled: value),
+              (NotificationSettings s) =>
+                  s.copyWith(hatimReminderEnabled: value),
             ),
           ),
           const SectionHeader(title: 'Bakım'),
@@ -287,10 +313,13 @@ class _NotificationSettingsScreenState
             title: const Text('Test bildirimi gönder'),
             subtitle: const Text('Bildirimlerin çalıştığını doğrulayın'),
             onTap: () async {
-              await ref.read(runtimeProvider).notifications.showNow(
-                title: 'EzanAI test bildirimi',
-                body: 'Bildirimler çalışıyor. Vakitlerde görüşmek üzere!',
-              );
+              await ref
+                  .read(runtimeProvider)
+                  .notifications
+                  .showNow(
+                    title: 'EzanAI test bildirimi',
+                    body: 'Bildirimler çalışıyor. Vakitlerde görüşmek üzere!',
+                  );
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Test bildirimi gönderildi.')),
@@ -302,7 +331,9 @@ class _NotificationSettingsScreenState
           ListTile(
             leading: const Icon(Icons.refresh_rounded),
             title: const Text('Bildirimleri yeniden zamanla'),
-            subtitle: Text('Önümüzdeki ${settings.daysToSchedule} gün için yeniden planlanır'),
+            subtitle: Text(
+              'Önümüzdeki ${settings.daysToSchedule} gün için yeniden planlanır',
+            ),
             onTap: () async {
               setState(() => _busy = true);
               final int count = await ref
@@ -345,7 +376,9 @@ class _NotificationSettingsScreenState
                 await _refreshStatus();
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Tüm bildirimler iptal edildi.')),
+                    const SnackBar(
+                      content: Text('Tüm bildirimler iptal edildi.'),
+                    ),
                   );
                 }
               },
@@ -375,7 +408,10 @@ class _NotificationSettingsScreenState
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-              child: Text(title, style: Theme.of(context).textTheme.titleMedium),
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
             ),
             for (final int value in values)
               ListTile(
@@ -383,7 +419,9 @@ class _NotificationSettingsScreenState
                   value == current
                       ? Icons.radio_button_checked_rounded
                       : Icons.radio_button_unchecked_rounded,
-                  color: value == current ? Theme.of(context).colorScheme.primary : null,
+                  color: value == current
+                      ? Theme.of(context).colorScheme.primary
+                      : null,
                 ),
                 title: Text(labelFor(value)),
                 onTap: () async {

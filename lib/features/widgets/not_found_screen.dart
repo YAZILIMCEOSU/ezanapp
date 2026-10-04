@@ -29,14 +29,17 @@ class NotFoundScreen extends StatelessWidget {
               const SizedBox(height: AppSpacing.lg),
               Text(
                 'Aradığınız sayfaya ulaşamadım',
-                style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
                 'Bağlantı eskimiş olabilir. Ana sayfadan devam edebilirsiniz.',
-                style: theme.textTheme.bodyMedium
-                    ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppSpacing.xl),

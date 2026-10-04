@@ -24,7 +24,9 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppSettings settings = ref.watch(settingsProvider);
-    final SettingsController controller = ref.read(settingsControllerProvider.notifier);
+    final SettingsController controller = ref.read(
+      settingsControllerProvider.notifier,
+    );
     final ThemeData theme = Theme.of(context);
     final CalculationMethod method = settings.resolvedMethod(
       CalculationMethod.fromId(settings.calculationMethodId),
@@ -71,7 +73,9 @@ class SettingsScreen extends ConsumerWidget {
           SwitchListTile(
             secondary: const Icon(Icons.wb_twilight_rounded),
             title: const Text('Hanefî ikindi vakti'),
-            subtitle: const Text('İkindi, Şâfiî\'ye göre bir gölge boyu daha geç girer'),
+            subtitle: const Text(
+              'İkindi, Şâfiî\'ye göre bir gölge boyu daha geç girer',
+            ),
             value: settings.asrHanafi,
             onChanged: controller.setAsrHanafi,
           ),
@@ -88,12 +92,14 @@ class SettingsScreen extends ConsumerWidget {
               children: <Widget>[
                 IconButton(
                   tooltip: 'Bir gün geri',
-                  onPressed: () => controller.setHijriOffset(settings.hijriOffsetDays - 1),
+                  onPressed: () =>
+                      controller.setHijriOffset(settings.hijriOffsetDays - 1),
                   icon: const Icon(Icons.remove_rounded, size: 18),
                 ),
                 IconButton(
                   tooltip: 'Bir gün ileri',
-                  onPressed: () => controller.setHijriOffset(settings.hijriOffsetDays + 1),
+                  onPressed: () =>
+                      controller.setHijriOffset(settings.hijriOffsetDays + 1),
                   icon: const Icon(Icons.add_rounded, size: 18),
                 ),
               ],
@@ -103,7 +109,9 @@ class SettingsScreen extends ConsumerWidget {
           ListTile(
             leading: const Icon(Icons.tune_rounded),
             title: const Text('Vakit bazlı düzeltme'),
-            subtitle: const Text('Diyanet vakitlerine ±30 dakika ekleyip çıkarın'),
+            subtitle: const Text(
+              'Diyanet vakitlerine ±30 dakika ekleyip çıkarın',
+            ),
             trailing: const Icon(Icons.chevron_right_rounded),
             onTap: () => context.go(AppRoutes.prayers),
           ),
@@ -111,7 +119,9 @@ class SettingsScreen extends ConsumerWidget {
           ListTile(
             leading: const Icon(Icons.notifications_active_outlined),
             title: const Text('Bildirim ayarları'),
-            subtitle: const Text('Vakit, Cuma, Ramazan, günlük içerik ve zikir hatırlatmaları'),
+            subtitle: const Text(
+              'Vakit, Cuma, Ramazan, günlük içerik ve zikir hatırlatmaları',
+            ),
             trailing: const Icon(Icons.chevron_right_rounded),
             onTap: () => context.push(AppRoutes.notificationSettings),
           ),
@@ -156,13 +166,16 @@ class SettingsScreen extends ConsumerWidget {
             secondary: const Icon(Icons.volume_up_outlined),
             title: const Text('Zikirde tık sesi'),
             value: settings.zikirSoundEnabled,
-            onChanged: (bool value) => controller.setZikirPreferences(sound: value),
+            onChanged: (bool value) =>
+                controller.setZikirPreferences(sound: value),
           ),
           const SectionHeader(title: 'Veri ve gizlilik'),
           SwitchListTile(
             secondary: const Icon(Icons.analytics_outlined),
             title: const Text('Kullanım istatistikleri'),
-            subtitle: const Text('Anonim kullanım verisi; kişisel veri toplanmaz'),
+            subtitle: const Text(
+              'Anonim kullanım verisi; kişisel veri toplanmaz',
+            ),
             value: settings.analyticsEnabled,
             onChanged: controller.setAnalytics,
           ),
@@ -195,13 +208,20 @@ class SettingsScreen extends ConsumerWidget {
           ListTile(
             leading: const Icon(Icons.restore_rounded),
             title: const Text('Yedekten geri yükle'),
-            subtitle: const Text('Daha önce paylaştığınız JSON metnini yapıştırın'),
+            subtitle: const Text(
+              'Daha önce paylaştığınız JSON metnini yapıştırın',
+            ),
             onTap: () => _importSettings(context, ref),
           ),
           ListTile(
-            leading: const Icon(Icons.delete_outline_rounded, color: AppColors.danger),
+            leading: const Icon(
+              Icons.delete_outline_rounded,
+              color: AppColors.danger,
+            ),
             title: const Text('Verilerimi sil'),
-            subtitle: const Text('Favoriler, geçmiş, indirilenler ve sohbetler silinir'),
+            subtitle: const Text(
+              'Favoriler, geçmiş, indirilenler ve sohbetler silinir',
+            ),
             onTap: () => _confirmClear(context, ref),
           ),
           const SectionHeader(title: 'Uygulama'),
@@ -216,7 +236,9 @@ class SettingsScreen extends ConsumerWidget {
             leading: const Icon(Icons.info_outline_rounded),
             title: const Text('Hakkında'),
             subtitle: Text(
-              AppConfig.hasBackend ? 'Sunucu bağlı' : 'Çevrimdışı bilgi tabanı etkin',
+              AppConfig.hasBackend
+                  ? 'Sunucu bağlı'
+                  : 'Çevrimdışı bilgi tabanı etkin',
             ),
             trailing: const Icon(Icons.chevron_right_rounded),
             onTap: () => context.push(AppRoutes.about),
@@ -237,7 +259,11 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  void _showThemeSheet(BuildContext context, WidgetRef ref, AppThemeMode current) {
+  void _showThemeSheet(
+    BuildContext context,
+    WidgetRef ref,
+    AppThemeMode current,
+  ) {
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
@@ -256,7 +282,9 @@ class SettingsScreen extends ConsumerWidget {
                   ? const Text('OLED ekranlarda daha az güç tüketir')
                   : null,
               onTap: () {
-                ref.read(settingsControllerProvider.notifier).setThemeMode(mode);
+                ref
+                    .read(settingsControllerProvider.notifier)
+                    .setThemeMode(mode);
                 Navigator.of(sheetContext).pop();
               },
             ),
@@ -265,7 +293,11 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  void _showMethodSheet(BuildContext context, WidgetRef ref, AppSettings settings) {
+  void _showMethodSheet(
+    BuildContext context,
+    WidgetRef ref,
+    AppSettings settings,
+  ) {
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
@@ -303,7 +335,9 @@ class SettingsScreen extends ConsumerWidget {
                 title: Text(item.name),
                 subtitle: Text(item.description),
                 onTap: () {
-                  ref.read(settingsControllerProvider.notifier).setMethod(item.id);
+                  ref
+                      .read(settingsControllerProvider.notifier)
+                      .setMethod(item.id);
                   Navigator.of(sheetContext).pop();
                 },
               ),
@@ -315,12 +349,10 @@ class SettingsScreen extends ConsumerWidget {
 
   Future<void> _exportSettings(BuildContext context, WidgetRef ref) async {
     final AppSettings settings = ref.read(settingsProvider);
-    final String json = const JsonEncoder.withIndent('  ').convert(settings.toPrefs());
+    final String json = const JsonEncoder.withIndent('  ')
+        .convert(settings.toPrefs());
     await SharePlus.instance.share(
-      ShareParams(
-        text: json,
-        subject: 'EzanAI ayar yedeği',
-      ),
+      ShareParams(text: json, subject: 'EzanAI ayar yedeği'),
     );
   }
 
@@ -352,11 +384,13 @@ class SettingsScreen extends ConsumerWidget {
     );
     if (confirmed != true || !context.mounted) return;
     try {
-      await ref.read(settingsControllerProvider.notifier).restoreFromJson(controller.text);
+      await ref
+          .read(settingsControllerProvider.notifier)
+          .restoreFromJson(controller.text);
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Ayarlar geri yüklendi.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Ayarlar geri yüklendi.')));
       }
     } catch (_) {
       if (context.mounted) {

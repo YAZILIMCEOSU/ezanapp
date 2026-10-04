@@ -7,7 +7,6 @@ import '../../core/services/billing_service.dart';
 import '../../core/utils/logger.dart';
 import '../../design/app_colors.dart';
 import '../../design/app_spacing.dart';
-import '../../router/app_router.dart';
 import '../../state/providers.dart';
 import '../widgets/app_shell.dart';
 
@@ -25,13 +24,31 @@ class _PremiumScreenState extends ConsumerState<PremiumScreen> {
 
   static const List<({String title, String description})> _benefits =
       <({String title, String description})>[
-    (title: 'Reklamsız deneyim', description: 'Tüm ekranlardaki reklam alanları kaldırılır.'),
-    (title: 'Sınırsız AI soru', description: 'Ücretsiz sürümdeki günlük 10 soru sınırı kalkar.'),
-    (title: 'Premium ilahi arşivi', description: 'Lisanslı yüksek kaliteli ilahi kayıtları açılır.'),
-    (title: 'Gelişmiş istatistik', description: 'Zikir, hatim ve okuma istatistiklerinin tamamı.'),
-    (title: 'Bulut yedekleme', description: 'Favoriler ve ilerleme cihazlar arasında eşitlenir.'),
-    (title: 'Gelişmiş kişiselleştirme', description: 'Ek tema ve vakit tabloları, öncelikli destek.'),
-  ];
+        (
+          title: 'Reklamsız deneyim',
+          description: 'Tüm ekranlardaki reklam alanları kaldırılır.',
+        ),
+        (
+          title: 'Sınırsız AI soru',
+          description: 'Ücretsiz sürümdeki günlük 10 soru sınırı kalkar.',
+        ),
+        (
+          title: 'Premium ilahi arşivi',
+          description: 'Lisanslı yüksek kaliteli ilahi kayıtları açılır.',
+        ),
+        (
+          title: 'Gelişmiş istatistik',
+          description: 'Zikir, hatim ve okuma istatistiklerinin tamamı.',
+        ),
+        (
+          title: 'Bulut yedekleme',
+          description: 'Favoriler ve ilerleme cihazlar arasında eşitlenir.',
+        ),
+        (
+          title: 'Gelişmiş kişiselleştirme',
+          description: 'Ek tema ve vakit tabloları, öncelikli destek.',
+        ),
+      ];
 
   @override
   void initState() {
@@ -47,7 +64,9 @@ class _PremiumScreenState extends ConsumerState<PremiumScreen> {
     } catch (error) {
       AppLog.warning('Ürünler yüklenemedi: $error');
       if (mounted) {
-        setState(() => _message = 'Mağaza ürünleri yüklenemedi. İnternet bağlantınızı kontrol edin.');
+        setState(
+          () => _message = 'Mağaza ürünleri yüklenemedi. İnternet bağlantınızı kontrol edin.',
+        );
       }
     }
   }
@@ -68,8 +87,8 @@ class _PremiumScreenState extends ConsumerState<PremiumScreen> {
           Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
             child: Container(
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
                   colors: <Color>[AppColors.emerald700, AppColors.emerald900],
                 ),
                 borderRadius: AppRadius.allLg,
@@ -80,7 +99,11 @@ class _PremiumScreenState extends ConsumerState<PremiumScreen> {
                 children: <Widget>[
                   Row(
                     children: <Widget>[
-                      const Icon(Icons.workspace_premium_rounded, color: AppColors.gold400, size: 26),
+                      const Icon(
+                        Icons.workspace_premium_rounded,
+                        color: AppColors.gold400,
+                        size: 26,
+                      ),
                       const SizedBox(width: AppSpacing.sm),
                       Text(
                         'EzanAI Premium',
@@ -115,7 +138,10 @@ class _PremiumScreenState extends ConsumerState<PremiumScreen> {
           const SectionHeader(title: 'Premium ile neler açılır?'),
           for (final ({String title, String description}) benefit in _benefits)
             ListTile(
-              leading: const Icon(Icons.check_circle_rounded, color: AppColors.success),
+              leading: const Icon(
+                Icons.check_circle_rounded,
+                color: AppColors.success,
+              ),
               title: Text(benefit.title),
               subtitle: Text(benefit.description),
             ),
@@ -138,7 +164,10 @@ class _PremiumScreenState extends ConsumerState<PremiumScreen> {
             ),
           for (final PremiumProduct product in products)
             Card(
-              margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
+              margin: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg,
+                vertical: AppSpacing.sm,
+              ),
               child: ListTile(
                 title: Text(product.title),
                 subtitle: Text(product.description),
@@ -196,9 +225,15 @@ class _PremiumScreenState extends ConsumerState<PremiumScreen> {
                 ),
                 child: Row(
                   children: <Widget>[
-                    const Icon(Icons.info_outline_rounded, size: 18, color: AppColors.warning),
+                    const Icon(
+                      Icons.info_outline_rounded,
+                      size: 18,
+                      color: AppColors.warning,
+                    ),
                     const SizedBox(width: AppSpacing.sm),
-                    Expanded(child: Text(_message!, style: theme.textTheme.bodySmall)),
+                    Expanded(
+                      child: Text(_message!, style: theme.textTheme.bodySmall),
+                    ),
                   ],
                 ),
               ),
@@ -219,7 +254,9 @@ class _PremiumScreenState extends ConsumerState<PremiumScreen> {
           Center(
             child: TextButton(
               onPressed: () async {
-                final Uri uri = Uri.parse('https://play.google.com/store/account/subscriptions');
+                final Uri uri = Uri.parse(
+                  'https://play.google.com/store/account/subscriptions',
+                );
                 try {
                   await launchUrl(uri, mode: LaunchMode.externalApplication);
                 } catch (error) {
@@ -250,7 +287,9 @@ class _PremiumScreenState extends ConsumerState<PremiumScreen> {
       setState(() => _message = error.message);
     } catch (error) {
       if (!mounted) return;
-      setState(() => _message = 'Satın alma tamamlanamadı. Lütfen tekrar deneyin.');
+      setState(
+        () => _message = 'Satın alma tamamlanamadı. Lütfen tekrar deneyin.',
+      );
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -262,8 +301,9 @@ class _PremiumScreenState extends ConsumerState<PremiumScreen> {
       _message = null;
     });
     try {
-      final PremiumStatus restored =
-          await ref.read(premiumProvider.notifier).restore();
+      final PremiumStatus restored = await ref
+          .read(premiumProvider.notifier)
+          .restore();
       if (!mounted) return;
       setState(() {
         _message = restored.isPremium

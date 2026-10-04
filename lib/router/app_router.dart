@@ -6,6 +6,7 @@ import '../features/ai/ai_screen.dart';
 import '../features/hadith/hadith_detail_screen.dart';
 import '../features/hadith/hadith_screen.dart';
 import '../features/home/home_screen.dart';
+import '../features/ilahi/downloads_screen.dart';
 import '../features/ilahi/ilahi_screen.dart';
 import '../features/ilahi/player_screen.dart';
 import '../features/ilahi/playlist_screen.dart';
@@ -20,7 +21,6 @@ import '../features/quran/quran_screen.dart';
 import '../features/quran/quran_search_screen.dart';
 import '../features/quran/surah_screen.dart';
 import '../features/ramadan/ramadan_screen.dart';
-import '../features/ilahi/downloads_screen.dart';
 import '../features/settings/about_screen.dart';
 import '../features/settings/adhan_sound_screen.dart';
 import '../features/settings/city_picker_screen.dart';
@@ -64,9 +64,8 @@ abstract final class AppRoutes {
   static const String ilahiDownloads = '/ilahi/indirilenler';
   static const String adhanSounds = '/ayarlar/ezan-sesi';
 
-  static String surah(int number, {int? ayah}) => ayah == null
-      ? '/kuran/sure/$number'
-      : '/kuran/sure/$number?ayet=$ayah';
+  static String surah(int number, {int? ayah}) =>
+      ayah == null ? '/kuran/sure/$number' : '/kuran/sure/$number?ayet=$ayah';
 
   static String hadithDetail(int id) => '/hadis/$id';
 
@@ -204,7 +203,8 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.calendar,
-      builder: (BuildContext context, GoRouterState state) => const IslamicDaysScreen(),
+      builder: (BuildContext context, GoRouterState state) =>
+          const IslamicDaysScreen(),
     ),
     GoRoute(
       path: AppRoutes.cities,

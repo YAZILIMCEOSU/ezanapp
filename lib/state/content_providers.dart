@@ -5,15 +5,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/services/location_service.dart';
 import '../core/utils/logger.dart';
 import '../data/models/ai_models.dart';
+import '../data/models/app_settings.dart';
 import '../data/models/hadith_models.dart';
 import '../data/models/hijri_date.dart';
 import '../data/models/ilahi_models.dart';
 import '../data/models/prayer_times_day.dart';
-import '../data/models/app_settings.dart';
 import '../data/models/quran_models.dart';
 import '../data/models/ramadan_models.dart';
 import '../data/models/zikir_models.dart';
-import '../data/prayer/prayer_calculator.dart';
 import '../data/repositories/daily_content_repository.dart';
 import '../data/repositories/quran_repository.dart';
 import 'providers.dart';
@@ -56,20 +55,19 @@ final FutureProvider<List<Hadith>> hadithFavoritesProvider =
     );
 
 /// Konuya göre hadis listesi (arama ile birlikte kullanılır).
-final hadithQueryProvider =
-    FutureProvider.family<List<Hadith>, HadithQuery>((
-      Ref ref,
-      HadithQuery query,
-    ) {
-      final runtime = ref.watch(runtimeProvider);
-      if (query.text.trim().isNotEmpty) {
-        return runtime.hadith.search(query.text);
-      }
-      if (query.topic != null && query.topic != HadithQuery.allTopics) {
-        return runtime.hadith.byTopic(query.topic!);
-      }
-      return runtime.hadith.all();
-    });
+final hadithQueryProvider = FutureProvider.family<List<Hadith>, HadithQuery>((
+  Ref ref,
+  HadithQuery query,
+) {
+  final runtime = ref.watch(runtimeProvider);
+  if (query.text.trim().isNotEmpty) {
+    return runtime.hadith.search(query.text);
+  }
+  if (query.topic != null && query.topic != HadithQuery.allTopics) {
+    return runtime.hadith.byTopic(query.topic!);
+  }
+  return runtime.hadith.all();
+});
 
 /// Hadis sorgusu (konu + serbest metin).
 class HadithQuery {
@@ -104,11 +102,9 @@ final FutureProvider<List<Surah>> surahListProvider =
       (Ref ref) => ref.watch(runtimeProvider).quran.surahs(),
     );
 
-final surahContentProvider =
-    FutureProvider.family<SurahContent, int>(
-      (Ref ref, int number) =>
-          ref.watch(runtimeProvider).quran.loadSurah(number),
-    );
+final surahContentProvider = FutureProvider.family<SurahContent, int>(
+  (Ref ref, int number) => ref.watch(runtimeProvider).quran.loadSurah(number),
+);
 
 final FutureProvider<List<QuranBookmark>> quranBookmarksProvider =
     FutureProvider<List<QuranBookmark>>(
@@ -219,30 +215,29 @@ final FutureProvider<List<Playlist>> playlistsProvider =
       (Ref ref) => ref.watch(runtimeProvider).ilahi.playlists(),
     );
 
-final playlistTracksProvider =
-    FutureProvider.family<List<IlahiTrack>, int>((
-      Ref ref,
-      int playlistId,
-    ) async {
-      final runtime = ref.watch(runtimeProvider);
-      final List<Playlist> lists = await runtime.ilahi.playlists();
-      Playlist? playlist;
-      for (final Playlist candidate in lists) {
-        if (candidate.id == playlistId) {
-          playlist = candidate;
-          break;
-        }
-      }
-      if (playlist == null) return const <IlahiTrack>[];
-      final List<IlahiTrack> all = <IlahiTrack>[
-        ...await runtime.ilahi.catalog(),
-        ...await runtime.ilahi.localTracks(),
-      ];
-      return <IlahiTrack>[
-        for (final String id in playlist.trackIds)
-          ...all.where((IlahiTrack track) => track.id == id),
-      ];
-    });
+final playlistTracksProvider = FutureProvider.family<List<IlahiTrack>, int>((
+  Ref ref,
+  int playlistId,
+) async {
+  final runtime = ref.watch(runtimeProvider);
+  final List<Playlist> lists = await runtime.ilahi.playlists();
+  Playlist? playlist;
+  for (final Playlist candidate in lists) {
+    if (candidate.id == playlistId) {
+      playlist = candidate;
+      break;
+    }
+  }
+  if (playlist == null) return const <IlahiTrack>[];
+  final List<IlahiTrack> all = <IlahiTrack>[
+    ...await runtime.ilahi.catalog(),
+    ...await runtime.ilahi.localTracks(),
+  ];
+  return <IlahiTrack>[
+    for (final String id in playlist.trackIds)
+      ...all.where((IlahiTrack track) => track.id == id),
+  ];
+});
 
 /// Katalog içindeki kategori ve sanatçı listesi.
 final FutureProvider<({List<String> categories, List<String> artists})>
@@ -516,10 +511,10 @@ final FutureProvider<LocationStatus> locationStatusProvider =
     );
 
 /// Kullanıcının tesbih ekranında seçtiği zikir.
-final NotifierProvider<SelectedZikirController, String> selectedZikirKeyProvider =
-    NotifierProvider<SelectedZikirController, String>(
-      SelectedZikirController.new,
-    );
+final NotifierProvider<SelectedZikirController, String>
+selectedZikirKeyProvider = NotifierProvider<SelectedZikirController, String>(
+  SelectedZikirController.new,
+);
 
 class SelectedZikirController extends Notifier<String> {
   @override
@@ -530,9 +525,10 @@ class SelectedZikirController extends Notifier<String> {
 
 /// Sayaç oturumları (tesbih ekranı ve istatistikler için).
 final NotifierProvider<ZikirCounterController, ZikirCounterState>
-zikirCounterProvider = NotifierProvider<ZikirCounterController, ZikirCounterState>(
-  ZikirCounterController.new,
-);
+zikirCounterProvider =
+    NotifierProvider<ZikirCounterController, ZikirCounterState>(
+      ZikirCounterController.new,
+    );
 
 class ZikirCounterState {
   const ZikirCounterState({
@@ -583,7 +579,10 @@ class ZikirCounterController extends Notifier<ZikirCounterState> {
         .zikir
         .recordCount(state.zikirKey, 1, target: state.target);
     if (next.reached) {
-      state = next.copyWith(completedSessions: next.completedSessions + 1, count: 0);
+      state = next.copyWith(
+        completedSessions: next.completedSessions + 1,
+        count: 0,
+      );
       ref.invalidate(zikirDailySummaryProvider);
       ref.invalidate(zikirTotalCountProvider);
     }
@@ -603,10 +602,14 @@ class ZikirCounterController extends Notifier<ZikirCounterState> {
     state = ZikirCounterState(zikirKey: key, target: target);
   }
 
-  void setTarget(int target) => state = state.copyWith(target: target.clamp(1, 10000));
+  void setTarget(int target) =>
+      state = state.copyWith(target: target.clamp(1, 10000));
 
   Future<void> completeSession() async {
     if (state.count == 0) return;
-    state = state.copyWith(completedSessions: state.completedSessions, count: 0);
+    state = state.copyWith(
+      completedSessions: state.completedSessions,
+      count: 0,
+    );
   }
 }

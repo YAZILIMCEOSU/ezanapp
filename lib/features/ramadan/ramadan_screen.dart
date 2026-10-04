@@ -47,7 +47,12 @@ class _RamadanScreenState extends ConsumerState<RamadanScreen> {
   @override
   Widget build(BuildContext context) {
     final AsyncValue<
-      ({PrayerTimesDay today, PrayerTimesDay tomorrow, DateTime imsak, DateTime iftar})
+      ({
+        PrayerTimesDay today,
+        PrayerTimesDay tomorrow,
+        DateTime imsak,
+        DateTime iftar,
+      })
     >
     today = ref.watch(ramadanTodayProvider);
     final HijriDate hijri = ref.watch(hijriTodayProvider);
@@ -71,8 +76,8 @@ class _RamadanScreenState extends ConsumerState<RamadanScreen> {
           Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
             child: Container(
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(colors: AppColors.emeraldGradient),
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(colors: AppColors.emeraldGradient),
                 borderRadius: AppRadius.allLg,
               ),
               padding: const EdgeInsets.all(AppSpacing.xl),
@@ -91,7 +96,7 @@ class _RamadanScreenState extends ConsumerState<RamadanScreen> {
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     hijri.isRamadan
-                        ? '${dayNumber}. gün · ${hijri.longFormatted}'
+                        ? '$dayNumber. gün · ${hijri.longFormatted}'
                         : 'Ramazan ayına ${_daysToRamadan(hijri)} gün kaldı',
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: Colors.white.withValues(alpha: 0.85),
@@ -107,61 +112,75 @@ class _RamadanScreenState extends ConsumerState<RamadanScreen> {
                     ),
                     error: (Object error, StackTrace stackTrace) => Text(
                       'Vakitler alınamadı: $error',
-                      style: theme.textTheme.bodySmall?.copyWith(color: Colors.white),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: Colors.white,
+                      ),
                     ),
-                    data: ((
-                      {PrayerTimesDay today, PrayerTimesDay tomorrow, DateTime imsak, DateTime iftar}
-                    )
-                    value) {
-                      final bool beforeIftar = _now.isBefore(value.iftar);
-                      final Duration remaining = beforeIftar
-                          ? value.iftar.difference(_now)
-                          : value.imsak.isAfter(_now)
+                    data:
+                        (
+                          ({
+                            PrayerTimesDay today,
+                            PrayerTimesDay tomorrow,
+                            DateTime imsak,
+                            DateTime iftar,
+                          })
+                          value,
+                        ) {
+                          final bool beforeIftar = _now.isBefore(value.iftar);
+                          final Duration remaining = beforeIftar
+                              ? value.iftar.difference(_now)
+                              : value.imsak.isAfter(_now)
                               ? value.imsak.difference(_now)
-                              : value.tomorrow.timeOf(Prayer.imsak)?.difference(_now) ??
-                                  Duration.zero;
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            beforeIftar ? 'İftara kalan' : 'Sahura kalan',
-                            style: theme.textTheme.labelMedium?.copyWith(
-                              color: Colors.white.withValues(alpha: 0.85),
-                              letterSpacing: 1.2,
-                            ),
-                          ),
-                          const SizedBox(height: AppSpacing.xs),
-                          Text(
-                            AppTime.formatClock(remaining),
-                            style: theme.textTheme.displaySmall?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: -1,
-                            ),
-                          ),
-                          const SizedBox(height: AppSpacing.md),
-                          Row(
+                              : value.tomorrow
+                                        .timeOf(Prayer.imsak)
+                                        ?.difference(_now) ??
+                                    Duration.zero;
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              _TimeChip(
-                                label: 'İmsak',
-                                time: AppTime.formatTime(
-                                  value.imsak,
-                                  use24Hour: ref.watch(settingsProvider).use24Hour,
+                              Text(
+                                beforeIftar ? 'İftara kalan' : 'Sahura kalan',
+                                style: theme.textTheme.labelMedium?.copyWith(
+                                  color: Colors.white.withValues(alpha: 0.85),
+                                  letterSpacing: 1.2,
                                 ),
                               ),
-                              const SizedBox(width: AppSpacing.sm),
-                              _TimeChip(
-                                label: 'İftar',
-                                time: AppTime.formatTime(
-                                  value.iftar,
-                                  use24Hour: ref.watch(settingsProvider).use24Hour,
+                              const SizedBox(height: AppSpacing.xs),
+                              Text(
+                                AppTime.formatClock(remaining),
+                                style: theme.textTheme.displaySmall?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: -1,
                                 ),
+                              ),
+                              const SizedBox(height: AppSpacing.md),
+                              Row(
+                                children: <Widget>[
+                                  _TimeChip(
+                                    label: 'İmsak',
+                                    time: AppTime.formatTime(
+                                      value.imsak,
+                                      use24Hour: ref
+                                          .watch(settingsProvider)
+                                          .use24Hour,
+                                    ),
+                                  ),
+                                  const SizedBox(width: AppSpacing.sm),
+                                  _TimeChip(
+                                    label: 'İftar',
+                                    time: AppTime.formatTime(
+                                      value.iftar,
+                                      use24Hour: ref
+                                          .watch(settingsProvider)
+                                          .use24Hour,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
-                          ),
-                        ],
-                      );
-                    },
+                          );
+                        },
                   ),
                 ],
               ),
@@ -199,14 +218,21 @@ class _TimeChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.16),
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
         '$label $time',
-        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13),
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.w700,
+          fontSize: 13,
+        ),
       ),
     );
   }
@@ -241,7 +267,9 @@ class _TodayLogCard extends ConsumerWidget {
               children: <Widget>[
                 Text(
                   'Bugünün ibadet kaydı',
-                  style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
@@ -317,14 +345,18 @@ class _HatimSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<List<JuzProgress>> progress = ref.watch(hatimProgressProvider);
+    final AsyncValue<List<JuzProgress>> progress = ref.watch(
+      hatimProgressProvider,
+    );
     return progress.when(
       loading: () => const Padding(
         padding: EdgeInsets.all(AppSpacing.xl),
         child: LoadingView(message: 'Hatim durumu yükleniyor…'),
       ),
-      error: (Object error, StackTrace stackTrace) =>
-          ErrorView(error: error, onRetry: () => ref.invalidate(hatimProgressProvider)),
+      error: (Object error, StackTrace stackTrace) => ErrorView(
+        error: error,
+        onRetry: () => ref.invalidate(hatimProgressProvider),
+      ),
       data: (List<JuzProgress> items) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -351,12 +383,15 @@ class _HatimSection extends ConsumerWidget {
                     InkWell(
                       borderRadius: AppRadius.allMd,
                       onTap: () async {
-                        await ref.read(runtimeProvider).ramadan.updateJuz(
-                          juz.juz,
-                          juz.status == JuzStatus.done
-                              ? JuzStatus.pending
-                              : JuzStatus.done,
-                        );
+                        await ref
+                            .read(runtimeProvider)
+                            .ramadan
+                            .updateJuz(
+                              juz.juz,
+                              juz.status == JuzStatus.done
+                                  ? JuzStatus.pending
+                                  : JuzStatus.done,
+                            );
                         ref.invalidate(hatimProgressProvider);
                         ref.invalidate(ramadanSummaryProvider);
                       },
@@ -366,9 +401,9 @@ class _HatimSection extends ConsumerWidget {
                           color: juz.status == JuzStatus.done
                               ? AppColors.emerald500.withValues(alpha: 0.18)
                               : Theme.of(context)
-                                  .colorScheme
-                                  .surfaceContainerHighest
-                                  .withValues(alpha: 0.5),
+                                    .colorScheme
+                                    .surfaceContainerHighest
+                                    .withValues(alpha: 0.5),
                           borderRadius: AppRadius.allMd,
                           border: Border.all(
                             color: juz.status == JuzStatus.done
@@ -378,10 +413,13 @@ class _HatimSection extends ConsumerWidget {
                         ),
                         child: Text(
                           '${juz.juz}',
-                          style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: juz.status == JuzStatus.done ? AppColors.emerald500 : null,
-                          ),
+                          style: Theme.of(context).textTheme.labelLarge
+                              ?.copyWith(
+                                fontWeight: FontWeight.w700,
+                                color: juz.status == JuzStatus.done
+                                    ? AppColors.emerald500
+                                    : null,
+                              ),
                         ),
                       ),
                     ),
@@ -406,8 +444,10 @@ class _KazaSection extends ConsumerWidget {
         padding: EdgeInsets.all(AppSpacing.xl),
         child: LoadingView(message: 'Kaza kayıtları yükleniyor…'),
       ),
-      error: (Object error, StackTrace stackTrace) =>
-          ErrorView(error: error, onRetry: () => ref.invalidate(kazaFastsProvider)),
+      error: (Object error, StackTrace stackTrace) => ErrorView(
+        error: error,
+        onRetry: () => ref.invalidate(kazaFastsProvider),
+      ),
       data: (List<KazaFast> items) => Column(
         children: <Widget>[
           if (items.isEmpty)
@@ -432,7 +472,10 @@ class _KazaSection extends ConsumerWidget {
               secondary: IconButton(
                 tooltip: 'Kaydı sil',
                 onPressed: () async {
-                  await ref.read(runtimeProvider).ramadan.deleteKazaFast(fast.id);
+                  await ref
+                      .read(runtimeProvider)
+                      .ramadan
+                      .deleteKazaFast(fast.id);
                   ref.invalidate(kazaFastsProvider);
                   ref.invalidate(ramadanSummaryProvider);
                 },
@@ -479,15 +522,19 @@ class _ImsakiyeSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<List<PrayerTimesDay>> imsakiye = ref.watch(imsakiyeProvider);
+    final AsyncValue<List<PrayerTimesDay>> imsakiye = ref.watch(
+      imsakiyeProvider,
+    );
     final bool use24 = ref.watch(settingsProvider).use24Hour;
     return imsakiye.when(
       loading: () => const Padding(
         padding: EdgeInsets.all(AppSpacing.xl),
         child: LoadingView(message: 'İmsakiye hazırlanıyor…'),
       ),
-      error: (Object error, StackTrace stackTrace) =>
-          ErrorView(error: error, onRetry: () => ref.invalidate(imsakiyeProvider)),
+      error: (Object error, StackTrace stackTrace) => ErrorView(
+        error: error,
+        onRetry: () => ref.invalidate(imsakiyeProvider),
+      ),
       data: (List<PrayerTimesDay> days) => Column(
         children: <Widget>[
           for (final PrayerTimesDay day in days.take(30))
@@ -528,25 +575,31 @@ class _DailyDuaCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<List<Map<String, Object?>>> dualar = ref.watch(duaListProvider);
+    final AsyncValue<List<Map<String, Object?>>> dualar = ref.watch(
+      duaListProvider,
+    );
     final ThemeData theme = Theme.of(context);
     return dualar.when(
       loading: () => const Padding(
         padding: EdgeInsets.all(AppSpacing.xl),
         child: LoadingView(message: 'Dualar yükleniyor…'),
       ),
-      error: (Object error, StackTrace stackTrace) =>
-          ErrorView(error: error, onRetry: () => ref.invalidate(duaListProvider)),
+      error: (Object error, StackTrace stackTrace) => ErrorView(
+        error: error,
+        onRetry: () => ref.invalidate(duaListProvider),
+      ),
       data: (List<Map<String, Object?>> items) {
         if (items.isEmpty) {
           return const EmptyView(
             icon: Icons.volunteer_activism_outlined,
             title: 'Dua bulunamadı',
-            message: 'Dua içeriği okunamadı. Uygulamayı yeniden başlatmayı deneyin.',
+            message:
+                'Dua içeriği okunamadı. Uygulamayı yeniden başlatmayı deneyin.',
           );
         }
         final DateTime now = DateTime.now();
-        final Map<String, Object?> dua = items[now.difference(DateTime(now.year)).inDays % items.length];
+        final Map<String, Object?> dua =
+            items[now.difference(DateTime(now.year)).inDays % items.length];
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
           child: Container(
@@ -561,7 +614,9 @@ class _DailyDuaCard extends ConsumerWidget {
               children: <Widget>[
                 Text(
                   (dua['name'] ?? 'Günün duası').toString(),
-                  style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 if (dua['arabic'] != null)
@@ -585,7 +640,10 @@ class _DailyDuaCard extends ConsumerWidget {
                   ),
                 if (dua['meaning'] != null) ...<Widget>[
                   const SizedBox(height: AppSpacing.sm),
-                  Text(dua['meaning'].toString(), style: theme.textTheme.bodyMedium),
+                  Text(
+                    dua['meaning'].toString(),
+                    style: theme.textTheme.bodyMedium,
+                  ),
                 ],
                 if (dua['reference'] != null)
                   Padding(

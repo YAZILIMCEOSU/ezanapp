@@ -22,7 +22,9 @@ class ZikirScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AsyncValue<List<Zikir>> zikirler = ref.watch(zikirListProvider);
     final ZikirCounterState counter = ref.watch(zikirCounterProvider);
-    final AsyncValue<ZikirDailySummary> summary = ref.watch(zikirDailySummaryProvider);
+    final AsyncValue<ZikirDailySummary> summary = ref.watch(
+      zikirDailySummaryProvider,
+    );
     final AppSettings settings = ref.watch(settingsProvider);
     final ThemeData theme = Theme.of(context);
 
@@ -44,8 +46,10 @@ class ZikirScreen extends ConsumerWidget {
       ),
       body: zikirler.when(
         loading: () => const LoadingView(message: 'Zikirler yükleniyor…'),
-        error: (Object error, StackTrace stackTrace) =>
-            ErrorView(error: error, onRetry: () => ref.invalidate(zikirListProvider)),
+        error: (Object error, StackTrace stackTrace) => ErrorView(
+          error: error,
+          onRetry: () => ref.invalidate(zikirListProvider),
+        ),
         data: (List<Zikir> items) {
           Zikir selected = items.first;
           for (final Zikir zikir in items) {
@@ -108,9 +112,12 @@ class ZikirScreen extends ConsumerWidget {
                             child: CircularProgressIndicator(
                               value: counter.progress,
                               strokeWidth: 12,
-                              backgroundColor: theme.colorScheme.outlineVariant.withValues(alpha: 0.3),
+                              backgroundColor: theme.colorScheme.outlineVariant
+                                  .withValues(alpha: 0.3),
                               valueColor: AlwaysStoppedAnimation<Color>(
-                                counter.reached ? AppColors.success : AppColors.emerald500,
+                                counter.reached
+                                    ? AppColors.success
+                                    : AppColors.emerald500,
                               ),
                             ),
                           ),
@@ -163,7 +170,9 @@ class ZikirScreen extends ConsumerWidget {
                       child: OutlinedButton.icon(
                         onPressed: counter.count == 0
                             ? null
-                            : () => ref.read(zikirCounterProvider.notifier).reset(),
+                            : () => ref
+                                  .read(zikirCounterProvider.notifier)
+                                  .reset(),
                         icon: const Icon(Icons.restart_alt_rounded, size: 18),
                         label: const Text('Sıfırla'),
                       ),
@@ -171,7 +180,8 @@ class ZikirScreen extends ConsumerWidget {
                     const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: FilledButton.icon(
-                        onPressed: () => _showTargetSheet(context, ref, counter),
+                        onPressed: () =>
+                            _showTargetSheet(context, ref, counter),
                         icon: const Icon(Icons.flag_outlined, size: 18),
                         label: const Text('Hedef'),
                       ),
@@ -181,15 +191,26 @@ class ZikirScreen extends ConsumerWidget {
               ),
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.md, AppSpacing.lg, AppSpacing.lg),
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.lg,
+                  AppSpacing.md,
+                  AppSpacing.lg,
+                  AppSpacing.lg,
+                ),
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                  color: theme.colorScheme.surfaceContainerHighest.withValues(
+                    alpha: 0.5,
+                  ),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(20),
+                  ),
                 ),
                 child: summary.when(
                   loading: () => const SizedBox(
                     height: 40,
-                    child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                    child: Center(
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
                   ),
                   error: (Object error, StackTrace stackTrace) => Text(
                     'Günlük özet yüklenemedi: $error',
@@ -241,7 +262,8 @@ class ZikirScreen extends ConsumerWidget {
                           spacing: AppSpacing.sm,
                           runSpacing: AppSpacing.xs,
                           children: <Widget>[
-                            for (final MapEntry<String, int> entry in value.byZikir.entries)
+                            for (final MapEntry<String, int> entry
+                                in value.byZikir.entries)
                               Chip(
                                 visualDensity: VisualDensity.compact,
                                 label: Text('${entry.key}: ${entry.value}'),
@@ -282,7 +304,11 @@ class ZikirScreen extends ConsumerWidget {
     }
   }
 
-  void _showTargetSheet(BuildContext context, WidgetRef ref, ZikirCounterState counter) {
+  void _showTargetSheet(
+    BuildContext context,
+    WidgetRef ref,
+    ZikirCounterState counter,
+  ) {
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
@@ -294,9 +320,8 @@ class ZikirScreen extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
               child: Text(
                 'Hedef sayı',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+                style: Theme.of(context).textTheme.titleMedium
+                    ?.copyWith(fontWeight: FontWeight.w700),
               ),
             ),
             for (final int option in <int>[33, 99, 100, 500, 1000])

@@ -49,7 +49,9 @@ class PlayerUiState {
 
   double get progress {
     if (duration.inMilliseconds <= 0) return 0;
-    return (position.inMilliseconds / duration.inMilliseconds).clamp(0, 1).toDouble();
+    return (position.inMilliseconds / duration.inMilliseconds)
+        .clamp(0, 1)
+        .toDouble();
   }
 
   PlayerUiState copyWith({
@@ -104,7 +106,10 @@ class PlayerController extends Notifier<PlayerUiState> {
 
     _positionSub = audio.positionStream.listen((Duration position) {
       if (!ref.mounted) return;
-      state = state.copyWith(position: position, duration: audio.duration ?? state.duration);
+      state = state.copyWith(
+        position: position,
+        duration: audio.duration ?? state.duration,
+      );
     });
 
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
@@ -127,9 +132,16 @@ class PlayerController extends Notifier<PlayerUiState> {
   }
 
   /// Tek bir parçayı (isteğe bağlı kuyrukla) çalar.
-  Future<void> playTrack(IlahiTrack track, {List<IlahiTrack> queue = const <IlahiTrack>[]}) async {
-    final List<IlahiTrack> effectiveQueue = queue.isEmpty ? <IlahiTrack>[track] : queue;
-    final int index = effectiveQueue.indexWhere((IlahiTrack item) => item.id == track.id);
+  Future<void> playTrack(
+    IlahiTrack track, {
+    List<IlahiTrack> queue = const <IlahiTrack>[],
+  }) async {
+    final List<IlahiTrack> effectiveQueue = queue.isEmpty
+        ? <IlahiTrack>[track]
+        : queue;
+    final int index = effectiveQueue.indexWhere(
+      (IlahiTrack item) => item.id == track.id,
+    );
     state = state.copyWith(
       track: track,
       queue: effectiveQueue,
@@ -151,7 +163,9 @@ class PlayerController extends Notifier<PlayerUiState> {
     }
 
     final AppAudioService audio = ref.read(runtimeProvider).audio;
-    await audio.initialize(ducking: ref.read(settingsProvider).adhanPlaybackDucking);
+    await audio.initialize(
+      ducking: ref.read(settingsProvider).adhanPlaybackDucking,
+    );
 
     final bool started = source.startsWith('http')
         ? await audio.playUrl(
@@ -215,11 +229,13 @@ class PlayerController extends Notifier<PlayerUiState> {
     await ref.read(runtimeProvider).ilahi.markPlayed(track.id);
   }
 
-  Future<void> seek(Duration position) => ref.read(runtimeProvider).audio.seek(position);
+  Future<void> seek(Duration position) =>
+      ref.read(runtimeProvider).audio.seek(position);
 
   Future<void> seekToFraction(double fraction) {
     final Duration target = Duration(
-      milliseconds: (state.duration.inMilliseconds * fraction.clamp(0, 1)).round(),
+      milliseconds: (state.duration.inMilliseconds * fraction.clamp(0, 1))
+          .round(),
     );
     return seek(target);
   }
@@ -235,7 +251,8 @@ class PlayerController extends Notifier<PlayerUiState> {
     await ref.read(runtimeProvider).audio.setLoop(repeat);
   }
 
-  Future<void> setSpeed(double speed) => ref.read(runtimeProvider).audio.setSpeed(speed);
+  Future<void> setSpeed(double speed) =>
+      ref.read(runtimeProvider).audio.setSpeed(speed);
 
   /// Çalma listesini kuyruğa alıp ilk parçadan başlar.
   Future<void> playQueue(List<IlahiTrack> tracks, {int startIndex = 0}) async {
@@ -248,7 +265,10 @@ class PlayerController extends Notifier<PlayerUiState> {
     if (tracks.isEmpty) return;
     final List<IlahiTrack> merged = <IlahiTrack>[
       ...state.queue,
-      ...tracks.where((IlahiTrack track) => !state.queue.any((IlahiTrack item) => item.id == track.id)),
+      ...tracks.where(
+        (IlahiTrack track) =>
+            !state.queue.any((IlahiTrack item) => item.id == track.id),
+      ),
     ];
     state = state.copyWith(queue: merged);
   }
@@ -266,7 +286,8 @@ class PlayerController extends Notifier<PlayerUiState> {
   }
 
   String? _sourceFor(IlahiTrack track) {
-    if (track.localPath != null && track.localPath!.isNotEmpty) return track.localPath;
+    if (track.localPath != null && track.localPath!.isNotEmpty)
+      return track.localPath;
     if (track.audioUrl.isEmpty) return null;
     return track.audioUrl;
   }
@@ -275,7 +296,8 @@ class PlayerController extends Notifier<PlayerUiState> {
       track.localPath != null && track.localPath!.isNotEmpty;
 
   String _offlineMessage(IlahiTrack track) {
-    if (ref.read(settingsProvider).streamingOnlyOnWifi && !_isDownloaded(track)) {
+    if (ref.read(settingsProvider).streamingOnlyOnWifi &&
+        !_isDownloaded(track)) {
       return 'Yalnızca Wi-Fi üzerinden akış açık. İçeriği indirip çevrimdışı '
           'dinleyebilir veya ayarları değiştirebilirsiniz.';
     }
@@ -284,8 +306,10 @@ class PlayerController extends Notifier<PlayerUiState> {
   }
 }
 
-final NotifierProvider<PlayerController, PlayerUiState> playerControllerProvider =
-    NotifierProvider<PlayerController, PlayerUiState>(PlayerController.new);
+final NotifierProvider<PlayerController, PlayerUiState>
+playerControllerProvider = NotifierProvider<PlayerController, PlayerUiState>(
+  PlayerController.new,
+);
 
 /// Alt oynatma çubuğu — uygulamanın ilahi ve Kur'an ekranlarında görünür.
 class PlayerBar extends ConsumerWidget {
@@ -307,7 +331,9 @@ class PlayerBar extends ConsumerWidget {
             LinearProgressIndicator(
               value: player.progress,
               minHeight: 2,
-              backgroundColor: theme.colorScheme.outlineVariant.withValues(alpha: 0.4),
+              backgroundColor: theme.colorScheme.outlineVariant.withValues(
+                alpha: 0.4,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(
@@ -318,13 +344,15 @@ class PlayerBar extends ConsumerWidget {
                 children: <Widget>[
                   IconButton(
                     visualDensity: VisualDensity.compact,
-                    onPressed: () => ref.read(playerControllerProvider.notifier).togglePlayPause(),
+                    onPressed: () => ref
+                        .read(playerControllerProvider.notifier)
+                        .togglePlayPause(),
                     icon: Icon(
                       player.playing
                           ? Icons.pause_rounded
                           : player.buffering
-                              ? Icons.hourglass_top_rounded
-                              : Icons.play_arrow_rounded,
+                          ? Icons.hourglass_top_rounded
+                          : Icons.play_arrow_rounded,
                       color: AppColors.emerald500,
                     ),
                   ),
@@ -336,7 +364,9 @@ class PlayerBar extends ConsumerWidget {
                           player.track!.title,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                         Text(
                           player.offlineMode
@@ -353,14 +383,16 @@ class PlayerBar extends ConsumerWidget {
                     visualDensity: VisualDensity.compact,
                     tooltip: 'Sonraki',
                     onPressed: player.hasNext
-                        ? () => ref.read(playerControllerProvider.notifier).next()
+                        ? () =>
+                              ref.read(playerControllerProvider.notifier).next()
                         : null,
                     icon: const Icon(Icons.skip_next_rounded, size: 20),
                   ),
                   IconButton(
                     visualDensity: VisualDensity.compact,
                     tooltip: 'Kapat',
-                    onPressed: () => ref.read(playerControllerProvider.notifier).stop(),
+                    onPressed: () =>
+                        ref.read(playerControllerProvider.notifier).stop(),
                     icon: const Icon(Icons.close_rounded, size: 18),
                   ),
                 ],
@@ -368,10 +400,19 @@ class PlayerBar extends ConsumerWidget {
             ),
             if (player.error != null)
               Padding(
-                padding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.sm),
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.md,
+                  0,
+                  AppSpacing.md,
+                  AppSpacing.sm,
+                ),
                 child: Row(
                   children: <Widget>[
-                    const Icon(Icons.warning_amber_rounded, size: 16, color: AppColors.warning),
+                    const Icon(
+                      Icons.warning_amber_rounded,
+                      size: 16,
+                      color: AppColors.warning,
+                    ),
                     const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: Text(

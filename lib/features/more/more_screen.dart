@@ -25,9 +25,12 @@ class _MoreScreenState extends ConsumerState<MoreScreen> {
   @override
   void initState() {
     super.initState();
-    PackageInfo.fromPlatform().then((PackageInfo info) {
-      if (mounted) setState(() => _version = '${info.version}+${info.buildNumber}');
-    }).catchError((Object _) => null);
+    PackageInfo.fromPlatform()
+        .then((PackageInfo info) {
+          if (mounted)
+            setState(() => _version = '${info.version}+${info.buildNumber}');
+        })
+        .catchError((Object _) => null);
   }
 
   @override
@@ -45,25 +48,25 @@ class _MoreScreenState extends ConsumerState<MoreScreen> {
         children: <Widget>[
           _PremiumCard(premium: premium),
           const SectionHeader(title: 'İbadet'),
-          _Tile(
+          const _Tile(
             icon: Icons.explore_outlined,
             title: 'Kıble',
             subtitle: 'Pusula ile Kâbe yönü ve mesafe',
             route: AppRoutes.qibla,
           ),
-          _Tile(
+          const _Tile(
             icon: Icons.fingerprint_rounded,
             title: 'Tesbih ve Zikir',
             subtitle: 'Sayaç, günlük hedef, istatistik',
             route: AppRoutes.zikir,
           ),
-          _Tile(
+          const _Tile(
             icon: Icons.format_quote_outlined,
             title: 'Hadis',
             subtitle: '1900 sahih hadis, konu ve arama',
             route: AppRoutes.hadith,
           ),
-          _Tile(
+          const _Tile(
             icon: Icons.nightlight_outlined,
             title: 'Ramazan',
             subtitle: 'Sahur/iftar, imsakiye, hatim, kaza takibi',
@@ -80,32 +83,32 @@ class _MoreScreenState extends ConsumerState<MoreScreen> {
             ),
           ),
           const SectionHeader(title: 'İçerik'),
-          _Tile(
+          const _Tile(
             icon: Icons.menu_book_outlined,
             title: 'Kur\'an-ı Kerim',
             subtitle: 'Arapça, Türkçe meal, tilavet, favoriler',
             route: AppRoutes.quran,
           ),
-          _Tile(
+          const _Tile(
             icon: Icons.library_music_outlined,
             title: 'İlahi ve Dini Sesler',
             subtitle: 'Kategori, çalma listesi, çevrimdışı indirme',
             route: AppRoutes.ilahi,
           ),
           const SectionHeader(title: 'Asistan ve Ayarlar'),
-          _Tile(
+          const _Tile(
             icon: Icons.auto_awesome_outlined,
             title: 'AI İslam Asistanı',
             subtitle: 'Kaynaklı, mezhep farklarını belirten yanıtlar',
             route: AppRoutes.ai,
           ),
-          _Tile(
+          const _Tile(
             icon: Icons.settings_outlined,
             title: 'Ayarlar',
             subtitle: 'Tema, konum, yöntem, bildirimler',
             route: AppRoutes.settings,
           ),
-          _Tile(
+          const _Tile(
             icon: Icons.notifications_active_outlined,
             title: 'Bildirim Ayarları',
             subtitle: 'Vakitler, Cuma, Ramazan, günlük içerik',
@@ -118,7 +121,7 @@ class _MoreScreenState extends ConsumerState<MoreScreen> {
             route: AppRoutes.cities,
           ),
           const SectionHeader(title: 'Uygulama'),
-          _Tile(
+          const _Tile(
             icon: Icons.info_outline_rounded,
             title: 'Hakkında ve Gizlilik',
             subtitle: 'Kaynaklar, lisanslar, veri politikası',
@@ -150,9 +153,14 @@ class _PremiumCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.md, AppSpacing.lg, 0),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.md,
+        AppSpacing.lg,
+        0,
+      ),
       child: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: <Color>[AppColors.emerald700, AppColors.emerald900],
           ),
@@ -164,7 +172,11 @@ class _PremiumCard extends StatelessWidget {
           children: <Widget>[
             Row(
               children: <Widget>[
-                const Icon(Icons.workspace_premium_rounded, color: AppColors.gold400, size: 22),
+                const Icon(
+                  Icons.workspace_premium_rounded,
+                  color: AppColors.gold400,
+                  size: 22,
+                ),
                 const SizedBox(width: AppSpacing.sm),
                 Text(
                   premium ? 'Premium etkin' : 'EzanAI Premium',
@@ -180,7 +192,7 @@ class _PremiumCard extends StatelessWidget {
               premium
                   ? 'Reklamsız deneyim ve sınırsız AI asistan aktif. Desteğiniz için teşekkürler.'
                   : 'Reklamsız kullanım, sınırsız AI soru hakkı, gelişmiş istatistikler '
-                      've bulut yedekleme.',
+                        've bulut yedekleme.',
               style: theme.textTheme.bodySmall?.copyWith(
                 color: Colors.white.withValues(alpha: 0.85),
                 height: 1.5,
@@ -233,7 +245,8 @@ class _Tile extends StatelessWidget {
       title: Text(title),
       subtitle: Text(subtitle, maxLines: 2, overflow: TextOverflow.ellipsis),
       trailing: trailing ?? const Icon(Icons.chevron_right_rounded),
-      onTap: () => _tabRoutes.contains(route) ? context.go(route) : context.push(route),
+      onTap: () =>
+          _tabRoutes.contains(route) ? context.go(route) : context.push(route),
     );
   }
 }

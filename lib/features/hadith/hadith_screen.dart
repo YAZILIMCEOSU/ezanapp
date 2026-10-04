@@ -44,18 +44,22 @@ class _HadithScreenState extends ConsumerState<HadithScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final AsyncValue<HadithCollection> collection = ref.watch(hadithCollectionProvider);
+    final AsyncValue<HadithCollection> collection = ref.watch(
+      hadithCollectionProvider,
+    );
     final AsyncValue<List<Hadith>> hadiths = _onlyFavorites
         ? ref.watch(hadithFavoritesProvider)
         : ref.watch(hadithQueryProvider(_query));
-    final Set<int> favorites = ref.watch(hadithFavoriteIdsProvider).value ?? const <int>{};
+    final Set<int> favorites =
+        ref.watch(hadithFavoriteIdsProvider).value ?? const <int>{};
     final ThemeData theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBarHeader(
         title: 'Hadis',
         subtitle: collection.maybeWhen(
-          data: (HadithCollection value) => '${value.name} · ${value.count} hadis',
+          data: (HadithCollection value) =>
+              '${value.name} · ${value.count} hadis',
           orElse: () => 'Sahih kaynaklardan seçkiler',
         ),
         actions: <Widget>[
@@ -63,7 +67,9 @@ class _HadithScreenState extends ConsumerState<HadithScreen> {
             tooltip: _onlyFavorites ? 'Tüm hadisler' : 'Yalnızca favoriler',
             onPressed: () => setState(() => _onlyFavorites = !_onlyFavorites),
             icon: Icon(
-              _onlyFavorites ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+              _onlyFavorites
+                  ? Icons.favorite_rounded
+                  : Icons.favorite_border_rounded,
               size: 20,
             ),
           ),
@@ -72,7 +78,12 @@ class _HadithScreenState extends ConsumerState<HadithScreen> {
       body: Column(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.sm, AppSpacing.lg, AppSpacing.sm),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              AppSpacing.sm,
+              AppSpacing.lg,
+              AppSpacing.sm,
+            ),
             child: TextField(
               controller: _search,
               onChanged: _onQueryChanged,
@@ -97,7 +108,9 @@ class _HadithScreenState extends ConsumerState<HadithScreen> {
               child: collection.maybeWhen(
                 data: (HadithCollection value) => ListView(
                   scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                  ),
                   children: <Widget>[
                     for (final String topic in <String>[
                       HadithQuery.allTopics,
@@ -135,7 +148,9 @@ class _HadithScreenState extends ConsumerState<HadithScreen> {
                 if (items.isEmpty) {
                   return EmptyView(
                     icon: Icons.format_quote_outlined,
-                    title: _onlyFavorites ? 'Favori hadis yok' : 'Sonuç bulunamadı',
+                    title: _onlyFavorites
+                        ? 'Favori hadis yok'
+                        : 'Sonuç bulunamadı',
                     message: _onlyFavorites
                         ? 'Beğendiğiniz hadisleri kalp simgesiyle favorilere ekleyebilirsiniz.'
                         : 'Farklı bir kelime veya konu seçmeyi deneyin.',
@@ -144,12 +159,14 @@ class _HadithScreenState extends ConsumerState<HadithScreen> {
                 return ListView.separated(
                   padding: const EdgeInsets.only(bottom: AppSpacing.lg),
                   itemCount: items.length,
-                  separatorBuilder: (BuildContext context, int index) => const Divider(height: 1),
+                  separatorBuilder: (BuildContext context, int index) =>
+                      const Divider(height: 1),
                   itemBuilder: (BuildContext context, int index) {
                     final Hadith hadith = items[index];
                     final bool isFavorite = favorites.contains(hadith.id);
                     return InkWell(
-                      onTap: () => context.push(AppRoutes.hadithDetail(hadith.id)),
+                      onTap: () =>
+                          context.push(AppRoutes.hadithDetail(hadith.id)),
                       child: Padding(
                         padding: const EdgeInsets.all(AppSpacing.lg),
                         child: Column(
@@ -157,7 +174,9 @@ class _HadithScreenState extends ConsumerState<HadithScreen> {
                           children: <Widget>[
                             Text(
                               hadith.shortTurkish,
-                              style: theme.textTheme.bodyMedium?.copyWith(height: 1.55),
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                height: 1.55,
+                              ),
                             ),
                             const SizedBox(height: AppSpacing.sm),
                             Row(
@@ -180,14 +199,21 @@ class _HadithScreenState extends ConsumerState<HadithScreen> {
                                 ),
                                 IconButton(
                                   visualDensity: VisualDensity.compact,
-                                  tooltip: isFavorite ? 'Favoriden çıkar' : 'Favorilere ekle',
+                                  tooltip: isFavorite
+                                      ? 'Favoriden çıkar'
+                                      : 'Favorilere ekle',
                                   onPressed: () async {
-                                    await ref.read(runtimeProvider).hadith.toggleFavorite(hadith.id);
+                                    await ref
+                                        .read(runtimeProvider)
+                                        .hadith
+                                        .toggleFavorite(hadith.id);
                                     ref.invalidate(hadithFavoriteIdsProvider);
                                     ref.invalidate(hadithFavoritesProvider);
                                   },
                                   icon: Icon(
-                                    isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                                    isFavorite
+                                        ? Icons.favorite_rounded
+                                        : Icons.favorite_border_rounded,
                                     size: 19,
                                     color: isFavorite ? AppColors.danger : null,
                                   ),

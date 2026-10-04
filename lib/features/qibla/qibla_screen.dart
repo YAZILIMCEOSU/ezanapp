@@ -51,7 +51,9 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
         if (!mounted) return;
         setState(() {
           _reading = reading?.withQibla(qibla);
-          _error = reading == null ? 'Pusula verisi okunamadı. Telefonu 8 çizer gibi hareket ettirip tekrar deneyin.' : null;
+          _error = reading == null
+              ? 'Pusula verisi okunamadı. Telefonu 8 çizer gibi hareket ettirip tekrar deneyin.'
+              : null;
         });
       },
       onError: (Object error) {
@@ -90,7 +92,10 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
         padding: const EdgeInsets.only(bottom: AppSpacing.xxl),
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: AppSpacing.sm),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.xl,
+              vertical: AppSpacing.sm,
+            ),
             child: Row(
               children: <Widget>[
                 const Icon(Icons.place_outlined, size: 16),
@@ -113,13 +118,15 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
           if (_reading?.needsCalibration ?? false)
             const StatusBanner(
               icon: Icons.screen_rotation_alt_rounded,
-              message: 'Pusula kalibrasyonu gerekiyor: telefonu havada 8 çizer gibi '
+              message:
+                  'Pusula kalibrasyonu gerekiyor: telefonu havada 8 çizer gibi '
                   'hareket ettirin ve metal eşyalardan uzaklaşın.',
             ),
           if (!_supported)
             const StatusBanner(
               icon: Icons.sensors_off_rounded,
-              message: 'Cihazınızda pusula sensörü bulunamadı. Aşağıdaki dereceyi '
+              message:
+                  'Cihazınızda pusula sensörü bulunamadı. Aşağıdaki dereceyi '
                   'kullanarak yönünüzü ayarlayabilirsiniz.',
             ),
           Center(
@@ -145,7 +152,8 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
             _InfoRow(
               icon: Icons.screen_lock_rotation_rounded,
               label: 'Cihaz yönü',
-              value: '${_reading!.heading.toStringAsFixed(0)}° · '
+              value:
+                  '${_reading!.heading.toStringAsFixed(0)}° · '
                   'sapma ${_reading!.differenceToQibla!.toStringAsFixed(0)}°',
             ),
           const SectionHeader(title: 'Kıble nasıl bulunur?'),
@@ -174,7 +182,10 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
       '&travelmode=driving',
     );
     try {
-      final bool opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
+      final bool opened = await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication,
+      );
       if (!opened && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Harita uygulaması açılamadı.')),
@@ -207,8 +218,8 @@ class _CompassDial extends StatelessWidget {
     final Color accent = aligned
         ? AppColors.success
         : close
-            ? AppColors.warning
-            : theme.colorScheme.primary;
+        ? AppColors.warning
+        : theme.colorScheme.primary;
 
     return SizedBox(
       width: 300,
@@ -221,7 +232,10 @@ class _CompassDial extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: accent.withValues(alpha: 0.08),
-              border: Border.all(color: accent.withValues(alpha: 0.5), width: 2),
+              border: Border.all(
+                color: accent.withValues(alpha: 0.5),
+                width: 2,
+              ),
             ),
           ),
           // Kadran, cihazın dönüşünü telafi etmek için ters yönde döner.
@@ -243,7 +257,10 @@ class _CompassDial extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(top: 14),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.gold500,
                     borderRadius: BorderRadius.circular(999),
@@ -251,7 +268,11 @@ class _CompassDial extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      const Icon(Icons.mosque_rounded, size: 13, color: Colors.white),
+                      const Icon(
+                        Icons.mosque_rounded,
+                        size: 13,
+                        color: Colors.white,
+                      ),
                       const SizedBox(width: 4),
                       Text(
                         'Kâbe',
@@ -280,8 +301,8 @@ class _CompassDial extends StatelessWidget {
                 aligned
                     ? 'YÖN DOĞRU'
                     : close
-                        ? 'ÇOK YAKIN'
-                        : 'Döndürün',
+                    ? 'ÇOK YAKIN'
+                    : 'Döndürün',
                 style: theme.textTheme.labelMedium?.copyWith(
                   fontWeight: FontWeight.w800,
                   letterSpacing: 1.6,
@@ -343,7 +364,12 @@ class _CompassPainter extends CustomPainter {
       )..layout();
       painter.paint(
         canvas,
-        center + Offset(math.cos(angle) * (radius - 30), math.sin(angle) * (radius - 30)) - Offset(painter.width / 2, painter.height / 2),
+        center +
+            Offset(
+              math.cos(angle) * (radius - 30),
+              math.sin(angle) * (radius - 30),
+            ) -
+            Offset(painter.width / 2, painter.height / 2),
       );
     }
 
@@ -363,7 +389,11 @@ class _CompassPainter extends CustomPainter {
 }
 
 class _InfoRow extends StatelessWidget {
-  const _InfoRow({required this.icon, required this.label, required this.value});
+  const _InfoRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
 
   final IconData icon;
   final String label;
@@ -372,17 +402,24 @@ class _InfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: AppSpacing.sm),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.xl,
+        vertical: AppSpacing.sm,
+      ),
       child: Row(
         children: <Widget>[
-          Icon(icon, size: 17, color: Theme.of(context).colorScheme.onSurfaceVariant),
+          Icon(
+            icon,
+            size: 17,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
           const SizedBox(width: AppSpacing.md),
-          Expanded(child: Text(label, style: Theme.of(context).textTheme.bodyMedium)),
+          Expanded(
+            child: Text(label, style: Theme.of(context).textTheme.bodyMedium),
+          ),
           Text(
             value,
-            style: Theme.of(context)
-                .textTheme
-                .labelLarge
+            style: Theme.of(context).textTheme.labelLarge
                 ?.copyWith(fontWeight: FontWeight.w700),
           ),
         ],

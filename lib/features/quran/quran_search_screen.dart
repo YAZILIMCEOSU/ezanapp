@@ -67,8 +67,10 @@ class _QuranSearchScreenState extends ConsumerState<QuranSearchScreen> {
       _searching = true;
     });
     try {
-      final List<AyahSearchResult> results =
-          await ref.read(runtimeProvider).quran.search(query);
+      final List<AyahSearchResult> results = await ref
+          .read(runtimeProvider)
+          .quran
+          .search(query);
       if (!mounted) return;
       setState(() {
         _results = results;
@@ -128,7 +130,9 @@ class _QuranSearchScreenState extends ConsumerState<QuranSearchScreen> {
         children: <Widget>[
           Text(
             'Sık aranan konular',
-            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
           ),
           const SizedBox(height: AppSpacing.md),
           Wrap(
@@ -164,14 +168,14 @@ class _QuranSearchScreenState extends ConsumerState<QuranSearchScreen> {
     return ListView.separated(
       padding: const EdgeInsets.only(bottom: AppSpacing.xxl),
       itemCount: _results.length,
-      separatorBuilder: (BuildContext context, int index) => const Divider(height: 1),
+      separatorBuilder: (BuildContext context, int index) =>
+          const Divider(height: 1),
       itemBuilder: (BuildContext context, int index) {
         final AyahSearchResult result = _results[index];
         final Ayah ayah = result.ayah;
         return InkWell(
-          onTap: () => context.push(
-            AppRoutes.surah(ayah.surah, ayah: ayah.number),
-          ),
+          onTap: () =>
+              context.push(AppRoutes.surah(ayah.surah, ayah: ayah.number)),
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
             child: Column(
@@ -180,7 +184,10 @@ class _QuranSearchScreenState extends ConsumerState<QuranSearchScreen> {
                 Row(
                   children: <Widget>[
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 3,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.emerald600.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(999),

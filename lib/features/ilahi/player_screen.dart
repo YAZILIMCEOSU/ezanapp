@@ -5,7 +5,6 @@ import '../../core/utils/app_time.dart';
 import '../../data/models/ilahi_models.dart';
 import '../../design/app_colors.dart';
 import '../../design/app_spacing.dart';
-import '../../state/providers.dart';
 import 'player_controller.dart';
 
 /// Tam ekran oynatıcı: kuyruk, konum, ses ve hız kontrolleri.
@@ -15,7 +14,9 @@ class PlayerScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final PlayerUiState player = ref.watch(playerControllerProvider);
-    final PlayerController controller = ref.read(playerControllerProvider.notifier);
+    final PlayerController controller = ref.read(
+      playerControllerProvider.notifier,
+    );
     final ThemeData theme = Theme.of(context);
 
     if (player.track == null) {
@@ -43,7 +44,9 @@ class PlayerScreen extends ConsumerWidget {
             tooltip: player.offlineMode ? 'Çevrimdışı' : 'Akış',
             onPressed: null,
             icon: Icon(
-              player.offlineMode ? Icons.download_done_rounded : Icons.cloud_outlined,
+              player.offlineMode
+                  ? Icons.download_done_rounded
+                  : Icons.cloud_outlined,
               size: 18,
             ),
           ),
@@ -60,8 +63,10 @@ class PlayerScreen extends ConsumerWidget {
                     Container(
                       width: 200,
                       height: 200,
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(colors: AppColors.emeraldGradient),
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: AppColors.emeraldGradient,
+                        ),
                         borderRadius: AppRadius.allLg,
                       ),
                       child: Icon(
@@ -107,10 +112,13 @@ class PlayerScreen extends ConsumerWidget {
                     const SizedBox(height: AppSpacing.lg),
                     Slider(
                       value: player.progress.clamp(0.0, 1.0),
-                      onChanged: (double value) => controller.seekToFraction(value),
+                      onChanged: (double value) =>
+                          controller.seekToFraction(value),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.md,
+                      ),
                       child: Row(
                         children: <Widget>[
                           Text(
@@ -136,7 +144,9 @@ class PlayerScreen extends ConsumerWidget {
                           onPressed: controller.toggleRepeat,
                           icon: Icon(
                             Icons.repeat_one_rounded,
-                            color: player.repeatOne ? AppColors.emerald500 : null,
+                            color: player.repeatOne
+                                ? AppColors.emerald500
+                                : null,
                           ),
                         ),
                         IconButton(
@@ -159,8 +169,8 @@ class PlayerScreen extends ConsumerWidget {
                               player.buffering
                                   ? Icons.hourglass_top_rounded
                                   : player.playing
-                                      ? Icons.pause_rounded
-                                      : Icons.play_arrow_rounded,
+                                  ? Icons.pause_rounded
+                                  : Icons.play_arrow_rounded,
                               color: Colors.white,
                             ),
                           ),
@@ -228,8 +238,12 @@ class PlayerScreen extends ConsumerWidget {
                   maxHeight: MediaQuery.of(context).size.height * 0.28,
                 ),
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                  color: theme.colorScheme.surfaceContainerHighest.withValues(
+                    alpha: 0.5,
+                  ),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(20),
+                  ),
                 ),
                 child: ListView.builder(
                   shrinkWrap: true,
@@ -240,7 +254,9 @@ class PlayerScreen extends ConsumerWidget {
                     return ListTile(
                       dense: true,
                       leading: Icon(
-                        current ? Icons.graphic_eq_rounded : Icons.music_note_rounded,
+                        current
+                            ? Icons.graphic_eq_rounded
+                            : Icons.music_note_rounded,
                         color: current ? AppColors.emerald500 : null,
                         size: 18,
                       ),
@@ -258,7 +274,8 @@ class PlayerScreen extends ConsumerWidget {
                         overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.labelSmall,
                       ),
-                      onTap: () => controller.playQueue(player.queue, startIndex: index),
+                      onTap: () =>
+                          controller.playQueue(player.queue, startIndex: index),
                     );
                   },
                 ),

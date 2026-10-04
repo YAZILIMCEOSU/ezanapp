@@ -32,12 +32,15 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
   Future<void> _load() async {
     try {
       final PackageInfo info = await PackageInfo.fromPlatform();
-      if (mounted) setState(() => _version = '${info.version} (+${info.buildNumber})');
+      if (mounted)
+        setState(() => _version = '${info.version} (+${info.buildNumber})');
     } catch (error) {
       AppLog.debug('Paket bilgisi okunamadı: $error');
     }
     if (!mounted) return;
-    final Map<String, String> diagnostics = ref.read(runtimeProvider).diagnostics();
+    final Map<String, String> diagnostics = ref
+        .read(runtimeProvider)
+        .diagnostics();
     if (mounted) setState(() => _diagnostics = diagnostics);
   }
 
@@ -56,9 +59,12 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
                 Container(
                   width: 84,
                   height: 84,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: <Color>[AppColors.emerald600, AppColors.emerald900],
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: <Color>[
+                        AppColors.emerald600,
+                        AppColors.emerald900,
+                      ],
                     ),
                     borderRadius: AppRadius.allLg,
                   ),
@@ -154,7 +160,8 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
               applicationName: 'EzanAI',
               applicationVersion: _version,
               applicationIcon: const Icon(Icons.mosque_rounded, size: 40),
-              applicationLegalese: '© ${DateTime.now().year} EzanAI · Tüm hakları saklıdır.',
+              applicationLegalese:
+                  '© ${DateTime.now().year} EzanAI · Tüm hakları saklıdır.',
             ),
           ),
           ListTile(
@@ -165,7 +172,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
               final Uri uri = Uri(
                 scheme: 'mailto',
                 path: 'destek@ezanai.app',
-                query: 'subject=EzanAI ${_version}',
+                query: 'subject=EzanAI $_version',
               );
               try {
                 await launchUrl(uri);
@@ -173,16 +180,18 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
                 AppLog.warning('E-posta uygulaması açılamadı: $error');
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('E-posta uygulaması bulunamadı.')),
+                    const SnackBar(
+                      content: Text('E-posta uygulaması bulunamadı.'),
+                    ),
                   );
                 }
               }
             },
           ),
           if (AppConfig.apiBaseUrl.isNotEmpty)
-            ListTile(
-              leading: const Icon(Icons.dns_outlined),
-              title: const Text('Servis adresi'),
+            const ListTile(
+              leading: Icon(Icons.dns_outlined),
+              title: Text('Servis adresi'),
               subtitle: Text(AppConfig.apiBaseUrl),
             ),
           Padding(
@@ -226,7 +235,10 @@ class _SourceTile extends StatelessWidget {
     return ListTile(
       leading: Icon(icon),
       title: Text(title),
-      subtitle: Text(description, style: const TextStyle(height: 1.5, fontSize: 12.5)),
+      subtitle: Text(
+        description,
+        style: const TextStyle(height: 1.5, fontSize: 12.5),
+      ),
       isThreeLine: true,
     );
   }

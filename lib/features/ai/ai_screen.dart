@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../data/models/ai_models.dart';
 import '../../data/repositories/ai_repository.dart';
 import '../../design/app_colors.dart';
 import '../../design/app_spacing.dart';
-import '../../router/app_router.dart';
 import '../../state/content_providers.dart';
 import '../../state/providers.dart';
 import '../widgets/state_views.dart';
@@ -73,7 +71,8 @@ class _AiScreenState extends ConsumerState<AiScreen> {
           ),
           IconButton(
             tooltip: 'Yeni sohbet',
-            onPressed: () => ref.read(chatControllerProvider.notifier).startNew(),
+            onPressed: () =>
+                ref.read(chatControllerProvider.notifier).startNew(),
             icon: const Icon(Icons.add_comment_outlined, size: 20),
           ),
         ],
@@ -112,8 +111,10 @@ class _AiScreenState extends ConsumerState<AiScreen> {
           Expanded(
             child: chat.when(
               loading: () => const LoadingView(message: 'Sohbet hazırlanıyor…'),
-              error: (Object error, StackTrace stackTrace) =>
-                  ErrorView(error: error, onRetry: () => ref.invalidate(chatControllerProvider)),
+              error: (Object error, StackTrace stackTrace) => ErrorView(
+                error: error,
+                onRetry: () => ref.invalidate(chatControllerProvider),
+              ),
               data: (AiConversation? conversation) {
                 final List<AiMessage> messages =
                     conversation?.messages ?? const <AiMessage>[];
@@ -130,11 +131,17 @@ class _AiScreenState extends ConsumerState<AiScreen> {
               },
             ),
           ),
-          if (messagesEmpty(chat)) _SuggestionBar(suggestions: _suggestions, onPick: _send),
+          if (messagesEmpty(chat))
+            _SuggestionBar(suggestions: _suggestions, onPick: _send),
           SafeArea(
             top: false,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.sm, AppSpacing.lg, AppSpacing.md),
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.lg,
+                AppSpacing.sm,
+                AppSpacing.lg,
+                AppSpacing.md,
+              ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
@@ -182,10 +189,12 @@ class _AiScreenState extends ConsumerState<AiScreen> {
         height: MediaQuery.of(sheetContext).size.height * 0.6,
         child: Consumer(
           builder: (BuildContext context, WidgetRef ref, Widget? child) {
-            final AsyncValue<List<AiConversation>> conversations =
-                ref.watch(aiConversationsProvider);
+            final AsyncValue<List<AiConversation>> conversations = ref.watch(
+              aiConversationsProvider,
+            );
             return conversations.when(
-              loading: () => const LoadingView(message: 'Sohbetler yükleniyor…'),
+              loading: () =>
+                  const LoadingView(message: 'Sohbetler yükleniyor…'),
               error: (Object error, StackTrace stackTrace) => ErrorView(
                 error: error,
                 onRetry: () => ref.invalidate(aiConversationsProvider),
@@ -195,7 +204,8 @@ class _AiScreenState extends ConsumerState<AiScreen> {
                   return const EmptyView(
                     icon: Icons.forum_outlined,
                     title: 'Henüz sohbet yok',
-                    message: 'İlk sorunuzu yazdığınızda sohbet burada listelenir.',
+                    message:
+                        'İlk sorunuzu yazdığınızda sohbet burada listelenir.',
                   );
                 }
                 return ListView(
@@ -203,7 +213,11 @@ class _AiScreenState extends ConsumerState<AiScreen> {
                     for (final AiConversation item in items)
                       ListTile(
                         leading: const Icon(Icons.chat_bubble_outline_rounded),
-                        title: Text(item.title, maxLines: 1, overflow: TextOverflow.ellipsis),
+                        title: Text(
+                          item.title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                         subtitle: Text(
                           '${item.messages.length} mesaj',
                           style: Theme.of(context).textTheme.labelSmall,
@@ -217,13 +231,17 @@ class _AiScreenState extends ConsumerState<AiScreen> {
                                 .deleteConversation(item.id);
                             ref.invalidate(aiConversationsProvider);
                           },
-                          icon: const Icon(Icons.delete_outline_rounded, size: 20),
+                          icon: const Icon(
+                            Icons.delete_outline_rounded,
+                            size: 20,
+                          ),
                         ),
                         onTap: () async {
                           await ref
                               .read(chatControllerProvider.notifier)
                               .openConversation(item.id);
-                          if (sheetContext.mounted) Navigator.of(sheetContext).pop();
+                          if (sheetContext.mounted)
+                            Navigator.of(sheetContext).pop();
                         },
                       ),
                   ],
@@ -258,13 +276,17 @@ class _MessageBubble extends StatelessWidget {
           color: user
               ? theme.colorScheme.primary.withValues(alpha: 0.12)
               : message.failed
-                  ? AppColors.warning.withValues(alpha: 0.12)
-                  : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.65),
+              ? AppColors.warning.withValues(alpha: 0.12)
+              : theme.colorScheme.surfaceContainerHighest.withValues(
+                  alpha: 0.65,
+                ),
           borderRadius: AppRadius.allLg,
           border: user
               ? null
               : Border.all(
-                  color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
+                  color: theme.colorScheme.outlineVariant.withValues(
+                    alpha: 0.5,
+                  ),
                 ),
         ),
         child: Column(
@@ -327,7 +349,12 @@ class _MessageBubble extends StatelessWidget {
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     for (final String note in message.madhabNotes)
-                      Text('• $note', style: theme.textTheme.labelSmall?.copyWith(height: 1.5)),
+                      Text(
+                        '• $note',
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          height: 1.5,
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -351,7 +378,8 @@ class _MessageBubble extends StatelessWidget {
                   tooltip: 'Yanıtı paylaş',
                   onPressed: () => SharePlus.instance.share(
                     ShareParams(
-                      text: '${message.text}\n\n'
+                      text:
+                          '${message.text}\n\n'
                           '${message.sources.map((AiSource s) => '• ${s.label}${s.detail == null ? '' : ' · ${s.detail}'}').join('\n')}\n\n'
                           '(EzanAI AI asistanı — kaynaklı yanıt)',
                     ),
@@ -386,11 +414,17 @@ class _EmptyChat extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.xl),
       children: <Widget>[
-        Icon(Icons.auto_awesome_rounded, size: 44, color: AppColors.gold500),
+        const Icon(
+          Icons.auto_awesome_rounded,
+          size: 44,
+          color: AppColors.gold500,
+        ),
         const SizedBox(height: AppSpacing.lg),
         Text(
           'Kaynaklı dini soru-cevap',
-          style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w800,
+          ),
         ),
         const SizedBox(height: AppSpacing.sm),
         Text(

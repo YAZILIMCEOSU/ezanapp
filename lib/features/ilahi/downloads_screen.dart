@@ -2,7 +2,6 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/utils/app_time.dart';
 import '../../core/utils/logger.dart';
 import '../../data/models/ilahi_models.dart';
 import '../../design/app_colors.dart';
@@ -19,9 +18,13 @@ class DownloadsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<List<IlahiTrack>> downloads = ref.watch(ilahiDownloadsProvider);
+    final AsyncValue<List<IlahiTrack>> downloads = ref.watch(
+      ilahiDownloadsProvider,
+    );
     final AsyncValue<List<IlahiTrack>> local = ref.watch(ilahiLocalProvider);
-    final AsyncValue<List<IlahiTrack>> catalog = ref.watch(ilahiCatalogProvider);
+    final AsyncValue<List<IlahiTrack>> catalog = ref.watch(
+      ilahiCatalogProvider,
+    );
     final PlayerUiState player = ref.watch(playerControllerProvider);
 
     return Scaffold(
@@ -45,7 +48,8 @@ class DownloadsScreen extends ConsumerWidget {
                 return const EmptyView(
                   icon: Icons.download_outlined,
                   title: 'İndirilmiş ilahi yok',
-                  message: 'Katalogdaki bir parçayı indirerek internet olmadan '
+                  message:
+                      'Katalogdaki bir parçayı indirerek internet olmadan '
                       'dinleyebilirsiniz.',
                 );
               }
@@ -59,7 +63,11 @@ class DownloadsScreen extends ConsumerWidget {
                             : Icons.download_done_rounded,
                         color: AppColors.emerald500,
                       ),
-                      title: Text(track.title, maxLines: 1, overflow: TextOverflow.ellipsis),
+                      title: Text(
+                        track.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                       subtitle: Text('${track.artist} · çevrimdışı hazır'),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -68,8 +76,14 @@ class DownloadsScreen extends ConsumerWidget {
                             tooltip: 'Çal',
                             onPressed: () => ref
                                 .read(playerControllerProvider.notifier)
-                                .playQueue(items, startIndex: items.indexOf(track)),
-                            icon: const Icon(Icons.play_circle_fill_rounded, size: 26),
+                                .playQueue(
+                                  items,
+                                  startIndex: items.indexOf(track),
+                                ),
+                            icon: const Icon(
+                              Icons.play_circle_fill_rounded,
+                              size: 26,
+                            ),
                           ),
                           IconButton(
                             tooltip: 'İndirmeyi sil',
@@ -81,7 +95,10 @@ class DownloadsScreen extends ConsumerWidget {
                               ref.invalidate(ilahiDownloadsProvider);
                               ref.invalidate(ilahiCatalogProvider);
                             },
-                            icon: const Icon(Icons.delete_outline_rounded, size: 20),
+                            icon: const Icon(
+                              Icons.delete_outline_rounded,
+                              size: 20,
+                            ),
                           ),
                         ],
                       ),
@@ -101,9 +118,10 @@ class DownloadsScreen extends ConsumerWidget {
               onRetry: () => ref.invalidate(ilahiCatalogProvider),
             ),
             data: (List<IlahiTrack> items) {
-              final Set<String> downloaded = (downloads.value ?? const <IlahiTrack>[])
-                  .map((IlahiTrack track) => track.id)
-                  .toSet();
+              final Set<String> downloaded =
+                  (downloads.value ?? const <IlahiTrack>[])
+                      .map((IlahiTrack track) => track.id)
+                      .toSet();
               if (items.isEmpty) {
                 return const Padding(
                   padding: EdgeInsets.symmetric(horizontal: AppSpacing.xl),
@@ -118,7 +136,11 @@ class DownloadsScreen extends ConsumerWidget {
                   for (final IlahiTrack track in items)
                     ListTile(
                       leading: const Icon(Icons.cloud_download_outlined),
-                      title: Text(track.title, maxLines: 1, overflow: TextOverflow.ellipsis),
+                      title: Text(
+                        track.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                       subtitle: Text(
                         track.audioUrl.isEmpty
                             ? '${track.artist} · ses bağlantısı yok'
@@ -158,7 +180,11 @@ class DownloadsScreen extends ConsumerWidget {
                 for (final IlahiTrack track in items)
                   ListTile(
                     leading: const Icon(Icons.audiotrack_rounded),
-                    title: Text(track.title, maxLines: 1, overflow: TextOverflow.ellipsis),
+                    title: Text(
+                      track.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     subtitle: const Text('Cihazda · çevrimdışı'),
                     trailing: IconButton(
                       tooltip: 'Kaldır',
@@ -183,7 +209,8 @@ class DownloadsScreen extends ConsumerWidget {
             child: Text(
               'İndirilen sesler cihazın uygulama klasöründe saklanır. Telif hakkı '
               'bulunan içerikleri yalnızca hak sahibi olduğunuz durumlarda içe aktarın.',
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(height: 1.5),
+              style: Theme.of(context).textTheme.labelSmall
+                  ?.copyWith(height: 1.5),
             ),
           ),
         ],
@@ -191,13 +218,19 @@ class DownloadsScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _download(BuildContext context, WidgetRef ref, IlahiTrack track) async {
+  Future<void> _download(
+    BuildContext context,
+    WidgetRef ref,
+    IlahiTrack track,
+  ) async {
     if (ref.read(settingsProvider).streamingOnlyOnWifi) {
       final bool online = ref.read(isOnlineProvider);
       if (!online) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Çevrimdışısınız. İnternet bağlantısı kurulduğunda indirin.'),
+            content: Text(
+              'Çevrimdışısınız. İnternet bağlantısı kurulduğunda indirin.',
+            ),
           ),
         );
         return;
@@ -208,7 +241,10 @@ class DownloadsScreen extends ConsumerWidget {
       SnackBar(content: Text('${track.title} indiriliyor…')),
     );
     try {
-      final String? path = await ref.read(runtimeProvider).ilahi.download(track);
+      final String? path = await ref
+          .read(runtimeProvider)
+          .ilahi
+          .download(track);
       if (path == null) {
         messenger.showSnackBar(
           const SnackBar(
@@ -236,10 +272,14 @@ class DownloadsScreen extends ConsumerWidget {
       extensions: <String>['mp3', 'm4a', 'aac', 'wav', 'ogg', 'opus', 'flac'],
     );
     try {
-      final XFile? file = await openFile(acceptedTypeGroups: <XTypeGroup>[audioGroup]);
+      final XFile? file = await openFile(
+        acceptedTypeGroups: <XTypeGroup>[audioGroup],
+      );
       if (file == null) return;
-      final IlahiTrack? imported =
-          await ref.read(runtimeProvider).ilahi.importLocalFile(file.path);
+      final IlahiTrack? imported = await ref
+          .read(runtimeProvider)
+          .ilahi
+          .importLocalFile(file.path);
       ref.invalidate(ilahiLocalProvider);
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -252,12 +292,18 @@ class DownloadsScreen extends ConsumerWidget {
         ),
       );
     } catch (error, stackTrace) {
-      AppLog.error('Dosya içe aktarılamadı', error: error, stackTrace: stackTrace);
+      AppLog.error(
+        'Dosya içe aktarılamadı',
+        error: error,
+        stackTrace: stackTrace,
+      );
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Dosya seçici açılamadı. Cihazınızda bir dosya yöneticisi '
-              'kurulu olduğundan emin olun.'),
+          content: Text(
+            'Dosya seçici açılamadı. Cihazınızda bir dosya yöneticisi '
+            'kurulu olduğundan emin olun.',
+          ),
         ),
       );
     }

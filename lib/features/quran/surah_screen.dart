@@ -11,7 +11,6 @@ import '../../data/repositories/quran_repository.dart';
 import '../../design/app_colors.dart';
 import '../../design/app_spacing.dart';
 import '../../design/app_theme.dart';
-import '../../router/app_router.dart';
 import '../../state/content_providers.dart';
 import '../../state/providers.dart';
 import '../widgets/state_views.dart';
@@ -48,20 +47,29 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
 
   void _rememberPosition() {
     final Iterable<ItemPosition> visible = _positions.itemPositions.value.values
-        .where((ItemPosition position) => position.itemLeadingEdge >= 0 && position.itemLeadingEdge < 0.4);
+        .where(
+          (ItemPosition position) =>
+              position.itemLeadingEdge >= 0 && position.itemLeadingEdge < 0.4,
+        );
     if (visible.isEmpty) return;
     final int index = visible.first.index;
     final int ayahNumber = index + 1;
     if (ayahNumber == _lastSavedAyah) return;
     _lastSavedAyah = ayahNumber;
-    ref.read(runtimeProvider).quran.saveProgress(widget.surahNumber, ayahNumber);
+    ref
+        .read(runtimeProvider)
+        .quran
+        .saveProgress(widget.surahNumber, ayahNumber);
   }
 
   @override
   Widget build(BuildContext context) {
-    final AsyncValue<SurahContent> content = ref.watch(surahContentProvider(widget.surahNumber));
+    final AsyncValue<SurahContent> content = ref.watch(
+      surahContentProvider(widget.surahNumber),
+    );
     final AppSettings settings = ref.watch(settingsProvider);
-    final Set<int> bookmarks = ref.watch(quranBookmarkIdsProvider).value ?? const <int>{};
+    final Set<int> bookmarks =
+        ref.watch(quranBookmarkIdsProvider).value ?? const <int>{};
     final Reciter reciter = ref.watch(selectedReciterProvider);
 
     return Scaffold(
@@ -70,7 +78,10 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
           data: (SurahContent value) => Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(value.surah.nameTurkish, style: const TextStyle(fontWeight: FontWeight.w700)),
+              Text(
+                value.surah.nameTurkish,
+                style: const TextStyle(fontWeight: FontWeight.w700),
+              ),
               Text(
                 '${value.surah.meaning} · ${value.surah.verseCount} ayet',
                 style: Theme.of(context).textTheme.bodySmall,
@@ -86,11 +97,15 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
             icon: const Icon(Icons.format_size_rounded, size: 20),
           ),
           IconButton(
-            tooltip: settings.quranShowTranslation ? 'Meali gizle' : 'Meali göster',
+            tooltip: settings.quranShowTranslation
+                ? 'Meali gizle'
+                : 'Meali göster',
             onPressed: () => ref
                 .read(settingsControllerProvider.notifier)
                 .update(
-                  settings.copyWith(quranShowTranslation: !settings.quranShowTranslation),
+                  settings.copyWith(
+                    quranShowTranslation: !settings.quranShowTranslation,
+                  ),
                   rescheduleNotifications: false,
                 ),
             icon: Icon(
@@ -113,7 +128,8 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
         loading: () => const LoadingView(message: 'Sure yükleniyor…'),
         error: (Object error, StackTrace stackTrace) => ErrorView(
           error: error,
-          onRetry: () => ref.invalidate(surahContentProvider(widget.surahNumber)),
+          onRetry: () =>
+              ref.invalidate(surahContentProvider(widget.surahNumber)),
         ),
         data: (SurahContent value) {
           if (value.ayahs.isEmpty) {
@@ -132,11 +148,14 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
               if (index == 0) {
                 return _SurahHeader(
                   surah: value.surah,
-                  showBasmala: widget.surahNumber != 1 && widget.surahNumber != 9,
+                  showBasmala:
+                      widget.surahNumber != 1 && widget.surahNumber != 9,
                 );
               }
               final Ayah ayah = value.ayahs[index - 1];
-              final bool isBookmarked = bookmarks.contains(value.surah.number * 1000 + ayah.number);
+              final bool isBookmarked = bookmarks.contains(
+                value.surah.number * 1000 + ayah.number,
+              );
               return _AyahCard(
                 ayah: ayah,
                 fontSize: settings.quranFontSize,
@@ -144,7 +163,10 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
                 isBookmarked: isBookmarked,
                 isPlaying: _playingAyah == ayah.number,
                 onBookmark: () async {
-                  await ref.read(runtimeProvider).quran.toggleBookmark(ayah.surah, ayah.number);
+                  await ref
+                      .read(runtimeProvider)
+                      .quran
+                      .toggleBookmark(ayah.surah, ayah.number);
                   ref.invalidate(quranBookmarkIdsProvider);
                   ref.invalidate(quranBookmarksProvider);
                 },
@@ -178,14 +200,19 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
   int _initialIndex(SurahContent content) {
     final int? target = widget.initialAyah;
     if (target == null) return 0;
-    final int index = content.ayahs.indexWhere((Ayah ayah) => ayah.number == target);
+    final int index = content.ayahs.indexWhere(
+      (Ayah ayah) => ayah.number == target,
+    );
     return index <= 0 ? 0 : index + 1;
   }
 
   Future<void> _playAyah(Ayah ayah, Reciter reciter) async {
     final String url = Reciters.ayahUrl(reciter, ayah.surah, ayah.number);
     setState(() => _playingAyah = ayah.number);
-    final bool ok = await ref.read(runtimeProvider).audio.playUrl(
+    final bool ok = await ref
+        .read(runtimeProvider)
+        .audio
+        .playUrl(
           url,
           title: '${ayah.surah}. sure ${ayah.number}. ayet',
           artist: reciter.name,
@@ -215,7 +242,10 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
     ];
     if (urls.isEmpty) return;
     setState(() => _playingAyah = content.ayahs.first.number);
-    final bool ok = await ref.read(runtimeProvider).audio.playUrl(
+    final bool ok = await ref
+        .read(runtimeProvider)
+        .audio
+        .playUrl(
           urls.first,
           title: '${content.surah.nameTurkish} Suresi',
           artist: reciter.name,
@@ -227,7 +257,9 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
       if (mounted) {
         setState(() => _playingAyah = null);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Tilavet başlatılamadı. Bağlantınızı kontrol edin.')),
+          const SnackBar(
+            content: Text('Tilavet başlatılamadı. Bağlantınızı kontrol edin.'),
+          ),
         );
       }
       return;
@@ -235,15 +267,21 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('${content.surah.nameTurkish} dinleniyor. Ayet sırası için '
-              'ayetlerin yanındaki oynat düğmesini kullanabilirsiniz.'),
+          content: Text(
+            '${content.surah.nameTurkish} dinleniyor. Ayet sırası için '
+            'ayetlerin yanındaki oynat düğmesini kullanabilirsiniz.',
+          ),
           duration: const Duration(seconds: 5),
         ),
       );
     }
   }
 
-  void _showFontSheet(BuildContext context, WidgetRef ref, AppSettings settings) {
+  void _showFontSheet(
+    BuildContext context,
+    WidgetRef ref,
+    AppSettings settings,
+  ) {
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
@@ -257,7 +295,8 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
               children: <Widget>[
                 Text(
                   'Yazı boyutu',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+                  style: Theme.of(context).textTheme.titleMedium
+                      ?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 Slider(
@@ -275,7 +314,10 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
                 ),
                 Text(
                   'بِسْمِ اللّٰهِ',
-                  style: AppTheme.arabic(Theme.of(context).textTheme, size: settings.quranFontSize),
+                  style: AppTheme.arabic(
+                    Theme.of(context).textTheme,
+                    size: settings.quranFontSize,
+                  ),
                   textDirection: TextDirection.rtl,
                 ),
                 const SizedBox(height: AppSpacing.md),
@@ -320,14 +362,19 @@ class _SurahHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, AppSpacing.sm),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.lg,
+        AppSpacing.lg,
+        AppSpacing.sm,
+      ),
       child: Column(
         children: <Widget>[
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(AppSpacing.xl),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(colors: AppColors.emeraldGradient),
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(colors: AppColors.emeraldGradient),
               borderRadius: AppRadius.allLg,
             ),
             child: Column(
@@ -363,7 +410,11 @@ class _SurahHeader extends StatelessWidget {
               'بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحٖيمِ',
               textAlign: TextAlign.center,
               textDirection: TextDirection.rtl,
-              style: AppTheme.arabic(theme.textTheme, size: 26, color: AppColors.gold600),
+              style: AppTheme.arabic(
+                theme.textTheme,
+                size: 26,
+                color: AppColors.gold600,
+              ),
             ),
           ],
         ],
@@ -399,12 +450,19 @@ class _AyahCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.sm, AppSpacing.lg, AppSpacing.md),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.sm,
+        AppSpacing.lg,
+        AppSpacing.md,
+      ),
       child: Container(
         decoration: BoxDecoration(
           color: isPlaying
               ? AppColors.emerald600.withValues(alpha: 0.08)
-              : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.35),
+              : theme.colorScheme.surfaceContainerHighest.withValues(
+                  alpha: 0.35,
+                ),
           borderRadius: AppRadius.allLg,
           border: Border.all(
             color: isPlaying
@@ -419,7 +477,10 @@ class _AyahCard extends StatelessWidget {
             Row(
               children: <Widget>[
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: theme.colorScheme.primary.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(999),
@@ -438,7 +499,9 @@ class _AyahCard extends StatelessWidget {
                   tooltip: isPlaying ? 'Çalıyor' : 'Ayeti dinle',
                   onPressed: onPlay,
                   icon: Icon(
-                    isPlaying ? Icons.graphic_eq_rounded : Icons.play_circle_outline_rounded,
+                    isPlaying
+                        ? Icons.graphic_eq_rounded
+                        : Icons.play_circle_outline_rounded,
                     size: 20,
                     color: isPlaying ? AppColors.emerald500 : null,
                   ),
@@ -448,7 +511,9 @@ class _AyahCard extends StatelessWidget {
                   tooltip: isBookmarked ? 'Favoriden çıkar' : 'Favorilere ekle',
                   onPressed: onBookmark,
                   icon: Icon(
-                    isBookmarked ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
+                    isBookmarked
+                        ? Icons.bookmark_rounded
+                        : Icons.bookmark_border_rounded,
                     size: 20,
                     color: isBookmarked ? AppColors.gold600 : null,
                   ),

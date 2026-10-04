@@ -271,8 +271,9 @@ class _TodayView extends ConsumerWidget {
                               .setManualOffset(prayer.key, value);
                           ref.invalidate(prayerTimesProvider);
                           ref.invalidate(prayerRangeProvider);
-                          if (sheetContext.mounted)
+                          if (sheetContext.mounted) {
                             Navigator.of(sheetContext).pop();
+                          }
                         },
                         child: const Text('Kaydet'),
                       ),
@@ -535,8 +536,9 @@ class _MethodFooter extends ConsumerWidget {
                           .setMethod(method.id);
                       ref.invalidate(prayerTimesProvider);
                       ref.invalidate(prayerRangeProvider);
-                      if (sheetContext.mounted)
+                      if (sheetContext.mounted) {
                         Navigator.of(sheetContext).pop();
+                      }
                     },
                   ),
               ],

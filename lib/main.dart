@@ -56,7 +56,11 @@ Future<void> main() async {
       ),
     );
   } catch (error, stackTrace) {
-    AppLog.error('Uygulama başlatılamadı', error: error, stackTrace: stackTrace);
+    AppLog.error(
+      'Uygulama başlatılamadı',
+      error: error,
+      stackTrace: stackTrace,
+    );
     runApp(_StartupFailureApp(message: '$error'));
   }
 }

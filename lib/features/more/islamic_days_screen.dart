@@ -16,10 +16,13 @@ class IslamicDaysScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final HijriDate hijri = ref.watch(hijriTodayProvider);
-    final AsyncValue<List<({String title, DateTime date, String description})>> days =
-        ref.watch(specialDaysProvider);
+    final AsyncValue<List<({String title, DateTime date, String description})>>
+    days = ref.watch(specialDaysProvider);
     final DateTime now = DateTime.now();
-    final int hijriMonthLength = ref.watch(runtimeProvider).hijri.monthLength(hijri);
+    final int hijriMonthLength = ref
+        .watch(runtimeProvider)
+        .hijri
+        .monthLength(hijri);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Hicri Takvim')),
@@ -29,8 +32,8 @@ class IslamicDaysScreen extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.all(AppSpacing.xl),
             child: Container(
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
                   colors: <Color>[AppColors.emerald700, AppColors.emerald900],
                 ),
                 borderRadius: AppRadius.allLg,
@@ -42,24 +45,22 @@ class IslamicDaysScreen extends ConsumerWidget {
                   Text(
                     hijri.longFormatted,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w800,
-                        ),
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     AppTime.formatDateLong(now),
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.white.withValues(alpha: 0.8),
-                        ),
+                    style: Theme.of(context).textTheme.bodySmall
+                        ?.copyWith(color: Colors.white.withValues(alpha: 0.8)),
                   ),
                   const SizedBox(height: AppSpacing.md),
                   Text(
                     '${hijri.monthName} ayı $hijriMonthLength gün çeker · '
                     'Hicri yıl ${hijri.year}',
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: Colors.white.withValues(alpha: 0.75),
-                        ),
+                    style: Theme.of(context).textTheme.labelSmall
+                        ?.copyWith(color: Colors.white.withValues(alpha: 0.75)),
                   ),
                 ],
               ),
@@ -85,7 +86,9 @@ class IslamicDaysScreen extends ConsumerWidget {
               }
               return Column(
                 children: <Widget>[
-                  for (final ({String title, DateTime date, String description}) item in items)
+                  for (final ({String title, DateTime date, String description})
+                      item
+                      in items)
                     ListTile(
                       leading: Container(
                         width: 46,
@@ -97,7 +100,8 @@ class IslamicDaysScreen extends ConsumerWidget {
                         alignment: Alignment.center,
                         child: Text(
                           '${item.date.day}',
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(
                                 fontWeight: FontWeight.w800,
                                 color: AppColors.gold600,
                               ),

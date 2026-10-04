@@ -42,8 +42,10 @@ class _CityPickerScreenState extends ConsumerState<CityPickerScreen> {
 
   Future<void> _loadFeatured() async {
     try {
-      final List<City> featured =
-          await ref.read(runtimeProvider).cities.featuredProvinces();
+      final List<City> featured = await ref
+          .read(runtimeProvider)
+          .cities
+          .featuredProvinces();
       if (!mounted) return;
       setState(() {
         _featured = featured;
@@ -72,10 +74,10 @@ class _CityPickerScreenState extends ConsumerState<CityPickerScreen> {
     }
     setState(() => _loading = true);
     try {
-      final List<City> results = await ref.read(runtimeProvider).cities.search(
-            value,
-            includeWorld: _includeWorld,
-          );
+      final List<City> results = await ref
+          .read(runtimeProvider)
+          .cities
+          .search(value, includeWorld: _includeWorld);
       if (!mounted) return;
       setState(() {
         _results = results;
@@ -111,7 +113,12 @@ class _CityPickerScreenState extends ConsumerState<CityPickerScreen> {
       body: Column(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.sm, AppSpacing.lg, AppSpacing.sm),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              AppSpacing.sm,
+              AppSpacing.lg,
+              AppSpacing.sm,
+            ),
             child: TextField(
               controller: _controller,
               autofocus: false,
@@ -148,8 +155,8 @@ class _CityPickerScreenState extends ConsumerState<CityPickerScreen> {
                 Text(
                   querying ? '${_results.length} sonuç' : 'Öne çıkan iller',
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ],
             ),
@@ -158,12 +165,12 @@ class _CityPickerScreenState extends ConsumerState<CityPickerScreen> {
             ListTile(
               leading: const Icon(Icons.check_circle_rounded),
               title: Text('Seçili: ${current.displayName}'),
-              subtitle: Text('Koordinat: ${current.latitude.toStringAsFixed(3)}, ${current.longitude.toStringAsFixed(3)}'),
+              subtitle: Text(
+                'Koordinat: ${current.latitude.toStringAsFixed(3)}, ${current.longitude.toStringAsFixed(3)}',
+              ),
             ),
           const Divider(height: 1),
-          Expanded(
-            child: _body(querying),
-          ),
+          Expanded(child: _body(querying)),
         ],
       ),
     );
@@ -188,17 +195,20 @@ class _CityPickerScreenState extends ConsumerState<CityPickerScreen> {
     }
     return ListView.separated(
       itemCount: items.length,
-      separatorBuilder: (BuildContext context, int index) => const Divider(height: 1),
+      separatorBuilder: (BuildContext context, int index) =>
+          const Divider(height: 1),
       itemBuilder: (BuildContext context, int index) {
         final City city = items[index];
         return ListTile(
-          leading: Icon(city.isTurkish ? Icons.location_city_rounded : Icons.public_rounded),
+          leading: Icon(
+            city.isTurkish ? Icons.location_city_rounded : Icons.public_rounded,
+          ),
           title: Text(city.name),
           subtitle: Text(
             city.isTurkish
                 ? (city.province != null && city.province != city.name
-                    ? '${city.province} · ilçe kodu ${city.id}'
-                    : 'İl merkezi · kod ${city.id}')
+                      ? '${city.province} · ilçe kodu ${city.id}'
+                      : 'İl merkezi · kod ${city.id}')
                 : '${city.country} · kod ${city.id}',
           ),
           trailing: const Icon(Icons.chevron_right_rounded),
@@ -212,7 +222,9 @@ class _CityPickerScreenState extends ConsumerState<CityPickerScreen> {
     await ref.read(locationControllerProvider.notifier).selectCity(city);
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('${city.displayName} seçildi. Vakitler güncellendi.')),
+      SnackBar(
+        content: Text('${city.displayName} seçildi. Vakitler güncellendi.'),
+      ),
     );
     if (Navigator.of(context).canPop()) {
       context.pop();
@@ -222,12 +234,15 @@ class _CityPickerScreenState extends ConsumerState<CityPickerScreen> {
   }
 
   Future<void> _useGps() async {
-    final bool ok = await ref.read(locationControllerProvider.notifier).refreshFromGps();
+    final bool ok = await ref
+        .read(locationControllerProvider.notifier)
+        .refreshFromGps();
     if (!mounted) return;
     final String message = ok
         ? 'Konum güncellendi: ${ref.read(activeLocationProvider).label}'
         : ref.read(locationControllerProvider).error ?? 'Konum alınamadı.';
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
     if (ok && Navigator.of(context).canPop()) context.pop();
   }
 }

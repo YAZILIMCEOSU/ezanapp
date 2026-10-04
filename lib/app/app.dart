@@ -47,7 +47,9 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp> {
     });
 
     // İlk açılışta hoş geldin ekranı ve konum izni akışı.
-    final bool onboardingDone = runtime.preferences.getBool(PrefKeys.onboardingDone);
+    final bool onboardingDone = runtime.preferences.getBool(
+      PrefKeys.onboardingDone,
+    );
     if (!onboardingDone) {
       appRouter.go(AppRoutes.onboarding);
     }
@@ -55,7 +57,9 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp> {
 
   Future<void> _playAdhan(Prayer prayer, AppSettings settings) async {
     final runtime = ref.read(runtimeProvider);
-    final String? asset = BundledSounds.assetFor(settings.notifications.adhanSound);
+    final String? asset = BundledSounds.assetFor(
+      settings.notifications.adhanSound,
+    );
     if (asset == null) return;
 
     final bool started = await runtime.audio.playAsset(
@@ -93,7 +97,9 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp> {
       debugShowCheckedModeBanner: false,
       routerConfig: appRouter,
       theme: AppTheme.light(),
-      darkTheme: mode == AppThemeMode.amoled ? AppTheme.amoled() : AppTheme.dark(),
+      darkTheme: mode == AppThemeMode.amoled
+          ? AppTheme.amoled()
+          : AppTheme.dark(),
       themeMode: ThemeModeController.toMaterial(mode),
       locale: const Locale('tr'),
       supportedLocales: const <Locale>[Locale('tr'), Locale('en')],

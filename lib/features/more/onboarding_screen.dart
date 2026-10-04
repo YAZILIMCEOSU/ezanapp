@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/services/location_service.dart';
 import '../../core/utils/logger.dart';
-import '../../data/models/city.dart';
 import '../../design/app_colors.dart';
 import '../../design/app_spacing.dart';
 import '../../router/app_router.dart';
@@ -47,14 +46,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       _locationBusy = true;
       _locationMessage = null;
     });
-    final bool ok = await ref.read(locationControllerProvider.notifier).refreshFromGps();
+    final bool ok = await ref
+        .read(locationControllerProvider.notifier)
+        .refreshFromGps();
     if (!mounted) return;
     setState(() {
       _locationBusy = false;
       _locationMessage = ok
           ? 'Konum alındı: ${ref.read(activeLocationProvider).label}'
           : ref.read(locationControllerProvider).error ??
-              'Konum alınamadı. Şehir seçerek devam edebilirsiniz.';
+                'Konum alınamadı. Şehir seçerek devam edebilirsiniz.';
     });
   }
 
@@ -125,10 +126,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     ],
                   ),
                   const Spacer(),
-                  TextButton(
-                    onPressed: _finish,
-                    child: const Text('Atla'),
-                  ),
+                  TextButton(onPressed: _finish, child: const Text('Atla')),
                   const SizedBox(width: AppSpacing.sm),
                   FilledButton(
                     onPressed: () {
@@ -213,11 +211,17 @@ class _LocationPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Icon(Icons.explore_outlined, size: 56, color: AppColors.emerald500),
+          const Icon(
+            Icons.explore_outlined,
+            size: 56,
+            color: AppColors.emerald500,
+          ),
           const SizedBox(height: AppSpacing.xl),
           Text(
             'Vakitler hangi konuma göre?',
-            style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
+            style: theme.textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.w800,
+            ),
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
@@ -228,7 +232,11 @@ class _LocationPage extends StatelessWidget {
           const SizedBox(height: AppSpacing.lg),
           Row(
             children: <Widget>[
-              Icon(Icons.place_outlined, size: 16, color: theme.colorScheme.onSurfaceVariant),
+              Icon(
+                Icons.place_outlined,
+                size: 16,
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
               const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(
@@ -294,11 +302,17 @@ class _NotificationPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Icon(Icons.notifications_active_outlined, size: 56, color: AppColors.gold500),
+          const Icon(
+            Icons.notifications_active_outlined,
+            size: 56,
+            color: AppColors.gold500,
+          ),
           const SizedBox(height: AppSpacing.xl),
           Text(
             'Ezan vakti geldiğinde haber verelim',
-            style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
+            style: theme.textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.w800,
+            ),
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
@@ -312,16 +326,16 @@ class _NotificationPage extends StatelessWidget {
             Row(
               children: <Widget>[
                 Icon(
-                  granted ? Icons.check_circle_rounded : Icons.info_outline_rounded,
+                  granted
+                      ? Icons.check_circle_rounded
+                      : Icons.info_outline_rounded,
                   size: 18,
                   color: granted ? AppColors.success : AppColors.warning,
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(
-                    granted
-                        ? 'Bildirim izni verildi.'
-                        : 'İzin verilmedi. Ayarlardan daha sonra açabilirsiniz.',
+                    granted ? 'Bildirim izni verildi.' : 'İzin verilmedi. Ayarlardan daha sonra açabilirsiniz.',
                     style: theme.textTheme.bodySmall,
                   ),
                 ),

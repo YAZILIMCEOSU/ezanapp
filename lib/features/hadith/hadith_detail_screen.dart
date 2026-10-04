@@ -19,8 +19,11 @@ class HadithDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<List<Hadith>> all = ref.watch(hadithQueryProvider(const HadithQuery()));
-    final Set<int> favorites = ref.watch(hadithFavoriteIdsProvider).value ?? const <int>{};
+    final AsyncValue<List<Hadith>> all = ref.watch(
+      hadithQueryProvider(const HadithQuery()),
+    );
+    final Set<int> favorites =
+        ref.watch(hadithFavoriteIdsProvider).value ?? const <int>{};
     final ThemeData theme = Theme.of(context);
 
     return Scaffold(
@@ -40,7 +43,8 @@ class HadithDetailScreen extends ConsumerWidget {
             return const EmptyView(
               icon: Icons.search_off_rounded,
               title: 'Hadis bulunamadı',
-              message: 'Bu hadis kaydı açılamadı. Listeye dönüp yeniden deneyin.',
+              message:
+                  'Bu hadis kaydı açılamadı. Listeye dönüp yeniden deneyin.',
             );
           }
           final Hadith item = hadith;
@@ -51,7 +55,9 @@ class HadithDetailScreen extends ConsumerWidget {
               Container(
                 padding: const EdgeInsets.all(AppSpacing.xl),
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
+                  color: theme.colorScheme.surfaceContainerHighest.withValues(
+                    alpha: 0.4,
+                  ),
                   borderRadius: AppRadius.allLg,
                 ),
                 child: Column(
@@ -80,7 +86,10 @@ class HadithDetailScreen extends ConsumerWidget {
                   runSpacing: AppSpacing.sm,
                   children: <Widget>[
                     for (final String topic in item.topics)
-                      Chip(label: Text(topic), visualDensity: VisualDensity.compact),
+                      Chip(
+                        label: Text(topic),
+                        visualDensity: VisualDensity.compact,
+                      ),
                   ],
                 ),
               const SizedBox(height: AppSpacing.lg),
@@ -88,21 +97,28 @@ class HadithDetailScreen extends ConsumerWidget {
                 children: <Widget>[
                   FilledButton.icon(
                     onPressed: () async {
-                      await ref.read(runtimeProvider).hadith.toggleFavorite(item.id);
+                      await ref
+                          .read(runtimeProvider)
+                          .hadith
+                          .toggleFavorite(item.id);
                       ref.invalidate(hadithFavoriteIdsProvider);
                       ref.invalidate(hadithFavoritesProvider);
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
-                              isFavorite ? 'Favoriden çıkarıldı.' : 'Favorilere eklendi.',
+                              isFavorite
+                                  ? 'Favoriden çıkarıldı.'
+                                  : 'Favorilere eklendi.',
                             ),
                           ),
                         );
                       }
                     },
                     icon: Icon(
-                      isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                      isFavorite
+                          ? Icons.favorite_rounded
+                          : Icons.favorite_border_rounded,
                       size: 18,
                     ),
                     label: Text(isFavorite ? 'Favorilerde' : 'Favorilere ekle'),
@@ -111,7 +127,8 @@ class HadithDetailScreen extends ConsumerWidget {
                   OutlinedButton.icon(
                     onPressed: () => SharePlus.instance.share(
                       ShareParams(
-                        text: '${item.turkish}\n\n— ${item.primarySource} · ${item.reference}\n'
+                        text:
+                            '${item.turkish}\n\n— ${item.primarySource} · ${item.reference}\n'
                             '(EzanAI ile paylaşıldı)',
                         subject: 'Hadis · ${item.reference}',
                       ),
@@ -172,19 +189,34 @@ class _SourceCard extends StatelessWidget {
         children: <Widget>[
           Row(
             children: <Widget>[
-              const Icon(Icons.verified_rounded, size: 18, color: AppColors.gold600),
+              const Icon(
+                Icons.verified_rounded,
+                size: 18,
+                color: AppColors.gold600,
+              ),
               const SizedBox(width: AppSpacing.sm),
               Text(
                 'Kaynak bilgisi',
-                style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
               ),
             ],
           ),
           const SizedBox(height: AppSpacing.sm),
-          Text('Kitap: ${hadith.primarySource}', style: theme.textTheme.bodySmall),
-          Text('Referans: ${hadith.reference}', style: theme.textTheme.bodySmall),
+          Text(
+            'Kitap: ${hadith.primarySource}',
+            style: theme.textTheme.bodySmall,
+          ),
+          Text(
+            'Referans: ${hadith.reference}',
+            style: theme.textTheme.bodySmall,
+          ),
           if (hadith.topics.isNotEmpty)
-            Text('Konular: ${hadith.topics.join(', ')}', style: theme.textTheme.bodySmall),
+            Text(
+              'Konular: ${hadith.topics.join(', ')}',
+              style: theme.textTheme.bodySmall,
+            ),
         ],
       ),
     );

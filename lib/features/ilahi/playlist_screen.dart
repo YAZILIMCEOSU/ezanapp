@@ -8,7 +8,6 @@ import '../../design/app_spacing.dart';
 import '../../router/app_router.dart';
 import '../../state/content_providers.dart';
 import '../../state/providers.dart';
-import '../widgets/app_shell.dart';
 import '../widgets/state_views.dart';
 import 'player_controller.dart';
 
@@ -49,20 +48,24 @@ class _PlaylistIndex extends ConsumerWidget {
       bottomNavigationBar: const PlayerBar(),
       body: playlists.when(
         loading: () => const LoadingView(message: 'Listeler yükleniyor…'),
-        error: (Object error, StackTrace stackTrace) =>
-            ErrorView(error: error, onRetry: () => ref.invalidate(playlistsProvider)),
+        error: (Object error, StackTrace stackTrace) => ErrorView(
+          error: error,
+          onRetry: () => ref.invalidate(playlistsProvider),
+        ),
         data: (List<Playlist> items) {
           if (items.isEmpty) {
             return const EmptyView(
               icon: Icons.queue_music_rounded,
               title: 'Çalma listeniz yok',
-              message: 'İlahi ekranındaki menüden yeni bir liste oluşturup parça '
+              message:
+                  'İlahi ekranındaki menüden yeni bir liste oluşturup parça '
                   'ekleyebilirsiniz.',
             );
           }
           return ListView.separated(
             itemCount: items.length,
-            separatorBuilder: (BuildContext context, int index) => const Divider(height: 1),
+            separatorBuilder: (BuildContext context, int index) =>
+                const Divider(height: 1),
             itemBuilder: (BuildContext context, int index) {
               final Playlist playlist = items[index];
               return ListTile(
@@ -108,7 +111,9 @@ class _PlaylistIndex extends ConsumerWidget {
         content: TextField(
           controller: controller,
           autofocus: true,
-          decoration: const InputDecoration(hintText: 'Liste adı (ör. Ramazan geceleri)'),
+          decoration: const InputDecoration(
+            hintText: 'Liste adı (ör. Ramazan geceleri)',
+          ),
         ),
         actions: <Widget>[
           TextButton(
@@ -126,9 +131,9 @@ class _PlaylistIndex extends ConsumerWidget {
     final String name = controller.text.trim();
     if (name.isEmpty) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Liste adı boş olamaz.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Liste adı boş olamaz.')));
       }
       return;
     }
@@ -136,12 +141,18 @@ class _PlaylistIndex extends ConsumerWidget {
     ref.invalidate(playlistsProvider);
   }
 
-  Future<void> _delete(BuildContext context, WidgetRef ref, Playlist playlist) async {
+  Future<void> _delete(
+    BuildContext context,
+    WidgetRef ref,
+    Playlist playlist,
+  ) async {
     final bool? confirmed = await showDialog<bool>(
       context: context,
       builder: (BuildContext dialogContext) => AlertDialog(
         title: Text('"${playlist.name}" silinsin mi?'),
-        content: const Text('Liste silinir; indirilen ses dosyaları cihazda kalır.'),
+        content: const Text(
+          'Liste silinir; indirilen ses dosyaları cihazda kalır.',
+        ),
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
@@ -161,8 +172,9 @@ class _PlaylistIndex extends ConsumerWidget {
   }
 
   Future<void> _play(WidgetRef ref, int playlistId) async {
-    final List<IlahiTrack> tracks =
-        await ref.read(playlistTracksProvider(playlistId).future);
+    final List<IlahiTrack> tracks = await ref.read(
+      playlistTracksProvider(playlistId).future,
+    );
     if (tracks.isEmpty) return;
     await ref.read(playerControllerProvider.notifier).playQueue(tracks);
   }
@@ -175,8 +187,11 @@ class _PlaylistDetail extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<List<IlahiTrack>> tracks = ref.watch(playlistTracksProvider(playlistId));
-    final List<Playlist> playlists = ref.watch(playlistsProvider).value ?? const <Playlist>[];
+    final AsyncValue<List<IlahiTrack>> tracks = ref.watch(
+      playlistTracksProvider(playlistId),
+    );
+    final List<Playlist> playlists =
+        ref.watch(playlistsProvider).value ?? const <Playlist>[];
     Playlist? playlist;
     for (final Playlist item in playlists) {
       if (item.id == playlistId) playlist = item;
@@ -206,7 +221,8 @@ class _PlaylistDetail extends ConsumerWidget {
             return const EmptyView(
               icon: Icons.playlist_add_rounded,
               title: 'Liste boş',
-              message: 'Sağ üstteki + düğmesiyle katalogdan parça ekleyebilirsiniz.',
+              message:
+                  'Sağ üstteki + düğmesiyle katalogdan parça ekleyebilirsiniz.',
             );
           }
           return Column(
@@ -242,7 +258,11 @@ class _PlaylistDetail extends ConsumerWidget {
                             : Icons.music_note_rounded,
                         color: current ? AppColors.emerald500 : null,
                       ),
-                      title: Text(track.title, maxLines: 1, overflow: TextOverflow.ellipsis),
+                      title: Text(
+                        track.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                       subtitle: Text(
                         track.artist,
                         maxLines: 1,
@@ -256,7 +276,10 @@ class _PlaylistDetail extends ConsumerWidget {
                             onPressed: () => ref
                                 .read(playerControllerProvider.notifier)
                                 .playQueue(items, startIndex: index),
-                            icon: const Icon(Icons.play_circle_outline_rounded, size: 22),
+                            icon: const Icon(
+                              Icons.play_circle_outline_rounded,
+                              size: 22,
+                            ),
                           ),
                           IconButton(
                             tooltip: 'Listeden çıkar',
@@ -265,10 +288,15 @@ class _PlaylistDetail extends ConsumerWidget {
                                   .read(runtimeProvider)
                                   .ilahi
                                   .removeFromPlaylist(playlistId, track.id);
-                              ref.invalidate(playlistTracksProvider(playlistId));
+                              ref.invalidate(
+                                playlistTracksProvider(playlistId),
+                              );
                               ref.invalidate(playlistsProvider);
                             },
-                            icon: const Icon(Icons.remove_circle_outline_rounded, size: 20),
+                            icon: const Icon(
+                              Icons.remove_circle_outline_rounded,
+                              size: 20,
+                            ),
                           ),
                         ],
                       ),
@@ -310,14 +338,15 @@ class _PlaylistDetail extends ConsumerWidget {
             child: Column(
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.xl,
+                  ),
                   child: Row(
                     children: <Widget>[
                       Text(
                         'Parça ekle',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w800,
-                        ),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.w800),
                       ),
                       const Spacer(),
                       Text('${selected.length} seçili'),

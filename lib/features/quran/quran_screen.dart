@@ -46,13 +46,24 @@ class QuranScreen extends ConsumerWidget {
           if (progress != null)
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.md, AppSpacing.lg, 0),
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.lg,
+                  AppSpacing.md,
+                  AppSpacing.lg,
+                  0,
+                ),
                 child: Material(
                   color: AppColors.emerald600.withValues(alpha: 0.12),
                   borderRadius: AppRadius.allLg,
                   child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
-                    leading: const Icon(Icons.play_circle_outline_rounded, color: AppColors.emerald500),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.lg,
+                      vertical: AppSpacing.sm,
+                    ),
+                    leading: const Icon(
+                      Icons.play_circle_outline_rounded,
+                      color: AppColors.emerald500,
+                    ),
                     title: const Text('Okumaya devam et'),
                     subtitle: Text(
                       '${progress.surah}. sure, ${progress.lastAyah}. ayet · '
@@ -68,7 +79,12 @@ class QuranScreen extends ConsumerWidget {
             ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(AppSpacing.xl, AppSpacing.lg, AppSpacing.xl, AppSpacing.sm),
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.xl,
+                AppSpacing.lg,
+                AppSpacing.xl,
+                AppSpacing.sm,
+              ),
               child: Row(
                 children: <Widget>[
                   Expanded(
@@ -107,7 +123,10 @@ class QuranScreen extends ConsumerWidget {
               ),
             ),
             error: (Object error, StackTrace stackTrace) => SliverToBoxAdapter(
-              child: ErrorView(error: error, onRetry: () => ref.invalidate(surahListProvider)),
+              child: ErrorView(
+                error: error,
+                onRetry: () => ref.invalidate(surahListProvider),
+              ),
             ),
             data: (List<Surah> items) => SliverList.separated(
               itemCount: items.length,
@@ -129,7 +148,9 @@ class QuranScreen extends ConsumerWidget {
                     alignment: Alignment.center,
                     child: Text(
                       '${surah.number}',
-                      style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                   title: Text(surah.nameTurkish),
@@ -166,10 +187,16 @@ class QuranScreen extends ConsumerWidget {
         shrinkWrap: true,
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.fromLTRB(AppSpacing.xl, 0, AppSpacing.xl, AppSpacing.sm),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.xl,
+              0,
+              AppSpacing.xl,
+              AppSpacing.sm,
+            ),
             child: Text(
               'Tilavet okuyucusu',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+              style: Theme.of(context).textTheme.titleLarge
+                  ?.copyWith(fontWeight: FontWeight.w700),
             ),
           ),
           const Padding(
@@ -186,12 +213,16 @@ class QuranScreen extends ConsumerWidget {
                 reciter.id == current.id
                     ? Icons.radio_button_checked_rounded
                     : Icons.radio_button_unchecked_rounded,
-                color: reciter.id == current.id ? Theme.of(context).colorScheme.primary : null,
+                color: reciter.id == current.id
+                    ? Theme.of(context).colorScheme.primary
+                    : null,
               ),
               title: Text(reciter.name),
               subtitle: Text('${reciter.style} · ${reciter.arabicName}'),
               onTap: () async {
-                await ref.read(settingsControllerProvider.notifier).setQuranReciter(reciter.id);
+                await ref
+                    .read(settingsControllerProvider.notifier)
+                    .setQuranReciter(reciter.id);
                 if (sheetContext.mounted) Navigator.of(sheetContext).pop();
               },
             ),
@@ -202,7 +233,11 @@ class QuranScreen extends ConsumerWidget {
 }
 
 class _MiniStat extends StatelessWidget {
-  const _MiniStat({required this.icon, required this.label, required this.value});
+  const _MiniStat({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
 
   final IconData icon;
   final String label;
@@ -213,12 +248,17 @@ class _MiniStat extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        color: Theme.of(context).colorScheme.surfaceContainerHighest
+            .withValues(alpha: 0.5),
         borderRadius: AppRadius.allMd,
       ),
       child: Row(
         children: <Widget>[
-          Icon(icon, size: 18, color: Theme.of(context).colorScheme.onSurfaceVariant),
+          Icon(
+            icon,
+            size: 18,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Column(
@@ -227,9 +267,7 @@ class _MiniStat extends StatelessWidget {
                 Text(label, style: Theme.of(context).textTheme.labelSmall),
                 Text(
                   value,
-                  style: Theme.of(context)
-                      .textTheme
-                      .labelLarge
+                  style: Theme.of(context).textTheme.labelLarge
                       ?.copyWith(fontWeight: FontWeight.w700),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

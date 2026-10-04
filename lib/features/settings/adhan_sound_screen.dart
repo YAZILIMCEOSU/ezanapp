@@ -44,7 +44,8 @@ class AdhanSoundScreen extends ConsumerWidget {
                   : IconButton(
                       tooltip: 'Dinle',
                       icon: const Icon(Icons.play_circle_outline_rounded),
-                      onPressed: () => _preview(ref, sound, notifications.adhanVolume),
+                      onPressed: () =>
+                          _preview(ref, sound, notifications.adhanVolume),
                     ),
               onTap: () => ref
                   .read(settingsControllerProvider.notifier)
@@ -88,10 +89,10 @@ class AdhanSoundScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
-          ListTile(
-            leading: const Icon(Icons.info_outline_rounded),
-            title: const Text('Lisanslı ezan kayıtları'),
-            subtitle: const Text(
+          const ListTile(
+            leading: Icon(Icons.info_outline_rounded),
+            title: Text('Lisanslı ezan kayıtları'),
+            subtitle: Text(
               'Gerçek ezan kayıtları telif hakkı nedeniyle uygulamaya gömülmez. '
               'Lisanslı bir kayıt sağladığınızda katalog üzerinden seçilebilir.',
             ),
@@ -109,7 +110,9 @@ class AdhanSoundScreen extends ConsumerWidget {
                 children: <Widget>[
                   Text(
                     'Dahili tonlar',
-                    style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w800),
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(

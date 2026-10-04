@@ -16,7 +16,8 @@ class QuranBookmarksScreen extends ConsumerStatefulWidget {
   const QuranBookmarksScreen({super.key});
 
   @override
-  ConsumerState<QuranBookmarksScreen> createState() => _QuranBookmarksScreenState();
+  ConsumerState<QuranBookmarksScreen> createState() =>
+      _QuranBookmarksScreenState();
 }
 
 class _QuranBookmarksScreenState extends ConsumerState<QuranBookmarksScreen>
@@ -44,10 +45,7 @@ class _QuranBookmarksScreenState extends ConsumerState<QuranBookmarksScreen>
       ),
       body: TabBarView(
         controller: _tabs,
-        children: const <Widget>[
-          _BookmarkList(),
-          _HistoryList(),
-        ],
+        children: const <Widget>[_BookmarkList(), _HistoryList()],
       ),
     );
   }
@@ -58,9 +56,12 @@ class _BookmarkList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<List<QuranBookmark>> bookmarks = ref.watch(quranBookmarksProvider);
+    final AsyncValue<List<QuranBookmark>> bookmarks = ref.watch(
+      quranBookmarksProvider,
+    );
     final Map<int, String> surahNames = <int, String>{
-      for (final Surah surah in ref.watch(surahListProvider).value ?? const <Surah>[])
+      for (final Surah surah
+          in ref.watch(surahListProvider).value ?? const <Surah>[])
         surah.number: surah.nameTurkish,
     };
 
@@ -75,19 +76,25 @@ class _BookmarkList extends ConsumerWidget {
           return const EmptyView(
             icon: Icons.bookmark_border_rounded,
             title: 'Henüz favori ayetiniz yok',
-            message: 'Okuma ekranındaki yer imi simgesine dokunarak ayetleri '
+            message:
+                'Okuma ekranındaki yer imi simgesine dokunarak ayetleri '
                 'favorilere ekleyebilirsiniz.',
           );
         }
         return ListView.separated(
           padding: const EdgeInsets.only(bottom: AppSpacing.xxl),
           itemCount: items.length,
-          separatorBuilder: (BuildContext context, int index) => const Divider(height: 1),
+          separatorBuilder: (BuildContext context, int index) =>
+              const Divider(height: 1),
           itemBuilder: (BuildContext context, int index) {
             final QuranBookmark bookmark = items[index];
-            final String surahName = surahNames[bookmark.surah] ?? '${bookmark.surah}. sure';
+            final String surahName =
+                surahNames[bookmark.surah] ?? '${bookmark.surah}. sure';
             return ListTile(
-              leading: const Icon(Icons.bookmark_rounded, color: AppColors.gold600),
+              leading: const Icon(
+                Icons.bookmark_rounded,
+                color: AppColors.gold600,
+              ),
               title: Text('$surahName · ${bookmark.number}. ayet'),
               subtitle: Text(
                 bookmark.note?.isNotEmpty ?? false
@@ -129,9 +136,12 @@ class _HistoryList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<List<ReadingProgress>> history = ref.watch(quranHistoryProvider);
+    final AsyncValue<List<ReadingProgress>> history = ref.watch(
+      quranHistoryProvider,
+    );
     final Map<int, Surah> surahs = <int, Surah>{
-      for (final Surah surah in ref.watch(surahListProvider).value ?? const <Surah>[])
+      for (final Surah surah
+          in ref.watch(surahListProvider).value ?? const <Surah>[])
         surah.number: surah,
     };
 
@@ -152,7 +162,8 @@ class _HistoryList extends ConsumerWidget {
         return ListView.separated(
           padding: const EdgeInsets.only(bottom: AppSpacing.xxl),
           itemCount: items.length,
-          separatorBuilder: (BuildContext context, int index) => const Divider(height: 1),
+          separatorBuilder: (BuildContext context, int index) =>
+              const Divider(height: 1),
           itemBuilder: (BuildContext context, int index) {
             final ReadingProgress progress = items[index];
             final Surah? surah = surahs[progress.surah];
