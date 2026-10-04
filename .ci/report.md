@@ -28,8 +28,10 @@ Failed to resolve package URI "package:flutter_lints/flutter.yaml" in include at
 Warning: Package resolution error when reading "analysis_options.yaml" file for "lib/core/utils/app_time.dart":
 Failed to resolve package URI "package:flutter_lints/flutter.yaml" in include at "/home/runner/work/ezanapp/ezanapp/analysis_options.yaml".
 Changed lib/core/utils/app_time.dart
-Warning: Package resolution error when reading "analysis_options.yaml" file for "lib/data/models/prayer.dart":
+Warning: Package resolution error when reading "analysis_options.yaml" file for "lib/data/models/city.dart":
 Failed to resolve package URI "package:flutter_lints/flutter.yaml" in include at "/home/runner/work/ezanapp/ezanapp/analysis_options.yaml".
+Changed lib/data/models/city.dart
+Changed lib/data/models/hijri_date.dart
 Changed lib/data/models/prayer.dart
 Changed lib/data/models/prayer_times_day.dart
 Warning: Package resolution error when reading "analysis_options.yaml" file for "lib/data/prayer/prayer_calculator.dart":
@@ -55,7 +57,7 @@ Warning: Package resolution error when reading "analysis_options.yaml" file for 
 Failed to resolve package URI "package:flutter_lints/flutter.yaml" in include at "/home/runner/work/ezanapp/ezanapp/analysis_options.yaml".
 Warning: Package resolution error when reading "analysis_options.yaml" file for "test/placeholder_test.dart":
 Failed to resolve package URI "package:flutter_lints/flutter.yaml" in include at "/home/runner/work/ezanapp/ezanapp/analysis_options.yaml".
-Formatted 9 files (6 changed) in 0.03 seconds.
+Formatted 11 files (8 changed) in 0.03 seconds.
 ```
 
 ## analyze
@@ -139,7 +141,7 @@ warning • The asset directory 'assets/images/' doesn't exist. Try creating the
   error • The function 'test' isn't defined. Try importing the library that defines 'test', correcting the name to the name of an existing function, or defining a function named 'test' • test/placeholder_test.dart:4:3 • undefined_function
   error • The function 'expect' isn't defined. Try importing the library that defines 'expect', correcting the name to the name of an existing function, or defining a function named 'expect' • test/placeholder_test.dart:4:29 • undefined_function
 
-411 issues found. (ran in 0.5s)
+416 issues found. (ran in 0.5s)
 ```
 
 ## test
