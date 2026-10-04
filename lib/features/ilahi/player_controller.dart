@@ -286,8 +286,9 @@ class PlayerController extends Notifier<PlayerUiState> {
   }
 
   String? _sourceFor(IlahiTrack track) {
-    if (track.localPath != null && track.localPath!.isNotEmpty)
+    if (track.localPath != null && track.localPath!.isNotEmpty) {
       return track.localPath;
+    }
     if (track.audioUrl.isEmpty) return null;
     return track.audioUrl;
   }

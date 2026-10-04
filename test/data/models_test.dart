@@ -173,7 +173,10 @@ void main() {
       expect(next?.prayer, Prayer.ikindi);
       expect(day.currentPrayer(DateTime(2026, 6, 21, 13, 30)), Prayer.ogle);
       expect(day.currentPrayer(DateTime(2026, 6, 21, 23, 0)), Prayer.yatsi);
-      expect(day.remainingTo(next!, DateTime(2026, 6, 21, 13, 30)), const Duration(hours: 3, minutes: 30));
+      expect(
+        day.remainingTo(next!, DateTime(2026, 6, 21, 13, 30)),
+        const Duration(hours: 3, minutes: 30),
+      );
     });
 
     test('bozuk veri sağlıksız kabul edilir', () {

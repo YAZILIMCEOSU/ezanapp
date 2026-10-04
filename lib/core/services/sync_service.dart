@@ -110,7 +110,9 @@ class SyncService {
     final Map<String, Object?> payload = <String, Object?>{};
     for (final String table in backedUpTables) {
       try {
-        final List<Map<String, Object?>> rows = await _database.raw.query(table);
+        final List<Map<String, Object?>> rows = await _database.raw.query(
+          table,
+        );
         payload[table] = rows;
       } catch (error) {
         AppLog.warning('Tablo okunamadı ($table): $error');
@@ -133,7 +135,10 @@ class SyncService {
         'payload': payload,
         'updated_at': DateTime.now().toUtc().toIso8601String(),
       });
-      await _preferences.setString('last_backup_at', DateTime.now().toIso8601String());
+      await _preferences.setString(
+        'last_backup_at',
+        DateTime.now().toIso8601String(),
+      );
       return true;
     } catch (error) {
       _lastError = 'Yedek yüklenemedi: $error';
