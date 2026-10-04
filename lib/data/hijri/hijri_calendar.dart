@@ -30,8 +30,10 @@ class HijriCalendar {
   static Future<HijriCalendar> load({AssetBundle? bundle}) async {
     if (_instance != null) return _instance!;
     final AssetBundle assets = bundle ?? rootBundle;
-    final String raw = await assets.loadString('assets/data/hijri_ummalqura.json');
-    final Map<String, Object?> json = (jsonDecode(raw) as Map).cast<String, Object?>();
+    final String raw =
+        await assets.loadString('assets/data/hijri_ummalqura.json');
+    final Map<String, Object?> json =
+        (jsonDecode(raw) as Map).cast<String, Object?>();
     final String encoded = json['monthLengths'] as String;
     final int zero = '0'.codeUnitAt(0);
     final List<int> lengths =
@@ -75,7 +77,8 @@ class HijriCalendar {
     if (remaining < 0) {
       // Aralık dışı: yaklaşık dönüşüm (ortalama ay uzunluğu 29.53 gün)
       final int approxMonths = (remaining / 29.530588).floor();
-      final int total = baseHijriYear * 12 + (baseHijriMonth - 1) + approxMonths;
+      final int total =
+          baseHijriYear * 12 + (baseHijriMonth - 1) + approxMonths;
       return _buildDate(total ~/ 12, total % 12 + 1, 1, date, dayOffset);
     }
 
@@ -89,14 +92,17 @@ class HijriCalendar {
       }
     }
     if (index >= _monthLengths.length) {
-      final int total = baseHijriYear * 12 + (baseHijriMonth - 1) +
-          (_monthLengths.length) + (remaining / 29.530588).floor();
+      final int total = baseHijriYear * 12 +
+          (baseHijriMonth - 1) +
+          (_monthLengths.length) +
+          (remaining / 29.530588).floor();
       return _buildDate(total ~/ 12, total % 12 + 1, 1, date, dayOffset);
     }
     return _buildDate(year, month, remaining + 1 + dayOffset, date, dayOffset);
   }
 
-  HijriDate _buildDate(int year, int month, int day, DateTime gregorian, int dayOffset) {
+  HijriDate _buildDate(
+      int year, int month, int day, DateTime gregorian, int dayOffset) {
     // Ay taşmalarını normalize et.
     int y = year;
     int m = month;
@@ -188,7 +194,11 @@ class HijriCalendar {
     }
     final int a = y ~/ 100;
     final int b = 2 - a + a ~/ 4;
-    return (365.25 * (y + 4716)).floor() + (30.6001 * (m + 1)).floor() + day + b - 1524;
+    return (365.25 * (y + 4716)).floor() +
+        (30.6001 * (m + 1)).floor() +
+        day +
+        b -
+        1524;
   }
 
   static DateTime julianDayToGregorian(int julianDay) {

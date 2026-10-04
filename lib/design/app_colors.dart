@@ -58,7 +58,16 @@ abstract final class AppColors {
 
   static const List<Color> emeraldGradient = <Color>[emerald700, emerald900];
   static const List<Color> goldGradient = <Color>[gold400, gold600];
-  static const List<Color> nightGradient = <Color>[Color(0xFF0B1F2A), Color(0xFF08130F)];
-  static const List<Color> dawnGradient = <Color>[Color(0xFF37476F), Color(0xFF8A5E7D)];
-  static const List<Color> duskGradient = <Color>[Color(0xFF9A5B7A), Color(0xFF2E2A46)];
+  static const List<Color> nightGradient = <Color>[
+    Color(0xFF0B1F2A),
+    Color(0xFF08130F)
+  ];
+  static const List<Color> dawnGradient = <Color>[
+    Color(0xFF37476F),
+    Color(0xFF8A5E7D)
+  ];
+  static const List<Color> duskGradient = <Color>[
+    Color(0xFF9A5B7A),
+    Color(0xFF2E2A46)
+  ];
 }

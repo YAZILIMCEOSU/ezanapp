@@ -65,7 +65,8 @@ class IlahiRepository {
     );
     if (rows.isEmpty) return false;
     final int fetchedAt = (rows.first['fetched_at'] as num?)?.toInt() ?? 0;
-    return DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(fetchedAt)) <
+    return DateTime.now()
+            .difference(DateTime.fromMillisecondsSinceEpoch(fetchedAt)) <
         AppConstants.remoteCatalogTtl;
   }
 
@@ -80,7 +81,8 @@ class IlahiRepository {
       if (decoded is! List) return <IlahiTrack>[];
       return decoded
           .whereType<Map<Object?, Object?>>()
-          .map((Map<Object?, Object?> m) => IlahiTrack.fromJson(m.cast<String, Object?>()))
+          .map((Map<Object?, Object?> m) =>
+              IlahiTrack.fromJson(m.cast<String, Object?>()))
           .toList();
     } catch (error) {
       AppLog.warning('İlahi önbelleği okunamadı', error: error);
@@ -93,7 +95,8 @@ class IlahiRepository {
       'ilahi_catalog_cache',
       <String, Object?>{
         'id': 1,
-        'payload': jsonEncode(tracks.map((IlahiTrack t) => t.toJson()).toList()),
+        'payload':
+            jsonEncode(tracks.map((IlahiTrack t) => t.toJson()).toList()),
         'fetched_at': DateTime.now().millisecondsSinceEpoch,
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
@@ -112,10 +115,12 @@ class IlahiRepository {
       final Object? decoded = jsonDecode(utf8.decode(response.bodyBytes));
       final List<Object?> items = decoded is List
           ? decoded
-          : ((decoded is Map ? decoded['tracks'] : null) as List?) ?? <Object?>[];
+          : ((decoded is Map ? decoded['tracks'] : null) as List?) ??
+              <Object?>[];
       final List<IlahiTrack> tracks = items
           .whereType<Map<Object?, Object?>>()
-          .map((Map<Object?, Object?> m) => IlahiTrack.fromJson(m.cast<String, Object?>()))
+          .map((Map<Object?, Object?> m) =>
+              IlahiTrack.fromJson(m.cast<String, Object?>()))
           .where((IlahiTrack t) => t.audioUrl.isNotEmpty && t.id.isNotEmpty)
           .toList();
       AppLog.debug('İlahi kataloğu alındı: ${tracks.length} kayıt');
@@ -128,7 +133,8 @@ class IlahiRepository {
 
   /// Cihaza indirilen ses dosyaları.
   Future<List<IlahiTrack>> downloaded({List<IlahiTrack>? fromCatalog}) async {
-    final List<Map<String, Object?>> rows = await _database.raw.query('ilahi_downloads');
+    final List<Map<String, Object?>> rows =
+        await _database.raw.query('ilahi_downloads');
     if (rows.isEmpty) return <IlahiTrack>[];
     final List<IlahiTrack> catalogTracks = fromCatalog ?? await catalog();
     final Map<String, IlahiTrack> byId = <String, IlahiTrack>{
@@ -140,7 +146,8 @@ class IlahiRepository {
       final IlahiTrack? track = byId[id];
       if (track == null) continue;
       if (!File(row['file_path']! as String).existsSync()) continue;
-      result.add(track.copyWith(localPath: row['file_path'] as String?, isLocal: true));
+      result.add(track.copyWith(
+          localPath: row['file_path'] as String?, isLocal: true));
     }
     return result;
   }
@@ -153,16 +160,20 @@ class IlahiRepository {
   }
 
   /// İçeriği indirir ve yolunu döndürür.
-  Future<String?> download(IlahiTrack track, {void Function(double progress)? onProgress}) async {
-    if (track.localPath != null && File(track.localPath!).existsSync()) return track.localPath;
+  Future<String?> download(IlahiTrack track,
+      {void Function(double progress)? onProgress}) async {
+    if (track.localPath != null && File(track.localPath!).existsSync())
+      return track.localPath;
     try {
       final Directory dir = await _audioDirectory();
-      final String target = p.join(dir.path, '${track.id}.${track.fileExtension}');
+      final String target =
+          p.join(dir.path, '${track.id}.${track.fileExtension}');
       final HttpClientRequest request =
           await HttpClient().getUrl(Uri.parse(track.audioUrl));
       final HttpClientResponse response = await request.close();
       if (response.statusCode != 200) {
-        AppLog.warning('İndirme başarısız (${response.statusCode}): ${track.id}');
+        AppLog.warning(
+            'İndirme başarısız (${response.statusCode}): ${track.id}');
         return null;
       }
       final int total = response.contentLength;
@@ -188,7 +199,8 @@ class IlahiRepository {
       );
       return target;
     } catch (error, stackTrace) {
-      AppLog.error('İndirme hatası: ${track.id}', error: error, stackTrace: stackTrace);
+      AppLog.error('İndirme hatası: ${track.id}',
+          error: error, stackTrace: stackTrace);
       return null;
     }
   }
@@ -207,7 +219,8 @@ class IlahiRepository {
         } catch (_) {}
       }
     }
-    await _database.raw.delete('ilahi_downloads', where: 'track_id = ?', whereArgs: <Object?>[trackId]);
+    await _database.raw.delete('ilahi_downloads',
+        where: 'track_id = ?', whereArgs: <Object?>[trackId]);
   }
 
   // --------------------------------------------------- Yerel (içe aktarılan)
@@ -220,17 +233,19 @@ class IlahiRepository {
     for (final FileSystemEntity entity in localDir.listSync()) {
       if (entity is! File) continue;
       final String name = p.basenameWithoutExtension(entity.path);
-      tracks.add(IlahiTrack(
-        id: 'local_${p.basename(entity.path)}',
-        title: name,
-        artist: 'Cihazdan eklendi',
-        kind: IlahiKind.diger,
-        categories: const <String>['Yerel'],
-        audioUrl: entity.path,
-        license: 'Kullanıcı tarafından cihazdan eklendi',
-        isLocal: true,
-        localPath: entity.path,
-      ));
+      tracks.add(
+        IlahiTrack(
+          id: 'local_${p.basename(entity.path)}',
+          title: name,
+          artist: 'Cihazdan eklendi',
+          kind: IlahiKind.diger,
+          categories: const <String>['Yerel'],
+          audioUrl: entity.path,
+          license: 'Kullanıcı tarafından cihazdan eklendi',
+          isLocal: true,
+          localPath: entity.path,
+        ),
+      );
     }
     return tracks;
   }
@@ -258,7 +273,8 @@ class IlahiRepository {
         localPath: target,
       );
     } catch (error, stackTrace) {
-      AppLog.error('Yerel dosya eklenemedi', error: error, stackTrace: stackTrace);
+      AppLog.error('Yerel dosya eklenemedi',
+          error: error, stackTrace: stackTrace);
       return null;
     }
   }
@@ -277,8 +293,11 @@ class IlahiRepository {
   // ------------------------------------------------------------- Favoriler
 
   Future<Set<String>> favoriteIds() async {
-    final List<Map<String, Object?>> rows = await _database.raw.query('ilahi_favorites');
-    return rows.map((Map<String, Object?> row) => row['track_id']! as String).toSet();
+    final List<Map<String, Object?>> rows =
+        await _database.raw.query('ilahi_favorites');
+    return rows
+        .map((Map<String, Object?> row) => row['track_id']! as String)
+        .toSet();
   }
 
   Future<bool> toggleFavorite(String trackId) async {
@@ -290,7 +309,8 @@ class IlahiRepository {
     ))
         .isNotEmpty;
     if (exists) {
-      await _database.raw.delete('ilahi_favorites', where: 'track_id = ?', whereArgs: <Object?>[trackId]);
+      await _database.raw.delete('ilahi_favorites',
+          where: 'track_id = ?', whereArgs: <Object?>[trackId]);
       return false;
     }
     await _database.raw.insert('ilahi_favorites', <String, Object?>{
@@ -343,17 +363,23 @@ class IlahiRepository {
         whereArgs: <Object?>[id],
         orderBy: 'position ASC',
       );
-      result.add(Playlist(
-        id: id,
-        name: row['name']! as String,
-        createdAt: DateTime.fromMillisecondsSinceEpoch(row['created_at']! as int),
-        trackIds: items.map((Map<String, Object?> item) => item['track_id']! as String).toList(),
-      ));
+      result.add(
+        Playlist(
+          id: id,
+          name: row['name']! as String,
+          createdAt:
+              DateTime.fromMillisecondsSinceEpoch(row['created_at']! as int),
+          trackIds: items
+              .map((Map<String, Object?> item) => item['track_id']! as String)
+              .toList(),
+        ),
+      );
     }
     return result;
   }
 
-  Future<int> createPlaylist(String name) => _database.raw.insert('playlists', <String, Object?>{
+  Future<int> createPlaylist(String name) =>
+      _database.raw.insert('playlists', <String, Object?>{
         'name': name,
         'created_at': DateTime.now().millisecondsSinceEpoch,
       });
@@ -372,15 +398,18 @@ class IlahiRepository {
     });
   }
 
-  Future<void> removeFromPlaylist(int playlistId, String trackId) => _database.raw.delete(
+  Future<void> removeFromPlaylist(int playlistId, String trackId) =>
+      _database.raw.delete(
         'playlist_items',
         where: 'playlist_id = ? AND track_id = ?',
         whereArgs: <Object?>[playlistId, trackId],
       );
 
   Future<void> deletePlaylist(int playlistId) async {
-    await _database.raw.delete('playlist_items', where: 'playlist_id = ?', whereArgs: <Object?>[playlistId]);
-    await _database.raw.delete('playlists', where: 'id = ?', whereArgs: <Object?>[playlistId]);
+    await _database.raw.delete('playlist_items',
+        where: 'playlist_id = ?', whereArgs: <Object?>[playlistId]);
+    await _database.raw
+        .delete('playlists', where: 'id = ?', whereArgs: <Object?>[playlistId]);
   }
 
   /// Kategoriler ve sanatçılar (filtreleme için).
@@ -392,6 +421,9 @@ class IlahiRepository {
       categories.addAll(track.categories);
       if (track.artist.isNotEmpty) artists.add(track.artist);
     }
-    return (categories: categories.toList()..sort(), artists: artists.toList()..sort());
+    return (
+      categories: categories.toList()..sort(),
+      artists: artists.toList()..sort()
+    );
   }
 }

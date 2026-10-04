@@ -36,7 +36,8 @@ class AppException implements Exception {
         detail: detail,
       );
 
-  factory AppException.unexpected(Object error, [StackTrace? stackTrace]) => AppException(
+  factory AppException.unexpected(Object error, [StackTrace? stackTrace]) =>
+      AppException(
         'Beklenmeyen bir sorun oluştu. Lütfen tekrar deneyin.',
         detail: '$error\n${stackTrace ?? ''}',
       );

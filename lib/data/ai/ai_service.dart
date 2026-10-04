@@ -62,16 +62,23 @@ class LocalKnowledgeSource {
 
     for (final String citation in best.citations) {
       if (citation.startsWith('Kur')) {
-        sources.add(AiSource(kind: AiSourceKind.quran, label: citation, detail: 'Kur\'an-ı Kerim'));
+        sources.add(AiSource(
+            kind: AiSourceKind.quran,
+            label: citation,
+            detail: 'Kur\'an-ı Kerim'));
       } else if (citation.contains('Buhârî') ||
           citation.contains('Müslim') ||
           citation.contains('Tirmizî') ||
           citation.contains('İbn Mâce') ||
           citation.contains('Dârimî') ||
           citation.contains('Taberânî')) {
-        sources.add(AiSource(kind: AiSourceKind.hadith, label: citation, detail: 'Hadis kaynağı'));
+        sources.add(AiSource(
+            kind: AiSourceKind.hadith,
+            label: citation,
+            detail: 'Hadis kaynağı'));
       } else {
-        sources.add(AiSource(kind: AiSourceKind.fiqh, label: citation, detail: 'Fıkıh kaynağı'));
+        sources.add(AiSource(
+            kind: AiSourceKind.fiqh, label: citation, detail: 'Fıkıh kaynağı'));
       }
     }
 
@@ -100,7 +107,10 @@ class LocalKnowledgeSource {
 
 /// Uzak AI yanıtı.
 class RemoteAiResult {
-  const RemoteAiResult({required this.text, required this.sources, this.madhabNotes = const <String>[]});
+  const RemoteAiResult(
+      {required this.text,
+      required this.sources,
+      this.madhabNotes = const <String>[]});
 
   final String text;
   final List<AiSource> sources;
@@ -124,7 +134,8 @@ class AiService {
   static const Duration _timeout = Duration(seconds: 25);
 
   /// Soruyu yanıtlar. [history] önceki mesajlardır (en yeniden geriye).
-  Future<AiAnswer> ask(String question, {List<AiMessage> history = const <AiMessage>[]}) async {
+  Future<AiAnswer> ask(String question,
+      {List<AiMessage> history = const <AiMessage>[]}) async {
     final String trimmed = question.trim();
     if (trimmed.isEmpty) {
       return AiAnswer(
@@ -161,7 +172,8 @@ class AiService {
     return _fallback(trimmed);
   }
 
-  Future<RemoteAiResult> _askRemote(String question, List<AiMessage> history) async {
+  Future<RemoteAiResult> _askRemote(
+      String question, List<AiMessage> history) async {
     final Uri? uri = AppConfig.endpoint('/ai/ask');
     if (uri == null) throw StateError('AI servisi yapılandırılmadı.');
     final Map<String, Object?> body = <String, Object?>{
@@ -179,7 +191,9 @@ class AiService {
     final http.Response response = await _client
         .post(
           uri,
-          headers: const <String, String>{'Content-Type': 'application/json; charset=utf-8'},
+          headers: const <String, String>{
+            'Content-Type': 'application/json; charset=utf-8'
+          },
           body: jsonEncode(body),
         )
         .timeout(_timeout);
@@ -199,14 +213,16 @@ class AiService {
     };
 
     final List<AiSource> sources = _parseSources(decoded['sources']);
-    final List<String> madhabNotes = _parseStringList(decoded['madhab_notes'] ?? decoded['madhabNotes']);
+    final List<String> madhabNotes =
+        _parseStringList(decoded['madhab_notes'] ?? decoded['madhabNotes']);
 
     if (sources.isEmpty) {
       // Kaynak yoksa cevabı kaynaklı saymayız; yerel bilgi tabanına düşeriz.
       throw const FormatException('AI yanıtı kaynaksız döndü.');
     }
 
-    return RemoteAiResult(text: text, sources: sources, madhabNotes: madhabNotes);
+    return RemoteAiResult(
+        text: text, sources: sources, madhabNotes: madhabNotes);
   }
 
   List<AiSource> _parseSources(Object? raw) {
@@ -216,7 +232,8 @@ class AiService {
       if (item is String) {
         sources.add(AiSource(kind: AiSourceKind.other, label: item));
       } else if (item is Map) {
-        final Object? label = item['label'] ?? item['ref'] ?? item['citation'] ?? item['title'];
+        final Object? label =
+            item['label'] ?? item['ref'] ?? item['citation'] ?? item['title'];
         if (label is! String || label.trim().isEmpty) continue;
         final Object? kind = item['type'] ?? item['kind'];
         sources.add(
@@ -234,13 +251,18 @@ class AiService {
 
   List<String> _parseStringList(Object? raw) {
     if (raw is! List) return const <String>[];
-    return raw.whereType<String>().map((String s) => s.trim()).where((String s) => s.isNotEmpty).toList();
+    return raw
+        .whereType<String>()
+        .map((String s) => s.trim())
+        .where((String s) => s.isNotEmpty)
+        .toList();
   }
 
   /// Hiçbir kaynağa eşleşmeyen sorular için dürüst yanıt + öneri listesi.
   AiAnswer _fallback(String question) {
-    final List<KnowledgeEntry> pool = KnowledgeBase.entries;
-    final Random random = Random(question.length * 31 + question.codeUnits.fold<int>(0, (int a, int b) => a + b));
+    const List<KnowledgeEntry> pool = KnowledgeBase.entries;
+    final Random random = Random(question.length * 31 +
+        question.codeUnits.fold<int>(0, (int a, int b) => a + b));
     final List<String> suggestions = <String>[
       for (int i = 0; i < 3 && pool.isNotEmpty; i++)
         pool[random.nextInt(pool.length)].title,
@@ -257,7 +279,8 @@ class AiService {
         AiSource(
           kind: AiSourceKind.fiqh,
           label: 'Genel ilke: bilmediğini söylemek ilmin gereğidir',
-          detail: 'Kaynakla doğrulanamayan konularda hüküm vermekten kaçınılır.',
+          detail:
+              'Kaynakla doğrulanamayan konularda hüküm vermekten kaçınılır.',
         ),
       ],
       mode: AiAnswerMode.offline,

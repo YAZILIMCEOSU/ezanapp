@@ -46,14 +46,16 @@ class LocalCalculationSource implements PrayerTimesSource {
     final DateTime last = DateTime(endDate.year, endDate.month, endDate.day);
     int guard = 0;
     while (!cursor.isAfter(last) && guard < 400) {
-      days.add(await fetchDay(location: location, date: cursor, method: method));
+      days.add(
+          await fetchDay(location: location, date: cursor, method: method));
       cursor = cursor.add(const Duration(days: 1));
       guard++;
     }
     return days;
   }
 
-  PrayerTimesDay _calculate(UserLocation location, DateTime date, CalculationMethod method) {
+  PrayerTimesDay _calculate(
+      UserLocation location, DateTime date, CalculationMethod method) {
     final CalculatedTimes times = PrayerCalculator.calculate(
       date: date,
       latitude: location.latitude,
@@ -92,7 +94,8 @@ class LocalCalculationSource implements PrayerTimesSource {
     final int hour = (totalMinutes ~/ 60) % 24;
     final int minute = totalMinutes % 60;
     final int dayShift = totalMinutes < 0 ? -1 : (totalMinutes >= 1440 ? 1 : 0);
-    final DateTime base = DateTime(date.year, date.month, date.day).add(Duration(days: dayShift));
+    final DateTime base =
+        DateTime(date.year, date.month, date.day).add(Duration(days: dayShift));
     return DateTime(base.year, base.month, base.day, hour, minute);
   }
 }

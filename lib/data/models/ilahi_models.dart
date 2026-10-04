@@ -15,7 +15,8 @@ enum IlahiKind {
   final String label;
 
   static IlahiKind fromName(String? name) =>
-      IlahiKind.values.firstWhere((IlahiKind k) => k.name == name, orElse: () => IlahiKind.diger);
+      IlahiKind.values.firstWhere((IlahiKind k) => k.name == name,
+          orElse: () => IlahiKind.diger);
 }
 
 /// Katalogdaki tek bir ses kaydı.
@@ -73,7 +74,8 @@ class IlahiTrack {
         title: json['title'] as String? ?? '',
         artist: json['artist'] as String? ?? '',
         kind: IlahiKind.fromName(json['kind'] as String?),
-        categories: (json['categories'] as List<Object?>?)?.cast<String>() ?? const <String>[],
+        categories: (json['categories'] as List<Object?>?)?.cast<String>() ??
+            const <String>[],
         audioUrl: json['audioUrl'] as String? ?? json['url'] as String? ?? '',
         album: json['album'] as String?,
         durationSeconds: (json['duration'] as num?)?.toInt() ?? 0,
@@ -123,7 +125,11 @@ class IlahiTrack {
 /// Çalma listesi.
 @immutable
 class Playlist {
-  const Playlist({required this.id, required this.name, required this.trackIds, required this.createdAt});
+  const Playlist(
+      {required this.id,
+      required this.name,
+      required this.trackIds,
+      required this.createdAt});
 
   final int id;
   final String name;
@@ -152,6 +158,7 @@ class DownloadedTrack {
         trackId: row['track_id']! as String,
         filePath: row['file_path']! as String,
         sizeBytes: (row['size_bytes'] as num?)?.toInt() ?? 0,
-        downloadedAt: DateTime.fromMillisecondsSinceEpoch(row['downloaded_at']! as int),
+        downloadedAt:
+            DateTime.fromMillisecondsSinceEpoch(row['downloaded_at']! as int),
       );
 }

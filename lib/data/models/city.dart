@@ -11,7 +11,8 @@ enum LocationMode {
   final String description;
 
   static LocationMode fromName(String? name) =>
-      LocationMode.values.firstWhere((LocationMode m) => m.name == name, orElse: () => LocationMode.gps);
+      LocationMode.values.firstWhere((LocationMode m) => m.name == name,
+          orElse: () => LocationMode.gps);
 }
 
 /// Bir şehir/ilçe kaydı.
@@ -72,7 +73,10 @@ class City {
 
   @override
   bool operator ==(Object other) =>
-      other is City && other.id == id && other.latitude == latitude && other.longitude == longitude;
+      other is City &&
+      other.id == id &&
+      other.latitude == latitude &&
+      other.longitude == longitude;
 
   @override
   int get hashCode => Object.hash(id, latitude, longitude);
@@ -105,7 +109,11 @@ class UserLocation {
   String get coordinates =>
       '${latitude.toStringAsFixed(3)}°, ${longitude.toStringAsFixed(3)}°';
 
-  UserLocation copyWith({LocationMode? mode, double? latitude, double? longitude, City? city}) =>
+  UserLocation copyWith(
+          {LocationMode? mode,
+          double? latitude,
+          double? longitude,
+          City? city}) =>
       UserLocation(
         mode: mode ?? this.mode,
         latitude: latitude ?? this.latitude,
@@ -129,7 +137,10 @@ class UserLocation {
         longitude: (json['lon'] as num).toDouble(),
         city: json['city'] == null
             ? null
-            : City.fromJson((json['city']! as Map<Object?, Object?>).cast<String, Object?>()),
-        updatedAt: json['updatedAt'] == null ? null : DateTime.tryParse(json['updatedAt'] as String),
+            : City.fromJson((json['city']! as Map<Object?, Object?>)
+                .cast<String, Object?>()),
+        updatedAt: json['updatedAt'] == null
+            ? null
+            : DateTime.tryParse(json['updatedAt'] as String),
       );
 }

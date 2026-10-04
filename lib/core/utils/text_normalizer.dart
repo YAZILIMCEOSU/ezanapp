@@ -4,13 +4,34 @@
 /// yeterli, hızlı ve bağımlılıksız bir yardımcıdır.
 abstract final class TextNormalizer {
   static const Map<String, String> _charMap = <String, String>{
-    'â': 'a', 'á': 'a', 'à': 'a', 'ä': 'a',
-    'î': 'i', 'í': 'i', 'ì': 'i', 'ï': 'i',
-    'û': 'u', 'ú': 'u', 'ù': 'u', 'ü': 'u',
-    'ı': 'i', 'ş': 's', 'ğ': 'g', 'ö': 'o', 'ç': 'c',
-    '’': '', '‘': '', '`': '', "'": '', '´': '',
-    '“': ' ', '”': ' ', '"': ' ',
-    '…': ' ', '–': ' ', '—': ' ',
+    'â': 'a',
+    'á': 'a',
+    'à': 'a',
+    'ä': 'a',
+    'î': 'i',
+    'í': 'i',
+    'ì': 'i',
+    'ï': 'i',
+    'û': 'u',
+    'ú': 'u',
+    'ù': 'u',
+    'ü': 'u',
+    'ı': 'i',
+    'ş': 's',
+    'ğ': 'g',
+    'ö': 'o',
+    'ç': 'c',
+    '’': '',
+    '‘': '',
+    '`': '',
+    "'": '',
+    '´': '',
+    '“': ' ',
+    '”': ' ',
+    '"': ' ',
+    '…': ' ',
+    '–': ' ',
+    '—': ' ',
   };
 
   /// Küçük harfe indirip aksanları sadeleştirir.
@@ -27,7 +48,8 @@ abstract final class TextNormalizer {
   /// Normalize edilip kelimelere ayrılmış hâli (2+ harfli kelimeler).
   static List<String> tokens(String value) {
     final String normalized = normalize(value);
-    final String cleaned = normalized.replaceAll(RegExp(r'[^a-z0-9\u0600-\u06ff ]'), ' ');
+    final String cleaned =
+        normalized.replaceAll(RegExp(r'[^a-z0-9\u0600-\u06ff ]'), ' ');
     return cleaned
         .split(RegExp(r'\s+'))
         .where((String token) => token.length >= 2)
@@ -46,13 +68,54 @@ abstract final class TextNormalizer {
   }
 
   static const List<String> _suffixes = <String>[
-    'larindan', 'lerinden', 'larini', 'lerini', 'lariyla', 'leriyle',
-    'larimiz', 'lerimiz', 'mizdan', 'mizden', 'larin', 'lerin',
-    'lari', 'leri', 'lardan', 'lerden', 'sini', 'yisi',
-    'inin', 'unun', 'imin', 'umun', 'imiz', 'iniz',
-    'dan', 'den', 'tan', 'ten', 'nin', 'nun', 'dir', 'dur', 'tir', 'tur',
-    'lar', 'ler', 'si', 'im', 'in', 'iz',
-    'ya', 'ye', 'da', 'de', 'ta', 'te', 'mi', 'mu',
+    'larindan',
+    'lerinden',
+    'larini',
+    'lerini',
+    'lariyla',
+    'leriyle',
+    'larimiz',
+    'lerimiz',
+    'mizdan',
+    'mizden',
+    'larin',
+    'lerin',
+    'lari',
+    'leri',
+    'lardan',
+    'lerden',
+    'sini',
+    'yisi',
+    'inin',
+    'unun',
+    'imin',
+    'umun',
+    'imiz',
+    'iniz',
+    'dan',
+    'den',
+    'tan',
+    'ten',
+    'nin',
+    'nun',
+    'dir',
+    'dur',
+    'tir',
+    'tur',
+    'lar',
+    'ler',
+    'si',
+    'im',
+    'in',
+    'iz',
+    'ya',
+    'ye',
+    'da',
+    'de',
+    'ta',
+    'te',
+    'mi',
+    'mu',
   ];
 
   /// [haystack] içinde [needle] var mı (diakritik duyarsız, ek toleranslı).
@@ -70,7 +133,8 @@ abstract final class TextNormalizer {
     for (final String needleToken in needleTokens) {
       final String needleStem = stem(needleToken);
       final bool found = haystackTokens.any((String token) {
-        if (token.contains(needleToken) || needleToken.contains(token)) return true;
+        if (token.contains(needleToken) || needleToken.contains(token))
+          return true;
         return needleStem == stem(token);
       });
       if (found) hits++;

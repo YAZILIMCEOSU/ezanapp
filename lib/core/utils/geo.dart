@@ -28,7 +28,8 @@ abstract final class GeoUtils {
     const double lat2 = AppConstants.kaabaLat * _deg2rad;
     final double deltaLon = (AppConstants.kaabaLng - longitude) * _deg2rad;
     final double y = math.sin(deltaLon);
-    final double x = math.cos(lat1) * math.tan(lat2) - math.sin(lat1) * math.cos(deltaLon);
+    final double x =
+        math.cos(lat1) * math.tan(lat2) - math.sin(lat1) * math.cos(deltaLon);
     return normalizeDegrees(math.atan2(y, x) * _rad2deg);
   }
 
@@ -46,7 +47,8 @@ abstract final class GeoUtils {
   }
 
   /// Kâbe'nin ufukta görünmesi gereken yükseklik açısı (0'a çok yakın).
-  static double horizonElevationDegrees(double latitude, double longitude, {double altitudeMeters = 0}) {
+  static double horizonElevationDegrees(double latitude, double longitude,
+      {double altitudeMeters = 0}) {
     final double distanceKm = distanceToKaabaKm(latitude, longitude);
     if (distanceKm < 1) return 90;
     final double heightKm = 277.0 / 1000.0 + altitudeMeters / 1000.0;
@@ -54,7 +56,8 @@ abstract final class GeoUtils {
   }
 
   /// İki koordinat aynı mı (yaklaşık)?
-  static bool samePlace(double lat1, double lon1, double lat2, double lon2, {double tolerance = 0.02}) =>
+  static bool samePlace(double lat1, double lon1, double lat2, double lon2,
+          {double tolerance = 0.02}) =>
       (lat1 - lat2).abs() < tolerance && (lon1 - lon2).abs() < tolerance;
 
   /// Yaklaşık UTC saat dilimi farkı (boylama göre, tam saat).

@@ -23,7 +23,8 @@ import '../design/app_theme.dart';
 /// verilir; böylece tüm ekranlar servislere **senkron** erişir ve açılış hızlı
 /// kalır.
 final Provider<AppRuntime> runtimeProvider = Provider<AppRuntime>(
-  (Ref ref) => throw StateError('AppRuntime sağlanmadı (main.dart override etmeli).'),
+  (Ref ref) =>
+      throw StateError('AppRuntime sağlanmadı (main.dart override etmeli).'),
 );
 
 /// Bağlantı durumu — çevrimdışı bilgilendirmeleri için.
@@ -43,18 +44,24 @@ class SettingsController extends Notifier<AppSettings> {
   @override
   AppSettings build() => ref.read(runtimeProvider).initialSettings;
 
-  Future<void> update(AppSettings next, {bool rescheduleNotifications = true}) async {
+  Future<void> update(AppSettings next,
+      {bool rescheduleNotifications = true}) async {
     final AppSettings previous = state;
     state = next;
     try {
-      await ref.read(runtimeProvider).preferences.setJson(PrefKeys.appSettings, next.toPrefs());
+      await ref
+          .read(runtimeProvider)
+          .preferences
+          .setJson(PrefKeys.appSettings, next.toPrefs());
     } catch (error) {
       AppLog.warning('Ayarlar kaydedilemedi: $error');
     }
     // Bildirim nesnesi `copyWith` içinde korunur; kimlik karşılaştırması
     // gereksiz zamanlamayı önler.
-    if (!identical(previous.notifications, next.notifications) && rescheduleNotifications) {
-      unawaited(ref.read(notificationCoordinatorProvider).reschedule(settings: next));
+    if (!identical(previous.notifications, next.notifications) &&
+        rescheduleNotifications) {
+      unawaited(
+          ref.read(notificationCoordinatorProvider).reschedule(settings: next));
     }
     if (previous.themeMode != next.themeMode) {
       ref.read(themeModeProvider.notifier).syncFromSettings(next.themeMode);
@@ -62,19 +69,24 @@ class SettingsController extends Notifier<AppSettings> {
   }
 
   /// Yedekten geri yükleme.
-  Future<void> restoreFromJson(String raw) => update(AppSettings.importJson(raw));
+  Future<void> restoreFromJson(String raw) =>
+      update(AppSettings.importJson(raw));
 
-  Future<void> setThemeMode(AppThemeMode mode) => update(state.copyWith(themeMode: mode));
+  Future<void> setThemeMode(AppThemeMode mode) =>
+      update(state.copyWith(themeMode: mode));
 
-  Future<void> setMethod(String methodId) => update(state.copyWith(calculationMethodId: methodId));
+  Future<void> setMethod(String methodId) =>
+      update(state.copyWith(calculationMethodId: methodId));
 
-  Future<void> setAsrHanafi(bool value) => update(state.copyWith(asrHanafi: value));
+  Future<void> setAsrHanafi(bool value) =>
+      update(state.copyWith(asrHanafi: value));
 
   Future<void> setUse24Hour(bool value) =>
       update(state.copyWith(use24Hour: value), rescheduleNotifications: false);
 
   Future<void> setHijriOffset(int days) =>
-      update(state.copyWith(hijriOffsetDays: days.clamp(-3, 3)), rescheduleNotifications: false);
+      update(state.copyWith(hijriOffsetDays: days.clamp(-3, 3)),
+          rescheduleNotifications: false);
 
   Future<void> setManualOffset(String prayerKey, int minutes) {
     final Map<String, int> offsets = Map<String, int>.from(state.manualOffsets);
@@ -90,10 +102,12 @@ class SettingsController extends Notifier<AppSettings> {
       update(state.copyWith(notifications: notifications));
 
   Future<void> setQuranFontSize(double size) =>
-      update(state.copyWith(quranFontSize: size.clamp(18, 44)), rescheduleNotifications: false);
+      update(state.copyWith(quranFontSize: size.clamp(18, 44)),
+          rescheduleNotifications: false);
 
   Future<void> setQuranReciter(String reciterId) =>
-      update(state.copyWith(quranReciterId: reciterId), rescheduleNotifications: false);
+      update(state.copyWith(quranReciterId: reciterId),
+          rescheduleNotifications: false);
 
   Future<void> setZikirPreferences({
     bool? vibration,
@@ -112,29 +126,36 @@ class SettingsController extends Notifier<AppSettings> {
       );
 
   Future<void> setAnalytics(bool enabled) =>
-      update(state.copyWith(analyticsEnabled: enabled), rescheduleNotifications: false);
+      update(state.copyWith(analyticsEnabled: enabled),
+          rescheduleNotifications: false);
 
   Future<void> setCrashReporting(bool enabled) =>
-      update(state.copyWith(crashReportingEnabled: enabled), rescheduleNotifications: false);
+      update(state.copyWith(crashReportingEnabled: enabled),
+          rescheduleNotifications: false);
 
   Future<void> setStreamingOnlyOnWifi(bool value) =>
-      update(state.copyWith(streamingOnlyOnWifi: value), rescheduleNotifications: false);
+      update(state.copyWith(streamingOnlyOnWifi: value),
+          rescheduleNotifications: false);
 
   Future<void> setAdhanDucking(bool value) =>
-      update(state.copyWith(adhanPlaybackDucking: value), rescheduleNotifications: false);
+      update(state.copyWith(adhanPlaybackDucking: value),
+          rescheduleNotifications: false);
 }
 
-final NotifierProvider<SettingsController, AppSettings> settingsControllerProvider =
+final NotifierProvider<SettingsController, AppSettings>
+    settingsControllerProvider =
     NotifierProvider<SettingsController, AppSettings>(SettingsController.new);
 
 final Provider<AppSettings> settingsProvider =
     Provider<AppSettings>((Ref ref) => ref.watch(settingsControllerProvider));
 
 /// Ayarların uygulandığı nihai hesap yöntemi.
-final Provider<CalculationMethod> calculationMethodProvider = Provider<CalculationMethod>(
+final Provider<CalculationMethod> calculationMethodProvider =
+    Provider<CalculationMethod>(
   (Ref ref) {
     final AppSettings settings = ref.watch(settingsProvider);
-    return settings.resolvedMethod(CalculationMethod.fromId(settings.calculationMethodId));
+    return settings
+        .resolvedMethod(CalculationMethod.fromId(settings.calculationMethodId));
   },
 );
 
@@ -155,7 +176,8 @@ class ThemeModeController extends Notifier<AppThemeMode> {
 }
 
 final NotifierProvider<ThemeModeController, AppThemeMode> themeModeProvider =
-    NotifierProvider<ThemeModeController, AppThemeMode>(ThemeModeController.new);
+    NotifierProvider<ThemeModeController, AppThemeMode>(
+        ThemeModeController.new);
 
 // ---------------------------------------------------------------- Konum
 
@@ -168,7 +190,8 @@ class LocationState {
   final bool busy;
   final String? error;
 
-  LocationState copyWith({UserLocation? location, bool? busy, String? error}) => LocationState(
+  LocationState copyWith({UserLocation? location, bool? busy, String? error}) =>
+      LocationState(
         location: location ?? this.location,
         busy: busy ?? this.busy,
         error: error,
@@ -181,7 +204,8 @@ class LocationController extends Notifier<LocationState> {
   @override
   LocationState build() {
     final AppRuntime runtime = ref.read(runtimeProvider);
-    final Map<String, Object?>? stored = runtime.preferences.getJson(_locationKey);
+    final Map<String, Object?>? stored =
+        runtime.preferences.getJson(_locationKey);
     if (stored != null) {
       try {
         return LocationState(location: UserLocation.fromJson(stored));
@@ -246,12 +270,15 @@ class LocationController extends Notifier<LocationState> {
       return false;
     } catch (error) {
       AppLog.warning('GPS hatası: $error');
-      state = state.copyWith(busy: false, error: 'Konum alınamadı. Lütfen tekrar deneyin.');
+      state = state.copyWith(
+          busy: false, error: 'Konum alınamadı. Lütfen tekrar deneyin.');
       return false;
     }
   }
 
-  Future<void> selectCity(City city, {LocationMode mode = LocationMode.manual}) => _persist(
+  Future<void> selectCity(City city,
+          {LocationMode mode = LocationMode.manual}) =>
+      _persist(
         UserLocation(
           mode: mode,
           latitude: city.latitude,
@@ -276,7 +303,10 @@ class LocationController extends Notifier<LocationState> {
   Future<void> _persist(UserLocation location) async {
     state = state.copyWith(location: location, busy: false, error: null);
     try {
-      await ref.read(runtimeProvider).preferences.setJson(_locationKey, location.toJson());
+      await ref
+          .read(runtimeProvider)
+          .preferences
+          .setJson(_locationKey, location.toJson());
     } catch (error) {
       AppLog.warning('Konum kaydedilemedi: $error');
     }
@@ -286,7 +316,8 @@ class LocationController extends Notifier<LocationState> {
   }
 }
 
-final NotifierProvider<LocationController, LocationState> locationControllerProvider =
+final NotifierProvider<LocationController, LocationState>
+    locationControllerProvider =
     NotifierProvider<LocationController, LocationState>(LocationController.new);
 
 final Provider<UserLocation> activeLocationProvider = Provider<UserLocation>(
@@ -294,7 +325,8 @@ final Provider<UserLocation> activeLocationProvider = Provider<UserLocation>(
 );
 
 /// GPS koordinatına en yakın şehir adı (arayüzde "İstanbul yakını" gibi).
-final FutureProvider<String> locationLabelProvider = FutureProvider<String>((Ref ref) async {
+final FutureProvider<String> locationLabelProvider =
+    FutureProvider<String>((Ref ref) async {
   final UserLocation location = ref.watch(activeLocationProvider);
   if (location.city != null) return location.city!.displayName;
   final AppRuntime runtime = ref.watch(runtimeProvider);
@@ -317,13 +349,14 @@ class TodayTimes {
   final String locationLabel;
 
   /// O anki vakit + sonraki vakit + kalan süre.
-  ({Prayer current, PrayerTime? next, Duration? remaining}) countdown(DateTime now) {
+  ({Prayer current, PrayerTime? next, Duration? remaining}) countdown(
+      DateTime now) {
     final Prayer current = day.currentPrayer(now);
     final PrayerTime? next = day.nextPrayer(now);
     return (
       current: current,
       next: next,
-      remaining: next == null ? null : next.time.difference(now),
+      remaining: next?.time.difference(now),
     );
   }
 }
@@ -348,7 +381,8 @@ class PrayerTimesNotifier extends AsyncNotifier<TodayTimes> {
       method: method,
     );
 
-    final String label = await runtime.cities.describePoint(location.latitude, location.longitude);
+    final String label = await runtime.cities
+        .describePoint(location.latitude, location.longitude);
     return TodayTimes(
       day: day,
       tomorrow: tomorrow,
@@ -382,15 +416,18 @@ class PrayerTimesNotifier extends AsyncNotifier<TodayTimes> {
         tomorrow: tomorrow,
         warning: runtime.prayerTimes.lastWarning,
         locationLabel: location.city?.displayName ??
-            await runtime.cities.describePoint(location.latitude, location.longitude),
+            await runtime.cities
+                .describePoint(location.latitude, location.longitude),
       );
     });
     unawaited(ref.read(notificationCoordinatorProvider).reschedule());
   }
 }
 
-final AsyncNotifierProvider<PrayerTimesNotifier, TodayTimes> prayerTimesProvider =
-    AsyncNotifierProvider<PrayerTimesNotifier, TodayTimes>(PrayerTimesNotifier.new);
+final AsyncNotifierProvider<PrayerTimesNotifier, TodayTimes>
+    prayerTimesProvider =
+    AsyncNotifierProvider<PrayerTimesNotifier, TodayTimes>(
+        PrayerTimesNotifier.new);
 
 enum PrayerRangeView {
   today('Bugün', Icons.today_rounded),
@@ -410,8 +447,10 @@ class PrayerRangeViewController extends Notifier<PrayerRangeView> {
   void select(PrayerRangeView view) => state = view;
 }
 
-final NotifierProvider<PrayerRangeViewController, PrayerRangeView> prayerRangeViewProvider =
-    NotifierProvider<PrayerRangeViewController, PrayerRangeView>(PrayerRangeViewController.new);
+final NotifierProvider<PrayerRangeViewController, PrayerRangeView>
+    prayerRangeViewProvider =
+    NotifierProvider<PrayerRangeViewController, PrayerRangeView>(
+        PrayerRangeViewController.new);
 
 /// Haftalık/aylık tablo verisi (Bugün görünümünde boş döner).
 class PrayerRangeNotifier extends AsyncNotifier<List<PrayerTimesDay>> {
@@ -443,19 +482,24 @@ class PrayerRangeNotifier extends AsyncNotifier<List<PrayerTimesDay>> {
   }
 }
 
-final AsyncNotifierProvider<PrayerRangeNotifier, List<PrayerTimesDay>> prayerRangeProvider =
-    AsyncNotifierProvider<PrayerRangeNotifier, List<PrayerTimesDay>>(PrayerRangeNotifier.new);
+final AsyncNotifierProvider<PrayerRangeNotifier, List<PrayerTimesDay>>
+    prayerRangeProvider =
+    AsyncNotifierProvider<PrayerRangeNotifier, List<PrayerTimesDay>>(
+        PrayerRangeNotifier.new);
 
 /// Saniyelik saat — geri sayımlar için. Ekrandan çıkıldığında durur.
-final AutoDisposeStreamProvider<DateTime> clockProvider = StreamProvider.autoDispose<DateTime>(
-  (Ref ref) => Stream<DateTime>.periodic(const Duration(seconds: 1), (_) => DateTime.now()),
+final AutoDisposeStreamProvider<DateTime> clockProvider =
+    StreamProvider.autoDispose<DateTime>(
+  (Ref ref) => Stream<DateTime>.periodic(
+      const Duration(seconds: 1), (_) => DateTime.now()),
 );
 
 /// Hicri tarih (ayarlardaki kaydırma uygulanır).
 final Provider<HijriDate> hijriTodayProvider = Provider<HijriDate>((Ref ref) {
   final AppRuntime runtime = ref.watch(runtimeProvider);
   final AppSettings settings = ref.watch(settingsProvider);
-  return runtime.hijri.toHijri(DateTime.now(), dayOffset: settings.hijriOffsetDays);
+  return runtime.hijri
+      .toHijri(DateTime.now(), dayOffset: settings.hijriOffsetDays);
 });
 
 // ---------------------------------------------------- Bildirim koordinatörü
@@ -468,7 +512,8 @@ class NotificationCoordinator {
   final Ref _ref;
 
   Future<int> reschedule({AppSettings? settings, int days = 8}) async {
-    final AppSettings current = settings ?? _ref.read(settingsControllerProvider);
+    final AppSettings current =
+        settings ?? _ref.read(settingsControllerProvider);
     final UserLocation location = _ref.read(activeLocationProvider);
     final CalculationMethod method = current.resolvedMethod(
       CalculationMethod.fromId(current.calculationMethodId),
@@ -568,10 +613,12 @@ class PremiumController extends Notifier<PremiumStatus> {
   bool get isPremium => state.isPremium;
 
   Future<void> _attach(AppRuntime runtime) async {
-    _subscription ??= runtime.billing.statusStream.listen((PremiumStatus status) {
+    _subscription ??=
+        runtime.billing.statusStream.listen((PremiumStatus status) {
       state = status;
       runtime.ads.setPremium(status.isPremium);
-      unawaited(runtime.preferences.setBool(PrefKeys.premiumCache, status.isPremium));
+      unawaited(
+          runtime.preferences.setBool(PrefKeys.premiumCache, status.isPremium));
     });
     if (runtime.billing.status != PremiumStatus.unknown) {
       state = runtime.billing.status;
@@ -583,7 +630,8 @@ class PremiumController extends Notifier<PremiumStatus> {
     final AppRuntime runtime = ref.read(runtimeProvider);
     final bool started = await runtime.billing.purchase(productId);
     if (!started) {
-      throw AppException(runtime.billing.lastError ?? 'Satın alma başlatılamadı.');
+      throw AppException(
+          runtime.billing.lastError ?? 'Satın alma başlatılamadı.');
     }
   }
 
@@ -606,7 +654,8 @@ final Provider<bool> isPremiumProvider = Provider<bool>(
 
 // ------------------------------------------------------------- Kıble
 
-final Provider<CompassService> compassServiceProvider = Provider<CompassService>((Ref ref) {
+final Provider<CompassService> compassServiceProvider =
+    Provider<CompassService>((Ref ref) {
   final CompassService service = CompassService();
   ref.onDispose(service.dispose);
   return service;

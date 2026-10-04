@@ -52,9 +52,11 @@ class DailyContentRepository {
   Future<DailyAyah?> dailyVerse(DateTime date) async {
     final List<Surah> surahs = await _quran.surahs();
     if (surahs.isEmpty) return null;
-    final int dayIndex = date.difference(DateTime(date.year)).inDays + date.year * 97;
+    final int dayIndex =
+        date.difference(DateTime(date.year)).inDays + date.year * 97;
     // Uzun surelerden ve kısa surelerden dengeli seçim yapılır.
-    final List<Surah> pool = surahs.where((Surah s) => s.verseCount >= 3).toList();
+    final List<Surah> pool =
+        surahs.where((Surah s) => s.verseCount >= 3).toList();
     final Surah surah = pool[dayIndex % pool.length];
     final SurahContent content = await _quran.loadSurah(surah.number);
     if (content.ayahs.isEmpty) return null;
@@ -68,7 +70,8 @@ class DailyContentRepository {
     if (surahs.isEmpty) return null;
     final Surah surah = surahNumber == null
         ? surahs[DateTime.now().microsecond % surahs.length]
-        : surahs.firstWhere((Surah s) => s.number == surahNumber, orElse: () => surahs.first);
+        : surahs.firstWhere((Surah s) => s.number == surahNumber,
+            orElse: () => surahs.first);
     final SurahContent content = await _quran.loadSurah(surah.number);
     if (content.ayahs.isEmpty) return null;
     return DailyAyah(
@@ -90,14 +93,16 @@ class DailyContentRepository {
     final Map<String, Object?> row = rows.first;
     try {
       final Map<String, Object?>? verseJson = _decode(row['verse'] as String?);
-      final Map<String, Object?>? hadithJson = _decode(row['hadith'] as String?);
+      final Map<String, Object?>? hadithJson =
+          _decode(row['hadith'] as String?);
       final Map<String, Object?>? duaJson = _decode(row['dua'] as String?);
       return DailyContent(
         date: day,
         verse: verseJson == null ? null : DailyAyah.fromCache(verseJson),
         hadith: hadithJson == null ? null : _hadithFromCache(hadithJson),
         dua: duaJson,
-        fetchedAt: DateTime.fromMillisecondsSinceEpoch((row['fetched_at'] as num?)?.toInt() ?? 0),
+        fetchedAt: DateTime.fromMillisecondsSinceEpoch(
+            (row['fetched_at'] as num?)?.toInt() ?? 0),
         source: 'cache',
       );
     } catch (error) {
@@ -111,8 +116,11 @@ class DailyContentRepository {
       'daily_content_cache',
       <String, Object?>{
         'date': _dateKey(content.date),
-        'verse': content.verse == null ? null : jsonEncode(content.verse!.toCache()),
-        'hadith': content.hadith == null ? null : jsonEncode(_hadithToCache(content.hadith!)),
+        'verse':
+            content.verse == null ? null : jsonEncode(content.verse!.toCache()),
+        'hadith': content.hadith == null
+            ? null
+            : jsonEncode(_hadithToCache(content.hadith!)),
         'dua': content.dua == null ? null : jsonEncode(content.dua),
         'fetched_at': content.fetchedAt.millisecondsSinceEpoch,
       },
@@ -135,7 +143,8 @@ class DailyContentRepository {
         turkish: json['tr'] as String? ?? '',
         reference: json['ref'] as String? ?? '',
         primarySource: json['src'] as String? ?? '',
-        topics: (json['topics'] as List<Object?>?)?.cast<String>() ?? const <String>['Genel'],
+        topics: (json['topics'] as List<Object?>?)?.cast<String>() ??
+            const <String>['Genel'],
       );
 
   Map<String, Object?>? _decode(String? raw) {
@@ -146,7 +155,8 @@ class DailyContentRepository {
   }
 
   bool _isStale(DailyContent content) =>
-      DateTime.now().difference(content.fetchedAt) > AppConstants.dailyContentTtl;
+      DateTime.now().difference(content.fetchedAt) >
+      AppConstants.dailyContentTtl;
 
   static String _dateKey(DateTime date) =>
       '${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';

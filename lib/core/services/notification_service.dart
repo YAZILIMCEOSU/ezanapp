@@ -49,9 +49,11 @@ abstract final class NotificationIds {
   static const int hatimReminder = 3007;
   static const int test = 3008;
 
-  static int adhan(int dayIndex, Prayer prayer) => baseAdhan + dayIndex * 10 + prayer.index;
+  static int adhan(int dayIndex, Prayer prayer) =>
+      baseAdhan + dayIndex * 10 + prayer.index;
 
-  static int pre(int dayIndex, Prayer prayer) => preReminder + dayIndex * 10 + prayer.index;
+  static int pre(int dayIndex, Prayer prayer) =>
+      preReminder + dayIndex * 10 + prayer.index;
 }
 
 /// Ezan, vakit, Ramazan ve içerik bildirimlerini yönetir.
@@ -74,13 +76,15 @@ class NotificationService {
   Stream<NotificationRoute> get onRoute => _routeController.stream;
 
   /// Şu anda gösterilen ezan bildirimi (uygulama içi ezan sesi için).
-  final StreamController<Prayer> _adhanController = StreamController<Prayer>.broadcast();
+  final StreamController<Prayer> _adhanController =
+      StreamController<Prayer>.broadcast();
   Stream<Prayer> get onAdhanNow => _adhanController.stream;
 
   Future<void> initialize() async {
     if (_initialized) return;
 
-    const AndroidInitializationSettings android = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const AndroidInitializationSettings android =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
     const DarwinInitializationSettings ios = DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
@@ -158,10 +162,12 @@ class NotificationService {
 
   Future<void> _createAndroidChannels() async {
     final AndroidFlutterLocalNotificationsPlugin? android =
-        _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+        _plugin.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
     if (android == null) return;
 
-    Future<void> channel(String id, String name, String description, {bool silent = false}) async {
+    Future<void> channel(String id, String name, String description,
+        {bool silent = false}) async {
       await android.createNotificationChannel(
         AndroidNotificationChannel(
           id,
@@ -169,24 +175,48 @@ class NotificationService {
           description: description,
           importance: silent ? Importance.low : Importance.max,
           playSound: !silent,
-          sound: silent ? null : const RawResourceAndroidNotificationSound('ezan_ton_1'),
+          sound: silent
+              ? null
+              : const RawResourceAndroidNotificationSound('ezan_ton_1'),
           enableVibration: !silent,
         ),
       );
     }
 
-    await channel(NotificationChannels.adhan, 'Ezan ve vakit bildirimleri',
-        'Namaz vakti girdiğinde ve ezan öncesi hatırlatmalarda gösterilir.');
-    await channel(NotificationChannels.prayer, 'Namaz vakti hatırlatmaları',
-        'Vakit girdiğinde sessiz bilgilendirme.', silent: true);
-    await channel(NotificationChannels.ramadan, 'Ramazan bildirimleri',
-        'Sahur ve iftar hatırlatmaları.');
-    await channel(NotificationChannels.daily, 'Günün ayeti ve hadisi',
-        'Her gün seçtiğiniz saatte günün içeriği.', silent: true);
-    await channel(NotificationChannels.zikir, 'Zikir ve hatim hatırlatmaları',
-        'Günlük zikir ve hatim hedefleri için nazik hatırlatmalar.', silent: true);
-    await channel(NotificationChannels.system, 'Uygulama bildirimleri',
-        'Güncellemeler ve önemli duyurular.', silent: true);
+    await channel(
+      NotificationChannels.adhan,
+      'Ezan ve vakit bildirimleri',
+      'Namaz vakti girdiğinde ve ezan öncesi hatırlatmalarda gösterilir.',
+    );
+    await channel(
+      NotificationChannels.prayer,
+      'Namaz vakti hatırlatmaları',
+      'Vakit girdiğinde sessiz bilgilendirme.',
+      silent: true,
+    );
+    await channel(
+      NotificationChannels.ramadan,
+      'Ramazan bildirimleri',
+      'Sahur ve iftar hatırlatmaları.',
+    );
+    await channel(
+      NotificationChannels.daily,
+      'Günün ayeti ve hadisi',
+      'Her gün seçtiğiniz saatte günün içeriği.',
+      silent: true,
+    );
+    await channel(
+      NotificationChannels.zikir,
+      'Zikir ve hatim hatırlatmaları',
+      'Günlük zikir ve hatim hedefleri için nazik hatırlatmalar.',
+      silent: true,
+    );
+    await channel(
+      NotificationChannels.system,
+      'Uygulama bildirimleri',
+      'Güncellemeler ve önemli duyurular.',
+      silent: true,
+    );
   }
 
   /// Bildirim izinlerini ister (Android 13+ / iOS).
@@ -195,13 +225,17 @@ class NotificationService {
     bool granted = true;
     if (Platform.isAndroid) {
       final AndroidFlutterLocalNotificationsPlugin? android =
-          _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+          _plugin.resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>();
       granted = await android?.requestNotificationsPermission() ?? true;
       await android?.requestExactAlarmsPermission();
     } else if (Platform.isIOS) {
       final IOSFlutterLocalNotificationsPlugin? ios =
-          _plugin.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
-      granted = await ios?.requestPermissions(alert: true, badge: true, sound: true) ?? true;
+          _plugin.resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin>();
+      granted = await ios?.requestPermissions(
+              alert: true, badge: true, sound: true) ??
+          true;
     }
     return granted;
   }
@@ -211,7 +245,8 @@ class NotificationService {
     await initialize();
     if (Platform.isAndroid) {
       final AndroidFlutterLocalNotificationsPlugin? android =
-          _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+          _plugin.resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>();
       return await android?.areNotificationsEnabled() ?? true;
     }
     return true;
@@ -220,7 +255,8 @@ class NotificationService {
   Future<void> openSystemSettings() async {
     if (Platform.isAndroid) {
       await _plugin
-          .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>()
           ?.requestNotificationsPermission();
     }
   }
@@ -242,7 +278,9 @@ class NotificationService {
     int scheduled = 0;
     final DateTime now = DateTime.now();
 
-    for (int dayIndex = 0; dayIndex < days.length && dayIndex < settings.daysToSchedule; dayIndex++) {
+    for (int dayIndex = 0;
+        dayIndex < days.length && dayIndex < settings.daysToSchedule;
+        dayIndex++) {
       final PrayerTimesDay day = days[dayIndex];
       for (final Prayer prayer in Prayer.values) {
         if (!settings.isEnabledFor(prayer)) continue;
@@ -258,10 +296,13 @@ class NotificationService {
             title: _titleFor(prayer, quiet),
             body: _bodyFor(prayer, locationLabel, day),
             when: when,
-            channelId: prayer == Prayer.imsak ? NotificationChannels.prayer : NotificationChannels.adhan,
+            channelId: prayer == Prayer.imsak
+                ? NotificationChannels.prayer
+                : NotificationChannels.adhan,
             settings: settings,
             quiet: quiet,
-            payload: '${prayer == Prayer.imsak ? NotificationRoute.times.value : NotificationRoute.adhan.value}:${prayer.key}',
+            payload:
+                '${prayer == Prayer.imsak ? NotificationRoute.times.value : NotificationRoute.adhan.value}:${prayer.key}',
             hijriOffsetDays: hijriOffsetDays,
           );
           scheduled++;
@@ -269,16 +310,19 @@ class NotificationService {
 
         // Öncesi hatırlatma
         if (settings.preReminderMinutes > 0 && prayer.isPrayerTime) {
-          final DateTime remindAt = when.subtract(Duration(minutes: settings.preReminderMinutes));
+          final DateTime remindAt =
+              when.subtract(Duration(minutes: settings.preReminderMinutes));
           if (remindAt.isAfter(now)) {
             await _schedule(
               id: NotificationIds.pre(dayIndex, prayer),
-              title: '${prayer.label} vaktine ${settings.preReminderMinutes} dakika',
+              title:
+                  '${prayer.label} vaktine ${settings.preReminderMinutes} dakika',
               body: '$locationLabel için ${prayer.label} vakti yaklaşıyor.',
               when: remindAt,
               channelId: NotificationChannels.prayer,
               settings: settings,
-              quiet: settings.isInQuietHours(remindAt.hour * 60 + remindAt.minute),
+              quiet:
+                  settings.isInQuietHours(remindAt.hour * 60 + remindAt.minute),
               payload: NotificationRoute.times.value,
               hijriOffsetDays: hijriOffsetDays,
             );
@@ -320,16 +364,19 @@ class NotificationService {
     if (!settings.enabled || !settings.ramadanNotifications) return;
 
     final DateTime now = DateTime.now();
-    final DateTime? imsak = tomorrow.timeOf(Prayer.imsak) ?? today.timeOf(Prayer.imsak);
+    final DateTime? imsak =
+        tomorrow.timeOf(Prayer.imsak) ?? today.timeOf(Prayer.imsak);
     final DateTime? aksam = today.timeOf(Prayer.aksam);
 
     if (imsak != null) {
-      final DateTime remind = imsak.subtract(Duration(minutes: settings.sahurReminderMinutes));
+      final DateTime remind =
+          imsak.subtract(Duration(minutes: settings.sahurReminderMinutes));
       if (remind.isAfter(now)) {
         await _schedule(
           id: NotificationIds.ramadanSahur,
           title: 'Sahur vakti yaklaşıyor',
-          body: '$locationLabel: imsak ${_format(imsak)} — sahur için ${settings.sahurReminderMinutes} dakika kaldı.',
+          body:
+              '$locationLabel: imsak ${_format(imsak)} — sahur için ${settings.sahurReminderMinutes} dakika kaldı.',
           when: remind,
           channelId: NotificationChannels.ramadan,
           settings: settings,
@@ -339,12 +386,14 @@ class NotificationService {
       }
     }
     if (aksam != null) {
-      final DateTime remind = aksam.subtract(Duration(minutes: settings.iftarReminderMinutes));
+      final DateTime remind =
+          aksam.subtract(Duration(minutes: settings.iftarReminderMinutes));
       if (remind.isAfter(now)) {
         await _schedule(
           id: NotificationIds.ramadanIftar,
           title: 'İftara ${settings.iftarReminderMinutes} dakika',
-          body: '$locationLabel: iftar ${_format(aksam)}. Allah orucunuzu kabul etsin.',
+          body:
+              '$locationLabel: iftar ${_format(aksam)}. Allah orucunuzu kabul etsin.',
           when: remind,
           channelId: NotificationChannels.ramadan,
           settings: settings,
@@ -447,7 +496,8 @@ class NotificationService {
       id: id,
       title: title,
       body: body,
-      notificationDetails: _details(channelId, const NotificationSettings(), silent: true),
+      notificationDetails:
+          _details(channelId, const NotificationSettings(), silent: true),
       payload: payload,
     );
   }
@@ -470,7 +520,8 @@ class NotificationService {
   /// Zamanlanmış bildirim sayısı (ayarlar ekranında gösterilir).
   Future<int> pendingCount() async {
     try {
-      final List<PendingNotificationRequest> pending = await _plugin.pendingNotificationRequests();
+      final List<PendingNotificationRequest> pending =
+          await _plugin.pendingNotificationRequests();
       return pending.length;
     } catch (_) {
       return 0;
@@ -502,7 +553,8 @@ class NotificationService {
       );
     } on PlatformException catch (error) {
       // Tam alarm izni yoksa (Android 12+) esnek zamanlamaya düşeriz.
-      AppLog.warning('Tam alarm zamanlanamadı, esnek moda geçildi: ${error.code}');
+      AppLog.warning(
+          'Tam alarm zamanlanamadı, esnek moda geçildi: ${error.code}');
       await _plugin.zonedSchedule(
         id: id,
         title: title,
@@ -515,7 +567,8 @@ class NotificationService {
     }
   }
 
-  NotificationDetails _details(String channelId, NotificationSettings settings, {required bool silent}) {
+  NotificationDetails _details(String channelId, NotificationSettings settings,
+      {required bool silent}) {
     final AdhanSound sound = silent ? AdhanSound.silent : settings.adhanSound;
     AndroidNotificationSound? androidSound;
     if (!sound.isSilent) {
@@ -583,8 +636,9 @@ class NotificationService {
     return '$locationLabel • ${prayer.label} ${_format(time)}$hijri';
   }
 
-  String _format(DateTime? time) =>
-      time == null ? '--:--' : '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+  String _format(DateTime? time) => time == null
+      ? '--:--'
+      : '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
 
   tz.TZDateTime _nextInstanceOf(int? weekday, int hour, int minute) {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);

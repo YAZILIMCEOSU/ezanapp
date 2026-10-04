@@ -44,14 +44,16 @@ class PrayerTimesRepository {
   final LocalCalculationSource _local;
 
   final Map<String, PrayerTimesDay> _memory = <String, PrayerTimesDay>{};
-  final Map<String, List<PrayerTimesDay>> _rangeMemory = <String, List<PrayerTimesDay>>{};
+  final Map<String, List<PrayerTimesDay>> _rangeMemory =
+      <String, List<PrayerTimesDay>>{};
 
   /// Kullanıcıya son veri durumunu bildirmek için.
   PrayerTimesDay? lastDay;
   String? lastWarning;
 
   /// Kaynak zinciri (öncelik sırası).
-  List<PrayerTimesSource> get sources => <PrayerTimesSource>[_diyanet, _aladhan, _local];
+  List<PrayerTimesSource> get sources =>
+      <PrayerTimesSource>[_diyanet, _aladhan, _local];
 
   /// Tek gün vakitleri.
   Future<PrayerTimesDay> getDay({
@@ -67,20 +69,23 @@ class PrayerTimesRepository {
       final PrayerTimesDay? memo = _memory[key];
       if (memo != null && !_isStale(memo)) return memo;
 
-      final PrayerTimesDay? cached = await _cache.get(_locationKey(location, method), date);
+      final PrayerTimesDay? cached =
+          await _cache.get(_locationKey(location, method), date);
       if (cached != null && !_isStale(cached)) {
         final PrayerTimesDay resolved = cached.copyWith(source: 'cache');
         _memory[key] = resolved;
         if (!_connectivity.isOnline) {
-          lastWarning = 'Çevrimdışı: son kaydedilen resmî vakitler gösteriliyor.';
+          lastWarning =
+              'Çevrimdışı: son kaydedilen resmî vakitler gösteriliyor.';
         }
         return resolved;
       }
     }
 
-    final List<PrayerTimesSource> chain = _connectivity.isOnline && location.city != null
-        ? <PrayerTimesSource>[_diyanet, _aladhan, _local]
-        : <PrayerTimesSource>[_local];
+    final List<PrayerTimesSource> chain =
+        _connectivity.isOnline && location.city != null
+            ? <PrayerTimesSource>[_diyanet, _aladhan, _local]
+            : <PrayerTimesSource>[_local];
 
     final List<String> failures = <String>[];
     for (final PrayerTimesSource source in chain) {
@@ -97,7 +102,8 @@ class PrayerTimesRepository {
         _memory[key] = result;
         await _cache.save(_locationKey(location, method), result);
         if (source.id == 'calculation' && _connectivity.isOnline) {
-          lastWarning = 'Resmî vakit servisine ulaşılamadı; vakitler cihazda hesaplandı.';
+          lastWarning =
+              'Resmî vakit servisine ulaşılamadı; vakitler cihazda hesaplandı.';
         }
         return result;
       } on PrayerTimesSourceException catch (error) {
@@ -134,11 +140,18 @@ class PrayerTimesRepository {
     }
 
     final String locationKey = _locationKey(location, method);
-    final List<PrayerTimesDay> cached = await _cache.getRange(locationKey, startDate, endDate);
-    final bool cacheCoversRange = cached.length >= endDate.difference(startDate).inDays;
+    final List<PrayerTimesDay> cached =
+        await _cache.getRange(locationKey, startDate, endDate);
+    final bool cacheCoversRange =
+        cached.length >= endDate.difference(startDate).inDays;
 
-    if (_connectivity.isOnline && location.city != null && (!cacheCoversRange || forceRefresh)) {
-      for (final PrayerTimesSource source in <PrayerTimesSource>[_diyanet, _aladhan]) {
+    if (_connectivity.isOnline &&
+        location.city != null &&
+        (!cacheCoversRange || forceRefresh)) {
+      for (final PrayerTimesSource source in <PrayerTimesSource>[
+        _diyanet,
+        _aladhan
+      ]) {
         try {
           final List<PrayerTimesDay> fetched = await source.fetchRange(
             location: location,
@@ -197,7 +210,7 @@ class PrayerTimesRepository {
     return (
       next: next,
       current: current,
-      remaining: next == null ? null : next.time.difference(now),
+      remaining: next?.time.difference(now),
     );
   }
 
@@ -228,10 +241,12 @@ class PrayerTimesRepository {
     return 'gps:${lat}_$lon';
   }
 
-  String _cacheKey(UserLocation location, CalculationMethod method, DateTime date) =>
+  String _cacheKey(
+          UserLocation location, CalculationMethod method, DateTime date) =>
       '${_locationKey(location, method)}|${method.id}|${date.year}-${date.month}-${date.day}';
 
-  String _rangeKey(UserLocation location, CalculationMethod method, DateTime start, DateTime end) =>
+  String _rangeKey(UserLocation location, CalculationMethod method,
+          DateTime start, DateTime end) =>
       '${_locationKey(location, method)}|${method.id}|range|${start.year}${start.month}${start.day}-${end.year}${end.month}${end.day}';
 
   String _relative(DateTime time) {
@@ -243,7 +258,6 @@ class PrayerTimesRepository {
   }
 
   /// Kullanıcı dostu hata mesajı — boş durum ekranlarında gösterilir.
-  static AppException friendlyError(Object error) => error is AppException
-      ? error
-      : AppException.unexpected(error);
+  static AppException friendlyError(Object error) =>
+      error is AppException ? error : AppException.unexpected(error);
 }

@@ -23,7 +23,8 @@ class HijriDate {
   String get formatted => '$day $monthName $year';
 
   /// "12 Ramazan 1447 · Cuma"
-  String get longFormatted => weekday == null ? formatted : '$formatted · $weekday';
+  String get longFormatted =>
+      weekday == null ? formatted : '$formatted · $weekday';
 
   bool get isRamadan => month == 9;
   bool get isDhulHijjah => month == 12;
@@ -31,7 +32,8 @@ class HijriDate {
   bool get isShaban => month == 8;
   bool get isRajab => month == 7;
 
-  HijriDate copyWith({int? year, int? month, int? day, String? weekday}) => HijriDate(
+  HijriDate copyWith({int? year, int? month, int? day, String? weekday}) =>
+      HijriDate(
         year: year ?? this.year,
         month: month ?? this.month,
         day: day ?? this.day,
@@ -40,7 +42,10 @@ class HijriDate {
 
   @override
   bool operator ==(Object other) =>
-      other is HijriDate && other.year == year && other.month == month && other.day == day;
+      other is HijriDate &&
+      other.year == year &&
+      other.month == month &&
+      other.day == day;
 
   @override
   int get hashCode => Object.hash(year, month, day);
@@ -65,7 +70,8 @@ class IslamicDay {
   final int hijriDay;
   final bool isFastingDay;
 
-  bool matches(HijriDate hijri) => hijri.month == hijriMonth && hijri.day == hijriDay;
+  bool matches(HijriDate hijri) =>
+      hijri.month == hijriMonth && hijri.day == hijriDay;
 }
 
 /// Yıl içindeki önemli İslami günler.
@@ -73,7 +79,8 @@ abstract final class IslamicDays {
   static const List<IslamicDay> all = <IslamicDay>[
     IslamicDay(
       title: 'Aşure Günü',
-      description: 'Muharrem ayının 10. günü. Oruç tutulması müstehap kabul edilir.',
+      description:
+          'Muharrem ayının 10. günü. Oruç tutulması müstehap kabul edilir.',
       hijriMonth: 1,
       hijriDay: 10,
       isFastingDay: true,
@@ -117,7 +124,8 @@ abstract final class IslamicDays {
     ),
     IslamicDay(
       title: 'Arefe Günü',
-      description: 'Zilhicce ayının 9. günü — hac arefesi, oruç tutulması müstehaptır.',
+      description:
+          'Zilhicce ayının 9. günü — hac arefesi, oruç tutulması müstehaptır.',
       hijriMonth: 12,
       hijriDay: 9,
       isFastingDay: true,

@@ -26,10 +26,12 @@ class CityRepository {
   Future<List<City>> turkishCities() async {
     if (_turkish != null) return _turkish!;
     try {
-      final Object? decoded = jsonDecode(await _bundle.loadString('assets/data/cities_turkey.json'));
+      final Object? decoded = jsonDecode(
+          await _bundle.loadString('assets/data/cities_turkey.json'));
       final List<City> cities = <City>[];
       if (decoded is Map<String, Object?>) {
-        final List<Object?> provinces = (decoded['provinces'] as List<Object?>?) ?? const <Object?>[];
+        final List<Object?> provinces =
+            (decoded['provinces'] as List<Object?>?) ?? const <Object?>[];
         for (final Object? item in provinces) {
           if (item is! Map) continue;
           final Map<String, Object?> json = item.cast<String, Object?>();
@@ -45,7 +47,8 @@ class CityRepository {
           );
         }
 
-        final List<Object?> districts = (decoded['districts'] as List<Object?>?) ?? const <Object?>[];
+        final List<Object?> districts =
+            (decoded['districts'] as List<Object?>?) ?? const <Object?>[];
         for (final Object? item in districts) {
           if (item is! Map) continue;
           final Map<String, Object?> json = item.cast<String, Object?>();
@@ -77,14 +80,19 @@ class CityRepository {
     if (_world != null) return _world!;
     final List<City> cities = <City>[];
     try {
-      final Object? decoded = jsonDecode(await _bundle.loadString('assets/data/cities_world.json'));
+      final Object? decoded =
+          jsonDecode(await _bundle.loadString('assets/data/cities_world.json'));
       if (decoded is Map<String, Object?>) {
-        final List<Object?> countries = (decoded['countries'] as List<Object?>?) ?? const <Object?>[];
+        final List<Object?> countries =
+            (decoded['countries'] as List<Object?>?) ?? const <Object?>[];
         for (final Object? countryItem in countries) {
           if (countryItem is! Map) continue;
-          final Map<String, Object?> country = countryItem.cast<String, Object?>();
-          final String countryName = _titleCase((country['name'] as String?) ?? '');
-          final List<Object?> list = (country['cities'] as List<Object?>?) ?? const <Object?>[];
+          final Map<String, Object?> country =
+              countryItem.cast<String, Object?>();
+          final String countryName =
+              _titleCase((country['name'] as String?) ?? '');
+          final List<Object?> list =
+              (country['cities'] as List<Object?>?) ?? const <Object?>[];
           for (final Object? item in list) {
             if (item is! Map) continue;
             final Map<String, Object?> json = item.cast<String, Object?>();
@@ -125,7 +133,8 @@ class CityRepository {
   Future<City?> byId(String id) async => (await _index())[id];
 
   /// Türkiye öncelikli arama. [includeWorld] false ise yalnızca Türkiye.
-  Future<List<City>> search(String query, {int limit = 30, bool includeWorld = true}) async {
+  Future<List<City>> search(String query,
+      {int limit = 30, bool includeWorld = true}) async {
     final String needle = TextNormalizer.normalize(query.trim());
     if (needle.isEmpty) return const <City>[];
 
@@ -172,11 +181,13 @@ class CityRepository {
 
   /// GPS koordinatına en yakın ilçe/şehir — resmî Diyanet verisi için
   /// ilçe kimliği elde etmeye yarar. Çok uzaksa (ör. yurt dışı) null döner.
-  Future<City?> nearest(double latitude, double longitude, {double maxDistanceKm = 25}) async {
+  Future<City?> nearest(double latitude, double longitude,
+      {double maxDistanceKm = 25}) async {
     City? best;
     double bestDistance = double.infinity;
     for (final City city in await turkishCities()) {
-      final double distance = _haversine(latitude, longitude, city.latitude, city.longitude);
+      final double distance =
+          _haversine(latitude, longitude, city.latitude, city.longitude);
       if (distance < bestDistance) {
         bestDistance = distance;
         best = city;
@@ -185,7 +196,8 @@ class CityRepository {
     if (best != null && bestDistance <= maxDistanceKm) return best;
 
     for (final City city in await worldCities()) {
-      final double distance = _haversine(latitude, longitude, city.latitude, city.longitude);
+      final double distance =
+          _haversine(latitude, longitude, city.latitude, city.longitude);
       if (distance < bestDistance) {
         bestDistance = distance;
         best = city;
@@ -198,7 +210,8 @@ class CityRepository {
   Future<String> describePoint(double latitude, double longitude) async {
     final City? near = await nearest(latitude, longitude, maxDistanceKm: 60);
     if (near == null) return 'Mevcut konum';
-    final double distance = _haversine(latitude, longitude, near.latitude, near.longitude);
+    final double distance =
+        _haversine(latitude, longitude, near.latitude, near.longitude);
     if (distance < 2) return near.displayName;
     return '${near.displayName} yakını';
   }
@@ -206,8 +219,18 @@ class CityRepository {
   /// Öne çıkan Türkiye illeri (konum seçimi başlangıç listesi).
   Future<List<City>> featuredProvinces({int limit = 12}) async {
     const List<String> featured = <String>[
-      'İstanbul', 'Ankara', 'İzmir', 'Bursa', 'Antalya', 'Adana',
-      'Konya', 'Gaziantep', 'Şanlıurfa', 'Diyarbakır', 'Kayseri', 'Trabzon',
+      'İstanbul',
+      'Ankara',
+      'İzmir',
+      'Bursa',
+      'Antalya',
+      'Adana',
+      'Konya',
+      'Gaziantep',
+      'Şanlıurfa',
+      'Diyarbakır',
+      'Kayseri',
+      'Trabzon',
     ];
     final List<City> turkey = await turkishCities();
     final List<City> result = <City>[];
@@ -218,7 +241,9 @@ class CityRepository {
           result.add(city);
           break;
         }
-        if (TextNormalizer.normalize(city.name) == needle && city.isTurkish && result.length < limit) {
+        if (TextNormalizer.normalize(city.name) == needle &&
+            city.isTurkish &&
+            result.length < limit) {
           result.add(city);
           break;
         }
@@ -234,7 +259,10 @@ class CityRepository {
     final double dLat = (lat2 - lat1) * deg2rad;
     final double dLon = (lon2 - lon1) * deg2rad;
     final double a = math.sin(dLat / 2) * math.sin(dLat / 2) +
-        math.cos(lat1 * deg2rad) * math.cos(lat2 * deg2rad) * math.sin(dLon / 2) * math.sin(dLon / 2);
+        math.cos(lat1 * deg2rad) *
+            math.cos(lat2 * deg2rad) *
+            math.sin(dLon / 2) *
+            math.sin(dLon / 2);
     return radius * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
   }
 
@@ -242,7 +270,9 @@ class CityRepository {
     if (value.isEmpty) return value;
     return value
         .split(' ')
-        .map((String word) => word.isEmpty ? word : '${word[0].toUpperCase()}${word.substring(1)}')
+        .map((String word) => word.isEmpty
+            ? word
+            : '${word[0].toUpperCase()}${word.substring(1)}')
         .join(' ');
   }
 }

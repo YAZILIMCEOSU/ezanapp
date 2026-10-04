@@ -40,7 +40,8 @@ class PrayerTimesCache {
     return _fromRow(rows.first);
   }
 
-  Future<List<PrayerTimesDay>> getRange(String locationKey, DateTime start, DateTime end) async {
+  Future<List<PrayerTimesDay>> getRange(
+      String locationKey, DateTime start, DateTime end) async {
     final List<Map<String, Object?>> rows = await _database.raw.query(
       'prayer_times_cache',
       where: 'district_id = ? AND date >= ? AND date <= ?',
@@ -74,7 +75,8 @@ class PrayerTimesCache {
     );
   }
 
-  Map<String, Object?> _toRow(String locationKey, PrayerTimesDay day) => <String, Object?>{
+  Map<String, Object?> _toRow(String locationKey, PrayerTimesDay day) =>
+      <String, Object?>{
         'district_id': locationKey,
         'date': _dateKey(day.date),
         'imsak': _time(day.times[Prayer.imsak]),
@@ -92,7 +94,8 @@ class PrayerTimesCache {
     final DateTime date = DateTime.parse(row['date']! as String);
     DateTime build(String key) {
       final List<String> parts = (row[key]! as String).split(':');
-      return DateTime(date.year, date.month, date.day, int.parse(parts[0]), int.parse(parts[1]));
+      return DateTime(date.year, date.month, date.day, int.parse(parts[0]),
+          int.parse(parts[1]));
     }
 
     return PrayerTimesDay(

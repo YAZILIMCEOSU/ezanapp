@@ -67,7 +67,8 @@ class AppAudioService {
           AppLog.debug('Ses kesintisi bitti');
         }
       });
-      session.becomingNoisyEventStream.listen((_) => unawaited(_player.pause()));
+      session.becomingNoisyEventStream
+          .listen((_) => unawaited(_player.pause()));
     } catch (error) {
       AppLog.warning('Ses oturumu yapılandırılamadı: $error');
     }
@@ -75,8 +76,11 @@ class AppAudioService {
     _stateSub = _player.playerStateStream.listen((PlayerState state) {
       _status = switch (state.processingState) {
         ProcessingState.idle => PlaybackStatus.idle,
-        ProcessingState.loading || ProcessingState.buffering => PlaybackStatus.loading,
-        ProcessingState.ready => state.playing ? PlaybackStatus.playing : PlaybackStatus.paused,
+        ProcessingState.loading ||
+        ProcessingState.buffering =>
+          PlaybackStatus.loading,
+        ProcessingState.ready =>
+          state.playing ? PlaybackStatus.playing : PlaybackStatus.paused,
         ProcessingState.completed => PlaybackStatus.completed,
       };
       if (!_statusController.isClosed) _statusController.add(_status);
@@ -87,7 +91,8 @@ class AppAudioService {
     });
     _errorSub = _player.errorStream.listen((PlayerException error) {
       AppLog.warning('Oynatma hatası: ${error.message}');
-      if (!_statusController.isClosed) _statusController.add(PlaybackStatus.error);
+      if (!_statusController.isClosed)
+        _statusController.add(PlaybackStatus.error);
     });
     _player.positionStream.listen((Duration position) {
       _lastPosition = position;
@@ -98,28 +103,33 @@ class AppAudioService {
   Future<void> _applyDucking() async {
     try {
       final AudioSession session = await AudioSession.instance;
-      await session.configure(AudioSessionConfiguration(
-        avAudioSessionCategory: AVAudioSessionCategory.playback,
-        avAudioSessionCategoryOptions: AVAudioSessionCategoryOptions.duckOthers,
-        avAudioSessionMode: AVAudioSessionMode.defaultMode,
-        avAudioSessionRouteSharingPolicy: AVAudioSessionRouteSharingPolicy.defaultPolicy,
-        avAudioSessionSetActiveOptions: AVAudioSessionSetActiveOptions.none,
-        androidAudioAttributes: const AndroidAudioAttributes(
-          contentType: AndroidAudioContentType.music,
-          usage: AndroidAudioUsage.media,
+      await session.configure(
+        AudioSessionConfiguration(
+          avAudioSessionCategory: AVAudioSessionCategory.playback,
+          avAudioSessionCategoryOptions:
+              AVAudioSessionCategoryOptions.duckOthers,
+          avAudioSessionMode: AVAudioSessionMode.defaultMode,
+          avAudioSessionRouteSharingPolicy:
+              AVAudioSessionRouteSharingPolicy.defaultPolicy,
+          avAudioSessionSetActiveOptions: AVAudioSessionSetActiveOptions.none,
+          androidAudioAttributes: const AndroidAudioAttributes(
+            contentType: AndroidAudioContentType.music,
+            usage: AndroidAudioUsage.media,
+          ),
+          androidAudioFocusGainType: _duckingEnabled
+              ? AndroidAudioFocusGainType.gainTransientMayDuck
+              : AndroidAudioFocusGainType.gain,
+          androidWillPauseWhenDucked: false,
         ),
-        androidAudioFocusGainType: _duckingEnabled
-            ? AndroidAudioFocusGainType.gainTransientMayDuck
-            : AndroidAudioFocusGainType.gain,
-        androidWillPauseWhenDucked: false,
-      ));
+      );
     } catch (error) {
       AppLog.warning('Ses odağı ayarlanamadı', error: error);
     }
   }
 
   /// Yerel dosya (indirilen içerik) çalar.
-  Future<bool> playFile(String path, {double? volume, bool loop = false}) async {
+  Future<bool> playFile(String path,
+      {double? volume, bool loop = false}) async {
     try {
       if (!File(path).existsSync()) {
         AppLog.warning('Ses dosyası bulunamadı: $path');
@@ -137,7 +147,8 @@ class AppAudioService {
   }
 
   /// Varlık (asset) dosyası çalar — dahili ezan tonları.
-  Future<bool> playAsset(String assetPath, {double volume = 1.0, bool loop = false}) async {
+  Future<bool> playAsset(String assetPath,
+      {double volume = 1.0, bool loop = false}) async {
     try {
       await _player.setAudioSource(AudioSource.asset(assetPath));
       await _player.setLoopMode(loop ? LoopMode.one : LoopMode.off);
@@ -145,7 +156,8 @@ class AppAudioService {
       await _player.play();
       return true;
     } catch (error, stackTrace) {
-      AppLog.error('Varlık çalınamadı: $assetPath', error: error, stackTrace: stackTrace);
+      AppLog.error('Varlık çalınamadı: $assetPath',
+          error: error, stackTrace: stackTrace);
       return false;
     }
   }
@@ -182,7 +194,8 @@ class AppAudioService {
       await _player.play();
       return true;
     } catch (error, stackTrace) {
-      AppLog.error('Akış çalınamadı: $url', error: error, stackTrace: stackTrace);
+      AppLog.error('Akış çalınamadı: $url',
+          error: error, stackTrace: stackTrace);
       return false;
     }
   }
@@ -222,23 +235,28 @@ class AppAudioService {
 
   Future<void> seek(Duration position) => _player.seek(position);
 
-  Future<void> seekToIndex(int index) => _player.seek(Duration.zero, index: index);
+  Future<void> seekToIndex(int index) =>
+      _player.seek(Duration.zero, index: index);
 
-  Future<void> setVolume(double volume) => _player.setVolume(volume.clamp(0.0, 1.0));
+  Future<void> setVolume(double volume) =>
+      _player.setVolume(volume.clamp(0.0, 1.0));
 
   Future<void> setSpeed(double speed) async {
     _speed = speed.clamp(0.5, 2.0);
     await _player.setSpeed(_speed);
   }
 
-  Future<void> setLoop(bool loop) => _player.setLoopMode(loop ? LoopMode.one : LoopMode.off);
+  Future<void> setLoop(bool loop) =>
+      _player.setLoopMode(loop ? LoopMode.one : LoopMode.off);
 
   int? get currentIndex => _player.currentIndex;
 
   /// Aynı anda ses seviyesini yumuşakça değiştirir (ezan başlangıcı için).
-  Future<void> fadeIn({double to = 1.0, Duration duration = const Duration(seconds: 2)}) async {
+  Future<void> fadeIn(
+      {double to = 1.0, Duration duration = const Duration(seconds: 2)}) async {
     const int steps = 20;
-    final Duration stepDelay = Duration(milliseconds: duration.inMilliseconds ~/ steps);
+    final Duration stepDelay =
+        Duration(milliseconds: duration.inMilliseconds ~/ steps);
     for (int i = 1; i <= steps; i++) {
       await _player.setVolume((to * i / steps).clamp(0.0, 1.0));
       await Future<void>.delayed(stepDelay);
@@ -247,7 +265,8 @@ class AppAudioService {
 
   Future<void> fadeOut({Duration duration = const Duration(seconds: 2)}) async {
     const int steps = 20;
-    final Duration stepDelay = Duration(milliseconds: duration.inMilliseconds ~/ steps);
+    final Duration stepDelay =
+        Duration(milliseconds: duration.inMilliseconds ~/ steps);
     for (int i = steps; i >= 0; i--) {
       await _player.setVolume((i / steps).clamp(0.0, 1.0));
       await Future<void>.delayed(stepDelay);

@@ -15,7 +15,8 @@ import 'prayer_times_source.dart';
 /// Diyanet verisi alınamadığında (yurt dışı, servis kesintisi) kullanılan
 /// ikinci kaynak. Method parametresi uygulamanın seçili yöntemine eşlenir.
 class AladhanApiSource implements PrayerTimesSource {
-  AladhanApiSource({http.Client? client, this.baseUrl = 'https://api.aladhan.com/v1'})
+  AladhanApiSource(
+      {http.Client? client, this.baseUrl = 'https://api.aladhan.com/v1'})
       : _client = client ?? http.Client();
 
   final http.Client _client;
@@ -49,20 +50,29 @@ class AladhanApiSource implements PrayerTimesSource {
       '&method=${_methodParameter(method)}&school=${method.asrFactor >= 2 ? 1 : 0}',
     );
     try {
-      final http.Response response = await _client
-          .get(uri, headers: const <String, String>{'Accept': 'application/json'})
-          .timeout(_timeout);
+      final http.Response response = await _client.get(uri,
+          headers: const <String, String>{
+            'Accept': 'application/json'
+          }).timeout(_timeout);
       if (response.statusCode != 200) {
-        throw PrayerTimesSourceException('aladhan', 'Servis ${response.statusCode} döndü.',
-            isTransient: response.statusCode >= 500);
+        throw PrayerTimesSourceException(
+          'aladhan',
+          'Servis ${response.statusCode} döndü.',
+          isTransient: response.statusCode >= 500,
+        );
       }
       final Object? decoded = jsonDecode(utf8.decode(response.bodyBytes));
       if (decoded is! Map) {
-        throw const PrayerTimesSourceException('aladhan', 'Beklenmeyen yanıt biçimi.');
+        throw const PrayerTimesSourceException(
+            'aladhan', 'Beklenmeyen yanıt biçimi.');
       }
       final Map<String, Object?> root = decoded.cast<String, Object?>();
-      final Map<String, Object?> data = (root['data'] as Map?)?.cast<String, Object?>() ?? <String, Object?>{};
-      final Map<String, Object?> timings = (data['timings'] as Map?)?.cast<String, Object?>() ?? <String, Object?>{};
+      final Map<String, Object?> data =
+          (root['data'] as Map?)?.cast<String, Object?>() ??
+              <String, Object?>{};
+      final Map<String, Object?> timings =
+          (data['timings'] as Map?)?.cast<String, Object?>() ??
+              <String, Object?>{};
       if (timings.isEmpty) {
         throw const PrayerTimesSourceException('aladhan', 'Vakit verisi boş.');
       }
@@ -74,7 +84,8 @@ class AladhanApiSource implements PrayerTimesSource {
         if (parts.length < 2) return null;
         final int? hour = int.tryParse(parts[0]);
         final int? minute = int.tryParse(parts[1]);
-        if (hour == null || minute == null || hour > 23 || minute > 59) return null;
+        if (hour == null || minute == null || hour > 23 || minute > 59)
+          return null;
         return DateTime(date.year, date.month, date.day, hour, minute);
       }
 
@@ -91,13 +102,16 @@ class AladhanApiSource implements PrayerTimesSource {
           if (entry.value != null) entry.key: entry.value!,
       };
       if (mapped.length < Prayer.values.length) {
-        throw const PrayerTimesSourceException('aladhan', 'Vakitlerin tamamı çözümlenemedi.');
+        throw const PrayerTimesSourceException(
+            'aladhan', 'Vakitlerin tamamı çözümlenemedi.');
       }
 
-      final Map<String, Object?> hijriRaw = (data['date'] as Map?)?.cast<String, Object?>() ??
-          <String, Object?>{};
+      final Map<String, Object?> hijriRaw =
+          (data['date'] as Map?)?.cast<String, Object?>() ??
+              <String, Object?>{};
       final Map<String, Object?> hijri =
-          (hijriRaw['hijri'] as Map?)?.cast<String, Object?>() ?? <String, Object?>{};
+          (hijriRaw['hijri'] as Map?)?.cast<String, Object?>() ??
+              <String, Object?>{};
       final String? hijriLabel = hijri.isEmpty
           ? null
           : '${hijri['day']} ${(hijri['month'] as Map?)?.cast<String, Object?>()['tr'] ?? (hijri['month'] as Map?)?.cast<String, Object?>()['en']} ${hijri['year']}';
@@ -132,27 +146,32 @@ class AladhanApiSource implements PrayerTimesSource {
       '&method=${_methodParameter(method)}&school=${method.asrFactor >= 2 ? 1 : 0}',
     );
     try {
-      final http.Response response = await _client
-          .get(uri, headers: const <String, String>{'Accept': 'application/json'})
-          .timeout(_timeout);
+      final http.Response response = await _client.get(uri,
+          headers: const <String, String>{
+            'Accept': 'application/json'
+          }).timeout(_timeout);
       if (response.statusCode != 200) {
-        throw PrayerTimesSourceException('aladhan', 'Servis ${response.statusCode} döndü.');
+        throw PrayerTimesSourceException(
+            'aladhan', 'Servis ${response.statusCode} döndü.');
       }
       final Object? decoded = jsonDecode(utf8.decode(response.bodyBytes));
-      final Map<String, Object?> root = (decoded as Map).cast<String, Object?>();
+      final Map<String, Object?> root =
+          (decoded as Map).cast<String, Object?>();
       final List<Object?> data = (root['data'] as List?) ?? <Object?>[];
       final List<PrayerTimesDay> days = <PrayerTimesDay>[];
       for (final Object? item in data) {
         if (item is! Map) continue;
         final Map<String, Object?> record = item.cast<String, Object?>();
-        final Map<String, Object?> gregorian =
-            ((record['date'] as Map?)?.cast<String, Object?>()['gregorian'] as Map?)
-                    ?.cast<String, Object?>() ??
-                <String, Object?>{};
-        final DateTime? date = DateTime.tryParse(gregorian['date'] as String? ?? '');
+        final Map<String, Object?> gregorian = ((record['date'] as Map?)
+                    ?.cast<String, Object?>()['gregorian'] as Map?)
+                ?.cast<String, Object?>() ??
+            <String, Object?>{};
+        final DateTime? date =
+            DateTime.tryParse(gregorian['date'] as String? ?? '');
         if (date == null) continue;
         final Map<String, Object?> timings =
-            (record['timings'] as Map?)?.cast<String, Object?>() ?? <String, Object?>{};
+            (record['timings'] as Map?)?.cast<String, Object?>() ??
+                <String, Object?>{};
         DateTime? parse(Object? value) {
           if (value is! String) return null;
           final List<String> parts = value.split(' ').first.trim().split(':');
@@ -176,24 +195,28 @@ class AladhanApiSource implements PrayerTimesSource {
             if (entry.value != null) entry.key: entry.value!,
         };
         if (mapped.length == Prayer.values.length) {
-          days.add(PrayerTimesDay(
-            date: DateTime(date.year, date.month, date.day),
-            times: mapped,
-            source: id,
-            cachedAt: DateTime.now(),
-          ));
+          days.add(
+            PrayerTimesDay(
+              date: DateTime(date.year, date.month, date.day),
+              times: mapped,
+              source: id,
+              cachedAt: DateTime.now(),
+            ),
+          );
         }
       }
       if (days.isEmpty) {
         throw const PrayerTimesSourceException('aladhan', 'Aralık verisi boş.');
       }
-      days.sort((PrayerTimesDay a, PrayerTimesDay b) => a.date.compareTo(b.date));
+      days.sort(
+          (PrayerTimesDay a, PrayerTimesDay b) => a.date.compareTo(b.date));
       return days;
     } on PrayerTimesSourceException {
       rethrow;
     } catch (error) {
       AppLog.warning('AlAdhan aralık isteği başarısız', error: error);
-      throw PrayerTimesSourceException('aladhan', 'Aralık verisi alınamadı: $error');
+      throw PrayerTimesSourceException(
+          'aladhan', 'Aralık verisi alınamadı: $error');
     }
   }
 

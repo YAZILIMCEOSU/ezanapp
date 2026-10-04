@@ -25,7 +25,9 @@ class RamadanDayLog {
         note: row['note'] as String?,
       );
 
-  RamadanDayLog copyWith({bool? fasted, bool? tarawih, int? quranPages, String? note}) => RamadanDayLog(
+  RamadanDayLog copyWith(
+          {bool? fasted, bool? tarawih, int? quranPages, String? note}) =>
+      RamadanDayLog(
         date: date,
         fasted: fasted ?? this.fasted,
         tarawih: tarawih ?? this.tarawih,
@@ -45,7 +47,8 @@ enum JuzStatus {
   final String label;
 
   static JuzStatus fromName(String? name) =>
-      JuzStatus.values.firstWhere((JuzStatus s) => s.name == name, orElse: () => JuzStatus.pending);
+      JuzStatus.values.firstWhere((JuzStatus s) => s.name == name,
+          orElse: () => JuzStatus.pending);
 }
 
 /// Tek bir cüzün durumu.
@@ -72,7 +75,8 @@ class JuzProgress {
         ayah: (row['ayah'] as num?)?.toInt(),
         updatedAt: row['updated_at'] == null
             ? null
-            : DateTime.fromMillisecondsSinceEpoch((row['updated_at'] as num).toInt()),
+            : DateTime.fromMillisecondsSinceEpoch(
+                (row['updated_at'] as num).toInt()),
       );
 }
 
@@ -100,7 +104,8 @@ class KazaFast {
         note: row['note'] as String?,
         completedAt: row['completed_at'] == null
             ? null
-            : DateTime.fromMillisecondsSinceEpoch((row['completed_at'] as num).toInt()),
+            : DateTime.fromMillisecondsSinceEpoch(
+                (row['completed_at'] as num).toInt()),
       );
 }
 

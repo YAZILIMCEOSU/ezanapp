@@ -12,7 +12,6 @@ library;
 
 import 'dart:math' as math;
 
-
 const double _degreesToRadians = math.pi / 180.0;
 const double _radiansToDegrees = 180.0 / math.pi;
 
@@ -96,7 +95,8 @@ class CalculationMethod {
   static const CalculationMethod diyanet = CalculationMethod(
     id: 'diyanet',
     name: 'Diyanet İşleri Başkanlığı',
-    description: 'Türkiye Cumhuriyeti Diyanet İşleri Başkanlığı resmî parametreleri '
+    description:
+        'Türkiye Cumhuriyeti Diyanet İşleri Başkanlığı resmî parametreleri '
         '(imsak 18°, yatsı 17°, temkin düzeltmeleri dahil).',
     fajrAngle: 18.0,
     ishaAngle: 17.0,
@@ -106,7 +106,8 @@ class CalculationMethod {
   static const CalculationMethod mwl = CalculationMethod(
     id: 'mwl',
     name: 'Müslüman Dünya Ligi (MWL)',
-    description: 'Muslim World League — imsak 18°, yatsı 17°, temkin uygulanmaz.',
+    description:
+        'Muslim World League — imsak 18°, yatsı 17°, temkin uygulanmaz.',
     fajrAngle: 18.0,
     ishaAngle: 17.0,
     temkin: Temkin.none,
@@ -126,7 +127,8 @@ class CalculationMethod {
   static const CalculationMethod egypt = CalculationMethod(
     id: 'egypt',
     name: 'Mısır Genel Araştırma Kurumu',
-    description: 'Egyptian General Authority of Survey — imsak 19.5°, yatsı 17.5°.',
+    description:
+        'Egyptian General Authority of Survey — imsak 19.5°, yatsı 17.5°.',
     fajrAngle: 19.5,
     ishaAngle: 17.5,
     temkin: Temkin.none,
@@ -136,7 +138,8 @@ class CalculationMethod {
   static const CalculationMethod ummAlQura = CalculationMethod(
     id: 'umm_al_qura',
     name: 'Ümmü’l-Kurâ (Mekke)',
-    description: 'Mekke Ümmü’l-Kurâ takvimi — imsak 18.5°, yatsı akşamdan 90 dk sonra.',
+    description:
+        'Mekke Ümmü’l-Kurâ takvimi — imsak 18.5°, yatsı akşamdan 90 dk sonra.',
     fajrAngle: 18.5,
     ishaAngle: 0,
     ishaIntervalMinutes: 90,
@@ -147,7 +150,8 @@ class CalculationMethod {
   static const CalculationMethod karachi = CalculationMethod(
     id: 'karachi',
     name: 'Karaçi İslamî İlimler Üniversitesi',
-    description: 'University of Islamic Sciences, Karachi — imsak 18°, yatsı 18°, Hanefî ikindi.',
+    description:
+        'University of Islamic Sciences, Karachi — imsak 18°, yatsı 18°, Hanefî ikindi.',
     fajrAngle: 18.0,
     ishaAngle: 18.0,
     asrFactor: 2.0,
@@ -158,7 +162,8 @@ class CalculationMethod {
   static const CalculationMethod tehran = CalculationMethod(
     id: 'tehran',
     name: 'Tahran Jeofizik Enstitüsü',
-    description: 'Institute of Geophysics, University of Tehran — imsak 17.7°, yatsı 14°.',
+    description:
+        'Institute of Geophysics, University of Tehran — imsak 17.7°, yatsı 14°.',
     fajrAngle: 17.7,
     ishaAngle: 14.0,
     temkin: Temkin.none,
@@ -168,7 +173,8 @@ class CalculationMethod {
   static const CalculationMethod jafari = CalculationMethod(
     id: 'jafari',
     name: 'Caferî (Şia İmâmiyye)',
-    description: 'Shia Ithna-Ashari — imsak 16°, yatsı 14°, akşam 4° alacakaranlık.',
+    description:
+        'Shia Ithna-Ashari — imsak 16°, yatsı 14°, akşam 4° alacakaranlık.',
     fajrAngle: 16.0,
     ishaAngle: 14.0,
     maghribAngle: 4.0,
@@ -221,7 +227,8 @@ class CalculationMethod {
   static const CalculationMethod france = CalculationMethod(
     id: 'france',
     name: 'Fransa (UOIF)',
-    description: 'Union des Organisations Islamiques de France — 12° temkin yaklaşımı.',
+    description:
+        'Union des Organisations Islamiques de France — 12° temkin yaklaşımı.',
     fajrAngle: 12.0,
     ishaAngle: 12.0,
     temkin: Temkin.none,
@@ -232,7 +239,8 @@ class CalculationMethod {
   static const CalculationMethod russia = CalculationMethod(
     id: 'russia',
     name: 'Rusya / Kafkasya',
-    description: 'Spiritual Administration of Muslims of Russia — imsak 16°, yatsı 15°.',
+    description:
+        'Spiritual Administration of Muslims of Russia — imsak 16°, yatsı 15°.',
     fajrAngle: 16.0,
     ishaAngle: 15.0,
     temkin: Temkin.none,
@@ -243,7 +251,8 @@ class CalculationMethod {
   static const CalculationMethod turkeyDiyanetHighLat = CalculationMethod(
     id: 'diyanet_high_lat',
     name: 'Diyanet (yüksek enlem kuralı)',
-    description: 'Diyanet parametreleri + gece ortası kuralı (48° üzeri enlemler için).',
+    description:
+        'Diyanet parametreleri + gece ortası kuralı (48° üzeri enlemler için).',
     fajrAngle: 18.0,
     ishaAngle: 17.0,
     highLatitudeRule: HighLatitudeRule.middleOfNight,
@@ -268,8 +277,8 @@ class CalculationMethod {
     turkeyDiyanetHighLat,
   ];
 
-  static CalculationMethod fromId(String? id) =>
-      all.firstWhere((CalculationMethod m) => m.id == id, orElse: () => diyanet);
+  static CalculationMethod fromId(String? id) => all
+      .firstWhere((CalculationMethod m) => m.id == id, orElse: () => diyanet);
 }
 
 /// Temkin (tedbir) düzeltmeleri — dakika cinsinden.
@@ -365,19 +374,23 @@ abstract final class PrayerCalculator {
     // Zaman denklemi için iki kez yinele (öğle vakti hassasiyeti).
     double dhuhr = 0;
     for (int i = 0; i < 3; i++) {
-      dhuhr = 12.0 + timeZoneOffsetHours - longitude / 15.0 - sun.equationOfTime;
+      dhuhr =
+          12.0 + timeZoneOffsetHours - longitude / 15.0 - sun.equationOfTime;
       final double refineJd = _julianDay(date.year, date.month, date.day) +
           (dhuhr - timeZoneOffsetHours) / 24.0;
       sun = _sunPosition(refineJd);
     }
     dhuhr = 12.0 + timeZoneOffsetHours - longitude / 15.0 - sun.equationOfTime;
 
-    final double horizonDip = 0.0347 * math.sqrt(math.max(0.0, elevationMeters));
+    final double horizonDip =
+        0.0347 * math.sqrt(math.max(0.0, elevationMeters));
     final double sunriseAngle = method.sunriseAngle + horizonDip;
     final double maghribAngle = method.maghribAngle + horizonDip;
 
-    double sunriseHa = _hourAngleForDepression(sunriseAngle, latitude, sun.declination);
-    double maghribHa = _hourAngleForDepression(maghribAngle, latitude, sun.declination);
+    final double sunriseHa =
+        _hourAngleForDepression(sunriseAngle, latitude, sun.declination);
+    final double maghribHa =
+        _hourAngleForDepression(maghribAngle, latitude, sun.declination);
 
     final double fajrHa = _halfDayHourAngle(
       angle: method.fajrAngle,
@@ -404,11 +417,14 @@ abstract final class PrayerCalculator {
       );
     }
 
-    final double asrAltitude = _asrAltitude(latitude, sun.declination, method.asrFactor);
-    final double asrHa = _hourAngleForAltitude(asrAltitude, latitude, sun.declination);
+    final double asrAltitude =
+        _asrAltitude(latitude, sun.declination, method.asrFactor);
+    final double asrHa =
+        _hourAngleForAltitude(asrAltitude, latitude, sun.declination);
 
     // NaN koruması (kutup bölgeleri / aşırı enlemler)
-    double safe(double value, double fallback) => value.isFinite ? value : fallback;
+    double safe(double value, double fallback) =>
+        value.isFinite ? value : fallback;
 
     final double imsak = safe(dhuhr - fajrHa, dhuhr - 7.5);
     final double gunes = safe(dhuhr - sunriseHa, dhuhr - 6.0);
@@ -447,7 +463,11 @@ abstract final class PrayerCalculator {
     }
     final int a = y ~/ 100;
     final int b = 2 - a + a ~/ 4;
-    return (365.25 * (y + 4716)).floor() + (30.6001 * (m + 1)).floor() + day + b - 1524.5;
+    return (365.25 * (y + 4716)).floor() +
+        (30.6001 * (m + 1)).floor() +
+        day +
+        b -
+        1524.5;
   }
 
   static _SunData _sunPosition(double julianDay) {
@@ -457,10 +477,13 @@ abstract final class PrayerCalculator {
     final double l = _normalize(q + 1.915 * _sin(g) + 0.020 * _sin(2 * g));
     final double e = 23.439 - 0.00000036 * d;
     final double declination = _asin(_sin(e) * _sin(l));
-    final double rightAscension =
-        _normalize(math.atan2(math.cos(e * _degreesToRadians) * _sin(l), _cos(l)) * _radiansToDegrees / 15.0);
+    final double rightAscension = _normalize(
+        math.atan2(math.cos(e * _degreesToRadians) * _sin(l), _cos(l)) *
+            _radiansToDegrees /
+            15.0);
     final double equationOfTime = _normalize(q / 15.0 - rightAscension + 12.0);
-    final double eqt = (equationOfTime > 12.0 ? equationOfTime - 24.0 : equationOfTime);
+    final double eqt =
+        (equationOfTime > 12.0 ? equationOfTime - 24.0 : equationOfTime);
     return _SunData(declination, eqt);
   }
 
@@ -472,13 +495,16 @@ abstract final class PrayerCalculator {
 
   static double _sin(double degrees) => math.sin(degrees * _degreesToRadians);
   static double _cos(double degrees) => math.cos(degrees * _degreesToRadians);
-  static double _acos(double value) => math.acos(value.clamp(-1.0, 1.0)) * _radiansToDegrees;
-  static double _asin(double value) => math.asin(value.clamp(-1.0, 1.0)) * _radiansToDegrees;
+  static double _acos(double value) =>
+      math.acos(value.clamp(-1.0, 1.0)) * _radiansToDegrees;
+  static double _asin(double value) =>
+      math.asin(value.clamp(-1.0, 1.0)) * _radiansToDegrees;
   static double _atan(double value) => math.atan(value) * _radiansToDegrees;
   static double _tan(double degrees) => math.tan(degrees * _degreesToRadians);
 
   /// Verilen depresyon açısı (ufkun altında) için saat açısı.
-  static double _hourAngleForDepression(double angle, double latitude, double declination) {
+  static double _hourAngleForDepression(
+      double angle, double latitude, double declination) {
     final double numerator = -_sin(angle) - _sin(latitude) * _sin(declination);
     final double denominator = _cos(latitude) * _cos(declination);
     if (denominator.abs() < 1e-9) return double.nan;
@@ -486,15 +512,18 @@ abstract final class PrayerCalculator {
   }
 
   /// Verilen yükseklik (ufkun üstünde) için saat açısı — ikindi vakti.
-  static double _hourAngleForAltitude(double altitude, double latitude, double declination) {
-    final double numerator = _sin(altitude) - _sin(latitude) * _sin(declination);
+  static double _hourAngleForAltitude(
+      double altitude, double latitude, double declination) {
+    final double numerator =
+        _sin(altitude) - _sin(latitude) * _sin(declination);
     final double denominator = _cos(latitude) * _cos(declination);
     if (denominator.abs() < 1e-9) return double.nan;
     return _acos(numerator / denominator) / 15.0;
   }
 
   /// İkindi vakti güneş yüksekliği (asr-ı evvel / asr-ı sânî).
-  static double _asrAltitude(double latitude, double declination, double factor) {
+  static double _asrAltitude(
+      double latitude, double declination, double factor) {
     final double latitudeDelta = (latitude - declination).abs();
     return _atan(1.0 / (factor + _tan(latitudeDelta)));
   }

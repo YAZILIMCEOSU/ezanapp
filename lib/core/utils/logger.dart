@@ -21,7 +21,9 @@ abstract final class AppLog {
     developer.log(message, name: 'warn/$name', error: error);
   }
 
-  static void error(String message, {Object? error, StackTrace? stackTrace, String name = 'ezanai'}) {
-    developer.log(message, name: 'error/$name', error: error, stackTrace: stackTrace);
+  static void error(String message,
+      {Object? error, StackTrace? stackTrace, String name = 'ezanai'}) {
+    developer.log(message,
+        name: 'error/$name', error: error, stackTrace: stackTrace);
   }
 }

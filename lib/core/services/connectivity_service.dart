@@ -13,7 +13,8 @@ class ConnectivityService {
   bool _isOnline = true;
   bool get isOnline => _isOnline;
 
-  Stream<bool> get onStatusChange => _connectivity.onConnectivityChanged.map(_hasConnection);
+  Stream<bool> get onStatusChange =>
+      _connectivity.onConnectivityChanged.map(_hasConnection);
 
   static bool _hasConnection(List<ConnectivityResult> results) => results.any(
         (ConnectivityResult r) =>

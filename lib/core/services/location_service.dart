@@ -47,13 +47,16 @@ class LocationService {
       if (!serviceEnabled) return LocationStatus.serviceDisabled;
       final LocationPermission permission = await Geolocator.checkPermission();
       return switch (permission) {
-        LocationPermission.always || LocationPermission.whileInUse => LocationStatus.granted,
+        LocationPermission.always ||
+        LocationPermission.whileInUse =>
+          LocationStatus.granted,
         LocationPermission.deniedForever => LocationStatus.deniedForever,
         LocationPermission.denied => LocationStatus.denied,
         _ => LocationStatus.denied,
       };
     } catch (error, stackTrace) {
-      AppLog.error('Konum durumu okunamadı', error: error, stackTrace: stackTrace);
+      AppLog.error('Konum durumu okunamadı',
+          error: error, stackTrace: stackTrace);
       return LocationStatus.serviceDisabled;
     }
   }
@@ -67,12 +70,15 @@ class LocationService {
         permission = await Geolocator.requestPermission();
       }
       return switch (permission) {
-        LocationPermission.always || LocationPermission.whileInUse => LocationStatus.granted,
+        LocationPermission.always ||
+        LocationPermission.whileInUse =>
+          LocationStatus.granted,
         LocationPermission.deniedForever => LocationStatus.deniedForever,
         _ => LocationStatus.denied,
       };
     } catch (error, stackTrace) {
-      AppLog.error('Konum izni istenemedi', error: error, stackTrace: stackTrace);
+      AppLog.error('Konum izni istenemedi',
+          error: error, stackTrace: stackTrace);
       return LocationStatus.denied;
     }
   }
@@ -95,7 +101,9 @@ class LocationService {
 
     if (preferLastKnown) {
       final Position? last = await Geolocator.getLastKnownPosition();
-      if (last != null && last.timestamp.difference(DateTime.now()).abs() < const Duration(hours: 12)) {
+      if (last != null &&
+          last.timestamp.difference(DateTime.now()).abs() <
+              const Duration(hours: 12)) {
         return _toFix(last);
       }
     }
@@ -133,6 +141,7 @@ class LocationService {
   Future<void> openLocationSettings() => Geolocator.openLocationSettings();
 
   /// İki nokta arası mesafe (km).
-  static double distanceKm(double lat1, double lon1, double lat2, double lon2) =>
+  static double distanceKm(
+          double lat1, double lon1, double lat2, double lon2) =>
       Geolocator.distanceBetween(lat1, lon1, lat2, lon2) / 1000.0;
 }

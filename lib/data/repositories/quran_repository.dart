@@ -13,7 +13,8 @@ import '../models/quran_models.dart';
 /// - Ayet bazlı arama ve sure listesi yerel olarak çalışır.
 /// - Favoriler, son okunan ayet ve okuma geçmişi SQLite'ta tutulur.
 class QuranRepository {
-  QuranRepository(this._database, {AssetBundle? bundle}) : _bundle = bundle ?? rootBundle;
+  QuranRepository(this._database, {AssetBundle? bundle})
+      : _bundle = bundle ?? rootBundle;
 
   final AppDatabase _database;
   final AssetBundle _bundle;
@@ -25,11 +26,13 @@ class QuranRepository {
   Future<List<Surah>> surahs() async {
     if (_surahs != null) return _surahs!;
     final String raw = await _bundle.loadString('assets/data/surah_meta.json');
-    final Map<String, Object?> json = (jsonDecode(raw) as Map).cast<String, Object?>();
+    final Map<String, Object?> json =
+        (jsonDecode(raw) as Map).cast<String, Object?>();
     final List<Object?> items = (json['surahs'] as List?) ?? <Object?>[];
     _surahs = items
         .whereType<Map<Object?, Object?>>()
-        .map((Map<Object?, Object?> m) => Surah.fromJson(m.cast<String, Object?>()))
+        .map((Map<Object?, Object?> m) =>
+            Surah.fromJson(m.cast<String, Object?>()))
         .toList();
     return _surahs!;
   }
@@ -48,8 +51,8 @@ class QuranRepository {
     if (cached != null) return cached;
     final Surah? meta = await surah(number);
     if (meta == null) {
-      return SurahContent(
-        surah: const Surah(
+      return const SurahContent(
+        surah: Surah(
           number: 0,
           nameArabic: '',
           nameTurkish: 'Bilinmeyen',
@@ -59,12 +62,14 @@ class QuranRepository {
           revelation: '',
           juzStart: null,
         ),
-        ayahs: const <Ayah>[],
+        ayahs: <Ayah>[],
       );
     }
     try {
-      final String raw = await _bundle.loadString('assets/data/quran/$number.json');
-      final Map<String, Object?> json = (jsonDecode(raw) as Map).cast<String, Object?>();
+      final String raw =
+          await _bundle.loadString('assets/data/quran/$number.json');
+      final Map<String, Object?> json =
+          (jsonDecode(raw) as Map).cast<String, Object?>();
       final List<String> arabic = (json['ar'] as List<Object?>).cast<String>();
       final List<String> turkish = (json['tr'] as List<Object?>).cast<String>();
       final List<Ayah> ayahs = <Ayah>[
@@ -80,7 +85,8 @@ class QuranRepository {
       _cache[number] = content;
       return content;
     } catch (error, stackTrace) {
-      AppLog.error('Sure yüklenemedi: $number', error: error, stackTrace: stackTrace);
+      AppLog.error('Sure yüklenemedi: $number',
+          error: error, stackTrace: stackTrace);
       return SurahContent(surah: meta, ayahs: const <Ayah>[]);
     }
   }
@@ -115,7 +121,8 @@ class QuranRepository {
             ayah.arabic.contains(query.trim()) ||
             (nameMatches && ayah.number == 1);
         if (matches) {
-          results.add(AyahSearchResult(ayah: ayah, surah: surah, matchedName: nameMatches));
+          results.add(AyahSearchResult(
+              ayah: ayah, surah: surah, matchedName: nameMatches));
         }
       }
     }
@@ -238,14 +245,41 @@ class QuranRepository {
   }
 
   static const List<(int, int)> _juzStarts = <(int, int)>[
-    (1, 1), (2, 142), (2, 253), (3, 93), (4, 24), (4, 148), (5, 27), (6, 111),
-    (7, 88), (8, 41), (9, 93), (11, 6), (12, 53), (15, 1), (17, 1), (18, 75),
-    (21, 1), (23, 1), (25, 21), (27, 56), (29, 46), (33, 31), (36, 28), (39, 32),
-    (41, 47), (46, 1), (51, 31), (58, 1), (67, 1), (78, 1),
+    (1, 1),
+    (2, 142),
+    (2, 253),
+    (3, 93),
+    (4, 24),
+    (4, 148),
+    (5, 27),
+    (6, 111),
+    (7, 88),
+    (8, 41),
+    (9, 93),
+    (11, 6),
+    (12, 53),
+    (15, 1),
+    (17, 1),
+    (18, 75),
+    (21, 1),
+    (23, 1),
+    (25, 21),
+    (27, 56),
+    (29, 46),
+    (33, 31),
+    (36, 28),
+    (39, 32),
+    (41, 47),
+    (46, 1),
+    (51, 31),
+    (58, 1),
+    (67, 1),
+    (78, 1),
   ];
 
   /// Paylaşılabilir metin üretir.
-  static String shareText(Ayah ayah, String surahName, {bool withTurkish = true}) {
+  static String shareText(Ayah ayah, String surahName,
+      {bool withTurkish = true}) {
     final StringBuffer buffer = StringBuffer()
       ..writeln(ayah.arabic)
       ..writeln();
@@ -261,7 +295,8 @@ class QuranRepository {
 
 /// Arama sonucu.
 class AyahSearchResult {
-  const AyahSearchResult({required this.ayah, required this.surah, this.matchedName = false});
+  const AyahSearchResult(
+      {required this.ayah, required this.surah, this.matchedName = false});
 
   final Ayah ayah;
   final Surah surah;

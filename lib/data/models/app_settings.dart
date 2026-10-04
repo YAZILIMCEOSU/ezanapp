@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../design/app_theme.dart';
-import '../prayer/prayer_calculator.dart';
 import '../models/prayer.dart';
+import '../prayer/prayer_calculator.dart';
 
 /// Ezan bildirim sesi seçenekleri.
 enum AdhanSound {
@@ -27,7 +27,8 @@ enum AdhanSound {
   bool get isSilent => this == AdhanSound.silent;
 
   static AdhanSound fromName(String? name) =>
-      AdhanSound.values.firstWhere((AdhanSound s) => s.name == name, orElse: () => AdhanSound.tone1);
+      AdhanSound.values.firstWhere((AdhanSound s) => s.name == name,
+          orElse: () => AdhanSound.tone1);
 }
 
 /// Bildirim tercihleri.
@@ -106,7 +107,8 @@ class NotificationSettings {
   /// Kaç günlük bildirim zamanlanacak (pil/limit dengesi).
   final int daysToSchedule;
 
-  bool isEnabledFor(Prayer prayer) => enabled && (prayerEnabled[prayer] ?? false);
+  bool isEnabledFor(Prayer prayer) =>
+      enabled && (prayerEnabled[prayer] ?? false);
 
   /// Verilen dakika sessiz saat aralığında mı?
   bool isInQuietHours(int minutesOfDay) {
@@ -153,7 +155,8 @@ class NotificationSettings {
         adhanVolume: adhanVolume ?? this.adhanVolume,
         vibrationEnabled: vibrationEnabled ?? this.vibrationEnabled,
         quietHoursEnabled: quietHoursEnabled ?? this.quietHoursEnabled,
-        quietHoursStartMinutes: quietHoursStartMinutes ?? this.quietHoursStartMinutes,
+        quietHoursStartMinutes:
+            quietHoursStartMinutes ?? this.quietHoursStartMinutes,
         quietHoursEndMinutes: quietHoursEndMinutes ?? this.quietHoursEndMinutes,
         sleepModeEnabled: sleepModeEnabled ?? this.sleepModeEnabled,
         fridayNotification: fridayNotification ?? this.fridayNotification,
@@ -176,7 +179,8 @@ class NotificationSettings {
   Map<String, Object?> toJson() => <String, Object?>{
         'enabled': enabled,
         'prayerEnabled': <String, bool>{
-          for (final MapEntry<Prayer, bool> e in prayerEnabled.entries) e.key.key: e.value,
+          for (final MapEntry<Prayer, bool> e in prayerEnabled.entries)
+            e.key.key: e.value,
         },
         'preReminderMinutes': preReminderMinutes,
         'adhanSound': adhanSound.name,
@@ -205,13 +209,17 @@ class NotificationSettings {
 
   factory NotificationSettings.fromJson(Map<String, Object?>? json) {
     if (json == null) return const NotificationSettings();
-    final Map<String, Object?> prayers = (json['prayerEnabled'] as Map?)?.cast<String, Object?>() ?? <String, Object?>{};
-    int intOr(String key, int fallback) => (json[key] as num?)?.toInt() ?? fallback;
+    final Map<String, Object?> prayers =
+        (json['prayerEnabled'] as Map?)?.cast<String, Object?>() ??
+            <String, Object?>{};
+    int intOr(String key, int fallback) =>
+        (json[key] as num?)?.toInt() ?? fallback;
     bool boolOr(String key, bool fallback) => json[key] as bool? ?? fallback;
     return NotificationSettings(
       enabled: boolOr('enabled', true),
       prayerEnabled: <Prayer, bool>{
-        for (final Prayer p in Prayer.values) p: prayers[p.key] as bool? ?? (p != Prayer.gunes),
+        for (final Prayer p in Prayer.values)
+          p: prayers[p.key] as bool? ?? (p != Prayer.gunes),
       },
       preReminderMinutes: intOr('preReminderMinutes', 0),
       adhanSound: AdhanSound.fromName(json['adhanSound'] as String?),
@@ -315,11 +323,15 @@ class AppSettings {
 
   /// Tercihlerden okur.
   factory AppSettings.fromPrefs(Map<String, Object?> prefs) {
-    int intOr(String key, int fallback) => (prefs[key] as num?)?.toInt() ?? fallback;
-    double doubleOr(String key, double fallback) => (prefs[key] as num?)?.toDouble() ?? fallback;
+    int intOr(String key, int fallback) =>
+        (prefs[key] as num?)?.toInt() ?? fallback;
+    double doubleOr(String key, double fallback) =>
+        (prefs[key] as num?)?.toDouble() ?? fallback;
     bool boolOr(String key, bool fallback) => prefs[key] as bool? ?? fallback;
-    final Map<String, Object?>? offsets = prefs['manualOffsets'] as Map<String, Object?>?;
-    final Map<String, Object?>? notif = prefs['notifications'] as Map<String, Object?>?;
+    final Map<String, Object?>? offsets =
+        prefs['manualOffsets'] as Map<String, Object?>?;
+    final Map<String, Object?>? notif =
+        prefs['notifications'] as Map<String, Object?>?;
     return AppSettings(
       themeMode: AppThemeMode.values.firstWhere(
         (AppThemeMode m) => m.name == prefs['themeMode'],
@@ -331,7 +343,8 @@ class AppSettings {
       manualOffsets: offsets == null
           ? const <String, int>{}
           : <String, int>{
-              for (final MapEntry<String, Object?> e in offsets.entries) e.key: (e.value as num).toInt(),
+              for (final MapEntry<String, Object?> e in offsets.entries)
+                e.key: (e.value as num).toInt(),
             },
       use24Hour: boolOr('use24Hour', true),
       hijriOffsetDays: intOr('hijriOffsetDays', 0),
@@ -418,11 +431,14 @@ class AppSettings {
         hijriOffsetDays: hijriOffsetDays ?? this.hijriOffsetDays,
         quranFontSize: quranFontSize ?? this.quranFontSize,
         quranShowTranslation: quranShowTranslation ?? this.quranShowTranslation,
-        quranShowTransliteration: quranShowTransliteration ?? this.quranShowTransliteration,
+        quranShowTransliteration:
+            quranShowTransliteration ?? this.quranShowTransliteration,
         quranReciterId: quranReciterId ?? this.quranReciterId,
         quranAutoScroll: quranAutoScroll ?? this.quranAutoScroll,
-        keepScreenOnWhileReading: keepScreenOnWhileReading ?? this.keepScreenOnWhileReading,
-        zikirVibrationEnabled: zikirVibrationEnabled ?? this.zikirVibrationEnabled,
+        keepScreenOnWhileReading:
+            keepScreenOnWhileReading ?? this.keepScreenOnWhileReading,
+        zikirVibrationEnabled:
+            zikirVibrationEnabled ?? this.zikirVibrationEnabled,
         zikirSoundEnabled: zikirSoundEnabled ?? this.zikirSoundEnabled,
         zikirAutoAdvance: zikirAutoAdvance ?? this.zikirAutoAdvance,
         zikirDefaultTarget: zikirDefaultTarget ?? this.zikirDefaultTarget,
@@ -430,7 +446,8 @@ class AppSettings {
         lastHatimTarget: lastHatimTarget ?? this.lastHatimTarget,
         hatimAutoAdvance: hatimAutoAdvance ?? this.hatimAutoAdvance,
         analyticsEnabled: analyticsEnabled ?? this.analyticsEnabled,
-        crashReportingEnabled: crashReportingEnabled ?? this.crashReportingEnabled,
+        crashReportingEnabled:
+            crashReportingEnabled ?? this.crashReportingEnabled,
         streamingOnlyOnWifi: streamingOnlyOnWifi ?? this.streamingOnlyOnWifi,
         adhanPlaybackDucking: adhanPlaybackDucking ?? this.adhanPlaybackDucking,
       );
@@ -448,14 +465,22 @@ class AppSettings {
   /// * Hanefî ikindi (asr-ı sânî) yalnızca ilgili yöntemlerde geçersiz kılınır.
   /// * Vakit bazlı manuel düzeltmeler hesap motoruna aktarılır.
   CalculationMethod resolvedMethod(CalculationMethod base) {
-    if (!_asrOverridable.contains(base.id) && manualOffsets.isEmpty) return base;
+    if (!_asrOverridable.contains(base.id) && manualOffsets.isEmpty)
+      return base;
     return base.copyWith(
-      asrFactor: asrHanafi && _asrOverridable.contains(base.id) ? 2.0 : base.asrFactor,
+      asrFactor:
+          asrHanafi && _asrOverridable.contains(base.id) ? 2.0 : base.asrFactor,
       manualOffsets: manualOffsets,
     );
   }
 
   static const Set<String> _asrOverridable = <String>{
-    'diyanet', 'mwl', 'isna', 'egypt', 'umm_al_qura', 'france', 'russia',
+    'diyanet',
+    'mwl',
+    'isna',
+    'egypt',
+    'umm_al_qura',
+    'france',
+    'russia',
   };
 }

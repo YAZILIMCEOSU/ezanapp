@@ -42,7 +42,8 @@ class PreferencesService {
     }
   }
 
-  Future<void> setDouble(String key, double value) => _prefs.setDouble(key, value);
+  Future<void> setDouble(String key, double value) =>
+      _prefs.setDouble(key, value);
 
   String? getString(String key) {
     try {
@@ -52,7 +53,8 @@ class PreferencesService {
     }
   }
 
-  Future<void> setString(String key, String value) => _prefs.setString(key, value);
+  Future<void> setString(String key, String value) =>
+      _prefs.setString(key, value);
 
   List<String> getStringList(String key) {
     try {

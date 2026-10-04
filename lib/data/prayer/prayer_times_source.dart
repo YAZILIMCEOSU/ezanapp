@@ -40,7 +40,8 @@ abstract interface class PrayerTimesSource {
 /// Vakit kaynağı hataları — zincir yöneticisi hangi kaynağın neden
 /// başarısız olduğunu anlayabilir.
 class PrayerTimesSourceException implements Exception {
-  const PrayerTimesSourceException(this.sourceId, this.message, {this.isTransient = true});
+  const PrayerTimesSourceException(this.sourceId, this.message,
+      {this.isTransient = true});
 
   final String sourceId;
   final String message;

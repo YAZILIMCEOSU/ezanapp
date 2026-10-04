@@ -33,7 +33,8 @@ class Hadith {
         turkish: json['tr'] as String? ?? '',
         reference: json['ref'] as String? ?? '',
         primarySource: json['src'] as String? ?? '',
-        topics: (json['topics'] as List<Object?>?)?.cast<String>() ?? const <String>['Genel'],
+        topics: (json['topics'] as List<Object?>?)?.cast<String>() ??
+            const <String>['Genel'],
       );
 
   /// Meali kısaltılmış özet (ana ekran kartları için).
@@ -58,7 +59,7 @@ class Hadith {
         ..writeln('Kaynak: $reference')
         ..writeln();
     }
-    buffer.write('— Riyâzü\'s-sâlihîn, ${id}. hadis (EzanAI)');
+    buffer.write('— Riyâzü\'s-sâlihîn, $id. hadis (EzanAI)');
     return buffer.toString();
   }
 }
@@ -82,12 +83,14 @@ class HadithCollection {
   final List<String> topics;
   final String note;
 
-  factory HadithCollection.fromJson(Map<String, Object?> json) => HadithCollection(
+  factory HadithCollection.fromJson(Map<String, Object?> json) =>
+      HadithCollection(
         name: json['collection'] as String? ?? '',
         author: json['author'] as String? ?? '',
         translator: json['translator'] as String? ?? '',
         count: json['count'] as int? ?? 0,
-        topics: (json['topics'] as List<Object?>?)?.cast<String>() ?? const <String>[],
+        topics: (json['topics'] as List<Object?>?)?.cast<String>() ??
+            const <String>[],
         note: json['note'] as String? ?? '',
       );
 }

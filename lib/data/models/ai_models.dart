@@ -113,7 +113,8 @@ class AiMessage {
   Map<String, Object?> toJson() => <String, Object?>{
         'role': fromUser ? 'user' : 'assistant',
         'text': text,
-        if (sources.isNotEmpty) 'sources': sources.map((AiSource s) => s.toJson()).toList(),
+        if (sources.isNotEmpty)
+          'sources': sources.map((AiSource s) => s.toJson()).toList(),
       };
 }
 
@@ -177,7 +178,9 @@ class AiConversation {
   final List<AiMessage> messages;
   final DateTime updatedAt;
 
-  AiConversation copyWith({String? title, List<AiMessage>? messages, DateTime? updatedAt}) => AiConversation(
+  AiConversation copyWith(
+          {String? title, List<AiMessage>? messages, DateTime? updatedAt}) =>
+      AiConversation(
         id: id,
         title: title ?? this.title,
         messages: messages ?? this.messages,

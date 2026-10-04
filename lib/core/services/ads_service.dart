@@ -21,8 +21,10 @@ class AdsService {
 
   bool get isEnabled => _enabled && !_premium;
   bool get bannerAvailable => isEnabled && AppConfig.admobBannerId.isNotEmpty;
-  bool get interstitialAvailable => isEnabled && AppConfig.admobInterstitialId.isNotEmpty;
-  bool get rewardedAvailable => isEnabled && AppConfig.admobRewardedId.isNotEmpty;
+  bool get interstitialAvailable =>
+      isEnabled && AppConfig.admobInterstitialId.isNotEmpty;
+  bool get rewardedAvailable =>
+      isEnabled && AppConfig.admobRewardedId.isNotEmpty;
 
   InterstitialAd? _interstitial;
   RewardedAd? _rewarded;
@@ -55,7 +57,10 @@ class AdsService {
   // ------------------------------------------------------------ Banner
 
   /// Banner reklamı oluşturur; kimlik yoksa null döner (arayüz boşluk bırakmaz).
-  BannerAd? createBanner({AdSize size = AdSize.banner, VoidCallback? onLoaded, VoidCallback? onFailed}) {
+  BannerAd? createBanner(
+      {AdSize size = AdSize.banner,
+      VoidCallback? onLoaded,
+      VoidCallback? onFailed}) {
     if (!bannerAvailable) return null;
     return BannerAd(
       size: size,
@@ -115,7 +120,8 @@ class AdsService {
         unawaited(preloadInterstitial());
       },
     );
-    AppLog.debug('Geçiş reklamı gösterildi${placement == null ? '' : ' ($placement)'}');
+    AppLog.debug(
+        'Geçiş reklamı gösterildi${placement == null ? '' : ' ($placement)'}');
     await ad.show();
     return true;
   }
@@ -140,7 +146,9 @@ class AdsService {
 
   /// Ödüllü reklamı gösterir; [onReward] yalnızca kullanıcı ödülü hak ettiğinde
   /// çağrılır.
-  Future<bool> showRewarded({required void Function(int amount) onReward, VoidCallback? onDismissed}) async {
+  Future<bool> showRewarded(
+      {required void Function(int amount) onReward,
+      VoidCallback? onDismissed}) async {
     if (!rewardedAvailable) return false;
     final RewardedAd? ad = _rewarded;
     if (ad == null) {
@@ -160,7 +168,9 @@ class AdsService {
         unawaited(preloadRewarded());
       },
     );
-    await ad.show(onUserEarnedReward: (AdWithoutView _, RewardItem reward) => onReward(reward.amount.toInt()));
+    await ad.show(
+        onUserEarnedReward: (AdWithoutView _, RewardItem reward) =>
+            onReward(reward.amount.toInt()));
     return true;
   }
 

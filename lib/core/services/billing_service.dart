@@ -38,7 +38,9 @@ class PremiumProduct {
   final String price;
   final bool isSubscription;
 
-  factory PremiumProduct.fromDetails(ProductDetails details, {required bool isSubscription}) => PremiumProduct(
+  factory PremiumProduct.fromDetails(ProductDetails details,
+          {required bool isSubscription}) =>
+      PremiumProduct(
         id: details.id,
         title: details.title,
         description: details.description,
@@ -65,7 +67,8 @@ class BillingService {
 
   StreamSubscription<List<PurchaseDetails>>? _subscription;
 
-  final StreamController<PremiumStatus> _statusController = StreamController<PremiumStatus>.broadcast();
+  final StreamController<PremiumStatus> _statusController =
+      StreamController<PremiumStatus>.broadcast();
   Stream<PremiumStatus> get statusStream => _statusController.stream;
 
   PremiumStatus _status = PremiumStatus.unknown;
@@ -128,7 +131,8 @@ class BillingService {
 
   Future<void> loadProducts() async {
     try {
-      final ProductDetailsResponse response = await _iap.queryProductDetails(productIds);
+      final ProductDetailsResponse response =
+          await _iap.queryProductDetails(productIds);
       if (response.error != null) {
         _lastError = response.error!.message;
         AppLog.warning('Ürünler yüklenemedi: ${response.error!.message}');
@@ -137,10 +141,12 @@ class BillingService {
         _detailsById[details.id] = details;
       }
       _products = response.productDetails
-          .map((ProductDetails d) => PremiumProduct.fromDetails(d, isSubscription: _subscriptionIds.contains(d.id)))
+          .map((ProductDetails d) => PremiumProduct.fromDetails(d,
+              isSubscription: _subscriptionIds.contains(d.id)))
           .toList(growable: false);
       if (response.notFoundIDs.isNotEmpty) {
-        AppLog.warning('Mağazada bulunamayan ürünler: ${response.notFoundIDs.join(', ')}');
+        AppLog.warning(
+            'Mağazada bulunamayan ürünler: ${response.notFoundIDs.join(', ')}');
       }
     } catch (error) {
       _lastError = 'Ürün listesi alınamadı: $error';
@@ -151,14 +157,16 @@ class BillingService {
   /// Tek seferlik satın alma / abonelik başlatır.
   Future<bool> purchase(String productId) async {
     if (!_storeAvailable) {
-      _lastError = 'Google Play hizmetine ulaşılamıyor. Lütfen daha sonra tekrar deneyin.';
+      _lastError =
+          'Google Play hizmetine ulaşılamıyor. Lütfen daha sonra tekrar deneyin.';
       return false;
     }
     if (_products.isEmpty) await loadProducts();
 
     final ProductDetails? details = _findDetails(productId);
     if (details == null) {
-      _lastError = 'Seçilen ürün mağazada bulunamadı. Uygulamayı güncellemeyi deneyin.';
+      _lastError =
+          'Seçilen ürün mağazada bulunamadı. Uygulamayı güncellemeyi deneyin.';
       return false;
     }
 
@@ -204,12 +212,14 @@ class BillingService {
             lastReceipt = purchase.verificationData.serverVerificationData;
             _set(PremiumStatus.premium);
           } else {
-            _lastError = 'Satın alma doğrulanamadı. Destek ekibimize ulaşın: ${purchase.productID}';
+            _lastError =
+                'Satın alma doğrulanamadı. Destek ekibimize ulaşın: ${purchase.productID}';
             _set(PremiumStatus.error);
           }
           await _complete(purchase);
         case PurchaseStatus.error:
-          _lastError = purchase.error?.message ?? 'Satın alma sırasında hata oluştu.';
+          _lastError =
+              purchase.error?.message ?? 'Satın alma sırasında hata oluştu.';
           _set(PremiumStatus.error);
           await _complete(purchase);
         case PurchaseStatus.canceled:
@@ -238,7 +248,9 @@ class BillingService {
       final http.Response response = await _client
           .post(
             uri,
-            headers: const <String, String>{'Content-Type': 'application/json; charset=utf-8'},
+            headers: const <String, String>{
+              'Content-Type': 'application/json; charset=utf-8'
+            },
             body: jsonEncode(<String, Object?>{
               'product_id': purchase.productID,
               'purchase_id': purchase.purchaseID,
@@ -251,7 +263,8 @@ class BillingService {
 
       if (response.statusCode != 200) return false;
       final Object? decoded = jsonDecode(utf8.decode(response.bodyBytes));
-      if (decoded is Map && decoded['valid'] is bool) return decoded['valid']! as bool;
+      if (decoded is Map && decoded['valid'] is bool)
+        return decoded['valid']! as bool;
       return false;
     } catch (error) {
       AppLog.warning('Makbuz doğrulama başarısız: $error');

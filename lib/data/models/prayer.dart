@@ -4,14 +4,21 @@ import '../../design/app_colors.dart';
 
 /// Günlük altı vakit.
 enum Prayer {
-  imsak('İmsak', 'İmsak', 'İmsak vakti girdi', Icons.nightlight_round, AppColors.imsak, 'imsak'),
-  gunes('Güneş', 'Güneş', 'Güneş doğdu', Icons.wb_twilight_rounded, AppColors.gunes, 'gunes'),
-  ogle('Öğle', 'Öğle', 'Öğle vakti girdi', Icons.wb_sunny_rounded, AppColors.ogle, 'ogle'),
-  ikindi('İkindi', 'İkindi', 'İkindi vakti girdi', Icons.wb_sunny_outlined, AppColors.ikindi, 'ikindi'),
-  aksam('Akşam', 'Akşam', 'Akşam vakti girdi', Icons.brightness_4_rounded, AppColors.aksam, 'aksam'),
-  yatsi('Yatsı', 'Yatsı', 'Yatsı vakti girdi', Icons.dark_mode_rounded, AppColors.yatsi, 'yatsi');
+  imsak('İmsak', 'İmsak', 'İmsak vakti girdi', Icons.nightlight_round,
+      AppColors.imsak, 'imsak'),
+  gunes('Güneş', 'Güneş', 'Güneş doğdu', Icons.wb_twilight_rounded,
+      AppColors.gunes, 'gunes'),
+  ogle('Öğle', 'Öğle', 'Öğle vakti girdi', Icons.wb_sunny_rounded,
+      AppColors.ogle, 'ogle'),
+  ikindi('İkindi', 'İkindi', 'İkindi vakti girdi', Icons.wb_sunny_outlined,
+      AppColors.ikindi, 'ikindi'),
+  aksam('Akşam', 'Akşam', 'Akşam vakti girdi', Icons.brightness_4_rounded,
+      AppColors.aksam, 'aksam'),
+  yatsi('Yatsı', 'Yatsı', 'Yatsı vakti girdi', Icons.dark_mode_rounded,
+      AppColors.yatsi, 'yatsi');
 
-  const Prayer(this.label, this.shortLabel, this.notificationTitle, this.icon, this.color, this.key);
+  const Prayer(this.label, this.shortLabel, this.notificationTitle, this.icon,
+      this.color, this.key);
 
   final String label;
   final String shortLabel;
@@ -29,8 +36,8 @@ enum Prayer {
   /// Ertesi gün için bildirim gerekli mi (imsak).
   bool get isNextDay => this == Prayer.imsak;
 
-  static Prayer fromKey(String key) =>
-      Prayer.values.firstWhere((Prayer p) => p.key == key, orElse: () => Prayer.imsak);
+  static Prayer fromKey(String key) => Prayer.values
+      .firstWhere((Prayer p) => p.key == key, orElse: () => Prayer.imsak);
 
   static const List<Prayer> adhanTimes = <Prayer>[
     Prayer.imsak,
@@ -43,7 +50,8 @@ enum Prayer {
 
 /// Bir vaktin hesaplanmış/indirilmiş zamanı.
 class PrayerTime {
-  const PrayerTime({required this.prayer, required this.time, required this.source});
+  const PrayerTime(
+      {required this.prayer, required this.time, required this.source});
 
   final Prayer prayer;
   final DateTime time;

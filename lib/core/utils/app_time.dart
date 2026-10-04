@@ -3,21 +3,53 @@ import 'package:intl/intl.dart';
 /// Tarih/saat yardımcıları — Türkçe yerelleştirme ile.
 abstract final class AppTime {
   static const List<String> turkishMonths = <String>[
-    'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
-    'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık',
+    'Ocak',
+    'Şubat',
+    'Mart',
+    'Nisan',
+    'Mayıs',
+    'Haziran',
+    'Temmuz',
+    'Ağustos',
+    'Eylül',
+    'Ekim',
+    'Kasım',
+    'Aralık',
   ];
 
   static const List<String> turkishWeekdays = <String>[
-    'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar',
+    'Pazartesi',
+    'Salı',
+    'Çarşamba',
+    'Perşembe',
+    'Cuma',
+    'Cumartesi',
+    'Pazar',
   ];
 
   static const List<String> turkishWeekdaysShort = <String>[
-    'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz',
+    'Pzt',
+    'Sal',
+    'Çar',
+    'Per',
+    'Cum',
+    'Cmt',
+    'Paz',
   ];
 
   static const List<String> hijriMonths = <String>[
-    'Muharrem', 'Safer', 'Rebîülevvel', 'Rebîülâhir', 'Cemâziyelevvel', 'Cemâziyelâhir',
-    'Recep', 'Şaban', 'Ramazan', 'Şevval', 'Zilkade', 'Zilhicce',
+    'Muharrem',
+    'Safer',
+    'Rebîülevvel',
+    'Rebîülâhir',
+    'Cemâziyelevvel',
+    'Cemâziyelâhir',
+    'Recep',
+    'Şaban',
+    'Ramazan',
+    'Şevval',
+    'Zilkade',
+    'Zilhicce',
   ];
 
   /// "14:05" biçiminde 24 saatlik gösterim.
@@ -73,14 +105,17 @@ abstract final class AppTime {
 
   static String weekday(DateTime date) => turkishWeekdays[date.weekday - 1];
 
-  static String weekdayShort(DateTime date) => turkishWeekdaysShort[date.weekday - 1];
+  static String weekdayShort(DateTime date) =>
+      turkishWeekdaysShort[date.weekday - 1];
 
   static bool isSameDay(DateTime a, DateTime b) =>
       a.year == b.year && a.month == b.month && a.day == b.day;
 
-  static DateTime dateOnly(DateTime value) => DateTime(value.year, value.month, value.day);
+  static DateTime dateOnly(DateTime value) =>
+      DateTime(value.year, value.month, value.day);
 
-  static int minutesSinceMidnight(DateTime value) => value.hour * 60 + value.minute;
+  static int minutesSinceMidnight(DateTime value) =>
+      value.hour * 60 + value.minute;
 
   /// Gün batımından sonra yatsıya kadar "gece" kabul eden selamlama.
   static String greetingFor(DateTime now, {required bool afterMaghrib}) {
@@ -107,7 +142,8 @@ abstract final class AppTime {
   static String formatBytes(int bytes) {
     if (bytes < 1024) return '$bytes B';
     if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(0)} KB';
-    if (bytes < 1024 * 1024 * 1024) return '${(bytes / 1024 / 1024).toStringAsFixed(1)} MB';
+    if (bytes < 1024 * 1024 * 1024)
+      return '${(bytes / 1024 / 1024).toStringAsFixed(1)} MB';
     return '${(bytes / 1024 / 1024 / 1024).toStringAsFixed(2)} GB';
   }
 }

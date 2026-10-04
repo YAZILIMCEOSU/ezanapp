@@ -43,7 +43,13 @@ class RamadanRepository {
   }
 
   /// Sahur/iftar geri sayımı için bugünün ve yarının vakitleri.
-  Future<({PrayerTimesDay today, PrayerTimesDay tomorrow, DateTime imsak, DateTime iftar})> todayTimes({
+  Future<
+      ({
+        PrayerTimesDay today,
+        PrayerTimesDay tomorrow,
+        DateTime imsak,
+        DateTime iftar
+      })> todayTimes({
     required UserLocation location,
     required CalculationMethod method,
   }) async {
@@ -61,8 +67,8 @@ class RamadanRepository {
     final DateTime imsak = tomorrow.times[Prayer.imsak] ??
         today.times[Prayer.imsak] ??
         DateTime(now.year, now.month, now.day, 5);
-    final DateTime iftar = today.times[Prayer.aksam] ??
-        DateTime(now.year, now.month, now.day, 19);
+    final DateTime iftar =
+        today.times[Prayer.aksam] ?? DateTime(now.year, now.month, now.day, 19);
     return (today: today, tomorrow: tomorrow, imsak: imsak, iftar: iftar);
   }
 
@@ -126,11 +132,13 @@ class RamadanRepository {
         await _database.raw.query('hatim_progress', orderBy: 'juz ASC');
     if (rows.isEmpty) {
       return <JuzProgress>[
-        for (int juz = 1; juz <= 30; juz++) JuzProgress(juz: juz, status: JuzStatus.pending),
+        for (int juz = 1; juz <= 30; juz++)
+          JuzProgress(juz: juz, status: JuzStatus.pending),
       ];
     }
     final Map<int, JuzProgress> byJuz = <int, JuzProgress>{
-      for (final Map<String, Object?> row in rows) (row['juz']! as int): JuzProgress.fromRow(row),
+      for (final Map<String, Object?> row in rows)
+        (row['juz']! as int): JuzProgress.fromRow(row),
     };
     return <JuzProgress>[
       for (int juz = 1; juz <= 30; juz++)
@@ -138,7 +146,8 @@ class RamadanRepository {
     ];
   }
 
-  Future<void> updateJuz(int juz, JuzStatus status, {int? surah, int? ayah}) async {
+  Future<void> updateJuz(int juz, JuzStatus status,
+      {int? surah, int? ayah}) async {
     await _database.raw.insert(
       'hatim_progress',
       <String, Object?>{
@@ -175,12 +184,13 @@ class RamadanRepository {
   // ------------------------------------------------------------ Kaza orucu
 
   Future<List<KazaFast>> kazaFasts() async {
-    final List<Map<String, Object?>> rows =
-        await _database.raw.query('kaza_fasts', orderBy: 'completed ASC, id ASC');
+    final List<Map<String, Object?>> rows = await _database.raw
+        .query('kaza_fasts', orderBy: 'completed ASC, id ASC');
     return rows.map(KazaFast.fromRow).toList();
   }
 
-  Future<int> addKazaFast({String? dueDate, String? note, int count = 1}) async {
+  Future<int> addKazaFast(
+      {String? dueDate, String? note, int count = 1}) async {
     int inserted = 0;
     for (int i = 0; i < count; i++) {
       await _database.raw.insert('kaza_fasts', <String, Object?>{
@@ -198,15 +208,16 @@ class RamadanRepository {
       'kaza_fasts',
       <String, Object?>{
         'completed': completed ? 1 : 0,
-        'completed_at': completed ? DateTime.now().millisecondsSinceEpoch : null,
+        'completed_at':
+            completed ? DateTime.now().millisecondsSinceEpoch : null,
       },
       where: 'id = ?',
       whereArgs: <Object?>[id],
     );
   }
 
-  Future<void> deleteKazaFast(int id) =>
-      _database.raw.delete('kaza_fasts', where: 'id = ?', whereArgs: <Object?>[id]);
+  Future<void> deleteKazaFast(int id) => _database.raw
+      .delete('kaza_fasts', where: 'id = ?', whereArgs: <Object?>[id]);
 
   Future<int> pendingKazaCount() async {
     final List<Map<String, Object?>> rows = await _database.raw.query(
@@ -223,14 +234,16 @@ class RamadanRepository {
       totalDays: totalDays,
       fastedDays: logs.where((RamadanDayLog l) => l.fasted).length,
       tarawihDays: logs.where((RamadanDayLog l) => l.tarawih).length,
-      quranPages: logs.fold(0, (int sum, RamadanDayLog l) => sum + l.quranPages),
+      quranPages:
+          logs.fold(0, (int sum, RamadanDayLog l) => sum + l.quranPages),
       completedJuz: await completedJuzCount(),
       pendingKaza: await pendingKazaCount(),
     );
   }
 
   /// Özel günler (Kadir gecesi, bayram, arefe) için yaklaşan tarihler.
-  List<({String title, DateTime date, String description})> upcomingSpecialDays({int limit = 6}) {
+  List<({String title, DateTime date, String description})> upcomingSpecialDays(
+      {int limit = 6}) {
     final HijriDate today = todayHijri();
     final List<({String title, DateTime date, String description})> upcoming =
         <({String title, DateTime date, String description})>[];
@@ -241,12 +254,17 @@ class RamadanRepository {
           HijriDate(year: hijriYear, month: day.hijriMonth, day: day.hijriDay),
         );
         if (date.isBefore(DateTime.now())) continue;
-        upcoming.add((title: day.title, date: date, description: day.description));
+        upcoming
+            .add((title: day.title, date: date, description: day.description));
       }
     }
-    upcoming.sort((({String title, DateTime date, String description}) a,
-            ({String title, DateTime date, String description}) b) =>
-        a.date.compareTo(b.date));
+    upcoming.sort(
+      (
+        ({String title, DateTime date, String description}) a,
+        ({String title, DateTime date, String description}) b,
+      ) =>
+          a.date.compareTo(b.date),
+    );
     return upcoming.take(limit).toList();
   }
 

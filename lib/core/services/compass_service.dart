@@ -35,15 +35,18 @@ class CompassReading {
   /// Kıbleye göre sapma (-180..180).
   final double? differenceToQibla;
 
-  bool get isAligned => differenceToQibla != null && differenceToQibla!.abs() <= 5;
+  bool get isAligned =>
+      differenceToQibla != null && differenceToQibla!.abs() <= 5;
 
-  bool get isClose => differenceToQibla != null && differenceToQibla!.abs() <= 12;
+  bool get isClose =>
+      differenceToQibla != null && differenceToQibla!.abs() <= 12;
 
   /// Kalibrasyon gerekiyor mu? (düşük doğruluk veya aşırı eğim)
   bool get needsCalibration => accuracy > 20 || tilt.abs() > 45;
 
   CompassReading withQibla(double qiblaDirection) {
-    final double difference = GeoUtils.normalizeSigned(qiblaDirection - heading);
+    final double difference =
+        GeoUtils.normalizeSigned(qiblaDirection - heading);
     return CompassReading(
       heading: heading,
       accuracy: accuracy,
@@ -63,7 +66,8 @@ class CompassReading {
 class CompassService {
   CompassService({EventChannel? channel, MethodChannel? methodChannel})
       : _channel = channel ?? const EventChannel('ezanai/sensors'),
-        _methods = methodChannel ?? const MethodChannel('ezanai/sensors/methods');
+        _methods =
+            methodChannel ?? const MethodChannel('ezanai/sensors/methods');
 
   final EventChannel _channel;
   final MethodChannel _methods;
@@ -112,7 +116,8 @@ class CompassService {
               tilt: tilt,
               roll: roll,
             );
-            if (qiblaDirection != null) reading = reading.withQibla(qiblaDirection);
+            if (qiblaDirection != null)
+              reading = reading.withQibla(qiblaDirection);
             if (!_controller.isClosed) _controller.add(reading);
           }
         },
@@ -145,9 +150,11 @@ class CompassService {
   /// ölçüm kararlılığını değerlendirir.
   static double headingStability(List<double> recentHeadings) {
     if (recentHeadings.length < 3) return 180;
-    final double mean = recentHeadings.reduce((double a, double b) => a + b) / recentHeadings.length;
+    final double mean = recentHeadings.reduce((double a, double b) => a + b) /
+        recentHeadings.length;
     final double variance = recentHeadings
-            .map((double h) => math.pow(GeoUtils.normalizeSigned(h - mean), 2).toDouble())
+            .map((double h) =>
+                math.pow(GeoUtils.normalizeSigned(h - mean), 2).toDouble())
             .reduce((double a, double b) => a + b) /
         recentHeadings.length;
     return math.sqrt(variance);

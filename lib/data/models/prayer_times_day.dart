@@ -59,7 +59,8 @@ class PrayerTimesDay {
 
   /// Vakitler sıralı mı? (bozuk veri denetimi)
   bool get isSane {
-    final List<DateTime?> list = Prayer.values.map((Prayer p) => times[p]).toList();
+    final List<DateTime?> list =
+        Prayer.values.map((Prayer p) => times[p]).toList();
     for (final DateTime? value in list) {
       if (value == null) return false;
     }
@@ -81,15 +82,19 @@ class PrayerTimesDay {
       };
 
   factory PrayerTimesDay.fromJson(Map<String, Object?> json) {
-    final Map<String, Object?> raw = (json['times'] as Map?)?.cast<String, Object?>() ?? <String, Object?>{};
+    final Map<String, Object?> raw =
+        (json['times'] as Map?)?.cast<String, Object?>() ?? <String, Object?>{};
     return PrayerTimesDay(
       date: DateTime.parse(json['date'] as String),
       source: json['source'] as String? ?? 'unknown',
       hijriDate: json['hijri'] as String?,
-      cachedAt: json['cachedAt'] == null ? null : DateTime.tryParse(json['cachedAt'] as String),
+      cachedAt: json['cachedAt'] == null
+          ? null
+          : DateTime.tryParse(json['cachedAt'] as String),
       times: <Prayer, DateTime>{
         for (final Prayer prayer in Prayer.values)
-          if (raw[prayer.key] != null) prayer: DateTime.parse(raw[prayer.key]! as String),
+          if (raw[prayer.key] != null)
+            prayer: DateTime.parse(raw[prayer.key]! as String),
       },
     );
   }

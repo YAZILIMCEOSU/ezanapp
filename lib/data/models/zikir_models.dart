@@ -38,7 +38,13 @@ class Zikir {
         reference: json['reference'] as String? ?? '',
       );
 
-  Zikir copyWith({String? key, String? name, String? arabic, String? transliteration, String? meaning, int? defaultTarget}) =>
+  Zikir copyWith(
+          {String? key,
+          String? name,
+          String? arabic,
+          String? transliteration,
+          String? meaning,
+          int? defaultTarget}) =>
       Zikir(
         key: key ?? this.key,
         name: name ?? this.name,
@@ -82,7 +88,8 @@ class ZikirSession {
         zikirKey: row['zikir_key']! as String,
         target: row['target']! as int,
         count: row['count']! as int,
-        startedAt: DateTime.fromMillisecondsSinceEpoch(row['started_at']! as int),
+        startedAt:
+            DateTime.fromMillisecondsSinceEpoch(row['started_at']! as int),
         finishedAt: row['finished_at'] == null
             ? null
             : DateTime.fromMillisecondsSinceEpoch(row['finished_at']! as int),
@@ -106,7 +113,8 @@ class ZikirDailySummary {
   final Map<String, int> byZikir;
   final int target;
 
-  double get progress => target == 0 ? 0 : (totalCount / target).clamp(0.0, 1.0);
+  double get progress =>
+      target == 0 ? 0 : (totalCount / target).clamp(0.0, 1.0);
 
   bool get targetReached => totalCount >= target;
 }
