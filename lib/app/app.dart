@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/audio/audio_service.dart';
 import '../core/constants/app_constants.dart';
 import '../core/services/notification_service.dart';
+import '../core/services/push_service.dart';
 import '../core/utils/logger.dart';
 import '../data/models/app_settings.dart';
 import '../data/models/prayer.dart';
@@ -25,6 +26,7 @@ class EzanAiApp extends ConsumerStatefulWidget {
 class _EzanAiAppState extends ConsumerState<EzanAiApp> {
   StreamSubscription<NotificationRoute>? _routeSub;
   StreamSubscription<Prayer>? _adhanSub;
+  StreamSubscription<PushMessage>? _pushSub;
 
   @override
   void initState() {
@@ -46,6 +48,17 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp> {
       _playAdhan(prayer, settings);
     });
 
+    // Sunucu kaynaklı duyurular (ör. mübarek gün hatırlatması).
+    _pushSub = runtime.push.onMessage.listen(_onPushMessage);
+
+    // Uygulama kapalıyken bir bildirime dokunulduysa o ekrana gidilir.
+    final String? pendingRoute = runtime.push.takePendingRoute();
+    if (pendingRoute != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) appRouter.go(pendingRoute);
+      });
+    }
+
     // İlk açılışta hoş geldin ekranı ve konum izni akışı.
     final bool onboardingDone = runtime.preferences.getBool(
       PrefKeys.onboardingDone,
@@ -53,6 +66,25 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp> {
     if (!onboardingDone) {
       appRouter.go(AppRoutes.onboarding);
     }
+  }
+
+  void _onPushMessage(PushMessage message) {
+    if (!mounted) return;
+    final String text = message.body.isEmpty
+        ? message.title
+        : '${message.title}\n${message.body}';
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(text),
+        duration: const Duration(seconds: 8),
+        action: message.route == null
+            ? null
+            : SnackBarAction(
+                label: 'Aç',
+                onPressed: () => appRouter.go(message.route!),
+              ),
+      ),
+    );
   }
 
   Future<void> _playAdhan(Prayer prayer, AppSettings settings) async {
@@ -85,6 +117,7 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp> {
   void dispose() {
     _routeSub?.cancel();
     _adhanSub?.cancel();
+    _pushSub?.cancel();
     super.dispose();
   }
 

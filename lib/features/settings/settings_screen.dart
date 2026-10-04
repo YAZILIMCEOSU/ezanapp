@@ -200,6 +200,17 @@ class SettingsScreen extends ConsumerWidget {
             onChanged: controller.setAdhanDucking,
           ),
           ListTile(
+            leading: const Icon(Icons.cloud_sync_outlined),
+            title: const Text('Bulut yedekleme'),
+            subtitle: Text(
+              AppConfig.hasSupabase
+                  ? 'Premium ile favoriler ve ilerleme cihazlar arasında eşitlenir'
+                  : 'Sunucu yapılandırılmadı (yerel yedekleme kullanılabilir)',
+            ),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () => context.push(AppRoutes.backup),
+          ),
+          ListTile(
             leading: const Icon(Icons.backup_outlined),
             title: const Text('Ayarları yedekle'),
             subtitle: const Text('Ayarlarınızı paylaşın veya kaydedin'),

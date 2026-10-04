@@ -11,6 +11,8 @@ import '../core/services/connectivity_service.dart';
 import '../core/services/location_service.dart';
 import '../core/services/notification_service.dart';
 import '../core/services/preferences_service.dart';
+import '../core/services/push_service.dart';
+import '../core/services/sync_service.dart';
 import '../core/utils/logger.dart';
 import '../data/hijri/hijri_calendar.dart';
 import '../data/models/app_settings.dart';
@@ -50,6 +52,8 @@ class AppRuntime {
     required this.ramadan,
     required this.dailyContent,
     required this.ai,
+    required this.push,
+    required this.sync,
     required this.initialSettings,
   });
 
@@ -71,6 +75,8 @@ class AppRuntime {
   final RamadanRepository ramadan;
   final DailyContentRepository dailyContent;
   final AiRepository ai;
+  final PushService push;
+  final SyncService sync;
   final AppSettings initialSettings;
 
   bool _disposed = false;
@@ -128,6 +134,8 @@ class AppRuntime {
       ramadan: RamadanRepository(database, prayerTimes, hijri),
       dailyContent: DailyContentRepository(database, quran, hadith, zikir),
       ai: AiRepository(database),
+      push: PushService(),
+      sync: SyncService(database, preferences),
       initialSettings: settings,
     );
 
@@ -153,10 +161,11 @@ class AppRuntime {
       () => audio.initialize(ducking: initialSettings.adhanPlaybackDucking),
     );
     await _safely('faturalandırma', () => billing.initialize());
+    await _safely('bildirim köprüsü', push.initialize);
     ads.setPremium(false);
   }
 
-  Future<void> _safely(String label, Future<void> Function() action) async {
+  Future<void> _safely(String label, Future<Object?> Function() action) async {
     try {
       await action();
     } catch (error, stack) {
@@ -178,6 +187,7 @@ class AppRuntime {
     await _safely('faturalandırma', billing.dispose);
     ads.dispose();
     ai.dispose();
+    await _safely('bildirim köprüsü', push.dispose);
     await _safely('veritabanı', database.close);
   }
 

@@ -23,6 +23,7 @@ import '../features/quran/surah_screen.dart';
 import '../features/ramadan/ramadan_screen.dart';
 import '../features/settings/about_screen.dart';
 import '../features/settings/adhan_sound_screen.dart';
+import '../features/settings/backup_screen.dart';
 import '../features/settings/city_picker_screen.dart';
 import '../features/settings/notification_settings_screen.dart';
 import '../features/settings/settings_screen.dart';
@@ -63,6 +64,7 @@ abstract final class AppRoutes {
   static const String player = '/ilahi/oynatici';
   static const String ilahiDownloads = '/ilahi/indirilenler';
   static const String adhanSounds = '/ayarlar/ezan-sesi';
+  static const String backup = '/ayarlar/yedekleme';
 
   static String surah(int number, {int? ayah}) =>
       ayah == null ? '/kuran/sure/$number' : '/kuran/sure/$number?ayet=$ayah';
@@ -254,6 +256,11 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.ilahiDownloads,
       builder: (BuildContext context, GoRouterState state) =>
           const DownloadsScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.backup,
+      builder: (BuildContext context, GoRouterState state) =>
+          const BackupScreen(),
     ),
     GoRoute(
       path: AppRoutes.adhanSounds,
