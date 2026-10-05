@@ -45,7 +45,11 @@ void main() {
         NotificationIds.hatimReminder,
         NotificationIds.test,
       ];
-      expect(tekil.toSet().length, tekil.length, reason: 'Tekil kimlikler benzersiz');
+      expect(
+        tekil.toSet().length,
+        tekil.length,
+        reason: 'Tekil kimlikler benzersiz',
+      );
       for (final int id in tekil) {
         expect(id, greaterThanOrEqualTo(3001));
       }
@@ -175,7 +179,10 @@ void main() {
     });
 
     test('zamanlanan gün sayısı makul aralıkta', () {
-      expect(const NotificationSettings().daysToSchedule, inInclusiveRange(1, 30));
+      expect(
+        const NotificationSettings().daysToSchedule,
+        inInclusiveRange(1, 30),
+      );
     });
   });
 }
