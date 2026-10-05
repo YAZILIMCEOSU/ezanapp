@@ -132,16 +132,26 @@ class _TodayView extends ConsumerWidget {
               child: Row(
                 children: <Widget>[
                   Expanded(
+                    flex: 3,
                     child: Text(
                       'Vakit listesi',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.titleMedium
                           ?.copyWith(fontWeight: FontWeight.w700),
                     ),
                   ),
-                  Text(
-                    'Uzun basıp düzeltme ekleyin',
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  // Dar ekranlarda (320 dp) etiket kırpılır; satır taşmaz.
+                  Expanded(
+                    flex: 4,
+                    child: Text(
+                      'Uzun basıp düzeltme ekleyin',
+                      maxLines: 1,
+                      textAlign: TextAlign.end,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   ),
                 ],

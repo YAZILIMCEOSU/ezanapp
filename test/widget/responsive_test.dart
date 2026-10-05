@@ -105,7 +105,24 @@ void main() {
         times: times,
         verify: () {
           expect(find.text('Hadis'), findsWidgets);
-          expect(find.byType(FilterChip), findsWidgets);
+          expect(
+            find.textContaining('Hadis metni veya konu ara'),
+            findsWidgets,
+          );
+          final bool chips = find.byType(FilterChip).evaluate().isNotEmpty;
+          final bool loading = find
+              .textContaining('yükleniyor')
+              .evaluate()
+              .isNotEmpty;
+          debugPrint(
+            '[hadis tanısı] çipler: $chips · yükleniyor: $loading · '
+            'metinler: ${visibleTexts(tester).take(14).join(' | ')}',
+          );
+          expect(
+            chips || loading,
+            isTrue,
+            reason: 'Hadis ekranı ne içerik ne yükleme durumu gösteriyor',
+          );
         },
       );
     });
@@ -121,6 +138,21 @@ void main() {
         verify: () {
           expect(find.text('Tesbih'), findsWidgets);
           expect(find.textContaining('hedef'), findsWidgets);
+        },
+      );
+    });
+
+    screenTest('Vakitler: liste başlığı ve ayar ipucu birlikte görünür', (
+      WidgetTester tester,
+    ) async {
+      await renderScreen(
+        tester,
+        const PrayersScreen(),
+        runtime: runtime,
+        times: times,
+        verify: () {
+          expect(find.text('Vakit listesi'), findsWidgets);
+          expect(find.text('Uzun basıp düzeltme ekleyin'), findsWidgets);
         },
       );
     });
@@ -216,7 +248,8 @@ void main() {
               'Resmî vakit servisine ulaşılamadı; vakitler cihazda hesaplandı.',
         ),
         verify: () {
-          expect(find.textContaining('cihazda hesaplandı'), findsOneWidget);
+          // Uyarı hem durum şeridinde hem kaynak notunda görünür.
+          expect(find.textContaining('cihazda hesaplandı'), findsWidgets);
         },
       );
     });

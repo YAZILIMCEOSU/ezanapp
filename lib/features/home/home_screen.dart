@@ -316,7 +316,7 @@ class _QuickActionTile extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.md),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Container(
@@ -327,12 +327,17 @@ class _QuickActionTile extends StatelessWidget {
                 ),
                 child: Icon(icon, size: 18, color: color),
               ),
-              const Spacer(),
-              Text(
-                label,
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: -0.1,
+              // Etiket esnektir: küçük ekranlarda iki satıra sığmazsa kırpılır,
+              // kutu taşmaz (Spacer ile birlikte taşma veriyordu).
+              Flexible(
+                child: Text(
+                  label,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: -0.1,
+                  ),
                 ),
               ),
             ],

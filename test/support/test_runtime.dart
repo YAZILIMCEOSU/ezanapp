@@ -261,7 +261,14 @@ Future<List<FlutterErrorDetails>> renderScreen(
         );
 
   await tester.pumpWidget(app);
+  // Sağlayıcıların (varlık/veritabanı okumaları) yerleşmesi için iki ek kare:
+  // ilk kare mikro görevleri boşaltır, ikincisi sonucu çizer.
+  await tester.pump(const Duration(milliseconds: 120));
   await tester.pump(settle);
+
+  // Taşma ipuçları ağaç ayaktayken toplanmalı; hata raporunda widget yolu
+  // olarak kullanılır (hata anında öğeler çoktan dağıtılmış olur).
+  final List<String> hints = overflowHints(tester);
 
   Object? verificationError;
   StackTrace? verificationStack;
@@ -285,10 +292,17 @@ Future<List<FlutterErrorDetails>> renderScreen(
     final List<FlutterErrorDetails> overflows = reported
         .where((FlutterErrorDetails d) => hasOverflowError(d.exception))
         .toList();
+    if (overflows.isNotEmpty) {
+      debugPrint(
+        '[taşma tanısı] ${hints.isEmpty ? 'taşan esnek kutu bulunamadı' : hints.join(' || ')}',
+      );
+    }
     expect(
       overflows,
       isEmpty,
-      reason: 'Taşma hatası:\n${overflows.map(describeError).join('\n---\n')}',
+      reason:
+          'Taşma hatası:\n${overflows.map(describeError).join('\n---\n')}'
+          '${hints.isEmpty ? '' : '\n\nTaşan kutular:\n${hints.join('\n')}'}',
     );
     final List<FlutterErrorDetails> problems = reported
         .where(
@@ -308,6 +322,65 @@ Future<List<FlutterErrorDetails>> renderScreen(
     Error.throwWithStackTrace(verificationError, verificationStack);
   }
   return reported;
+}
+
+/// Ekranda görünen metinleri döner (içerik testleri için tanı yardımcısı).
+List<String> visibleTexts(WidgetTester tester, {int limit = 30}) => tester
+    .widgetList<Text>(find.byType(Text))
+    .map((Text text) => text.data ?? '')
+    .where((String value) => value.trim().isNotEmpty)
+    .take(limit)
+    .toList(growable: false);
+
+/// Taşan esnek kutuları (RenderFlex) bulur ve widget yolunu döner.
+///
+/// Yalnızca tanı amaçlıdır: testi düşürmez. Taşma hatası raporlandığında
+/// hangi widget'ın sorunlu olduğunu görünür kılar; hata anında öğeler
+/// dağıtılmış (DEFUNCT) olduğu için bu bilgi ağaç ayaktayken toplanır.
+List<String> overflowHints(WidgetTester tester) {
+  final List<String> hints = <String>[];
+  for (final RenderObject object in tester.allRenderObjects) {
+    if (object is! RenderFlex || !object.hasSize) continue;
+    final bool horizontal = object.direction == Axis.horizontal;
+    final double available = horizontal
+        ? object.size.width
+        : object.size.height;
+    double used = 0;
+    object.visitChildren((RenderObject child) {
+      if (child is RenderBox && child.hasSize) {
+        used += horizontal ? child.size.width : child.size.height;
+      }
+    });
+    if (used <= available + 0.5) continue;
+    hints.add(
+      '${used.round()}px / ${available.round()}px — '
+      '${describeWidgetPath(tester, object)}',
+    );
+  }
+  return hints;
+}
+
+/// RenderObject'ten yukarı doğru widget tipi zincirini okunur biçimde döner.
+String describeWidgetPath(WidgetTester tester, RenderObject object) {
+  Element? element;
+  for (final Element candidate in tester.allElements) {
+    // Aynı render nesnesini paylaşan birden fazla öğe olabilir; en derin
+    // (son) eşleşme ilgili widget'ı verir.
+    if (identical(candidate.renderObject, object)) element = candidate;
+  }
+  final List<String> path = <String>[object.runtimeType.toString()];
+  if (element == null) return path.first;
+  path.add(_widgetName(element.widget));
+  element.visitAncestorElements((Element ancestor) {
+    path.add(_widgetName(ancestor.widget));
+    return path.length < 9;
+  });
+  return path.join(' < ');
+}
+
+String _widgetName(Widget widget) {
+  final String name = widget.runtimeType.toString();
+  return name.startsWith('_') ? name.substring(1) : name;
 }
 
 /// Taşma (overflow) hatası mı? RenderFlex taşmaları testte hata olarak
