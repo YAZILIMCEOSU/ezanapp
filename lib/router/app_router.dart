@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../core/services/notification_service.dart';
 import '../features/ai/ai_screen.dart';
+import '../features/dua/dua_screen.dart';
 import '../features/hadith/hadith_detail_screen.dart';
 import '../features/hadith/hadith_screen.dart';
 import '../features/home/home_screen.dart';
@@ -49,6 +50,7 @@ abstract final class AppRoutes {
   static const String zikir = '/zikir';
   static const String zikirStats = '/zikir/istatistik';
   static const String hadith = '/hadis';
+  static const String dualar = '/dualar';
   static const String ramadan = '/ramazan';
   static const String ai = '/ai';
   static const String settings = '/ayarlar';
@@ -81,6 +83,7 @@ abstract final class AppRoutes {
     NotificationRoute.ramadan => ramadan,
     NotificationRoute.zikir => zikir,
     NotificationRoute.hadith => hadith,
+    NotificationRoute.dua => dualar,
     NotificationRoute.adhan => prayers,
   };
 }
@@ -174,6 +177,11 @@ final GoRouter appRouter = GoRouter(
               const ZikirStatsScreen(),
         ),
       ],
+    ),
+    GoRoute(
+      path: AppRoutes.dualar,
+      builder: (BuildContext context, GoRouterState state) =>
+          const DuaScreen(),
     ),
     GoRoute(
       path: AppRoutes.hadith,

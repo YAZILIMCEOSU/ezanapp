@@ -84,6 +84,7 @@ void main() {
         NotificationRoute.home,
       );
       expect(NotificationRoute.fromPayload(''), NotificationRoute.home);
+      expect(NotificationRoute.fromPayload('dua'), NotificationRoute.dua);
     });
   });
 

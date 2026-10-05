@@ -21,6 +21,7 @@ enum NotificationRoute {
   ramadan('ramadan'),
   zikir('zikir'),
   hadith('hadith'),
+  dua('dua'),
   adhan('adhan');
 
   const NotificationRoute(this.value);
@@ -48,6 +49,8 @@ abstract final class NotificationIds {
   static const int zikirReminder = 3006;
   static const int hatimReminder = 3007;
   static const int test = 3008;
+  static const int duaReminder = 3009;
+  static const int dailyDua = 3010;
 
   static int adhan(int dayIndex, Prayer prayer) =>
       baseAdhan + dayIndex * 10 + prayer.index;

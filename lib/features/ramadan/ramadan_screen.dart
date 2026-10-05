@@ -13,6 +13,7 @@ import '../../data/models/ramadan_models.dart';
 import '../../design/app_colors.dart';
 import '../../design/app_spacing.dart';
 import '../../router/app_router.dart';
+import '../../data/models/dua_models.dart';
 import '../../state/content_providers.dart';
 import '../../state/providers.dart';
 import '../widgets/ad_banner.dart';
@@ -576,21 +577,19 @@ class _DailyDuaCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<List<Map<String, Object?>>> dualar = ref.watch(
-      duaListProvider,
-    );
+    final AsyncValue<Dua?> dua = ref.watch(dailyDuaProvider);
     final ThemeData theme = Theme.of(context);
-    return dualar.when(
+    return dua.when(
       loading: () => const Padding(
         padding: EdgeInsets.all(AppSpacing.xl),
-        child: LoadingView(message: 'Dualar yükleniyor…'),
+        child: LoadingView(message: 'Dua yükleniyor…'),
       ),
       error: (Object error, StackTrace stackTrace) => ErrorView(
         error: error,
-        onRetry: () => ref.invalidate(duaListProvider),
+        onRetry: () => ref.invalidate(dailyDuaProvider),
       ),
-      data: (List<Map<String, Object?>> items) {
-        if (items.isEmpty) {
+      data: (Dua? value) {
+        if (value == null) {
           return const EmptyView(
             icon: Icons.volunteer_activism_outlined,
             title: 'Dua bulunamadı',
@@ -598,9 +597,6 @@ class _DailyDuaCard extends ConsumerWidget {
                 'Dua içeriği okunamadı. Uygulamayı yeniden başlatmayı deneyin.',
           );
         }
-        final DateTime now = DateTime.now();
-        final Map<String, Object?> dua =
-            items[now.difference(DateTime(now.year)).inDays % items.length];
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
           child: Container(
@@ -614,15 +610,15 @@ class _DailyDuaCard extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  (dua['name'] ?? 'Günün duası').toString(),
+                  value.name,
                   style: theme.textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                const SizedBox(height: AppSpacing.sm),
-                if (dua['arabic'] != null)
+                if (value.hasArabic) ...<Widget>[
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
-                    dua['arabic'].toString(),
+                    value.arabic,
                     textAlign: TextAlign.right,
                     textDirection: TextDirection.rtl,
                     style: theme.textTheme.titleMedium?.copyWith(
@@ -630,27 +626,26 @@ class _DailyDuaCard extends ConsumerWidget {
                       height: 1.9,
                     ),
                   ),
-                const SizedBox(height: AppSpacing.sm),
-                if (dua['transliteration'] != null)
+                ],
+                if (value.transliteration.isNotEmpty) ...<Widget>[
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
-                    dua['transliteration'].toString(),
+                    value.transliteration,
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                       fontStyle: FontStyle.italic,
                     ),
                   ),
-                if (dua['meaning'] != null) ...<Widget>[
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    dua['meaning'].toString(),
-                    style: theme.textTheme.bodyMedium,
-                  ),
                 ],
-                if (dua['reference'] != null)
+                if (value.meaning.isNotEmpty) ...<Widget>[
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(value.meaning, style: theme.textTheme.bodyMedium),
+                ],
+                if (value.reference.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: AppSpacing.sm),
                     child: Text(
-                      dua['reference'].toString(),
+                      value.reference,
                       style: theme.textTheme.labelSmall?.copyWith(
                         color: theme.colorScheme.onSurfaceVariant,
                       ),

@@ -62,6 +62,12 @@ class _MoreScreenState extends ConsumerState<MoreScreen> {
             route: AppRoutes.zikir,
           ),
           const _Tile(
+            icon: Icons.volunteer_activism_outlined,
+            title: 'Dualar',
+            subtitle: 'Sabah, akşam, namaz ve günlük dualar; kaynak künyeli',
+            route: AppRoutes.dualar,
+          ),
+          const _Tile(
             icon: Icons.format_quote_outlined,
             title: 'Hadis',
             subtitle: '1900 sahih hadis, konu ve arama',

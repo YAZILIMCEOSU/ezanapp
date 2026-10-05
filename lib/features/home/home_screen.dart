@@ -9,6 +9,7 @@ import '../../data/models/app_settings.dart';
 import '../../data/models/hadith_models.dart';
 import '../../data/models/hijri_date.dart';
 import '../../data/models/prayer.dart';
+import '../../data/models/dua_models.dart';
 import '../../data/models/prayer_times_day.dart';
 import '../../data/models/zikir_models.dart';
 import '../../data/repositories/daily_content_repository.dart';
@@ -143,6 +144,7 @@ class HomeScreen extends ConsumerWidget {
               const SliverToBoxAdapter(child: _QuickActions()),
               const SliverToBoxAdapter(child: _DailyVerseCard()),
               const SliverToBoxAdapter(child: _DailyHadithCard()),
+              const SliverToBoxAdapter(child: _DailyDuaCard()),
               const SliverToBoxAdapter(child: _ZikirSummaryCard()),
               if (isRamadan) const SliverToBoxAdapter(child: _KadirNightHint()),
               const SliverToBoxAdapter(child: AdBanner()),
@@ -528,6 +530,123 @@ class _DailyHadithCard extends ConsumerWidget {
                     context.push(AppRoutes.hadithDetail(hadith.id)),
                 child: const Text('Hadisi aç'),
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Günün duası kartı — kaynak künyesi ve "Dualar" bağlantısı ile.
+class _DailyDuaCard extends ConsumerWidget {
+  const _DailyDuaCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AsyncValue<Dua?> content = ref.watch(dailyDuaProvider);
+    final Dua? dua = content.value;
+    if (dua == null) return const SizedBox.shrink();
+
+    final ThemeData theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.lg,
+        AppSpacing.lg,
+        0,
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surfaceContainerHighest.withValues(
+            alpha: 0.5,
+          ),
+          borderRadius: AppRadius.allLg,
+          border: Border.all(
+            color: theme.colorScheme.outlineVariant.withValues(alpha: 0.6),
+          ),
+        ),
+        padding: const EdgeInsets.all(AppSpacing.xl),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                const Icon(Icons.volunteer_activism_outlined, size: 18),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    'Günün duası',
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  tooltip: 'Paylaş',
+                  visualDensity: VisualDensity.compact,
+                  onPressed: () => SharePlus.instance.share(
+                    ShareParams(
+                      text: dua.shareText(),
+                      subject: 'Günün duası',
+                    ),
+                  ),
+                  icon: const Icon(Icons.ios_share_rounded, size: 18),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              dua.name,
+              style: theme.textTheme.labelLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            if (dua.transliteration.isNotEmpty) ...<Widget>[
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                dua.transliteration,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontStyle: FontStyle.italic,
+                  height: 1.5,
+                ),
+              ),
+            ],
+            if (dua.meaning.isNotEmpty) ...<Widget>[
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                dua.meaning,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodyMedium?.copyWith(height: 1.55),
+              ),
+            ],
+            const SizedBox(height: AppSpacing.md),
+            Row(
+              children: <Widget>[
+                Icon(
+                  Icons.verified_outlined,
+                  size: 13,
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+                const SizedBox(width: AppSpacing.xs),
+                Expanded(
+                  child: Text(
+                    dua.reference,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => context.push(AppRoutes.dualar),
+                  child: const Text('Tüm dualar'),
+                ),
+              ],
             ),
           ],
         ),

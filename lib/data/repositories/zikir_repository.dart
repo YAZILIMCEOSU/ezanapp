@@ -5,6 +5,7 @@ import 'package:sqflite/sqflite.dart' show ConflictAlgorithm;
 
 import '../../core/db/app_database.dart';
 import '../../core/utils/logger.dart';
+import '../models/dua_models.dart';
 import '../models/zikir_models.dart';
 
 /// Tesbih/zikir verisi: gömülü zikirler, sayımlar, hedefler ve istatistikler.
@@ -16,6 +17,7 @@ class ZikirRepository {
   final AssetBundle _bundle;
 
   List<Zikir>? _zikirler;
+  DuaCatalog? _duaCatalog;
 
   /// Gömülü zikir listesi.
   Future<List<Zikir>> zikirler() async {
@@ -45,32 +47,106 @@ class ZikirRepository {
     return _zikirler!;
   }
 
-  /// Günlük dua listesi (Ramazan ve ana ekran için).
-  Future<List<Map<String, Object?>>> dualar() async {
+  /// Tüm dualar (kategorilenmiş katalog).
+  ///
+  /// Dosya bir kez okunur ve bellekte tutulur; ekranlar bu katalog üzerinden
+  /// kategori ve arama yapar.
+  Future<DuaCatalog> duaCatalog() async {
+    if (_duaCatalog != null) return _duaCatalog!;
     try {
-      final String raw = await _bundle.loadString(
-        'assets/data/adhkar/adhkar.json',
-      );
-      final Map<String, Object?> json = (jsonDecode(raw) as Map)
-          .cast<String, Object?>();
-      return ((json['dualar'] as List?) ?? <Object?>[])
+      final Map<String, Object?> json = await _loadAdhkar();
+      final List<Dua> dualar = ((json['dualar'] as List?) ?? <Object?>[])
           .whereType<Map<Object?, Object?>>()
-          .map((Map<Object?, Object?> m) => m.cast<String, Object?>())
+          .map((Map<Object?, Object?> m) => Dua.fromJson(m.cast<String, Object?>()))
+          .where((Dua dua) => dua.key.isNotEmpty && dua.name.isNotEmpty)
           .toList();
-    } catch (error) {
-      AppLog.warning('Dua verisi yüklenemedi', error: error);
-      return <Map<String, Object?>>[];
+      final List<DuaCategory> categories =
+          ((json['dua_categories'] as List?) ?? <Object?>[])
+              .whereType<Map<Object?, Object?>>()
+              .map(
+                (Map<Object?, Object?> m) =>
+                    DuaCategory.fromJson(m.cast<String, Object?>()),
+              )
+              .toList();
+      _duaCatalog = DuaCatalog(categories: categories, dualar: dualar);
+    } catch (error, stackTrace) {
+      AppLog.error(
+        'Dua verisi yüklenemedi',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      _duaCatalog = const DuaCatalog(
+        categories: <DuaCategory>[],
+        dualar: <Dua>[],
+      );
     }
+    return _duaCatalog!;
   }
 
-  /// Belirli bir gün için dua (deterministik seçim).
-  Future<Map<String, Object?>?> dailyDua(DateTime date) async {
-    final List<Map<String, Object?>> all = await dualar();
-    if (all.isEmpty) return null;
+  /// Günlük dua (deterministik seçim).
+  Future<Dua?> dailyDua(DateTime date) async {
+    final DuaCatalog catalog = await duaCatalog();
+    if (catalog.isEmpty) return null;
     final int index =
         (date.difference(DateTime(date.year)).inDays + date.year * 3) %
-        all.length;
-    return all[index];
+        catalog.dualar.length;
+    return catalog.dualar[index];
+  }
+
+  Map<String, Object?>? _adhkarCache;
+
+  Future<Map<String, Object?>> _loadAdhkar() async {
+    if (_adhkarCache != null) return _adhkarCache!;
+    final String raw = await _bundle.loadString(
+      'assets/data/adhkar/adhkar.json',
+    );
+    _adhkarCache = (jsonDecode(raw) as Map).cast<String, Object?>();
+    return _adhkarCache!;
+  }
+
+  // ------------------------------------------------------------- Favori dualar
+
+  Future<Set<String>> duaFavoriteKeys() async {
+    final List<Map<String, Object?>> rows = await _database.raw.query(
+      'dua_favorites',
+    );
+    return rows.map((Map<String, Object?> row) => row['dua_key']! as String).toSet();
+  }
+
+  Future<bool> isDuaFavorite(String key) async {
+    final List<Map<String, Object?>> rows = await _database.raw.query(
+      'dua_favorites',
+      where: 'dua_key = ?',
+      whereArgs: <Object?>[key],
+      limit: 1,
+    );
+    return rows.isNotEmpty;
+  }
+
+  /// Favori durumunu değiştirir; yeni durumu döner.
+  Future<bool> toggleDuaFavorite(String key) async {
+    if (await isDuaFavorite(key)) {
+      await _database.raw.delete(
+        'dua_favorites',
+        where: 'dua_key = ?',
+        whereArgs: <Object?>[key],
+      );
+      return false;
+    }
+    await _database.raw.insert('dua_favorites', <String, Object?>{
+      'dua_key': key,
+      'created_at': DateTime.now().millisecondsSinceEpoch,
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+    return true;
+  }
+
+  Future<List<Dua>> favoriteDualar() async {
+    final Set<String> keys = await duaFavoriteKeys();
+    if (keys.isEmpty) return <Dua>[];
+    final DuaCatalog catalog = await duaCatalog();
+    return catalog.dualar
+        .where((Dua dua) => keys.contains(dua.key))
+        .toList();
   }
 
   /// Kullanıcı tanımlı zikirler.

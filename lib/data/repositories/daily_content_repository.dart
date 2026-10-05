@@ -9,6 +9,7 @@ import '../../core/utils/logger.dart';
 import '../models/hadith_models.dart';
 import '../models/quran_models.dart';
 import 'hadith_repository.dart';
+import '../models/dua_models.dart';
 import 'quran_repository.dart';
 import 'zikir_repository.dart';
 
@@ -104,7 +105,7 @@ class DailyContentRepository {
         date: day,
         verse: verseJson == null ? null : DailyAyah.fromCache(verseJson),
         hadith: hadithJson == null ? null : _hadithFromCache(hadithJson),
-        dua: duaJson,
+        dua: duaJson == null ? null : Dua.fromJson(duaJson),
         fetchedAt: DateTime.fromMillisecondsSinceEpoch(
           (row['fetched_at'] as num?)?.toInt() ?? 0,
         ),
@@ -125,7 +126,7 @@ class DailyContentRepository {
       'hadith': content.hadith == null
           ? null
           : jsonEncode(_hadithToCache(content.hadith!)),
-      'dua': content.dua == null ? null : jsonEncode(content.dua),
+      'dua': content.dua == null ? null : jsonEncode(_duaToJson(content.dua!)),
       'fetched_at': content.fetchedAt.millisecondsSinceEpoch,
     }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
@@ -216,6 +217,17 @@ class DailyAyah {
 }
 
 /// Günün tüm içeriği.
+Map<String, Object?> _duaToJson(Dua dua) => <String, Object?>{
+  'key': dua.key,
+  'name': dua.name,
+  'arabic': dua.arabic,
+  'transliteration': dua.transliteration,
+  'meaning': dua.meaning,
+  'reference': dua.reference,
+  'category': dua.category,
+  if (dua.time != null) 'time': dua.time,
+};
+
 class DailyContent {
   const DailyContent({
     required this.date,
@@ -229,7 +241,7 @@ class DailyContent {
   final DateTime date;
   final DailyAyah? verse;
   final Hadith? hadith;
-  final Map<String, Object?>? dua;
+  final Dua? dua;
   final DateTime fetchedAt;
   final String source;
 }

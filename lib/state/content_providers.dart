@@ -6,6 +6,7 @@ import '../core/services/location_service.dart';
 import '../core/utils/logger.dart';
 import '../data/models/ai_models.dart';
 import '../data/models/app_settings.dart';
+import '../data/models/dua_models.dart';
 import '../data/models/hadith_models.dart';
 import '../data/models/hijri_date.dart';
 import '../data/models/ilahi_models.dart';
@@ -164,9 +165,26 @@ final FutureProvider<List<Zikir>> zikirListProvider =
       return <Zikir>[...builtIn, ...custom];
     });
 
-final FutureProvider<List<Map<String, Object?>>> duaListProvider =
-    FutureProvider<List<Map<String, Object?>>>(
-      (Ref ref) => ref.watch(runtimeProvider).zikir.dualar(),
+/// Tüm dualar (kategorilenmiş katalog).
+final FutureProvider<DuaCatalog> duaCatalogProvider = FutureProvider<DuaCatalog>(
+  (Ref ref) => ref.watch(runtimeProvider).zikir.duaCatalog(),
+);
+
+/// Günün duası (deterministik seçim).
+final FutureProvider<Dua?> dailyDuaProvider = FutureProvider<Dua?>(
+  (Ref ref) => ref.watch(runtimeProvider).zikir.dailyDua(DateTime.now()),
+);
+
+/// Favori dua kimlikleri.
+final FutureProvider<Set<String>> duaFavoriteKeysProvider =
+    FutureProvider<Set<String>>(
+      (Ref ref) => ref.watch(runtimeProvider).zikir.duaFavoriteKeys(),
+    );
+
+/// Yalnızca favori dualar (katalog sırasını korur).
+final FutureProvider<List<Dua>> duaFavoritesProvider =
+    FutureProvider<List<Dua>>(
+      (Ref ref) => ref.watch(runtimeProvider).zikir.favoriteDualar(),
     );
 
 final FutureProvider<List<ZikirStatPoint>> zikirHistoryProvider =

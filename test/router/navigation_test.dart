@@ -53,6 +53,7 @@ void main() {
         AppRoutes.zikir,
         AppRoutes.zikirStats,
         AppRoutes.hadith,
+        AppRoutes.dualar,
         AppRoutes.ramadan,
         AppRoutes.ai,
         AppRoutes.settings,

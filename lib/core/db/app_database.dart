@@ -14,7 +14,7 @@ class AppDatabase {
 
   final Database _db;
 
-  static const int schemaVersion = 1;
+  static const int schemaVersion = 2;
   static const String fileName = 'ezanai.db';
 
   static AppDatabase? _instance;
@@ -38,7 +38,15 @@ class AppDatabase {
           await _createSchema(db);
         },
         onUpgrade: (Database db, int oldVersion, int newVersion) async {
-          // İleride şema değişiklikleri buraya eklenecek.
+          // v1 → v2: dua favorileri eklendi.
+          if (oldVersion < 2) {
+            await db.execute('''
+              CREATE TABLE dua_favorites (
+                dua_key TEXT PRIMARY KEY,
+                created_at INTEGER NOT NULL
+              )
+            ''');
+          }
           AppLog.info('Veritabanı yükseltildi: $oldVersion → $newVersion');
         },
         onOpen: (Database db) async {
@@ -96,6 +104,12 @@ class AppDatabase {
         ayah INTEGER NOT NULL,
         completed INTEGER NOT NULL DEFAULT 0,
         UNIQUE(date)
+      )
+      ''',
+      '''
+      CREATE TABLE dua_favorites (
+        dua_key TEXT PRIMARY KEY,
+        created_at INTEGER NOT NULL
       )
       ''',
       '''
