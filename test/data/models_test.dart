@@ -209,9 +209,8 @@ Future<HijriCalendar> _loadCalendar() async {
   try {
     return await HijriCalendar.load();
   } catch (error) {
-    final String raw = File(
-      'assets/data/hijri_ummalqura.json',
-    ).readAsStringSync();
+    final String raw = File('assets/data/hijri_ummalqura.json')
+        .readAsStringSync();
     final Map<String, Object?> json = (jsonDecode(raw) as Map)
         .cast<String, Object?>();
     final DateTime base = DateTime.parse(json['baseGregorian']! as String);

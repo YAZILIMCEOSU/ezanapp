@@ -24,9 +24,8 @@ void main() {
       );
     } catch (error) {
       // Paket varlıkları okunamazsa depodaki dosya kullanılır.
-      raw = File(
-        'assets/data/diyanet_validation_sample.json',
-      ).readAsStringSync();
+      raw = File('assets/data/diyanet_validation_sample.json')
+          .readAsStringSync();
     }
     final Object? decoded = jsonDecode(raw);
     if (decoded is! Map) {
