@@ -1,10 +1,10 @@
-# CI raporu (2026-10-05 12:30 UTC)
+# CI raporu (2026-10-05 12:46 UTC)
 
 | adım | sonuç |
 |---|---|
 | pub get | success |
 | format | success |
-| analyze | failure |
+| analyze | success |
 | test | failure |
 | test (uzak AI sözleşmesi) | success |
 | build (debug apk) | success |
@@ -231,290 +231,422 @@ Upgrading analysis_options.yaml to exclude build and platform directories.
 Computing fixes in ezanapp...
 Applying fixes...
 
-test/widget/responsive_test.dart
-  unused_import - 1 fix
+test/support/test_runtime.dart
+  unnecessary_import - 1 fix
 
 1 fix made in 1 file.
 == dart format ==
-Formatted test/data/prayer_chain_test.dart
-Formatted test/support/test_runtime.dart
-Formatted test/widget/responsive_test.dart
-Formatted 104 files (3 changed) in 1.02 seconds.
+Formatted 104 files (0 changed) in 1.01 seconds.
 ```
 
 ## analyze
 ```
 Analyzing ezanapp...                                            
-
-  error • The function 'initTestDatabaseFactory' isn't defined. Try importing the library that defines 'initTestDatabaseFactory', correcting the name to the name of an existing function, or defining a function named 'initTestDatabaseFactory' • test/data/prayer_chain_test.dart:27:3 • undefined_function
-  error • The function 'probeDatabase' isn't defined. Try importing the library that defines 'probeDatabase', correcting the name to the name of an existing function, or defining a function named 'probeDatabase' • test/data/prayer_chain_test.dart:57:29 • undefined_function
-  error • The function 'skipWithoutDatabase' isn't defined. Try importing the library that defines 'skipWithoutDatabase', correcting the name to the name of an existing function, or defining a function named 'skipWithoutDatabase' • test/data/prayer_chain_test.dart:63:11 • undefined_function
-  error • Undefined name 'testDatabaseFactory'. Try correcting the name to one that is defined, or defining the name • test/data/prayer_chain_test.dart:72:16 • undefined_identifier
-  error • The argument type 'PrayerTimesSource' can't be assigned to the parameter type 'DiyanetApiSource?'.  • test/data/prayer_chain_test.dart:89:14 • argument_type_not_assignable
-  error • The argument type 'PrayerTimesSource' can't be assigned to the parameter type 'AladhanApiSource?'.  • test/data/prayer_chain_test.dart:90:14 • argument_type_not_assignable
-  error • The argument type 'Map<String, Object?>' can't be assigned to the parameter type 'Map<String, Object>'.  • test/support/test_runtime.dart:119:42 • argument_type_not_assignable
-  error • Undefined name 'quran'. Try correcting the name to one that is defined, or defining the name • test/support/test_runtime.dart:147:52 • undefined_identifier
-  error • Undefined name 'hadith'. Try correcting the name to one that is defined, or defining the name • test/support/test_runtime.dart:147:59 • undefined_identifier
-  error • Undefined name 'zikir'. Try correcting the name to one that is defined, or defining the name • test/support/test_runtime.dart:147:67 • undefined_identifier
-  error • The name 'Override' isn't a type, so it can't be used as a type argument. Try correcting the name to an existing type, or defining a type named 'Override' • test/support/test_runtime.dart:207:8 • non_type_as_type_argument
-  error • The name 'Override' isn't a type, so it can't be used as a type argument. Try correcting the name to an existing type, or defining a type named 'Override' • test/support/test_runtime.dart:207:37 • non_type_as_type_argument
-  error • The name 'Override' isn't a type, so it can't be used as a type argument. Try correcting the name to an existing type, or defining a type named 'Override' • test/support/test_runtime.dart:224:19 • non_type_as_type_argument
-  error • The name 'Override' isn't a type, so it can't be used as a type argument. Try correcting the name to an existing type, or defining a type named 'Override' • test/widget/responsive_test.dart:51:8 • non_type_as_type_argument
-  error • The name 'Override' isn't a type, so it can't be used as a type argument. Try correcting the name to an existing type, or defining a type named 'Override' • test/widget/responsive_test.dart:51:38 • non_type_as_type_argument
-  error • The name 'Override' isn't a type, so it can't be used as a type argument. Try correcting the name to an existing type, or defining a type named 'Override' • test/widget/responsive_test.dart:206:21 • non_type_as_type_argument
-
-16 issues found. (ran in 20.9s)
+No issues found! (ran in 20.9s)
 ```
 
 ## test
 ```
-00:00 +0: loading /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart
-00:00 +0: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: sekme yolları beş ana sekme de çözümlenir
-00:00 +1: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: tüm sabit yollar çözümlenir sabit yol sabitleri
-00:00 +2: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: tüm sabit yollar çözümlenir parametreli yollar çözümlenir
-00:00 +3: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: tüm sabit yollar çözümlenir son sekmedeki alt sayfalar da çözümlenir
-00:00 +4: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: bildirim yönlendirmesi her bildirim hedefi geçerli bir yola gider
-00:00 +5: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: bildirim yönlendirmesi eski bildirim yükleri doğru ekrana yönlendirir
-00:00 +6: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: kaynak taraması app_router.dart içindeki her yol sabiti çözümlenir
-00:00 +7: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: bilinmeyen yol tanımsız yol hata ekranına düşer (çökme yok)
-00:00 +8: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: yol sabitleri tutarlı yol sabitleri Türkçe ve küçük harfli
-00:00 +9: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: yol sabitleri tutarlı sure/ayet yolu sorgu parametresiyle kurulur
-00:00 +10: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli JSON ayrıştırma tüm alanları okur
-00:00 +11: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli eksik alanlar çökmez, kategori varsayılana düşer
-00:00 +12: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli kaynak künyesi paylaşım metninde yer alır
-00:00 +13: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli paylaşım metni Arapça, okunuş ve meali içerir
-00:00 +14: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli Arapçası olmayan dua bile okunabilir paylaşılır
-00:00 +15: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli arama diakritik ve büyük harf duyarsız
-00:00 +16: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli künye metni de aranabilir
-00:00 +17: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: DuaCatalog kategoriye göre süzer
-00:00 +18: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: DuaCatalog boş sorgu tüm listeyi döner
-00:00 +19: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: DuaCatalog sorguya göre süzer
-00:00 +20: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: DuaCatalog kimliğe göre bulur
-00:00 +21: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: DuaCatalog boş katalog güvenli
-00:00 +22: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında soru yerel bilgi tabanından kaynaklı yanıtlanır
-00:01 +23: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında bilinmeyen soruda dürüst "bilmiyorum" cevabı döner
-00:01 +24: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında kaynaklı uzak yanıt kabul edilir
-  Skip: EZANAI_API_BASE tanımlı değil
-00:01 +24 ~1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında kaynaksız uzak yanıt reddedilir, yerel tabana düşülür
-  Skip: EZANAI_API_BASE tanımlı değil
-00:01 +24 ~2: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında sunucu hatasında (500) uygulama çökmez
-  Skip: EZANAI_API_BASE tanımlı değil
-00:01 +24 ~3: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında bozuk JSON yanıtında uygulama çökmez
-  Skip: EZANAI_API_BASE tanımlı değil
-00:01 +24 ~4: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında bilinmeyen soruda uzaktan kaynaksız yanıt gelirse dürüst cevap
-  Skip: EZANAI_API_BASE tanımlı değil
-00:01 +24 ~5: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında uzak yanıtlara da öneri soruları eklenir
-  Skip: EZANAI_API_BASE tanımlı değil
-test/data/prayer_chain_test.dart:27:3: Error: Method not found: 'initTestDatabaseFactory'.
-  initTestDatabaseFactory();
-  ^^^^^^^^^^^^^^^^^^^^^^^
-test/data/prayer_chain_test.dart:57:29: Error: Method not found: 'probeDatabase'.
-    databaseProblem = await probeDatabase();
-                            ^^^^^^^^^^^^^
-test/data/prayer_chain_test.dart:63:11: Error: Method not found: 'skipWithoutDatabase'.
-      if (skipWithoutDatabase(databaseProblem)) return;
-          ^^^^^^^^^^^^^^^^^^^
-test/data/prayer_chain_test.dart:72:16: Error: Undefined name 'testDatabaseFactory'.
-      factory: testDatabaseFactory,
-               ^^^^^^^^^^^^^^^^^^^
-test/data/prayer_chain_test.dart:89:22: Error: The argument type 'PrayerTimesSource' can't be assigned to the parameter type 'DiyanetApiSource?'.
- - 'PrayerTimesSource' is from 'package:ezanai/data/prayer/prayer_times_source.dart' ('lib/data/prayer/prayer_times_source.dart').
- - 'DiyanetApiSource' is from 'package:ezanai/data/prayer/diyanet_api_source.dart' ('lib/data/prayer/diyanet_api_source.dart').
-    diyanet: diyanet ?? _StubSource.failing('diyanet'),
-                     ^
-test/data/prayer_chain_test.dart:90:22: Error: The argument type 'PrayerTimesSource' can't be assigned to the parameter type 'AladhanApiSource?'.
- - 'PrayerTimesSource' is from 'package:ezanai/data/prayer/prayer_times_source.dart' ('lib/data/prayer/prayer_times_source.dart').
- - 'AladhanApiSource' is from 'package:ezanai/data/prayer/aladhan_api_source.dart' ('lib/data/prayer/aladhan_api_source.dart').
-    aladhan: aladhan ?? _StubSource.failing('aladhan'),
-                     ^
-00:01 +24 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings varsayılan ayarlar Diyanet yöntemini kullanır
-00:01 +25 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings JSON gidiş-dönüşü değerleri korur
-00:01 +26 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings bozuk yedek varsayılanlara döner
-00:01 +27 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings Hanefî ikindi yalnızca desteklenen yöntemlerde uygulanır
-00:01 +28 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings manuel düzeltmeler her yöntemde aktarılır
-00:01 +29 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: CalculationMethod bilinmeyen kimlik Diyanet'e döner
-00:01 +30 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: CalculationMethod tüm yöntemler geçerli açılara sahip
-00:01 +31 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils Kâbe yönü Türkiye için güneydoğuyu gösterir
-00:01 +32 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils Kâbe koordinatında mesafe sıfıra yakındır
-00:01 +33 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils İstanbul-Kâbe mesafesi ~2400 km
-00:01 +34 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar (setUpAll)
-00:01 +34 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar bugünü hicri tarihe çevirir
-00:01 +35 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar gün farkı hesabı ve geri dönüş tutarlı
-00:01 +36 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar ay uzunluğu 29 veya 30 gündür
-00:01 +37 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar Ramazan başlangıcı hicri 9. ayın 1. günüdür
-00:01 +38 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar (tearDownAll)
-00:01 +38 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay sıralı veri sağlıklı kabul edilir
-00:01 +39 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay sonraki vakit ve içinde bulunulan vakit doğru bulunur
-00:01 +40 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay bozuk veri sağlıksız kabul edilir
-00:01 +41 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay JSON gidiş-dönüşü vakitleri korur
-00:01 +42 ~6 -1: loading /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart [E]
-  Failed to load "/home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart":
-  Compilation failed for testPath=/home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: test/data/prayer_chain_test.dart:27:3: Error: Method not found: 'initTestDatabaseFactory'.
-    initTestDatabaseFactory();
-    ^^^^^^^^^^^^^^^^^^^^^^^
-  test/data/prayer_chain_test.dart:57:29: Error: Method not found: 'probeDatabase'.
-      databaseProblem = await probeDatabase();
-                              ^^^^^^^^^^^^^
-  test/data/prayer_chain_test.dart:63:11: Error: Method not found: 'skipWithoutDatabase'.
-        if (skipWithoutDatabase(databaseProblem)) return;
-            ^^^^^^^^^^^^^^^^^^^
-  test/data/prayer_chain_test.dart:72:16: Error: Undefined name 'testDatabaseFactory'.
-        factory: testDatabaseFactory,
-                 ^^^^^^^^^^^^^^^^^^^
-  test/data/prayer_chain_test.dart:89:22: Error: The argument type 'PrayerTimesSource' can't be assigned to the parameter type 'DiyanetApiSource?'.
-   - 'PrayerTimesSource' is from 'package:ezanai/data/prayer/prayer_times_source.dart' ('lib/data/prayer/prayer_times_source.dart').
-   - 'DiyanetApiSource' is from 'package:ezanai/data/prayer/diyanet_api_source.dart' ('lib/data/prayer/diyanet_api_source.dart').
-      diyanet: diyanet ?? _StubSource.failing('diyanet'),
-                       ^
-  test/data/prayer_chain_test.dart:90:22: Error: The argument type 'PrayerTimesSource' can't be assigned to the parameter type 'AladhanApiSource?'.
-   - 'PrayerTimesSource' is from 'package:ezanai/data/prayer/prayer_times_source.dart' ('lib/data/prayer/prayer_times_source.dart').
-   - 'AladhanApiSource' is from 'package:ezanai/data/prayer/aladhan_api_source.dart' ('lib/data/prayer/aladhan_api_source.dart').
-      aladhan: aladhan ?? _StubSource.failing('aladhan'),
-                       ^
-  .
-00:04 +42 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: (setUpAll)
-00:04 +42 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: kategoriler tanımlı ve benzersiz
-00:04 +43 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: en az 30 dua var ve kimlikler benzersiz
-00:04 +44 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duada ad, okunuş, meal ve kategori dolu
-00:04 +45 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duada kaynak künyesi var
-00:04 +46 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: kaynak künyeleri ya Kur'an ya muteber hadis kaynağına dayanır
-00:04 +47 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duanın kategorisi kategori listesinde tanımlı
-00:04 +48 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her kategoride en az bir dua var (boş sekme olmasın)
-00:04 +49 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: Kur'an kaynaklı duaların künyesi sure/ayet içerir
-00:04 +50 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: Arapça metin içeren dualar Arapça alfabede
-00:04 +51 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: katalogda arama ve kategori süzme çalışıyor
-00:04 +52 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: (tearDownAll)
-00:04 +52 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı en az 20 kayıt ve benzersiz kimlikler
-00:04 +53 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı her kayıtta başlık, cevap, anahtar kelime ve kaynak var
-00:04 +54 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı anahtar kelimeler küçük harf ve ASCII (arama uyumu)
-00:04 +55 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı anahtar kelimeler yeterince ayırt edici
-00:04 +56 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı ilişkili kayıt kimlikleri geçerli
-00:04 +57 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı mezhep farkı notları en az birkaç kayıtta bulunur
-00:04 +58 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı kaynak künyeleri kaynak türüne ayrılabiliyor
-00:04 +59 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi namaz rekatı sorusu doğru kayda gider
-00:04 +60 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi abdest sorusu doğru kayda gider
-00:04 +61 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi zekât sorusu doğru kayda gider
-00:04 +62 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi kıble sorusu doğru kayda gider
-00:04 +63 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi Türkçe karakter ve büyük harf farkı eşleşmeyi bozmaz
-00:04 +64 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi her yerel cevap kaynak, uyarı ve mezhep bilgisi taşır
-00:04 +65 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi konu kelimesi genel kelimelere üstün gelir (vitir/teravih)
-00:04 +66 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi ayırt edici kelime puanı, genel kelimelerden yüksektir
-00:04 +67 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi harf düşmesi olan sorular da eşleşir (hatim → hatmi)
-00:04 +68 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi Kâbe yönü sorusu kıble kaydına gider
-00:04 +69 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi önerilen sorular kimlik değil, okunabilir başlık olarak döner
-00:04 +70 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi kayda uymayan soru için uydurma cevap üretilmez
-00:04 +71 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi soru boşsa eşleşme yapılmaz
-00:04 +72 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi paylaşım metni kaynakları ve mezhep notlarını içerir
-00:05 +73 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri yedi gün × altı vakit için kimlikler benzersiz
-00:05 +74 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri kimlikler ilgili aralıkta kalır
-00:05 +75 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri vakit kimlikleri tekil bildirim kimlikleriyle çakışmaz
-00:05 +76 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim yönlendirme yükü her hedef kendi yüküyle ayrışır
-00:05 +77 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim yönlendirme yükü ayrıntılı yükler ve tanımsız yükler güvenli
-00:05 +78 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları varsayılan olarak güneş vakti bildirilmez
-00:05 +79 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları kullanıcı bir vakti kapatabilir
-00:05 +80 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları bildirimler tümden kapatılınca hiçbir vakit bildirilmez
-00:05 +81 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları eksik ayar güvenli tarafta kalır (kapalı sayılır)
-00:05 +82 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu varsayılan sessiz saat kapalı
-00:05 +83 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu sessiz saat aralığı gece yarısını aşabilir
-00:05 +84 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu uyku modu 22:00–07:00 arasını kapsar
-00:05 +85 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu öğle vakti sessiz saate girmez
-00:05 +86 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı ön hatırlatma varsayılan olarak kapalı
-00:05 +87 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı ön hatırlatma dakikası ayarlanabilir
-00:05 +88 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı zamanlanan gün sayısı makul aralıkta
-test/support/test_runtime.dart:207:8: Error: Type 'Override' not found.
-  List<Override> overrides = const <Override>[],
-       ^^^^^^^^
-test/widget/responsive_test.dart:51:8: Error: 'Override' isn't a type.
-  List<Override> timesOverride() => <Override>[
-       ^^^^^^^^
-test/widget/responsive_test.dart:51:38: Error: 'Override' isn't a type.
-  List<Override> timesOverride() => <Override>[
-                                     ^^^^^^^^
-test/widget/responsive_test.dart:206:21: Error: 'Override' isn't a type.
-        overrides: <Override>[
-                    ^^^^^^^^
-test/support/test_runtime.dart:147:52: Error: Undefined name 'quran'.
-    dailyContent: DailyContentRepository(database, quran, hadith, zikir),
-                                                   ^^^^^
-test/support/test_runtime.dart:147:59: Error: Undefined name 'hadith'.
-    dailyContent: DailyContentRepository(database, quran, hadith, zikir),
-                                                          ^^^^^^
-test/support/test_runtime.dart:147:67: Error: Undefined name 'zikir'.
-    dailyContent: DailyContentRepository(database, quran, hadith, zikir),
-                                                                  ^^^^^
-test/support/test_runtime.dart:119:42: Error: The argument type 'Map<String, Object?>' can't be assigned to the parameter type 'Map<String, Object>'.
- - 'Map' is from 'dart:core'.
- - 'Object' is from 'dart:core'.
-  SharedPreferences.setMockInitialValues(preferences);
-                                         ^
-test/support/test_runtime.dart:207:8: Error: 'Override' isn't a type.
-  List<Override> overrides = const <Override>[],
-       ^^^^^^^^
-test/support/test_runtime.dart:207:37: Error: 'Override' isn't a type.
-  List<Override> overrides = const <Override>[],
-                                    ^^^^^^^^
-test/support/test_runtime.dart:224:19: Error: 'Override' isn't a type.
-      overrides: <Override>[
-                  ^^^^^^^^
-00:05 +89 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Türkçe karakterleri sadeleştirir
-00:05 +90 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer kelimelere ayırır ve kısa kelimeleri atar
-00:05 +91 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer ekleri kaba biçimde kırpar
-00:05 +92 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer eşleştirme aksan ve ek farklarını tolere eder
-00:05 +93 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Arapça harekeleri kaldırır
-00:05 +94 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer yüzde biçimi
-00:05 +95 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime geri sayım ve dijital sayaç biçimi
-00:05 +96 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime 24 saat ve 12 saat biçimi
-00:05 +97 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime gün karşılaştırması
-00:05 +98 ~6 -2: loading /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart [E]
-  Failed to load "/home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart":
-  Compilation failed for testPath=/home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: test/support/test_runtime.dart:207:8: Error: Type 'Override' not found.
-    List<Override> overrides = const <Override>[],
-         ^^^^^^^^
-  test/widget/responsive_test.dart:51:8: Error: 'Override' isn't a type.
-    List<Override> timesOverride() => <Override>[
-         ^^^^^^^^
-  test/widget/responsive_test.dart:51:38: Error: 'Override' isn't a type.
-    List<Override> timesOverride() => <Override>[
-                                       ^^^^^^^^
-  test/widget/responsive_test.dart:206:21: Error: 'Override' isn't a type.
-          overrides: <Override>[
-                      ^^^^^^^^
-  test/support/test_runtime.dart:147:52: Error: Undefined name 'quran'.
-      dailyContent: DailyContentRepository(database, quran, hadith, zikir),
-                                                     ^^^^^
-  test/support/test_runtime.dart:147:59: Error: Undefined name 'hadith'.
-      dailyContent: DailyContentRepository(database, quran, hadith, zikir),
-                                                            ^^^^^^
-  test/support/test_runtime.dart:147:67: Error: Undefined name 'zikir'.
-      dailyContent: DailyContentRepository(database, quran, hadith, zikir),
-                                                                    ^^^^^
-  test/support/test_runtime.dart:119:42: Error: The argument type 'Map<String, Object?>' can't be assigned to the parameter type 'Map<String, Object>'.
-   - 'Map' is from 'dart:core'.
-   - 'Object' is from 'dart:core'.
-    SharedPreferences.setMockInitialValues(preferences);
-                                           ^
-  test/support/test_runtime.dart:207:8: Error: 'Override' isn't a type.
-    List<Override> overrides = const <Override>[],
-         ^^^^^^^^
-  test/support/test_runtime.dart:207:37: Error: 'Override' isn't a type.
-    List<Override> overrides = const <Override>[],
-                                      ^^^^^^^^
-  test/support/test_runtime.dart:224:19: Error: 'Override' isn't a type.
-        overrides: <Override>[
-                    ^^^^^^^^
-  .
-00:08 +98 ~6 -2: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: (setUpAll)
-00:08 +98 ~6 -2: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: doğrulama verisi yüklendi
-00:08 +99 ~6 -2: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: yerel hesap, Diyanet vakitlerine ±3 dakika içinde kalır
-00:08 +100 ~6 -2: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: vakitler gün içinde artan sırada
-00:08 +101 ~6 -2: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: Hanefî ikindi vakti Şâfiî'den sonra olur
-00:08 +102 ~6 -2: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: yüksek enlemlerde gece ortası kuralı vakit üretir
-00:08 +103 ~6 -2: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: (tearDownAll)
-00:08 +103 ~6 -2: Some tests failed.
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: empty
+  Actual: [FlutterError:A RenderFlex overflowed by 139 pixels on the right.]
+Taşma hatası:
+A RenderFlex overflowed by 139 pixels on the right.
+
+When the exception was thrown, this was the stack:
+#4      renderScreen (file:///home/runner/work/ezanapp/ezanapp/test/support/test_runtime.dart:254:3)
+<asynchronous suspension>
+#5      main.<anonymous closure>.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:68:11)
+<asynchronous suspension>
+#6      main.screenTest.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:46:7)
+<asynchronous suspension>
+#7      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#8      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///home/runner/work/ezanapp/ezanapp/test/support/test_runtime.dart line 254
+The test description was:
+  Vakitler — telefon 411×914
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:07 +124 ~6 -7: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakitler — telefon 411×914 [E]
+  Test failed. See exception logs above.
+  The test description was: Vakitler — telefon 411×914
+  
+00:07 +124 ~6 -7: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakitler — büyük telefon 430×932
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: empty
+  Actual: [FlutterError:A RenderFlex overflowed by 120 pixels on the right.]
+Taşma hatası:
+A RenderFlex overflowed by 120 pixels on the right.
+
+When the exception was thrown, this was the stack:
+#4      renderScreen (file:///home/runner/work/ezanapp/ezanapp/test/support/test_runtime.dart:254:3)
+<asynchronous suspension>
+#5      main.<anonymous closure>.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:68:11)
+<asynchronous suspension>
+#6      main.screenTest.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:46:7)
+<asynchronous suspension>
+#7      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#8      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///home/runner/work/ezanapp/ezanapp/test/support/test_runtime.dart line 254
+The test description was:
+  Vakitler — büyük telefon 430×932
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:07 +124 ~6 -8: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakitler — büyük telefon 430×932 [E]
+  Test failed. See exception logs above.
+  The test description was: Vakitler — büyük telefon 430×932
+  
+00:07 +124 ~6 -8: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakitler — tablet 1024×1366
+00:07 +125 ~6 -8: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Kur'an — küçük telefon 320×568
+00:07 +126 ~6 -8: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Kur'an — telefon 411×914
+00:07 +127 ~6 -8: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Kur'an — büyük telefon 430×932
+00:07 +128 ~6 -8: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Kur'an — tablet 1024×1366
+00:07 +129 ~6 -8: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — küçük telefon 320×568
+00:08 +130 ~6 -8: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — telefon 411×914
+00:08 +131 ~6 -8: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — büyük telefon 430×932
+00:08 +132 ~6 -8: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — tablet 1024×1366
+00:08 +133 ~6 -8: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — küçük telefon 320×568
+00:08 +134 ~6 -8: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — telefon 411×914
+00:08 +135 ~6 -8: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — büyük telefon 430×932
+00:08 +136 ~6 -8: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — tablet 1024×1366
+00:08 +137 ~6 -8: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — küçük telefon 320×568
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: empty
+  Actual: [
+            FlutterError:A RenderFlex overflowed by 83 pixels on the bottom.,
+            FlutterError:A RenderFlex overflowed by 43 pixels on the right.
+          ]
+Taşma hatası:
+A RenderFlex overflowed by 83 pixels on the bottom.
+---
+A RenderFlex overflowed by 43 pixels on the right.
+
+When the exception was thrown, this was the stack:
+#4      renderScreen (file:///home/runner/work/ezanapp/ezanapp/test/support/test_runtime.dart:254:3)
+<asynchronous suspension>
+#5      main.<anonymous closure>.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:68:11)
+<asynchronous suspension>
+#6      main.screenTest.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:46:7)
+<asynchronous suspension>
+#7      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#8      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///home/runner/work/ezanapp/ezanapp/test/support/test_runtime.dart line 254
+The test description was:
+  Zikir — küçük telefon 320×568
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:08 +137 ~6 -9: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — küçük telefon 320×568 [E]
+  Test failed. See exception logs above.
+  The test description was: Zikir — küçük telefon 320×568
+  
+00:08 +137 ~6 -9: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — telefon 411×914
+00:08 +138 ~6 -9: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — büyük telefon 430×932
+00:09 +139 ~6 -9: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — tablet 1024×1366
+00:09 +140 ~6 -9: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — küçük telefon 320×568
+00:09 +141 ~6 -9: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — telefon 411×914
+00:09 +142 ~6 -9: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — büyük telefon 430×932
+00:09 +143 ~6 -9: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — tablet 1024×1366
+00:09 +144 ~6 -9: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — küçük telefon 320×568
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: empty
+  Actual: [FlutterError:A RenderFlex overflowed by 8.1 pixels on the right.]
+Taşma hatası:
+A RenderFlex overflowed by 8.1 pixels on the right.
+
+When the exception was thrown, this was the stack:
+#4      renderScreen (file:///home/runner/work/ezanapp/ezanapp/test/support/test_runtime.dart:254:3)
+<asynchronous suspension>
+#5      main.<anonymous closure>.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:68:11)
+<asynchronous suspension>
+#6      main.screenTest.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:46:7)
+<asynchronous suspension>
+#7      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#8      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///home/runner/work/ezanapp/ezanapp/test/support/test_runtime.dart line 254
+The test description was:
+  Daha Fazla — küçük telefon 320×568
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:09 +144 ~6 -10: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — küçük telefon 320×568 [E]
+  Test failed. See exception logs above.
+  The test description was: Daha Fazla — küçük telefon 320×568
+  
+00:09 +144 ~6 -10: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — telefon 411×914
+00:09 +145 ~6 -10: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — büyük telefon 430×932
+00:09 +146 ~6 -10: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — tablet 1024×1366
+00:09 +147 ~6 -10: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — küçük telefon 320×568
+00:09 +148 ~6 -10: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — telefon 411×914
+00:09 +149 ~6 -10: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — büyük telefon 430×932
+00:09 +150 ~6 -10: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — tablet 1024×1366
+00:09 +151 ~6 -10: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — küçük telefon 320×568
+00:09 +152 ~6 -10: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — telefon 411×914
+00:10 +153 ~6 -10: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — büyük telefon 430×932
+00:10 +154 ~6 -10: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — tablet 1024×1366
+00:10 +155 ~6 -10: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — küçük telefon 320×568
+00:10 +156 ~6 -10: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — telefon 411×914
+00:10 +157 ~6 -10: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — büyük telefon 430×932
+00:10 +158 ~6 -10: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — tablet 1024×1366
+00:10 +159 ~6 -10: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Dualar: künye özeti ve kategori çipleri görünür
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: at least one matching candidate
+  Actual: _TextWidgetFinder:<Found 0 widgets with text "Dualar": []>
+   Which: means none were found but some were expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:91:7)
+<asynchronous suspension>
+#5      main.screenTest.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:46:7)
+<asynchronous suspension>
+#6      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#7      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart line 91
+The test description was:
+  Dualar: künye özeti ve kategori çipleri görünür
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:10 +159 ~6 -11: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Dualar: künye özeti ve kategori çipleri görünür [E]
+  Test failed. See exception logs above.
+  The test description was: Dualar: künye özeti ve kategori çipleri görünür
+  
+00:10 +159 ~6 -11: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Hadis: başlık ve konu çipleri görünür
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: at least one matching candidate
+  Actual: _TextWidgetFinder:<Found 0 widgets with text "Hadis": []>
+   Which: means none were found but some were expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:107:7)
+<asynchronous suspension>
+#5      main.screenTest.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:46:7)
+<asynchronous suspension>
+#6      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#7      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart line 107
+The test description was:
+  Hadis: başlık ve konu çipleri görünür
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:10 +159 ~6 -12: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Hadis: başlık ve konu çipleri görünür [E]
+  Test failed. See exception logs above.
+  The test description was: Hadis: başlık ve konu çipleri görünür
+  
+00:10 +159 ~6 -12: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Zikir: tesbih ekranı sayaç ile çizilir
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: at least one matching candidate
+  Actual: _TextWidgetFinder:<Found 0 widgets with text "Tesbih": []>
+   Which: means none were found but some were expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:121:7)
+<asynchronous suspension>
+#5      main.screenTest.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:46:7)
+<asynchronous suspension>
+#6      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#7      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart line 121
+The test description was:
+  Zikir: tesbih ekranı sayaç ile çizilir
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:10 +159 ~6 -13: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Zikir: tesbih ekranı sayaç ile çizilir [E]
+  Test failed. See exception logs above.
+  The test description was: Zikir: tesbih ekranı sayaç ile çizilir
+  
+00:10 +159 ~6 -13: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Kur'an: sure listesi yüklenir
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: at least one matching candidate
+  Actual: _TextContainingWidgetFinder:<Found 0 widgets with text containing Kur: []>
+   Which: means none were found but some were expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:132:7)
+<asynchronous suspension>
+#5      main.screenTest.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:46:7)
+<asynchronous suspension>
+#6      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#7      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart line 132
+The test description was:
+  Kur'an: sure listesi yüklenir
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:10 +159 ~6 -14: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Kur'an: sure listesi yüklenir [E]
+  Test failed. See exception logs above.
+  The test description was: Kur'an: sure listesi yüklenir
+  
+00:10 +159 ~6 -14: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Daha Fazla: tüm bölüm girişleri listelenir
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: at least one matching candidate
+  Actual: _TextWidgetFinder:<Found 0 widgets with text "Dualar": []>
+   Which: means none were found but some were expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:147:7)
+<asynchronous suspension>
+#5      main.screenTest.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:46:7)
+<asynchronous suspension>
+#6      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#7      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart line 147
+The test description was:
+  Daha Fazla: tüm bölüm girişleri listelenir
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:10 +159 ~6 -15: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Daha Fazla: tüm bölüm girişleri listelenir [E]
+  Test failed. See exception logs above.
+  The test description was: Daha Fazla: tüm bölüm girişleri listelenir
+  
+00:10 +159 ~6 -15: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir hata görünümü anlaşılır mesaj ve "Tekrar dene" sunar
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TextWidgetFinder:<Found 0 widgets with text "Bir şeyler ters gitti": []>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:167:7)
+<asynchronous suspension>
+#5      main.screenTest.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:46:7)
+<asynchronous suspension>
+#6      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#7      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart line 167
+The test description was:
+  hata görünümü anlaşılır mesaj ve "Tekrar dene" sunar
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:10 +159 ~6 -16: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir hata görünümü anlaşılır mesaj ve "Tekrar dene" sunar [E]
+  Test failed. See exception logs above.
+  The test description was: hata görünümü anlaşılır mesaj ve "Tekrar dene" sunar
+  
+00:10 +159 ~6 -16: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir izni olmayan hatalarda "Tekrar dene" gösterilmez
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TextContainingWidgetFinder:<Found 0 widgets with text containing Konum servisleri kapalı:
+[]>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:190:7)
+<asynchronous suspension>
+#5      main.screenTest.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:46:7)
+<asynchronous suspension>
+#6      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#7      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart line 190
+The test description was:
+  izni olmayan hatalarda "Tekrar dene" gösterilmez
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:10 +159 ~6 -17: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir izni olmayan hatalarda "Tekrar dene" gösterilmez [E]
+  Test failed. See exception logs above.
+  The test description was: izni olmayan hatalarda "Tekrar dene" gösterilmez
+  
+00:10 +159 ~6 -17: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir vakitler cihazda hesaplandıysa uyarı şeridi görünür
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: empty
+  Actual: [FlutterError:A RenderFlex overflowed by 139 pixels on the right.]
+Taşma hatası:
+A RenderFlex overflowed by 139 pixels on the right.
+
+When the exception was thrown, this was the stack:
+#4      renderScreen (file:///home/runner/work/ezanapp/ezanapp/test/support/test_runtime.dart:254:3)
+<asynchronous suspension>
+#5      main.<anonymous closure>.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:197:7)
+<asynchronous suspension>
+#6      main.screenTest.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:46:7)
+<asynchronous suspension>
+#7      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#8      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///home/runner/work/ezanapp/ezanapp/test/support/test_runtime.dart line 254
+The test description was:
+  vakitler cihazda hesaplandıysa uyarı şeridi görünür
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:10 +159 ~6 -18: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir vakitler cihazda hesaplandıysa uyarı şeridi görünür [E]
+  Test failed. See exception logs above.
+  The test description was: vakitler cihazda hesaplandıysa uyarı şeridi görünür
+  
+00:10 +159 ~6 -18: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: (tearDownAll)
+00:11 +159 ~6 -18: Some tests failed.
 
 Failing tests:
-  /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: loading /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart
-  /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: loading /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart
+  /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: yerel hesap kalibrasyonu Diyanet yöntemiyle İstanbul için tutarlı vakitler üretir
+  /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: (setUpAll)
+  /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir hata görünümü anlaşılır mesaj ve "Tekrar dene" sunar
+  /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir izni olmayan hatalarda "Tekrar dene" gösterilmez
+  ... and 14 more
 ```
 
 ## ai
@@ -572,7 +704,7 @@ Preparing "Install CMake 3.22.1 v.3.22.1".
 Installing CMake 3.22.1 in /usr/local/lib/android/sdk/cmake/3.22.1
 "Install CMake 3.22.1 v.3.22.1" complete.
 "Install CMake 3.22.1 v.3.22.1" finished.
-Running Gradle task 'assembleDebug'...                            389.9s
+Running Gradle task 'assembleDebug'...                            380.7s
 ✓ Built build/app/outputs/flutter-apk/app-debug.apk
 ```
 
@@ -611,6 +743,6 @@ Note: Some input files use or override a deprecated API.
 Note: Recompile with -Xlint:deprecation for details.
 Expected to find fonts for (packages/cupertino_icons/CupertinoIcons, MaterialIcons), but found (MaterialIcons). This usually means you are referring to font families in an IconData class but not including them in the assets section of your pubspec.yaml, are missing the package that would include them, or are missing "uses-material-design: true".
 Font asset "MaterialIcons-Regular.otf" was tree-shaken, reducing it from 1645184 to 25180 bytes (98.5% reduction). Tree-shaking can be disabled by providing the --no-tree-shake-icons flag when building your app.
-Running Gradle task 'bundleRelease'...                            391.6s
+Running Gradle task 'bundleRelease'...                            391.9s
 ✓ Built build/app/outputs/bundle/release/app-release.aab (78.0MB)
 ```
