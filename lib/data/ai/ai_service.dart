@@ -350,9 +350,7 @@ class AiService {
       if (item is String) {
         final String label = item.trim();
         if (label.isEmpty) continue;
-        sources.add(
-          AiSource(kind: _kindFromLabel(label), label: label),
-        );
+        sources.add(AiSource(kind: _kindFromLabel(label), label: label));
       } else if (item is Map) {
         final Object? label =
             item['label'] ?? item['ref'] ?? item['citation'] ?? item['title'];
