@@ -65,10 +65,7 @@ void main() {
               'answer': 'Zekât, Tevbe 9/60\'ta sayılan sınıflara verilir.',
               'sources': <Object>[
                 'Kur\'an-ı Kerim, Tevbe 9/60',
-                <String, Object?>{
-                  'label': 'Buhârî, Zekât 1',
-                  'kind': 'hadith',
-                },
+                <String, Object?>{'label': 'Buhârî, Zekât 1', 'kind': 'hadith'},
               ],
               'madhab_notes': <String>['Hanefî: nisab 80,18 gr altın.'],
             }),
@@ -111,8 +108,7 @@ void main() {
     test('sunucu hatasında (500) uygulama çökmez', () async {
       final AiService service = serviceWith(
         MockClient(
-          (http.Request request) async =>
-              http.Response('Sunucu hatası', 500),
+          (http.Request request) async => http.Response('Sunucu hatası', 500),
         ),
       );
 
@@ -124,8 +120,7 @@ void main() {
     test('bozuk JSON yanıtında uygulama çökmez', () async {
       final AiService service = serviceWith(
         MockClient(
-          (http.Request request) async =>
-              http.Response('{ bu json degil', 200),
+          (http.Request request) async => http.Response('{ bu json degil', 200),
         ),
       );
 
@@ -133,21 +128,24 @@ void main() {
       expect(answer.mode, AiAnswerMode.offline);
     });
 
-    test('bilinmeyen soruda uzaktan kaynaksız yanıt gelirse dürüst cevap', () async {
-      final AiService service = serviceWith(
-        MockClient(
-          (http.Request request) async => http.Response(
-            jsonEncode(<String, Object?>{'answer': 'Emin değilim.'}),
-            200,
-            headers: <String, String>{'content-type': 'application/json'},
+    test(
+      'bilinmeyen soruda uzaktan kaynaksız yanıt gelirse dürüst cevap',
+      () async {
+        final AiService service = serviceWith(
+          MockClient(
+            (http.Request request) async => http.Response(
+              jsonEncode(<String, Object?>{'answer': 'Emin değilim.'}),
+              200,
+              headers: <String, String>{'content-type': 'application/json'},
+            ),
           ),
-        ),
-      );
+        );
 
-      final AiAnswer answer = await service.ask('zzz qqq xxx');
-      expect(answer.mode, AiAnswerMode.offline);
-      expect(answer.text, contains('eşleştiremedim'));
-    });
+        final AiAnswer answer = await service.ask('zzz qqq xxx');
+        expect(answer.mode, AiAnswerMode.offline);
+        expect(answer.text, contains('eşleştiremedim'));
+      },
+    );
 
     test('uzak yanıtlara da öneri soruları eklenir', () async {
       final AiService service = serviceWith(
