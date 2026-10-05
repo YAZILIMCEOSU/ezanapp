@@ -85,10 +85,18 @@ void main() {
 
     test('tüm yöntemler geçerli açılara sahip', () {
       for (final CalculationMethod method in CalculationMethod.all) {
-        expect(method.fajrAngle, inInclusiveRange(12, 20));
-        expect(method.ishaAngle, inInclusiveRange(12, 20));
+        // Aralık tabanlı yöntemlerde (ör. Ümmü'l-Kurâ) yatsı açısı kullanılmaz.
+        if (method.ishaIntervalMinutes == null) {
+          expect(method.ishaAngle, inInclusiveRange(12, 20));
+        } else {
+          expect(method.ishaIntervalMinutes, inInclusiveRange(60, 120));
+        }
+        if (method.fajrAngle > 0) {
+          expect(method.fajrAngle, inInclusiveRange(12, 20));
+        }
         expect(method.asrFactor, inInclusiveRange(1, 2));
         expect(method.name, isNotEmpty);
+        expect(method.id, isNotEmpty);
       }
     });
   });

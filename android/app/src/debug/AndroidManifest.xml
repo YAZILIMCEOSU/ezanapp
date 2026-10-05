@@ -1,7 +1,13 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Yalnızca hata ayıklama derlemesi: yerel geliştirme araçlarına şifresiz
+         bağlantıya izin verir. Yayın (release) derlemesinde şifresiz trafik
+         kapalıdır; ana manifest ile çakışmayı tools:replace çözer. -->
     <application
         android:usesCleartextTraffic="true"
         tools:ignore="MissingApplicationIcon"
-        xmlns:tools="http://schemas.android.com/tools" />
+        tools:replace="android:usesCleartextTraffic" />
 </manifest>
