@@ -371,37 +371,6 @@ class AiService {
     return sources;
   }
 
-  /// Hadis kaynağı künyesi mi? (Buhârî, Müslim, sünenler, müsnedler…)
-  static bool _isHadithCitation(String citation) {
-    for (final String collection in _hadithCollections) {
-      if (citation.contains(collection)) return true;
-    }
-    return false;
-  }
-
-  /// Künye metninden kaynak türü çıkarımı.
-  ///
-  /// Backend bazen künyeleri düz metin olarak döner; bu durumda tür
-  /// kaybolmasın diye aynı sınıflandırma uygulanır.
-  static AiSourceKind _kindFromLabel(String label) {
-    if (label.startsWith('Kur')) return AiSourceKind.quran;
-    if (_isHadithCitation(label)) return AiSourceKind.hadith;
-    return AiSourceKind.other;
-  }
-
-  /// Tanınan hadis kaynakları.
-  static const List<String> _hadithCollections = <String>[
-    'Buhârî',
-    'Müslim',
-    'Tirmizî',
-    'İbn Mâce',
-    'Dârimî',
-    'Taberânî',
-    'Nesâî',
-    'Ebû Dâvûd',
-    'Ahmed b. Hanbel',
-  ];
-
   List<String> _parseStringList(Object? raw) {
     if (raw is! List) return const <String>[];
     return raw
@@ -461,4 +430,36 @@ class AiService {
   }
 
   void dispose() => _client.close();
+}
+
+
+/// Tanınan hadis kaynakları (künye metninden kaynak türü çıkarımı için).
+const List<String> _hadithCollections = <String>[
+  'Buhârî',
+  'Müslim',
+  'Tirmizî',
+  'İbn Mâce',
+  'Dârimî',
+  'Taberânî',
+  'Nesâî',
+  'Ebû Dâvûd',
+  'Ahmed b. Hanbel',
+];
+
+/// Hadis kaynağı künyesi mi? (Buhârî, Müslim, sünenler, müsnedler…)
+bool _isHadithCitation(String citation) {
+  for (final String collection in _hadithCollections) {
+    if (citation.contains(collection)) return true;
+  }
+  return false;
+}
+
+/// Künye metninden kaynak türü çıkarımı.
+///
+/// Backend bazen künyeleri düz metin olarak döner; bu durumda tür kaybolmasın
+/// diye yerel bilgi tabanıyla aynı sınıflandırma uygulanır.
+AiSourceKind _kindFromLabel(String label) {
+  if (label.startsWith('Kur')) return AiSourceKind.quran;
+  if (_isHadithCitation(label)) return AiSourceKind.hadith;
+  return AiSourceKind.other;
 }
