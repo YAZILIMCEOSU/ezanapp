@@ -106,14 +106,19 @@ class AppBarHeader extends StatelessWidget implements PreferredSizeWidget {
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Text(
             title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: text.titleLarge?.copyWith(fontWeight: FontWeight.w700),
           ),
           if (subtitle != null)
             Text(
               subtitle!,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: text.bodySmall?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),

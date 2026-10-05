@@ -21,7 +21,12 @@ enum PlaybackStatus { idle, loading, playing, paused, completed, error }
 class AppAudioService {
   AppAudioService();
 
-  final AudioPlayer _player = AudioPlayer();
+  AudioPlayer? _playerInstance;
+
+  /// Oynatıcı yalnızca gerçekten gerektiğinde oluşturulur; böylece açılış
+  /// hızlanır, ilk kareye kadar platform kanalı kullanılmaz ve ses
+  /// kullanılmayan oturumlarda bellek boşa harcanmaz.
+  AudioPlayer get _player => _playerInstance ??= AudioPlayer();
   StreamSubscription<PlayerState>? _stateSub;
   StreamSubscription<PlayerException>? _errorSub;
 
@@ -296,7 +301,7 @@ class AppAudioService {
     await _errorSub?.cancel();
     await _statusController.close();
     await _positionController.close();
-    await _player.dispose();
+    await _playerInstance?.dispose();
   }
 }
 

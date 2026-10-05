@@ -56,6 +56,13 @@ jobs:
         continue-on-error: true
         run: set -o pipefail; flutter analyze --no-pub 2>&1 | tail -200 | tee /tmp/analyze.log
 
+      # Vakit zinciri ve arayüz testleri SQLite (sqflite_common_ffi) kullanır;
+      # sistem kütüphanesini garanti altına al.
+      - name: SQLite sistem kütüphanesi
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libsqlite3-dev
+
       - name: flutter test
         id: test
         continue-on-error: true
