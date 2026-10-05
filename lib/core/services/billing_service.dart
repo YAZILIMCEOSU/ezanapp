@@ -216,8 +216,7 @@ class BillingService {
       // başlatılır; Play Console'da ürün tipiyle ayrılır.
       final InAppPurchase? iap = _iap;
       if (iap == null) {
-        _lastError =
-            'Google Play hizmetine ulaşılamıyor. Lütfen daha sonra tekrar deneyin.';
+        _lastError = 'Google Play hizmetine ulaşılamıyor. Lütfen daha sonra tekrar deneyin.';
         return false;
       }
       final bool started = await iap.buyNonConsumable(purchaseParam: param);
