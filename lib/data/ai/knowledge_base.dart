@@ -44,6 +44,16 @@ class KnowledgeEntry {
 
 /// Yerel bilgi tabanının tamamı.
 abstract final class KnowledgeBase {
+  /// Kaydı kimliğine göre bulur (yoksa `null`).
+  ///
+  /// İlişkili kayıt kimliklerini başlığa çevirmek için kullanılır.
+  static KnowledgeEntry? byId(String id) {
+    for (final KnowledgeEntry entry in entries) {
+      if (entry.id == id) return entry;
+    }
+    return null;
+  }
+
   static const List<KnowledgeEntry> entries = <KnowledgeEntry>[
     KnowledgeEntry(
       id: 'namaz_rekat',
@@ -51,8 +61,8 @@ abstract final class KnowledgeBase {
       keywords: <String>[
         'namaz',
         'rekat',
-        'rekatları',
-        'kac rekat',
+        'rekatlari',
+        'namaz rekatlari',
         'aksam namazi',
         'sabah namazi',
         'yatsi',
@@ -86,7 +96,7 @@ abstract final class KnowledgeBase {
       keywords: <String>[
         'abdest',
         'nasil abdest',
-        'gustül',
+        'gustul',
         'gusul',
         'teyemmum',
       ],
@@ -111,6 +121,37 @@ abstract final class KnowledgeBase {
       category: 'Temizlik',
     ),
     KnowledgeEntry(
+      id: 'teyemmum',
+      title: 'Teyemmüm nasıl alınır, ne zaman yapılır?',
+      keywords: <String>[
+        'teyemmum',
+        'su yok',
+        'toprakla abdest',
+        'gusul teyemmum',
+        'su bulunmazsa',
+      ],
+      answer:
+          'Su bulunmadığında veya suyu kullanmak sağlığa zararlı olduğunda teyemmüm '
+          'yapılır: niyet edilir, temiz toprak/tozlu yüzeye eller vurulur, yüz mesh '
+          'edilir; ikinci vuruşta dirseklerle birlikte kollar mesh edilir.',
+      details: <String>[
+        'Abdest veya gusül gereken durumlarda su yoksa teyemmüm ikisinin yerini tutar.',
+        'Su bulununca ya da suyu kullanmaya engel ortadan kalkınca teyemmüm bozulur.',
+        'Toprak bulunamazsa kum, taş gibi cinsinden temiz yüzeylere vurulabilir.',
+        'Teyemmümle kılınan namaz, su bulunduğunda iade edilmez; sonraki vakitler için abdest alınır.',
+      ],
+      citations: <String>[
+        'Kur\'an-ı Kerim, Mâide 5/6; Nisâ 4/43',
+        'Buhârî, Teyemmüm 1; Müslim, Hayz 109',
+      ],
+      madhabNotes: <String>[
+        'Hanefî ve Şâfiî: iki vuruş esastır (biri yüz, diğeri kollar için).',
+        'Mâlikî: tek vuruşla yüz ve kollar birlikte mesh edilebilir.',
+      ],
+      related: <String>['abdest', 'namaz_rekat'],
+      category: 'Temizlik',
+    ),
+    KnowledgeEntry(
       id: 'imsak_orucu',
       title: 'Oruç ne zaman başlar, imsak ne demektir?',
       keywords: <String>[
@@ -123,7 +164,7 @@ abstract final class KnowledgeBase {
       ],
       answer:
           'Oruç, imsak vaktiyle başlar ve akşam (güneşin batışı) ile biter. '
-          'İmsak, tan yerinin ağarmaya başlamasından (fe cr-i sâdık) bir süre önceki tedbirli vakittir.',
+          'İmsak, tan yerinin ağarmaya başlamasından (fecr-i sâdık) bir süre önceki tedbirli vakittir.',
       details: <String>[
         'Sahur yemeği imsak vaktine kadar yenilebilir.',
         'İftar, akşam ezanıyla (güneş battıktan sonra) yapılır.',
@@ -143,7 +184,7 @@ abstract final class KnowledgeBase {
         'orucu bozan',
         'oruc bozulur',
         'kaza',
-        'kasıtlı',
+        'kasitli',
         'unutusuz',
       ],
       answer:
@@ -177,8 +218,8 @@ abstract final class KnowledgeBase {
         'uyandim gecti',
       ],
       answer:
-          'Vakti geçen namaz kaza edilir. Sabah namazı için: hatırlar hatırlamaz '
-          '2 rekât farz kılınır; sünneti kaza edilmez (Hanefî’ye göre).',
+          'Vakti geçen namaz kaza edilir. Sabah namazını kaçıran kişi, hatırladığı '
+          'anda 2 rekât farzı kılar; sünnetinin kazası ise ihtilaflıdır.',
       details: <String>[
         'Kaza namazı için özel bir vakit şartı yoktur; kerâhet vakitleri dışında kılınabilir.',
         'Uyku ve unutma mazeret sayılır: "Kim namazı unutur veya uyuyakalırsa, hatırladığında kılsın." (Müslim, Mesâcid 314)',
@@ -190,8 +231,8 @@ abstract final class KnowledgeBase {
         'Buhârî, Mevâkît 37',
       ],
       madhabNotes: <String>[
-        'Hanefî: kazada sünnetler de kaza edilirken farzlarla birlikte kılınabilir, sabah sünneti kaza edilmez.',
-        'Şâfiî: kaza namazlarında sünnet kılınmaz, yalnızca farz kaza edilir.',
+        'Hanefî: İmâm-ı Âzam’a göre sabah sünnetinin kazası yoktur; İmameyn ve diğer mezhepler sünnetlerin de kaza edilmesini uygun görür.',
+        'Şâfiî: kaza namazlarında yalnızca farzlar kaza edilir, sünnet kılınmaz.',
       ],
       related: <String>['namaz_rekat', 'sabah_namazi_vakti'],
       category: 'Namaz',
@@ -233,7 +274,7 @@ abstract final class KnowledgeBase {
         'cuma',
         'cuma namazi',
         'hutbe',
-        'cumа farz',
+        'cuma farz',
         'cuma kilinmaz',
       ],
       answer:
@@ -253,6 +294,33 @@ abstract final class KnowledgeBase {
         'Şâfiî/Mâlikî: şartlar daha esnektir (cemaat sayısı vb.).',
       ],
       related: <String>['namaz_rekat'],
+      category: 'Namaz',
+    ),
+    KnowledgeEntry(
+      id: 'sabah_namazi_vakti',
+      title: 'Sabah namazı vakti ne zaman başlar, ne zaman biter?',
+      keywords: <String>[
+        'sabah namazi',
+        'sabah vakti',
+        'tan yeri',
+        'fecr',
+        'sabah namazi ne zaman',
+      ],
+      answer:
+          'Sabah namazı, tan yerinin ağarmasıyla (fecr-i sâdık) başlar ve güneşin '
+          'doğuşuna kadar kılınır. İmsak vakti ise fecr-i sâdıktan bir süre önce '
+          'alınan tedbirli vakittir; uygulama ikisini ayrı gösterir.',
+      details: <String>[
+        'Güneş doğduktan sonra sabah namazı kaza edilir.',
+        'Sabah namazının sünneti farzdan önce kılınır; sabah ezanı okunduktan sonra vakti girer.',
+        'Vaktin girmesinden hemen sonra değil, biraz geciktirerek kılmak da sünnete uygundur.',
+        'Yatsıdan sonra teheccüd kılınıp sabah vakti girince sabah namazı kılınır.',
+      ],
+      citations: <String>[
+        'Kur\'an-ı Kerim, İsrâ 17/78; Tâhâ 20/130',
+        'Müslim, Mesâcid 314; Buhârî, Mevâkît 27',
+      ],
+      related: <String>['namaz_rekat', 'kaza_namaz', 'imsak_orucu'],
       category: 'Namaz',
     ),
     KnowledgeEntry(
@@ -282,14 +350,51 @@ abstract final class KnowledgeBase {
       category: 'Mali İbadet',
     ),
     KnowledgeEntry(
+      id: 'fitre',
+      title: 'Fitre (fıtır sadakası) nedir, ne zaman verilir?',
+      keywords: <String>[
+        'fitre',
+        'fitir',
+        'fitir sadakasi',
+        'bayram sadakasi',
+        'fitre ne kadar',
+      ],
+      answer:
+          'Fitre, Ramazan orucunun ardından verilen ve bayram namazından önce eda '
+          'edilmesi esas olan bir sadakadır. Kişi, kendisi ve bakmakla yükümlü '
+          'olduğu kişiler için bir günlük gıda bedeli kadar verir.',
+      details: <String>[
+        'Kişi başı miktar her yıl Diyanet İşleri Başkanlığı tarafından ilan edilir.',
+        'Bayram namazından önce verilmesi esastır; sonraya bırakılırsa eda vakti kaçırılmış olur.',
+        'Zekât verilebilecek sınıflara verilir (Tevbe 9/60).',
+      ],
+      citations: <String>[
+        'Kur\'an-ı Kerim, Bakara 2/185',
+        'Buhârî, Zekât 70-77; Müslim, Zekât 12',
+      ],
+      madhabNotes: <String>[
+        'Hanefî: fitre kişi başı kıymet (bedel) olarak da verilebilir; hükmü vaciptir.',
+        'Diğer mezheplerde miktar bir sâ\' (yaklaşık 2,5-3 kg) temel gıda maddesi ölçüsüdür.',
+      ],
+      related: <String>['zekat', 'imsak_orucu'],
+      category: 'Mali İbadet',
+    ),
+    KnowledgeEntry(
       id: 'vitir_teravih',
       title: 'Vitir ve teravih namazı kaç rekâttır?',
-      keywords: <String>['vitir', 'teravih', 'gece namazi', 'teheccud'],
+      keywords: <String>[
+        'vitir',
+        'vitir namazi',
+        'teravih',
+        'teravih namazi',
+        'gece namazi',
+        'teheccud',
+      ],
       answer:
-          'Vitir 3 rekâttır ve yatsıdan sonra kılınır. Teravih 20 rekâttır '
-          '(Hanefî’de sünnet), Ramazan’da yatsıdan sonra kılınır.',
+          'Vitir namazı 3 rekâttır ve yatsıdan sonra kılınır. Teravih namazı 20 '
+          'rekâttır (Hanefî’de sünnet) ve Ramazan’da yatsıdan sonra kılınır.',
       details: <String>[
-        'Teravih 2’şer rekât hâlinde kılınır; 20 rekât genel kabuldür.',
+        'Teravih ikişer rekât hâlinde kılınır; 20 rekât genel kabuldür.',
         'Vitir, yatsı namazından sonra ve sabah imsak vaktine kadar kılınabilir.',
         'Teheccüd: gece uyanıp kılınan nafile namazdır.',
       ],
@@ -309,11 +414,11 @@ abstract final class KnowledgeBase {
       title: 'Kadir Gecesi ne zaman ve nasıl değerlendirilir?',
       keywords: <String>['kadir', 'kadir gecesi', 'kadir kandili', 'bin aydan'],
       answer:
-          'Kadir gecesi Ramazan’ın son on gününde, özellikle 27. gecesinde aranır; '
+          'Kadir Gecesi Ramazan’ın son on gününde, özellikle 27. gecesinde aranır; '
           'bin aydan hayırlıdır.',
       details: <String>[
         'Bu geceyi namaz, Kur\'an okuma, zikir ve dua ile geçirmek tavsiye edilir.',
-        'Peygamberimizin öğrettiği dua: "Allâhümme inneke afüvvün tuhibbü’l-afve fa’fü annî".',
+        'Peygamberimizin öğrettiği dua: "Allahümme inneke afüvvün tuhibbü’l-afve fa’fü annî".',
         'İtikâf, Ramazan’ın son on gününde sünnettir.',
       ],
       citations: <String>[
@@ -333,7 +438,7 @@ abstract final class KnowledgeBase {
       details: <String>[
         'Hac: ihram, tavaf, sa\'y, Arafat vakfesi, şeytan taşlama, kurban ve tıraş.',
         'Umre: ihram, tavaf, sa\'y ve tıraş.',
-        'Haccın farz olması için: Müslüman, akıl-bâliğ, hür, sağlıklı ve maddî güç.',
+        'Haccın farz olması için: Müslüman, akıl-bâliğ, sağlıklı ve maddi güç sahibi olmak; yolun güvenli olması.',
       ],
       citations: <String>[
         'Kur\'an-ı Kerim, Âl-i İmrân 3/97; Bakara 2/196',
@@ -347,11 +452,11 @@ abstract final class KnowledgeBase {
       title: 'Kurban ibadetinin hükmü ve şartları nelerdir?',
       keywords: <String>['kurban', 'kurban bayrami', 'kurban kesmek', 'akika'],
       answer:
-          'Kurban, Hanefî’ye göre nisab sahibi ve mukim olan kişiye vacibdir; '
+          'Kurban, Hanefî’ye göre nisab sahibi ve mukim olan kişiye vacibtir; '
           'Kurban Bayramı’nın ilk üç gününde kesilir.',
       details: <String>[
         'Koyun-keçi: bir kişi için; sığır-deve: yedi kişiye kadar ortak olunabilir.',
-        'Kurban edilecek hayvanın sağlıklı ve yaşı uygun olmalıdır (koyun 1, sığır 2, deve 5 yaş).',
+        'Kesilecek hayvanın sağlıklı ve yaşı uygun olmalıdır (koyun 1, sığır 2, deve 5 yaş).',
         'Akika, çocuk için kesilen şükür kurbanıdır (sünnet).',
       ],
       citations: <String>[
@@ -366,12 +471,12 @@ abstract final class KnowledgeBase {
       title: 'Duanın kabulü için nelere dikkat edilir?',
       keywords: <String>['dua', 'nasil dua', 'dua etmek', 'dua adabi', 'kabul'],
       answer:
-          'Dua; ihlasla, helâl lokmayla, hamd ve salavatla başlayıp bitirilerek, '
+          'Dua; ihlâsla, helâl lokmayla, hamd ve salavatla başlayıp bitirilerek, '
           'kıbleye yönelip yüksek sesle olmayacak şekilde yapılır.',
       details: <String>[
         'Kabulün gecikmesi, duanın reddedildiği anlamına gelmez.',
         'Kabule engel: haram kazanç, aceleci tutum ("duam kabul olmadı" demek).',
-        'Sevilen vakitler: seher, iki hutbe arası, Ramazan, Kadir gecesi, ezan ile kamet arası.',
+        'Sevilen vakitler: seher, iki hutbe arası, Ramazan, Kadir Gecesi, ezan ile kamet arası.',
       ],
       citations: <String>[
         'Kur\'an-ı Kerim, Bakara 2/186; Mü\'min 40/60',
@@ -396,7 +501,7 @@ abstract final class KnowledgeBase {
           'Abdestli olmak, saygıyla ve anlamını düşünerek okumak âdâbtır.',
       details: <String>[
         'Hatim: Kur\'an’ın tamamını okumak; Ramazan’da geleneksel olarak tamamlanır.',
-        'Meal okumak anlamı anlamaya yardımcıdır, Kur\'an hükmü yerine geçmez.',
+        'Meali okumak konuyu anlamaya yardımcıdır; ancak meal, Kur\'an'ın kendisi yerine geçmez.',
         'Tilavet secdesi: secde âyeti okunduğunda yapılır.',
       ],
       citations: <String>[
@@ -409,12 +514,19 @@ abstract final class KnowledgeBase {
     KnowledgeEntry(
       id: 'hatim',
       title: 'Hatim takibi nasıl yapılır?',
-      keywords: <String>['hatim', 'hatim takibi', 'cuz', 'kac cuz'],
+      keywords: <String>[
+        'hatim',
+        'hatmi',
+        'hatim takibi',
+        'hatim yapmak',
+        'cuz',
+        'kac cuz',
+      ],
       answer:
           'Kur\'an 30 cüze ayrılmıştır. Günde bir cüz okuyarak bir ayda hatim tamamlanır; '
-          'uygulamadaki Hatim Takibi bölümünden cüz durumunuzu işaretleyebilirsiniz.',
+          'uygulamadaki hatim takibi bölümünden cüz durumunuzu işaretleyebilirsiniz.',
       details: <String>[
-        'Cüz başlangıçları sure/ayet numarasıyla bellidir (ör. 1. cüz: Fâtiha-Bakara 141).',
+        'Cüz başlangıçları sûre/âyet numarasıyla bellidir (ör. 1. cüz: Fâtiha - Bakara 141).',
         'Hatim sonunda dua etmek müstehaptır.',
         'Yarıda kalan hatim, kaldığınız yerden devam edilerek tamamlanabilir.',
       ],
@@ -429,7 +541,9 @@ abstract final class KnowledgeBase {
         'kible',
         'kible yonu',
         'pusula',
+        'kabe',
         'kabe yonu',
+        'kabe hangi yonde',
         'namaz yonum',
       ],
       answer:
@@ -449,12 +563,12 @@ abstract final class KnowledgeBase {
       title: 'Kabir ziyareti caiz mi, nasıl yapılır?',
       keywords: <String>['kabir', 'kabir ziyareti', 'mezarlik', 'ziyaret'],
       answer:
-          'Kabir ziyareti sünnettir; ölümü hatırlatır ve ahirete hazırlığı artırır. '
+          'Kabir ziyareti sünnettir; ölümü hatırlatır ve âhirete hazırlığı artırır. '
           'Kabrin karşısında ayakta dua edilir; kabirden bir şey istenmez.',
       details: <String>[
-        'Ziyaret eden kişi: "Esselâmü aleyküm ehle’d-diyâri mine’l-mü’minîn…" der.',
-        'Kabir üzerine taş dikmek, üzerine basmamak, mezbeleyi temiz tutmak âdâbtır.',
-        'Ölüden medet ummak, kurban kesip adakta bulunmak dinen caiz değildir.',
+        'Ziyaret eden kişi: "Esselâmü aleyküm ehle'd-diyâri mine'l-mü'minîn…" der.',
+        'Kabir üzerine taş dikmek, üzerine basmamak, mezarlığı temiz tutmak âdâbtır.',
+        'Ölüden medet ummak, kabir için kurban kesip adakta bulunmak dinen caiz değildir.',
       ],
       citations: <String>['Müslim, Cenâiz 104', 'İbn Mâce, Cenâiz 47'],
       related: <String>['dua_adab'],
@@ -496,7 +610,7 @@ abstract final class KnowledgeBase {
         'lohusa',
         'nifas',
         'kadin',
-        'büyük hâl',
+        'buyuk hal',
       ],
       answer:
           'Hayız ve nifas (lohusalık) hâlinde kılınmamış namazlar kaza edilmez, '
@@ -517,7 +631,7 @@ abstract final class KnowledgeBase {
         'kandil',
         'mevlid',
         'mevlut',
-        'regi̇b',
+        'regib',
         'berat',
         'mirac',
         'kutlama',

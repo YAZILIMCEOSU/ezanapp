@@ -126,7 +126,10 @@ class _AiScreenState extends ConsumerState<AiScreen> {
                   padding: const EdgeInsets.all(AppSpacing.lg),
                   itemCount: messages.length,
                   itemBuilder: (BuildContext context, int index) =>
-                      _MessageBubble(message: messages[index]),
+                      _MessageBubble(
+                        message: messages[index],
+                        onAsk: (String question) => _send(question),
+                      ),
                 );
               },
             ),
@@ -257,9 +260,12 @@ class _AiScreenState extends ConsumerState<AiScreen> {
 }
 
 class _MessageBubble extends StatelessWidget {
-  const _MessageBubble({required this.message});
+  const _MessageBubble({required this.message, this.onAsk});
 
   final AiMessage message;
+
+  /// Önerilen soruya dokunulduğunda çağrılır.
+  final ValueChanged<String>? onAsk;
 
   @override
   Widget build(BuildContext context) {
@@ -297,6 +303,29 @@ class _MessageBubble extends StatelessWidget {
               message.text,
               style: theme.textTheme.bodyMedium?.copyWith(height: 1.6),
             ),
+            if (!user && message.relatedQuestions.isNotEmpty) ...<Widget>[
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                'Bunları da sorabilirsiniz',
+                style: theme.textTheme.labelSmall?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              Wrap(
+                spacing: AppSpacing.sm,
+                runSpacing: AppSpacing.xs,
+                children: <Widget>[
+                  for (final String question in message.relatedQuestions)
+                    ActionChip(
+                      label: Text(question),
+                      visualDensity: VisualDensity.compact,
+                      onPressed: onAsk == null ? null : () => onAsk!(question),
+                    ),
+                ],
+              ),
+            ],
             if (message.sources.isNotEmpty) ...<Widget>[
               const SizedBox(height: AppSpacing.md),
               Text(
