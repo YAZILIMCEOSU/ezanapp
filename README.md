@@ -132,6 +132,11 @@ flutter build apk --debug
 - `test/data/knowledge_base_test.dart` — AI bilgi tabanı: kaynak zorunluluğu,
   anahtar kelime hijyeni, eşleştirme doğruluğu ve "bilgi tabanında yok"
   durumunda uydurmama davranışı.
+- `test/router/navigation_test.dart` — her yol bir ekrana bağlı mı, bildirim
+  yönlendirmeleri geçerli mi (tanımsız yol hata ekranına düşer mi).
+- `test/core/notification_plan_test.dart` — bildirim kimlikleri, yük biçimi,
+  vakit başına aç/kapat, sessiz saat ve uyku modu kararları.
+- `test/data/ai_remote_test.dart` — uzak AI sözleşmesi (bkz. §Faz 4).
 
 Flutter kurulu olmayan ortamlarda hızlı ön denetim:
 
@@ -161,6 +166,8 @@ python3 tools/data/calibrate_diyanet.py        # temkin değerlerini fit eder
 - Veri kaynakları ve lisanslar: [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md)
 - AI asistanı bilgi tabanı, yanıt kuralları ve yeni kayıt ekleme:
   [`docs/AI_KNOWLEDGE.md`](docs/AI_KNOWLEDGE.md)
+- Faz yol haritası, doğrulama kapıları ve cihaz kontrol listesi:
+  [`docs/PHASES.md`](docs/PHASES.md)
 
 ## 7. İlkeler
 
