@@ -96,7 +96,7 @@ void main() {
         reason: 'Düz metin künyede de tür çıkarılmalı',
       );
       expect(answer.sources[1].kind, AiSourceKind.hadith);
-      expect(answer.sources[1].detail, 'Hadis kaynağı');
+      expect(answer.sources[1].label, contains('Buhârî'));
       expect(answer.madhabNotes, isNotEmpty);
       expect(answer.disclaimer, contains('kesin'));
     });
