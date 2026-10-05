@@ -185,11 +185,15 @@ class _PremiumCard extends StatelessWidget {
                   size: 22,
                 ),
                 const SizedBox(width: AppSpacing.sm),
-                Text(
-                  premium ? 'Premium etkin' : 'EzanAI Premium',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w800,
+                Expanded(
+                  child: Text(
+                    premium ? 'Premium etkin' : 'EzanAI Premium',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
               ],

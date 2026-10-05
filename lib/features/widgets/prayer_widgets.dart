@@ -218,24 +218,32 @@ class NextPrayerCountdownCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.baseline,
               textBaseline: TextBaseline.alphabetic,
               children: <Widget>[
-                Text(
-                  next == null ? '--:--' : AppTime.formatClock(remaining),
-                  style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontFeatures: const <FontFeature>[
-                      FontFeature.tabularFigures(),
-                    ],
-                    letterSpacing: -1.2,
+                Flexible(
+                  child: Text(
+                    next == null ? '--:--' : AppTime.formatClock(remaining),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      fontFeatures: const <FontFeature>[
+                        FontFeature.tabularFigures(),
+                      ],
+                      letterSpacing: -1.2,
+                    ),
                   ),
                 ),
                 const SizedBox(width: AppSpacing.md),
-                Text(
-                  next == null
-                      ? 'sonraki vakit yarın'
-                      : 'kaldı · ${AppTime.formatTime(next.time, use24Hour: use24Hour)}',
-                  style: Theme.of(context).textTheme.bodyMedium
-                      ?.copyWith(color: Colors.white.withValues(alpha: 0.8)),
+                Flexible(
+                  child: Text(
+                    next == null
+                        ? 'sonraki vakit yarın'
+                        : 'kaldı · ${AppTime.formatTime(next.time, use24Hour: use24Hour)}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodyMedium
+                        ?.copyWith(color: Colors.white.withValues(alpha: 0.8)),
+                  ),
                 ),
               ],
             ),
@@ -259,10 +267,14 @@ class NextPrayerCountdownCard extends StatelessWidget {
                     color: Colors.white.withValues(alpha: 0.7),
                   ),
                   const SizedBox(width: 6),
-                  Text(
-                    sourceLabel!,
-                    style: Theme.of(context).textTheme.labelSmall
-                        ?.copyWith(color: Colors.white.withValues(alpha: 0.7)),
+                  Expanded(
+                    child: Text(
+                      sourceLabel!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.labelSmall
+                          ?.copyWith(color: Colors.white.withValues(alpha: 0.7)),
+                    ),
                   ),
                 ],
               ),

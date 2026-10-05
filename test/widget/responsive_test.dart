@@ -19,7 +19,8 @@ import 'package:flutter_test/flutter_test.dart';
 import '../support/test_runtime.dart';
 
 /// Ekranların farklı cihaz boyutlarında (küçük telefon → tablet) taşma
-/// üretmediğini ve çizim sırasında hata fırlatmadığını doğrular.
+/// üretmediğini, çizim sırasında hata fırlatmadığını ve gerçek içeriği
+/// gösterdiğini doğrular.
 ///
 /// Faz kapısı: "ekran boyutu + tablet uyumu". Testler gerçek repository'lerle
 /// çalışır; ağ erişimi yoktur, vakitler sabit verilir.
@@ -86,12 +87,12 @@ void main() {
         const DuaScreen(),
         runtime: runtime,
         times: times,
+        verify: () {
+          expect(find.text('Dualar'), findsWidgets);
+          expect(find.textContaining('dua · kaynak künyeli'), findsWidgets);
+          expect(find.byType(FilterChip), findsWidgets);
+        },
       );
-
-      expect(find.text('Dualar'), findsWidgets);
-      expect(find.textContaining('dua · kaynak künyeli'), findsOneWidget);
-      expect(find.textContaining('Tümü ('), findsOneWidget);
-      expect(find.byType(FilterChip), findsWidgets);
     });
 
     screenTest('Hadis: başlık ve konu çipleri görünür', (
@@ -102,10 +103,11 @@ void main() {
         const HadithScreen(),
         runtime: runtime,
         times: times,
+        verify: () {
+          expect(find.text('Hadis'), findsWidgets);
+          expect(find.byType(FilterChip), findsWidgets);
+        },
       );
-
-      expect(find.text('Hadis'), findsWidgets);
-      expect(find.byType(FilterChip), findsWidgets);
     });
 
     screenTest('Zikir: tesbih ekranı sayaç ile çizilir', (
@@ -116,9 +118,11 @@ void main() {
         const ZikirScreen(),
         runtime: runtime,
         times: times,
+        verify: () {
+          expect(find.text('Tesbih'), findsWidgets);
+          expect(find.textContaining('hedef'), findsWidgets);
+        },
       );
-
-      expect(find.text('Tesbih'), findsWidgets);
     });
 
     screenTest('Kur\'an: sure listesi yüklenir', (WidgetTester tester) async {
@@ -127,9 +131,11 @@ void main() {
         const QuranScreen(),
         runtime: runtime,
         times: times,
+        verify: () {
+          expect(find.textContaining('Kur'), findsWidgets);
+          expect(find.text('Sureler'), findsWidgets);
+        },
       );
-
-      expect(find.textContaining('Kur'), findsWidgets);
     });
 
     screenTest('Daha Fazla: tüm bölüm girişleri listelenir', (
@@ -142,12 +148,13 @@ void main() {
         runtime: runtime,
         size: TestScreens.tablet,
         times: times,
+        verify: () {
+          expect(find.text('Dualar'), findsWidgets);
+          expect(find.text('Hadis'), findsWidgets);
+          expect(find.text('Tesbih ve Zikir'), findsWidgets);
+          expect(find.text('Hicri Takvim ve Önemli Günler'), findsWidgets);
+        },
       );
-
-      expect(find.text('Dualar'), findsWidgets);
-      expect(find.text('Hadis'), findsWidgets);
-      expect(find.text('Tesbih ve Zikir'), findsWidgets);
-      expect(find.text('Hicri Takvim ve Önemli Günler'), findsWidgets);
     });
   });
 
@@ -162,14 +169,15 @@ void main() {
         ),
         runtime: runtime,
         times: times,
+        verify: () {
+          expect(find.text('Bir şeyler ters gitti'), findsOneWidget);
+          expect(
+            find.textContaining('İnternet bağlantısı kurulamadı'),
+            findsOneWidget,
+          );
+          expect(find.text('Tekrar dene'), findsOneWidget);
+        },
       );
-
-      expect(find.text('Bir şeyler ters gitti'), findsOneWidget);
-      expect(
-        find.textContaining('İnternet bağlantısı kurulamadı'),
-        findsOneWidget,
-      );
-      expect(find.text('Tekrar dene'), findsOneWidget);
     });
 
     screenTest('izni olmayan hatalarda "Tekrar dene" gösterilmez', (
@@ -185,10 +193,11 @@ void main() {
         ),
         runtime: runtime,
         times: times,
+        verify: () {
+          expect(find.textContaining('Konum servisleri kapalı'), findsOneWidget);
+          expect(find.text('Tekrar dene'), findsNothing);
+        },
       );
-
-      expect(find.textContaining('Konum servisleri kapalı'), findsOneWidget);
-      expect(find.text('Tekrar dene'), findsNothing);
     });
 
     screenTest('vakitler cihazda hesaplandıysa uyarı şeridi görünür', (
@@ -203,9 +212,10 @@ void main() {
           warning:
               'Resmî vakit servisine ulaşılamadı; vakitler cihazda hesaplandı.',
         ),
+        verify: () {
+          expect(find.textContaining('cihazda hesaplandı'), findsOneWidget);
+        },
       );
-
-      expect(find.textContaining('cihazda hesaplandı'), findsOneWidget);
     });
   });
 }

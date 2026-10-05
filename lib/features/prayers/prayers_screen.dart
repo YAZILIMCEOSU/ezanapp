@@ -60,7 +60,9 @@ class PrayersScreen extends ConsumerWidget {
               AppSpacing.lg,
               AppSpacing.md,
             ),
-            child: SegmentedButton<PrayerRangeView>(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SegmentedButton<PrayerRangeView>(
               segments: <ButtonSegment<PrayerRangeView>>[
                 for (final PrayerRangeView item in PrayerRangeView.values)
                   ButtonSegment<PrayerRangeView>(
@@ -73,7 +75,8 @@ class PrayersScreen extends ConsumerWidget {
               onSelectionChanged: (Set<PrayerRangeView> selection) => ref
                   .read(prayerRangeViewProvider.notifier)
                   .select(selection.first),
-              showSelectedIcon: false,
+                showSelectedIcon: false,
+              ),
             ),
           ),
           Expanded(

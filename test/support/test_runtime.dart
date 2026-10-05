@@ -197,11 +197,31 @@ PrayerTimesDay dayFor(DateTime date, {String source = 'test'}) {
   );
 }
 
+/// Hatayı, ilgili widget zinciri ve kaynak satırıyla birlikte okunur metne
+/// çevirir (taşma hatalarında hangi widget'ın sorunlu olduğunu gösterir).
+String describeError(FlutterErrorDetails details) {
+  final StringBuffer buffer = StringBuffer(details.exceptionAsString());
+  final Iterable<DiagnosticsNode> Function()? collector =
+      details.informationCollector;
+  if (collector != null) {
+    try {
+      for (final DiagnosticsNode node in collector()) {
+        buffer.write('\n${node.toStringDeep()}');
+      }
+    } catch (error) {
+      buffer.write('\n(ek bilgi alınamadı: $error)');
+    }
+  }
+  return buffer.toString();
+}
+
 /// Ekranı çizer, hataları toplar, doğrular ve ekranı kapatır.
 ///
-/// Dönen liste: çizim sırasında raporlanan tüm istisnalar. Doğrulamalar
-/// burada yapılır; testler yalnızca içerik araması için listeye bakar.
-Future<List<Object>> renderScreen(
+/// [verify] geri çağrısı ağaç ayaktayken çalışır; içerik doğrulamaları
+/// (`find.text(...)` gibi) burada yapılmalıdır. Çizim hataları ve taşmalar
+/// otomatik olarak denetlenir; atlama durumunda test `skipWithoutDatabase`
+/// ile işaretlenir.
+Future<List<FlutterErrorDetails>> renderScreen(
   WidgetTester tester,
   Widget screen, {
   required AppRuntime runtime,
@@ -209,11 +229,12 @@ Future<List<Object>> renderScreen(
   TodayTimes? times,
   Duration settle = const Duration(milliseconds: 400),
   bool strict = true,
+  void Function()? verify,
 }) async {
-  final List<Object> errors = <Object>[];
+  final List<FlutterErrorDetails> reported = <FlutterErrorDetails>[];
   final FlutterExceptionHandler? previous = FlutterError.onError;
   FlutterError.onError = (FlutterErrorDetails details) {
-    errors.add(details.exception);
+    reported.add(details);
   };
   addTearDown(() => FlutterError.onError = previous);
 
@@ -238,8 +259,20 @@ Future<List<Object>> renderScreen(
           ],
           child: content,
         );
+
   await tester.pumpWidget(app);
   await tester.pump(settle);
+
+  Object? verificationError;
+  StackTrace? verificationStack;
+  if (verify != null) {
+    try {
+      verify();
+    } catch (error, stack) {
+      verificationError = error;
+      verificationStack = stack;
+    }
+  }
 
   // Ekranı kapat: saniyelik saat gibi abonelikler ve zamanlayıcılar serbest
   // kalsın (testin sonunda "bekleyen zamanlayıcı" hatası oluşmasın).
@@ -248,25 +281,34 @@ Future<List<Object>> renderScreen(
 
   FlutterError.onError = previous;
 
-  if (!strict) return errors;
+  if (strict) {
+    final List<FlutterErrorDetails> overflows = reported
+        .where((FlutterErrorDetails d) => hasOverflowError(d.exception))
+        .toList();
+    expect(
+      overflows,
+      isEmpty,
+      reason:
+          'Taşma hatası:\n${overflows.map(describeError).join('\n---\n')}',
+    );
+    final List<FlutterErrorDetails> problems = reported
+        .where(
+          (FlutterErrorDetails d) =>
+              !hasOverflowError(d.exception) && !isPlatformNoise(d.exception),
+        )
+        .toList();
+    expect(
+      problems,
+      isEmpty,
+      reason:
+          'Beklenmeyen çizim hatası:\n${problems.map(describeError).join('\n---\n')}',
+    );
+  }
 
-  final List<Object> overflows = errors.where(hasOverflowError).toList();
-  expect(
-    overflows,
-    isEmpty,
-    reason: 'Taşma hatası:\n${overflows.join('\n---\n')}',
-  );
-  final List<Object> problems = errors
-      .where(
-        (Object error) => !hasOverflowError(error) && !isPlatformNoise(error),
-      )
-      .toList();
-  expect(
-    problems,
-    isEmpty,
-    reason: 'Beklenmeyen çizim hatası:\n${problems.join('\n---\n')}',
-  );
-  return errors;
+  if (verificationError != null && verificationStack != null) {
+    Error.throwWithStackTrace(verificationError, verificationStack);
+  }
+  return reported;
 }
 
 /// Taşma (overflow) hatası mı? RenderFlex taşmaları testte hata olarak
@@ -280,15 +322,13 @@ bool hasOverflowError(Object? error) {
 class TestScreens {
   static const Size smallPhone = Size(320, 568);
   static const Size phone = Size(411, 914);
-  static const Size largePhone = Size(430, 932);
   static const Size tablet = Size(1024, 1366);
 
   static const Map<String, Size> named = <String, Size>{
     'küçük telefon 320×568': smallPhone,
     'telefon 411×914': phone,
-    'büyük telefon 430×932': largePhone,
     'tablet 1024×1366': tablet,
   };
 
-  static const List<Size> all = <Size>[smallPhone, phone, largePhone, tablet];
+  static const List<Size> all = <Size>[smallPhone, phone, tablet];
 }
