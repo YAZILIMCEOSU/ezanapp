@@ -40,6 +40,31 @@ yoksa hata ayıklama anahtarıyla derler (yerel test için). **Play'e yüklenen 
 sürümden sonra anahtarı kaybetmeyin**; Play App Signing kullanıyorsanız yükleme
 anahtarını Play Console > Kurulum > Uygulama imzalama bölümünden yönetin.
 
+### CI'da doğrulanan yayın yolu
+
+`.github/workflows/analyze.yml` her push'ta tek kullanımlık bir deneme anahtarı
+üretip `android/key.properties` yazar ve `flutter build appbundle --release`
+çalıştırır; ardından anahtar dosyasını siler. Böylece **R8 küçültme, kaynak
+budama, ProGuard kuralları ve release imzalama yapılandırması** sürekli test
+edilir — gerçek anahtar yalnızca sizde kalır.
+
+CI'nın doğrulamadığı (gerçek yayın öncesi sizin yapmanız gereken) adımlar:
+
+| Konu | Neden |
+|---|---|
+| Gerçek yükleme anahtarı ile imzalama | Anahtar depoda tutulmaz |
+| `google-services.json` ile FCM/Crashlytics/Analytics | Dosya yok; Firebase kapalı derlenir |
+| Play Console abonelik ürünleri ve AdMob birim kimlikleri | Konsol tarafı yapılandırma |
+| Cihazda bildirim, konum, pusula ve arka planda ses testleri | Fiziksel cihaz gerekir |
+
+### Araç zinciri sürümleri (bilinçli seçim)
+
+`Gradle 8.14.3 / AGP 8.12.1 / Kotlin 2.2.20` kullanılır. Flutter'ın derleme
+uyarıları bu sürümler için "yakında desteklenmeyecek" der; Google Services
+eklentisi ve Kotlin uyumluluğu doğrulanana kadar AGP 9 / Kotlin 2.3'e
+**yükseltilmemelidir**. Yükseltme yapılacaksa önce bu iş akışının yeşil kalması
+(gerekirse deneme anahtarıyla) doğrulanmalıdır.
+
 ## 3. Derleme zamanı yapılandırması
 
 Tüm sırlar `--dart-define` veya `--dart-define-from-file` ile verilir; koda gömülmez.
@@ -139,6 +164,9 @@ Play Store'dan iç uygulama paylaşımı bağlantısıyla test edin.
 
 - Ezan tonları/melodi `tools/design/make_sounds.py` ile **proje içinde üretilir**
   (özgün, telifsiz) ve `android/app/src/main/res/raw/` altında paketlenir.
+  Bunlar sentezlenmiş tonlardır, gerçek müezzin kaydı değildir. Gerçek ezan sesi
+  yayınlamak isterseniz **lisansı/izni yazılı** bir kayıt kullanın ve kaynağını
+  `docs/DATA_SOURCES.md` §7'ye ekleyin.
 - Kur'an tilavet bağlantıları EveryAyah açık arşivine aittir; katalog yalnızca bu
   arşivin kendi CDN adreslerini kullanır.
 - İlahi katalog **uzaktan** beslenir (`ILAHI_CATALOG_URL`); katalogda her parça için

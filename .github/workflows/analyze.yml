@@ -61,6 +61,18 @@ jobs:
         continue-on-error: true
         run: set -o pipefail; flutter test --no-pub --reporter expanded 2>&1 | tail -400 | tee /tmp/test.log
 
+      # Uzak AI sözleşmesi: backend adresi tanımlıyken kaynak zorunluluğu, hata
+      # durumunda zarif bozulma ve öneri üretimi doğrulanır.
+      # (Aynı dosya normal koşuda atlanır, bkz. test/data/ai_remote_test.dart.)
+      - name: flutter test (uzak AI sözleşmesi)
+        id: ai
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          flutter test --no-pub --reporter expanded \
+            --dart-define=EZANAI_API_BASE=https://backend.test \
+            test/data/ai_remote_test.dart 2>&1 | tail -120 | tee /tmp/ai.log
+
       - name: flutter build apk (debug)
         id: build
         continue-on-error: true
@@ -100,9 +112,10 @@ jobs:
             echo "| format | ${{ steps.fmt.outcome }} |"
             echo "| analyze | ${{ steps.analyze.outcome }} |"
             echo "| test | ${{ steps.test.outcome }} |"
+            echo "| test (uzak AI sözleşmesi) | ${{ steps.ai.outcome }} |"
             echo "| build (debug apk) | ${{ steps.build.outcome }} |"
             echo "| build (release appbundle) | ${{ steps.release.outcome }} |"
-            for f in pubget fmt analyze test build release; do
+            for f in pubget fmt analyze test ai build release; do
               if [ -f /tmp/$f.log ]; then
                 echo
                 echo "## $f"
@@ -123,5 +136,5 @@ jobs:
           git commit -m "ci(report): doğrulama sonuçları [skip ci]" || echo "değişiklik yok"
           git push origin HEAD:${{ github.ref_name }} || true
       - name: Adımlardan biri başarısızsa işi düşür
-        if: steps.pubget.outcome == 'failure' || steps.analyze.outcome == 'failure' || steps.test.outcome == 'failure' || steps.build.outcome == 'failure' || steps.release.outcome == 'failure'
+        if: steps.pubget.outcome == 'failure' || steps.analyze.outcome == 'failure' || steps.test.outcome == 'failure' || steps.ai.outcome == 'failure' || steps.build.outcome == 'failure' || steps.release.outcome == 'failure'
         run: exit 1

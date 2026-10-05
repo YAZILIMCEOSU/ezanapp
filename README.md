@@ -140,8 +140,11 @@ python3 tools/lint/check_strings.py lib test   # dize değişmezlerinde sözdizi
 ```
 
 CI (`.github/workflows/analyze.yml`) her push'ta `dart fix` + `dart format`,
-`flutter analyze`, `flutter test` ve `flutter build apk --debug` çalıştırır; sonucu
-`.ci/report.md` dosyasına yazar.
+`flutter analyze`, `flutter test`, `flutter build apk --debug` **ve**
+`flutter build appbundle --release` (tek kullanımlık deneme anahtarıyla)
+çalıştırır; sonucu `.ci/report.md` dosyasına yazar. Yayın derlemesinin
+doğrulanması R8 küçültme, kaynak budama, ProGuard kuralları ve gerçek imzalama
+yolunu kapsar.
 
 Vakit kalibrasyonu yeniden üretilebilir:
 
@@ -156,6 +159,8 @@ python3 tools/data/calibrate_diyanet.py        # temkin değerlerini fit eder
 - Mağaza metinleri ve görsel listesi: [`docs/PLAY_STORE.md`](docs/PLAY_STORE.md)
 - Gizlilik politikası: [`docs/PRIVACY.md`](docs/PRIVACY.md)
 - Veri kaynakları ve lisanslar: [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md)
+- AI asistanı bilgi tabanı, yanıt kuralları ve yeni kayıt ekleme:
+  [`docs/AI_KNOWLEDGE.md`](docs/AI_KNOWLEDGE.md)
 
 ## 7. İlkeler
 
