@@ -432,7 +432,6 @@ class AiService {
   void dispose() => _client.close();
 }
 
-
 /// Tanınan hadis kaynakları (künye metninden kaynak türü çıkarımı için).
 const List<String> _hadithCollections = <String>[
   'Buhârî',
