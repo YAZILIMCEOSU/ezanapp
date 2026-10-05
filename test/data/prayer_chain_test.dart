@@ -91,34 +91,44 @@ void main() {
   );
 
   group('zincir sırası', () {
-    chainTest('Diyanet resmî verisi ilk sırada kullanılır ve önbelleğe yazılır', () async {
-      final _StubSource diyanet = _StubSource.success(
-        'diyanet',
-        saneDay(today),
-      );
-      final _StubSource aladhan = _StubSource.success('aladhan', saneDay(today));
-      final PrayerTimesRepository repository = buildRepository(
-        online: true,
-        diyanet: diyanet,
-        aladhan: aladhan,
-      );
+    chainTest(
+      'Diyanet resmî verisi ilk sırada kullanılır ve önbelleğe yazılır',
+      () async {
+        final _StubSource diyanet = _StubSource.success(
+          'diyanet',
+          saneDay(today),
+        );
+        final _StubSource aladhan = _StubSource.success(
+          'aladhan',
+          saneDay(today),
+        );
+        final PrayerTimesRepository repository = buildRepository(
+          online: true,
+          diyanet: diyanet,
+          aladhan: aladhan,
+        );
 
-      final PrayerTimesDay day = await repository.getDay(
-        location: cityLocation,
-        date: today,
-        method: CalculationMethod.diyanet,
-      );
+        final PrayerTimesDay day = await repository.getDay(
+          location: cityLocation,
+          date: today,
+          method: CalculationMethod.diyanet,
+        );
 
-      expect(day.source, 'diyanet');
-      expect(day.isSane, isTrue);
-      expect(diyanet.dayCalls, 1);
-      expect(aladhan.dayCalls, 0, reason: 'Diyanet başarılıysa AlAdhan denenmez');
-      expect(repository.lastWarning, isNull);
+        expect(day.source, 'diyanet');
+        expect(day.isSane, isTrue);
+        expect(diyanet.dayCalls, 1);
+        expect(
+          aladhan.dayCalls,
+          0,
+          reason: 'Diyanet başarılıysa AlAdhan denenmez',
+        );
+        expect(repository.lastWarning, isNull);
 
-      final PrayerTimesDay? cached = await cache.get('district:1741', today);
-      expect(cached, isNotNull, reason: 'Resmî veri önbelleğe yazılmalı');
-      expect(cached!.timeOf(Prayer.imsak), day.timeOf(Prayer.imsak));
-    });
+        final PrayerTimesDay? cached = await cache.get('district:1741', today);
+        expect(cached, isNotNull, reason: 'Resmî veri önbelleğe yazılmalı');
+        expect(cached!.timeOf(Prayer.imsak), day.timeOf(Prayer.imsak));
+      },
+    );
 
     chainTest('Diyanet başarısızsa AlAdhan devreye girer', () async {
       final _StubSource diyanet = _StubSource.failing('diyanet');
@@ -162,31 +172,34 @@ void main() {
       );
     });
 
-    chainTest('tutarsız (bozuk) servis verisi reddedilir ve zincir devam eder', () async {
-      final _StubSource diyanet = _StubSource.success(
-        'diyanet',
-        unsortedDay(today),
-      );
-      final _StubSource aladhan = _StubSource.success(
-        'aladhan',
-        saneDay(today, source: 'aladhan'),
-      );
-      final PrayerTimesRepository repository = buildRepository(
-        online: true,
-        diyanet: diyanet,
-        aladhan: aladhan,
-      );
+    chainTest(
+      'tutarsız (bozuk) servis verisi reddedilir ve zincir devam eder',
+      () async {
+        final _StubSource diyanet = _StubSource.success(
+          'diyanet',
+          unsortedDay(today),
+        );
+        final _StubSource aladhan = _StubSource.success(
+          'aladhan',
+          saneDay(today, source: 'aladhan'),
+        );
+        final PrayerTimesRepository repository = buildRepository(
+          online: true,
+          diyanet: diyanet,
+          aladhan: aladhan,
+        );
 
-      final PrayerTimesDay day = await repository.getDay(
-        location: cityLocation,
-        date: today,
-        method: CalculationMethod.diyanet,
-      );
+        final PrayerTimesDay day = await repository.getDay(
+          location: cityLocation,
+          date: today,
+          method: CalculationMethod.diyanet,
+        );
 
-      expect(day.source, 'aladhan', reason: 'Bozuk veri kabul edilmemeli');
-      expect(day.isSane, isTrue);
-      expect(await cache.get('district:1741', today), isNotNull);
-    });
+        expect(day.source, 'aladhan', reason: 'Bozuk veri kabul edilmemeli');
+        expect(day.isSane, isTrue);
+        expect(await cache.get('district:1741', today), isNotNull);
+      },
+    );
   });
 
   group('önbellek ve çevrimdışı davranış', () {
@@ -245,67 +258,82 @@ void main() {
       expect(day.isSane, isTrue);
     });
 
-    chainTest('çevrimdışı ve önbellek boşsa yerel hesap sonuç üretir', () async {
-      final PrayerTimesRepository repository = buildRepository(online: false);
+    chainTest(
+      'çevrimdışı ve önbellek boşsa yerel hesap sonuç üretir',
+      () async {
+        final PrayerTimesRepository repository = buildRepository(online: false);
 
-      final PrayerTimesDay day = await repository.getDay(
-        location: cityLocation,
-        date: today,
-        method: CalculationMethod.diyanet,
-      );
+        final PrayerTimesDay day = await repository.getDay(
+          location: cityLocation,
+          date: today,
+          method: CalculationMethod.diyanet,
+        );
 
-      expect(day.source, 'calculation');
-      expect(day.isSane, isTrue);
-      // Vakitler kullanılabilir olmalı: sonraki vakit her zaman bulunur.
-      expect(day.nextPrayer(day.timeOf(Prayer.imsak)!), isNotNull);
-    });
+        expect(day.source, 'calculation');
+        expect(day.isSane, isTrue);
+        // Vakitler kullanılabilir olmalı: sonraki vakit her zaman bulunur.
+        expect(day.nextPrayer(day.timeOf(Prayer.imsak)!), isNotNull);
+      },
+    );
 
-    chainTest('ilçe seçilmemişse (GPS) resmî servis çağrılmaz, hesap kullanılır', () async {
-      final _StubSource diyanet = _StubSource.failing('diyanet');
-      final _StubSource aladhan = _StubSource.failing('aladhan');
-      final PrayerTimesRepository repository = buildRepository(
-        online: true,
-        diyanet: diyanet,
-        aladhan: aladhan,
-      );
+    chainTest(
+      'ilçe seçilmemişse (GPS) resmî servis çağrılmaz, hesap kullanılır',
+      () async {
+        final _StubSource diyanet = _StubSource.failing('diyanet');
+        final _StubSource aladhan = _StubSource.failing('aladhan');
+        final PrayerTimesRepository repository = buildRepository(
+          online: true,
+          diyanet: diyanet,
+          aladhan: aladhan,
+        );
 
-      final PrayerTimesDay day = await repository.getDay(
-        location: gpsLocation,
-        date: today,
-        method: CalculationMethod.diyanet,
-      );
+        final PrayerTimesDay day = await repository.getDay(
+          location: gpsLocation,
+          date: today,
+          method: CalculationMethod.diyanet,
+        );
 
-      expect(day.source, 'calculation');
-      expect(diyanet.dayCalls, 0);
-      expect(aladhan.dayCalls, 0);
-    });
+        expect(day.source, 'calculation');
+        expect(diyanet.dayCalls, 0);
+        expect(aladhan.dayCalls, 0);
+      },
+    );
 
-    chainTest('bellek önbelleği aynı gün için tekrar sorguda ağa çıkmaz', () async {
-      final _StubSource diyanet = _StubSource.success('diyanet', saneDay(today));
-      final PrayerTimesRepository repository = buildRepository(
-        online: true,
-        diyanet: diyanet,
-      );
+    chainTest(
+      'bellek önbelleği aynı gün için tekrar sorguda ağa çıkmaz',
+      () async {
+        final _StubSource diyanet = _StubSource.success(
+          'diyanet',
+          saneDay(today),
+        );
+        final PrayerTimesRepository repository = buildRepository(
+          online: true,
+          diyanet: diyanet,
+        );
 
-      await repository.getDay(
-        location: cityLocation,
-        date: today,
-        method: CalculationMethod.diyanet,
-      );
-      final PrayerTimesDay second = await repository.getDay(
-        location: cityLocation,
-        date: today,
-        method: CalculationMethod.diyanet,
-      );
+        await repository.getDay(
+          location: cityLocation,
+          date: today,
+          method: CalculationMethod.diyanet,
+        );
+        final PrayerTimesDay second = await repository.getDay(
+          location: cityLocation,
+          date: today,
+          method: CalculationMethod.diyanet,
+        );
 
-      expect(diyanet.dayCalls, 1);
-      expect(second.source, 'diyanet');
-    });
+        expect(diyanet.dayCalls, 1);
+        expect(second.source, 'diyanet');
+      },
+    );
 
     chainTest('zorla yenileme önbelleği atlar', () async {
       await cache.save('district:1741', saneDay(today, source: 'diyanet'));
 
-      final _StubSource diyanet = _StubSource.success('diyanet', saneDay(today));
+      final _StubSource diyanet = _StubSource.success(
+        'diyanet',
+        saneDay(today),
+      );
       final PrayerTimesRepository repository = buildRepository(
         online: true,
         diyanet: diyanet,
@@ -326,14 +354,14 @@ void main() {
     chainTest('önbellek aralığı kapsıyorsa ağa çıkılmaz', () async {
       final List<PrayerTimesDay> week = <PrayerTimesDay>[
         for (int i = 0; i < 8; i++)
-          saneDay(
-            today.add(Duration(days: i)),
-            source: 'diyanet',
-          ),
+          saneDay(today.add(Duration(days: i)), source: 'diyanet'),
       ];
       await cache.saveMany('district:1741', week);
 
-      final _StubSource diyanet = _StubSource.success('diyanet', saneDay(today));
+      final _StubSource diyanet = _StubSource.success(
+        'diyanet',
+        saneDay(today),
+      );
       final PrayerTimesRepository repository = buildRepository(
         online: true,
         diyanet: diyanet,
@@ -351,27 +379,35 @@ void main() {
       expect(days.first.source, 'cache');
     });
 
-    chainTest('önbellek yoksa çevrimdışı aralık yerel hesapla doldurulur', () async {
-      final PrayerTimesRepository repository = buildRepository(online: false);
+    chainTest(
+      'önbellek yoksa çevrimdışı aralık yerel hesapla doldurulur',
+      () async {
+        final PrayerTimesRepository repository = buildRepository(online: false);
 
-      final List<PrayerTimesDay> days = await repository.getRange(
-        location: cityLocation,
-        startDate: today,
-        endDate: today.add(const Duration(days: 6)),
-        method: CalculationMethod.diyanet,
-      );
+        final List<PrayerTimesDay> days = await repository.getRange(
+          location: cityLocation,
+          startDate: today,
+          endDate: today.add(const Duration(days: 6)),
+          method: CalculationMethod.diyanet,
+        );
 
-      expect(days.length, 7);
-      expect(
-        days.every((PrayerTimesDay d) => d.isSane),
-        isTrue,
-        reason: 'Yerel hesap her günü tutarlı üretmeli',
-      );
-      expect(
-        days.map((PrayerTimesDay d) => d.date.day),
-        <int>[5, 6, 7, 8, 9, 10, 11],
-      );
-    });
+        expect(days.length, 7);
+        expect(
+          days.every((PrayerTimesDay d) => d.isSane),
+          isTrue,
+          reason: 'Yerel hesap her günü tutarlı üretmeli',
+        );
+        expect(days.map((PrayerTimesDay d) => d.date.day), <int>[
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+        ]);
+      },
+    );
   });
 
   group('Diyanet HTTP katmanı (sahte istemci)', () {
@@ -410,7 +446,11 @@ void main() {
         ),
         throwsA(
           isA<PrayerTimesSourceException>()
-              .having((PrayerTimesSourceException e) => e.sourceId, 'kaynak', 'diyanet')
+              .having(
+                (PrayerTimesSourceException e) => e.sourceId,
+                'kaynak',
+                'diyanet',
+              )
               .having(
                 (PrayerTimesSourceException e) => e.isTransient,
                 'geçici',
@@ -525,26 +565,29 @@ void main() {
   });
 
   group('yerel hesap kalibrasyonu', () {
-    chainTest('Diyanet yöntemiyle İstanbul için tutarlı vakitler üretir', () async {
-      const LocalCalculationSource local = LocalCalculationSource();
-      final PrayerTimesDay day = await local.fetchDay(
-        location: cityLocation,
-        date: today,
-        method: CalculationMethod.diyanet,
-      );
+    chainTest(
+      'Diyanet yöntemiyle İstanbul için tutarlı vakitler üretir',
+      () async {
+        const LocalCalculationSource local = LocalCalculationSource();
+        final PrayerTimesDay day = await local.fetchDay(
+          location: cityLocation,
+          date: today,
+          method: CalculationMethod.diyanet,
+        );
 
-      expect(day.source, 'calculation');
-      expect(day.isSane, isTrue);
-      final DateTime imsak = day.timeOf(Prayer.imsak)!;
-      final DateTime yatsi = day.timeOf(Prayer.yatsi)!;
-      expect(imsak.hour, inInclusiveRange(4, 7));
-      expect(yatsi.hour, inInclusiveRange(19, 23));
-      expect(
-        yatsi.difference(imsak).inHours,
-        greaterThan(12),
-        reason: 'İmsak ile yatsı arası gerçekçi olmalı',
-      );
-    });
+        expect(day.source, 'calculation');
+        expect(day.isSane, isTrue);
+        final DateTime imsak = day.timeOf(Prayer.imsak)!;
+        final DateTime yatsi = day.timeOf(Prayer.yatsi)!;
+        expect(imsak.hour, inInclusiveRange(4, 7));
+        expect(yatsi.hour, inInclusiveRange(19, 23));
+        expect(
+          yatsi.difference(imsak).inHours,
+          greaterThan(12),
+          reason: 'İmsak ile yatsı arası gerçekçi olmalı',
+        );
+      },
+    );
   });
 }
 

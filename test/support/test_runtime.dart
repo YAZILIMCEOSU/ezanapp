@@ -102,8 +102,9 @@ Future<String?> probeDatabase() async {
 
 /// Testlerde güvenli varsayılan ayarlar: bildirimler kapalı, böylece
 /// platform kanallarına dokunulmaz.
-AppSettings testSettings() =>
-    const AppSettings().copyWith(notifications: const NotificationSettings(enabled: false));
+AppSettings testSettings() => const AppSettings().copyWith(
+  notifications: const NotificationSettings(enabled: false),
+);
 
 /// Gerçek repository'lerle bir [AppRuntime] kurar.
 Future<AppRuntime> createTestRuntime({
@@ -165,13 +166,16 @@ class FixedPrayerTimesNotifier extends PrayerTimesNotifier {
 }
 
 /// Belirli bir gün için sabit vakitler üretir.
-TodayTimes fixedTimes(DateTime date, {String label = 'İstanbul', String? warning}) =>
-    TodayTimes(
-      day: dayFor(date),
-      tomorrow: dayFor(date.add(const Duration(days: 1))),
-      warning: warning,
-      locationLabel: label,
-    );
+TodayTimes fixedTimes(
+  DateTime date, {
+  String label = 'İstanbul',
+  String? warning,
+}) => TodayTimes(
+  day: dayFor(date),
+  tomorrow: dayFor(date.add(const Duration(days: 1))),
+  warning: warning,
+  locationLabel: label,
+);
 
 /// Sıralı (geçerli) bir gün üretir.
 PrayerTimesDay dayFor(DateTime date, {String source = 'test'}) {
@@ -242,7 +246,9 @@ Future<List<Object>> renderScreen(
     reason: 'Taşma hatası:\n${overflows.join('\n---\n')}',
   );
   final List<Object> problems = errors
-      .where((Object error) => !hasOverflowError(error) && !isPlatformNoise(error))
+      .where(
+        (Object error) => !hasOverflowError(error) && !isPlatformNoise(error),
+      )
       .toList();
   expect(
     problems,

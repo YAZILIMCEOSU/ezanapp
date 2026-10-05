@@ -14,7 +14,6 @@ import 'package:ezanai/features/widgets/state_views.dart';
 import 'package:ezanai/features/zikir/zikir_screen.dart';
 import 'package:ezanai/state/providers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../support/test_runtime.dart';
@@ -38,7 +37,10 @@ void main() {
   });
 
   /// Veritabanı kurulamazsa ekran testleri atlanır.
-  void screenTest(String description, Future<void> Function(WidgetTester) body) {
+  void screenTest(
+    String description,
+    Future<void> Function(WidgetTester) body,
+  ) {
     testWidgets(description, (WidgetTester tester) async {
       if (skipWithoutDatabase(databaseProblem)) return;
       await body(tester);
@@ -161,10 +163,7 @@ void main() {
       await renderScreen(
         tester,
         Scaffold(
-          body: ErrorView(
-            error: AppException.network(),
-            onRetry: () {},
-          ),
+          body: ErrorView(error: AppException.network(), onRetry: () {}),
         ),
         runtime: runtime,
         overrides: timesOverride(),
@@ -209,8 +208,7 @@ void main() {
             () => FixedPrayerTimesNotifier(
               fixedTimes(
                 DateTime.now(),
-                warning:
-                    'Resmî vakit servisine ulaşılamadı; vakitler cihazda hesaplandı.',
+                warning: 'Resmî vakit servisine ulaşılamadı; vakitler cihazda hesaplandı.',
               ),
             ),
           ),
