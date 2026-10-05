@@ -240,9 +240,8 @@ class _AiScreenState extends ConsumerState<AiScreen> {
                           await ref
                               .read(chatControllerProvider.notifier)
                               .openConversation(item.id);
-                          if (sheetContext.mounted) {
+                          if (sheetContext.mounted)
                             Navigator.of(sheetContext).pop();
-                          }
                         },
                       ),
                   ],

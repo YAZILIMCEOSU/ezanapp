@@ -63,7 +63,9 @@ class SyncService {
       if (!_supabaseReady) {
         await Supabase.initialize(
           url: AppConfig.supabaseUrl,
-          anonKey: AppConfig.supabaseAnonKey,
+          // `anonKey` parametresi kullanımdan kaldırıldı; publishable key aynı
+          // anonim anahtardır (RLS kurallarıyla korunur).
+          publishableKey: AppConfig.supabaseAnonKey,
         );
         _supabaseReady = true;
       }
@@ -110,9 +112,7 @@ class SyncService {
     final Map<String, Object?> payload = <String, Object?>{};
     for (final String table in backedUpTables) {
       try {
-        final List<Map<String, Object?>> rows = await _database.raw.query(
-          table,
-        );
+        final List<Map<String, Object?>> rows = await _database.raw.query(table);
         payload[table] = rows;
       } catch (error) {
         AppLog.warning('Tablo okunamadı ($table): $error');
@@ -135,10 +135,7 @@ class SyncService {
         'payload': payload,
         'updated_at': DateTime.now().toUtc().toIso8601String(),
       });
-      await _preferences.setString(
-        'last_backup_at',
-        DateTime.now().toIso8601String(),
-      );
+      await _preferences.setString('last_backup_at', DateTime.now().toIso8601String());
       return true;
     } catch (error) {
       _lastError = 'Yedek yüklenemedi: $error';

@@ -5,11 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../data/models/quran_models.dart';
+import '../../data/repositories/quran_repository.dart';
 import '../../design/app_colors.dart';
 import '../../design/app_spacing.dart';
 import '../../design/app_theme.dart';
 import '../../router/app_router.dart';
-import '../../state/content_providers.dart';
+import '../../state/providers.dart';
 import '../widgets/state_views.dart';
 
 /// Kur'an içinde Arapça metin veya Türkçe meal araması.

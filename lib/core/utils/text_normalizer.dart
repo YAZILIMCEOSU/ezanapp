@@ -35,15 +35,26 @@ abstract final class TextNormalizer {
   };
 
   /// Küçük harfe indirip aksanları sadeleştirir.
+  ///
+  /// Birleşik (combining) işaretler de atılır: kimi kaynaklarda "İ" harfi
+  /// "i" + birleşik nokta olarak küçültülür ve arama bunu eşleştiremez.
   static String normalize(String value) {
     final String lower = value.toLowerCase();
     final StringBuffer buffer = StringBuffer();
     for (final int rune in lower.runes) {
+      if (_isCombiningMark(rune)) continue;
       final String ch = String.fromCharCode(rune);
       buffer.write(_charMap[ch] ?? ch);
     }
     return buffer.toString();
   }
+
+  /// Unicode birleşik işaret aralıkları (aksan, nokta, şapka vb.).
+  static bool _isCombiningMark(int rune) =>
+      (rune >= 0x0300 && rune <= 0x036f) ||
+      (rune >= 0x1ab0 && rune <= 0x1aff) ||
+      (rune >= 0x1dc0 && rune <= 0x1dff) ||
+      (rune >= 0xfe20 && rune <= 0xfe2f);
 
   /// Normalize edilip kelimelere ayrılmış hâli (2+ harfli kelimeler).
   static List<String> tokens(String value) {

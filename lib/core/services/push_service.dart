@@ -44,11 +44,8 @@ class PushMessage {
       payloadRoute?.toString(),
     );
     return PushMessage(
-      title:
-          message.notification?.title ??
-          (message.data['title'] as String? ?? 'EzanAI'),
-      body:
-          message.notification?.body ?? (message.data['body'] as String? ?? ''),
+      title: message.notification?.title ?? (message.data['title'] as String? ?? 'EzanAI'),
+      body: message.notification?.body ?? (message.data['body'] as String? ?? ''),
       data: message.data.map(
         (String key, Object? value) => MapEntry<String, String>(key, '$value'),
       ),
@@ -72,10 +69,9 @@ class PushMessage {
 /// bildirimleri tamamen **yerel** olarak zamanlandığı için uygulamanın
 /// çalışması bu servise bağlı değildir.
 class PushService {
-  PushService({this._messaging});
+  PushService({FirebaseMessaging? messaging}) : _messaging = messaging;
 
   FirebaseMessaging? _messaging;
-  FirebaseApp? _app;
   bool _initialized = false;
   bool _available = false;
   String? _token;
@@ -111,9 +107,9 @@ class PushService {
     }
 
     try {
-      _app = Firebase.apps.isEmpty
-          ? await Firebase.initializeApp()
-          : Firebase.app();
+      if (Firebase.apps.isEmpty) {
+        await Firebase.initializeApp();
+      }
       _messaging ??= FirebaseMessaging.instance;
 
       await FirebaseMessaging.instance.requestPermission();
@@ -123,8 +119,7 @@ class PushService {
 
       FirebaseMessaging.onMessage.listen(_handleForeground);
       FirebaseMessaging.onMessageOpenedApp.listen(_handleOpened);
-      final RemoteMessage? initial = await FirebaseMessaging.instance
-          .getInitialMessage();
+      final RemoteMessage? initial = await FirebaseMessaging.instance.getInitialMessage();
       if (initial != null) {
         // Uygulama bildirimden açıldıysa yönlendirme ana ekranda tüketilir.
         _handleOpened(initial);

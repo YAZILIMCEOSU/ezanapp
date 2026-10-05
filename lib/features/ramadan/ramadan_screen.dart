@@ -16,6 +16,7 @@ import '../../router/app_router.dart';
 import '../../state/content_providers.dart';
 import '../../state/providers.dart';
 import '../widgets/ad_banner.dart';
+import '../widgets/app_shell.dart';
 import '../widgets/state_views.dart';
 
 /// Ramazan ekranı: sahur/iftar geri sayımı, imsakiye, hatim, kaza ve günlük dua.

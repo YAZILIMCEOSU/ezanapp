@@ -11,17 +11,15 @@ void main() {
     });
 
     test('kelimelere ayırır ve kısa kelimeleri atar', () {
-      expect(TextNormalizer.tokens('Namaz kılmak ve zekât vermek'), <String>[
-        'namaz',
-        'kilmak',
-        'zekat',
-        'vermek',
-      ]);
+      expect(
+        TextNormalizer.tokens('Namaz kılmak ve zekât vermek'),
+        <String>['namaz', 'kilmak', 've', 'zekat', 'vermek'],
+      );
     });
 
     test('ekleri kaba biçimde kırpar', () {
-      expect(TextNormalizer.stem('namazların'), 'namaz');
-      expect(TextNormalizer.stem('kısa'), 'kısa');
+      expect(TextNormalizer.stem(TextNormalizer.normalize('namazların')), 'namaz');
+      expect(TextNormalizer.stem(TextNormalizer.normalize('kısa')), 'kisa');
     });
 
     test('eşleştirme aksan ve ek farklarını tolere eder', () {
@@ -55,7 +53,10 @@ void main() {
         AppTime.formatCountdown(const Duration(hours: 1, minutes: 5)),
         '1s 05dk',
       );
-      expect(AppTime.formatCountdown(const Duration(minutes: 3)), '3dk 00sn');
+      expect(
+        AppTime.formatCountdown(const Duration(minutes: 3)),
+        '3dk 00sn',
+      );
       expect(AppTime.formatCountdown(const Duration(seconds: 12)), '12sn');
     });
 

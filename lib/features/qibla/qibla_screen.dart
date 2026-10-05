@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/constants/app_constants.dart';
@@ -13,6 +14,7 @@ import '../../design/app_colors.dart';
 import '../../design/app_spacing.dart';
 import '../../router/app_router.dart';
 import '../../state/providers.dart';
+import '../widgets/app_shell.dart';
 import '../widgets/state_views.dart';
 
 /// Kıble ekranı: pusula, Kâbe yönü, mesafe ve kalibrasyon uyarıları.

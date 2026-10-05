@@ -46,7 +46,7 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
   }
 
   void _rememberPosition() {
-    final Iterable<ItemPosition> visible = _positions.itemPositions.value.values
+    final Iterable<ItemPosition> visible = _positions.itemPositions.value
         .where(
           (ItemPosition position) =>
               position.itemLeadingEdge >= 0 && position.itemLeadingEdge < 0.4,

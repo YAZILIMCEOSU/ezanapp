@@ -32,9 +32,8 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
   Future<void> _load() async {
     try {
       final PackageInfo info = await PackageInfo.fromPlatform();
-      if (mounted) {
+      if (mounted)
         setState(() => _version = '${info.version} (+${info.buildNumber})');
-      }
     } catch (error) {
       AppLog.debug('Paket bilgisi okunamadı: $error');
     }

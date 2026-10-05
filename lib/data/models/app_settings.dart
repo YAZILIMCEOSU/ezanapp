@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+
+import '../../core/utils/logger.dart';
 import 'package:flutter/material.dart';
 
 import '../../design/app_theme.dart';
@@ -453,9 +455,15 @@ class AppSettings {
   String exportJson() => jsonEncode(toPrefs());
 
   static AppSettings importJson(String raw) {
-    final Object? decoded = jsonDecode(raw);
-    if (decoded is! Map) return const AppSettings();
-    return AppSettings.fromPrefs(decoded.cast<String, Object?>());
+    try {
+      final Object? decoded = jsonDecode(raw);
+      if (decoded is! Map) return const AppSettings();
+      return AppSettings.fromPrefs(decoded.cast<String, Object?>());
+    } catch (error) {
+      // Bozuk/eksik yedek: kullanıcıya hata göstermek yerine varsayılanlar.
+      AppLog.warning('Ayarlar içe aktarılamadı: $error');
+      return const AppSettings();
+    }
   }
 
   /// Seçili yönteme kullanıcı tercihlerini uygular:

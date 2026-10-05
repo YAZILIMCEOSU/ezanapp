@@ -27,9 +27,8 @@ class _MoreScreenState extends ConsumerState<MoreScreen> {
     super.initState();
     PackageInfo.fromPlatform()
         .then((PackageInfo info) {
-          if (mounted) {
+          if (mounted)
             setState(() => _version = '${info.version}+${info.buildNumber}');
-          }
         })
         .catchError((Object _) => null);
   }

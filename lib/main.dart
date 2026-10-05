@@ -51,7 +51,7 @@ Future<void> main() async {
     final AppRuntime runtime = await AppRuntime.create();
     runApp(
       ProviderScope(
-        overrides: <Override>[runtimeProvider.overrideWithValue(runtime)],
+        overrides: [runtimeProvider.overrideWithValue(runtime)],
         child: const EzanAiApp(),
       ),
     );

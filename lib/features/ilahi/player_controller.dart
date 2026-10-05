@@ -41,8 +41,7 @@ class PlayerUiState {
   final bool offlineMode;
 
   bool get playing => status == PlaybackStatus.playing;
-  bool get buffering =>
-      status == PlaybackStatus.loading || status == PlaybackStatus.buffering;
+  bool get buffering => status == PlaybackStatus.loading;
   bool get hasNext => index + 1 < queue.length;
   bool get hasPrevious => index > 0;
   String? get currentTrackId => track?.id;
@@ -286,9 +285,8 @@ class PlayerController extends Notifier<PlayerUiState> {
   }
 
   String? _sourceFor(IlahiTrack track) {
-    if (track.localPath != null && track.localPath!.isNotEmpty) {
+    if (track.localPath != null && track.localPath!.isNotEmpty)
       return track.localPath;
-    }
     if (track.audioUrl.isEmpty) return null;
     return track.audioUrl;
   }
@@ -325,7 +323,7 @@ class PlayerBar extends ConsumerWidget {
     return Material(
       color: theme.colorScheme.surfaceContainerHighest,
       child: InkWell(
-        onTap: () => context.push(AppRoutes.player(player.track!.id)),
+        onTap: () => context.push(AppRoutes.player),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[

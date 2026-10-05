@@ -7,6 +7,7 @@ import '../../design/app_colors.dart';
 import '../../design/app_spacing.dart';
 import '../../state/content_providers.dart';
 import '../../state/providers.dart';
+import '../widgets/app_shell.dart';
 import '../widgets/state_views.dart';
 
 /// Hicri takvim ve yaklaşan mübarek günler.

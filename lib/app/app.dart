@@ -44,7 +44,7 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp> {
 
     _adhanSub = runtime.notifications.onAdhanNow.listen((Prayer prayer) {
       final AppSettings settings = ref.read(settingsProvider);
-      if (!settings.notifications.inAppAdhan) return;
+      if (!settings.notifications.inAppAdhanEnabled) return;
       _playAdhan(prayer, settings);
     });
 

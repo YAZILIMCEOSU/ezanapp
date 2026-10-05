@@ -285,7 +285,7 @@ class ZikirScreen extends ConsumerWidget {
   Future<void> _increment(WidgetRef ref, AppSettings settings) async {
     if (settings.zikirVibrationEnabled) {
       try {
-        final bool hasVibrator = await Vibration.hasVibrator() ?? false;
+        final bool hasVibrator = await Vibration.hasVibrator();
         if (hasVibrator) await Vibration.vibrate(duration: 35);
       } catch (error) {
         AppLog.debug('Titreşim kullanılamadı: $error');

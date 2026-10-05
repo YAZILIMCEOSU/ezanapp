@@ -53,10 +53,8 @@ abstract final class AppTime {
   ];
 
   /// "14:05" biçiminde 24 saatlik gösterim.
-  static String formatTime(DateTime time, {bool use24Hour = true}) {
-    if (use24Hour) return DateFormat('HH:mm').format(time);
-    return DateFormat('hh:mm a', 'en').format(time);
-  }
+  static String formatTime(DateTime time, {bool use24Hour = true}) =>
+      formatTimeOfDay(time.hour, time.minute, use24Hour: use24Hour);
 
   static String formatTimeOfDay(int hour, int minute, {bool use24Hour = true}) {
     if (use24Hour) {
