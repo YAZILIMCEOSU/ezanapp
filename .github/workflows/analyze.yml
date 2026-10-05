@@ -66,6 +66,27 @@ jobs:
         continue-on-error: true
         run: set -o pipefail; flutter build apk --debug --no-pub 2>&1 | tail -60 | tee /tmp/build.log
 
+      # Yayın derlemesi yolu: R8 küçültme, kaynak budama, ProGuard kuralları ve
+      # gerçek imzalama yapılandırması. Anahtar depoda tutulmaz; burada tek
+      # kullanımlık bir deneme anahtarı üretilip doğrulama sonrası atılır.
+      - name: flutter build appbundle (release, deneme anahtarı)
+        id: release
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          {
+            keytool -genkeypair -v -keystore "$RUNNER_TEMP/ci-release.jks" \
+              -storepass ezanai-ci -keypass ezanai-ci \
+              -alias ezanai-ci -keyalg RSA -keysize 2048 -validity 30 \
+              -dname "CN=EzanAI CI, OU=QA, O=Yazilimceosu, L=Istanbul, C=TR"
+            printf 'storePassword=ezanai-ci\nkeyPassword=ezanai-ci\nkeyAlias=ezanai-ci\nstoreFile=%s\n' \
+              "$RUNNER_TEMP/ci-release.jks" > android/key.properties
+            flutter build appbundle --release --no-pub
+          } 2>&1 | tail -80 | tee /tmp/release.log
+          status=$?
+          rm -f android/key.properties
+          exit $status
+
       - name: Raporu yaz
         if: always()
         run: |
@@ -79,8 +100,9 @@ jobs:
             echo "| format | ${{ steps.fmt.outcome }} |"
             echo "| analyze | ${{ steps.analyze.outcome }} |"
             echo "| test | ${{ steps.test.outcome }} |"
-            echo "| build | ${{ steps.build.outcome }} |"
-            for f in pubget fmt analyze test build; do
+            echo "| build (debug apk) | ${{ steps.build.outcome }} |"
+            echo "| build (release appbundle) | ${{ steps.release.outcome }} |"
+            for f in pubget fmt analyze test build release; do
               if [ -f /tmp/$f.log ]; then
                 echo
                 echo "## $f"
@@ -101,5 +123,5 @@ jobs:
           git commit -m "ci(report): doğrulama sonuçları [skip ci]" || echo "değişiklik yok"
           git push origin HEAD:${{ github.ref_name }} || true
       - name: Adımlardan biri başarısızsa işi düşür
-        if: steps.pubget.outcome == 'failure' || steps.analyze.outcome == 'failure' || steps.test.outcome == 'failure' || steps.build.outcome == 'failure'
+        if: steps.pubget.outcome == 'failure' || steps.analyze.outcome == 'failure' || steps.test.outcome == 'failure' || steps.build.outcome == 'failure' || steps.release.outcome == 'failure'
         run: exit 1
