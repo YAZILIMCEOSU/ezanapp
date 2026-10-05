@@ -1,14 +1,14 @@
-# CI raporu (2026-10-05 08:53 UTC)
+# CI raporu (2026-10-05 09:01 UTC)
 
 | adım | sonuç |
 |---|---|
 | pub get | success |
 | format | success |
-| analyze | success |
-| test | success |
+| analyze | failure |
+| test | failure |
 | test (uzak AI sözleşmesi) | failure |
-| build (debug apk) | success |
-| build (release appbundle) | success |
+| build (debug apk) | failure |
+| build (release appbundle) | failure |
 
 ## pubget
 ```
@@ -231,123 +231,150 @@ Upgrading analysis_options.yaml to exclude build and platform directories.
 Computing fixes in ezanapp...
 Nothing to fix!
 == dart format ==
-Formatted test/data/ai_remote_test.dart
-Formatted 95 files (1 changed) in 0.94 seconds.
+Formatted lib/data/ai/ai_service.dart
+Formatted 95 files (1 changed) in 0.95 seconds.
 ```
 
 ## analyze
 ```
 Analyzing ezanapp...                                            
-No issues found! (ran in 19.7s)
+
+  error • The method '_isHadithCitation' isn't defined for the type 'LocalKnowledgeSource'. Try correcting the name to the name of an existing method, or defining a method named '_isHadithCitation' • lib/data/ai/ai_service.dart:61:18 • undefined_method
+
+1 issue found. (ran in 21.1s)
 ```
 
 ## test
 ```
 00:00 +0: loading /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart
-00:00 +0: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında soru yerel bilgi tabanından kaynaklı yanıtlanır
-00:00 +1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında soru yerel bilgi tabanından kaynaklı yanıtlanır
-00:00 +2: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings JSON gidiş-dönüşü değerleri korur
-00:00 +3: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında bilinmeyen soruda dürüst "bilmiyorum" cevabı döner
-00:00 +4: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında bilinmeyen soruda dürüst "bilmiyorum" cevabı döner
-00:00 +5: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında bilinmeyen soruda dürüst "bilmiyorum" cevabı döner
-00:00 +6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings manuel düzeltmeler her yöntemde aktarılır
-00:00 +6: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında kaynaklı uzak yanıt kabul edilir
-  Skip: EZANAI_API_BASE tanımlı değil
-00:00 +6 ~1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings manuel düzeltmeler her yöntemde aktarılır
-00:00 +6 ~1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında kaynaksız uzak yanıt reddedilir, yerel tabana düşülür
-  Skip: EZANAI_API_BASE tanımlı değil
-00:00 +6 ~2: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings manuel düzeltmeler her yöntemde aktarılır
-00:00 +6 ~2: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında sunucu hatasında (500) uygulama çökmez
-  Skip: EZANAI_API_BASE tanımlı değil
-00:00 +6 ~3: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings manuel düzeltmeler her yöntemde aktarılır
-00:00 +7 ~3: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında bozuk JSON yanıtında uygulama çökmez
-  Skip: EZANAI_API_BASE tanımlı değil
-00:00 +7 ~4: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: CalculationMethod bilinmeyen kimlik Diyanet'e döner
-00:00 +7 ~4: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında bilinmeyen soruda uzaktan kaynaksız yanıt gelirse dürüst cevap
-  Skip: EZANAI_API_BASE tanımlı değil
-00:00 +7 ~5: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: CalculationMethod bilinmeyen kimlik Diyanet'e döner
-00:00 +7 ~5: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında uzak yanıtlara da öneri soruları eklenir
-  Skip: EZANAI_API_BASE tanımlı değil
-00:00 +7 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: CalculationMethod bilinmeyen kimlik Diyanet'e döner
-00:00 +8 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: CalculationMethod tüm yöntemler geçerli açılara sahip
-00:00 +9 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils Kâbe yönü Türkiye için güneydoğuyu gösterir
-00:00 +10 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils Kâbe koordinatında mesafe sıfıra yakındır
-00:00 +11 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils İstanbul-Kâbe mesafesi ~2400 km
-00:00 +12 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar (setUpAll)
-00:00 +12 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar bugünü hicri tarihe çevirir
-00:00 +13 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar gün farkı hesabı ve geri dönüş tutarlı
-00:00 +14 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar ay uzunluğu 29 veya 30 gündür
-00:00 +15 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar Ramazan başlangıcı hicri 9. ayın 1. günüdür
-00:00 +16 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar (tearDownAll)
-00:00 +16 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay sıralı veri sağlıklı kabul edilir
-00:00 +17 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay sonraki vakit ve içinde bulunulan vakit doğru bulunur
-00:00 +18 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay bozuk veri sağlıksız kabul edilir
-00:00 +19 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay JSON gidiş-dönüşü vakitleri korur
-00:00 +20 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı en az 20 kayıt ve benzersiz kimlikler
-00:00 +21 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı her kayıtta başlık, cevap, anahtar kelime ve kaynak var
-00:00 +22 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı anahtar kelimeler küçük harf ve ASCII (arama uyumu)
-00:00 +23 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı anahtar kelimeler yeterince ayırt edici
-00:00 +24 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı ilişkili kayıt kimlikleri geçerli
-00:00 +25 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı mezhep farkı notları en az birkaç kayıtta bulunur
-00:00 +26 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı kaynak künyeleri kaynak türüne ayrılabiliyor
-00:00 +27 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi namaz rekatı sorusu doğru kayda gider
-00:00 +28 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi abdest sorusu doğru kayda gider
-00:00 +29 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi zekât sorusu doğru kayda gider
-00:00 +30 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi kıble sorusu doğru kayda gider
-00:00 +31 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi Türkçe karakter ve büyük harf farkı eşleşmeyi bozmaz
-00:00 +32 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi her yerel cevap kaynak, uyarı ve mezhep bilgisi taşır
-00:00 +33 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi konu kelimesi genel kelimelere üstün gelir (vitir/teravih)
-00:00 +34 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi ayırt edici kelime puanı, genel kelimelerden yüksektir
-00:00 +35 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi harf düşmesi olan sorular da eşleşir (hatim → hatmi)
-00:00 +36 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi Kâbe yönü sorusu kıble kaydına gider
-00:00 +37 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi önerilen sorular kimlik değil, okunabilir başlık olarak döner
-00:00 +38 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi kayda uymayan soru için uydurma cevap üretilmez
-00:00 +39 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi soru boşsa eşleşme yapılmaz
-00:00 +40 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi paylaşım metni kaynakları ve mezhep notlarını içerir
-00:00 +41 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Türkçe karakterleri sadeleştirir
-00:00 +42 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer kelimelere ayırır ve kısa kelimeleri atar
-00:00 +43 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer ekleri kaba biçimde kırpar
-00:00 +44 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer eşleştirme aksan ve ek farklarını tolere eder
-00:00 +45 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Arapça harekeleri kaldırır
-00:00 +46 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer yüzde biçimi
-00:00 +47 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime geri sayım ve dijital sayaç biçimi
-00:00 +48 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime 24 saat ve 12 saat biçimi
-00:00 +49 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime gün karşılaştırması
-00:01 +50 ~6: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: (setUpAll)
-00:01 +50 ~6: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: doğrulama verisi yüklendi
-00:01 +51 ~6: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: yerel hesap, Diyanet vakitlerine ±3 dakika içinde kalır
-00:01 +52 ~6: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: vakitler gün içinde artan sırada
-00:01 +53 ~6: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: Hanefî ikindi vakti Şâfiî'den sonra olur
-00:01 +54 ~6: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: yüksek enlemlerde gece ortası kuralı vakit üretir
-00:01 +55 ~6: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: (tearDownAll)
-00:01 +55 ~6: All tests passed!
+lib/data/ai/ai_service.dart:61:18: Error: The method '_isHadithCitation' isn't defined for the type 'LocalKnowledgeSource'.
+ - 'LocalKnowledgeSource' is from 'package:ezanai/data/ai/ai_service.dart' ('lib/data/ai/ai_service.dart').
+Try correcting the name to the name of an existing method, or defining a method named '_isHadithCitation'.
+      } else if (_isHadithCitation(citation)) {
+                 ^^^^^^^^^^^^^^^^^
+00:00 +0 -1: loading /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart [E]
+  Failed to load "/home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart":
+  Compilation failed for testPath=/home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: lib/data/ai/ai_service.dart:61:18: Error: The method '_isHadithCitation' isn't defined for the type 'LocalKnowledgeSource'.
+   - 'LocalKnowledgeSource' is from 'package:ezanai/data/ai/ai_service.dart' ('lib/data/ai/ai_service.dart').
+  Try correcting the name to the name of an existing method, or defining a method named '_isHadithCitation'.
+        } else if (_isHadithCitation(citation)) {
+                   ^^^^^^^^^^^^^^^^^
+  .
+  Error: The Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 1024:11   DefaultResidentCompiler._compile.<fn>
+  dart:async/zone_root.dart 48:47                  _rootRunUnary
+  dart:async/zone.dart 816:35                      _CustomZone.runUnary
+  dart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 977:13               Future._propagateToListeners
+  dart:async/future_impl.dart 862:9                Future._propagateToListeners
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 810:35                      _CustomZone.run
+  dart:async/zone.dart 702:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 743:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+lib/data/ai/ai_service.dart:61:18: Error: The method '_isHadithCitation' isn't defined for the type 'LocalKnowledgeSource'.
+ - 'LocalKnowledgeSource' is from 'package:ezanai/data/ai/ai_service.dart' ('lib/data/ai/ai_service.dart').
+Try correcting the name to the name of an existing method, or defining a method named '_isHadithCitation'.
+      } else if (_isHadithCitation(citation)) {
+                 ^^^^^^^^^^^^^^^^^
+00:00 +0 -2: loading /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart [E]
+  Failed to load "/home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart":
+  Compilation failed for testPath=/home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: lib/data/ai/ai_service.dart:61:18: Error: The method '_isHadithCitation' isn't defined for the type 'LocalKnowledgeSource'.
+   - 'LocalKnowledgeSource' is from 'package:ezanai/data/ai/ai_service.dart' ('lib/data/ai/ai_service.dart').
+  Try correcting the name to the name of an existing method, or defining a method named '_isHadithCitation'.
+        } else if (_isHadithCitation(citation)) {
+                   ^^^^^^^^^^^^^^^^^
+  .
+00:00 +0 -2: loading /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart [E]
+  Error: The Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 1024:11   DefaultResidentCompiler._compile.<fn>
+  dart:async/zone_root.dart 48:47                  _rootRunUnary
+  dart:async/zone.dart 816:35                      _CustomZone.runUnary
+  dart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 977:13               Future._propagateToListeners
+  dart:async/future_impl.dart 862:9                Future._propagateToListeners
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 810:35                      _CustomZone.run
+  dart:async/zone.dart 702:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 743:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+00:00 +0 -2: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings varsayılan ayarlar Diyanet yöntemini kullanır
+00:00 +1 -2: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings JSON gidiş-dönüşü değerleri korur
+00:00 +2 -2: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings bozuk yedek varsayılanlara döner
+00:00 +3 -2: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings Hanefî ikindi yalnızca desteklenen yöntemlerde uygulanır
+00:00 +4 -2: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings manuel düzeltmeler her yöntemde aktarılır
+00:00 +5 -2: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: CalculationMethod bilinmeyen kimlik Diyanet'e döner
+00:00 +6 -2: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: CalculationMethod tüm yöntemler geçerli açılara sahip
+00:00 +7 -2: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils Kâbe yönü Türkiye için güneydoğuyu gösterir
+00:00 +8 -2: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils Kâbe koordinatında mesafe sıfıra yakındır
+00:00 +9 -2: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils İstanbul-Kâbe mesafesi ~2400 km
+00:00 +10 -2: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar (setUpAll)
+00:00 +10 -2: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar bugünü hicri tarihe çevirir
+00:00 +11 -2: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar gün farkı hesabı ve geri dönüş tutarlı
+00:00 +12 -2: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar ay uzunluğu 29 veya 30 gündür
+00:00 +13 -2: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar Ramazan başlangıcı hicri 9. ayın 1. günüdür
+00:00 +14 -2: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar (tearDownAll)
+00:00 +14 -2: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay sıralı veri sağlıklı kabul edilir
+00:00 +15 -2: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay sonraki vakit ve içinde bulunulan vakit doğru bulunur
+00:00 +16 -2: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay bozuk veri sağlıksız kabul edilir
+00:00 +17 -2: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay JSON gidiş-dönüşü vakitleri korur
+00:01 +18 -2: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Türkçe karakterleri sadeleştirir
+00:01 +19 -2: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer kelimelere ayırır ve kısa kelimeleri atar
+00:01 +20 -2: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer ekleri kaba biçimde kırpar
+00:01 +21 -2: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer eşleştirme aksan ve ek farklarını tolere eder
+00:01 +22 -2: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Arapça harekeleri kaldırır
+00:01 +23 -2: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer yüzde biçimi
+00:01 +24 -2: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime geri sayım ve dijital sayaç biçimi
+00:01 +25 -2: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime 24 saat ve 12 saat biçimi
+00:01 +26 -2: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime gün karşılaştırması
+00:01 +27 -2: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: (setUpAll)
+00:01 +27 -2: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: doğrulama verisi yüklendi
+00:01 +28 -2: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: yerel hesap, Diyanet vakitlerine ±3 dakika içinde kalır
+00:01 +29 -2: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: vakitler gün içinde artan sırada
+00:01 +30 -2: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: Hanefî ikindi vakti Şâfiî'den sonra olur
+00:01 +31 -2: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: yüksek enlemlerde gece ortası kuralı vakit üretir
+00:01 +32 -2: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: (tearDownAll)
+00:01 +32 -2: Some tests failed.
+
+Failing tests:
+  /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: loading /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart
+  /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: loading /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart
 ```
 
 ## ai
 ```
 00:00 +0: loading /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart
-00:00 +0: backend yapılandırılmadığında soru yerel bilgi tabanından kaynaklı yanıtlanır
-  Skip: Bu koşuda backend adresi tanımlı
-00:00 +0 ~1: backend yapılandırılmadığında bilinmeyen soruda dürüst "bilmiyorum" cevabı döner
-  Skip: Bu koşuda backend adresi tanımlı
-00:00 +0 ~2: backend yapılandırıldığında kaynaklı uzak yanıt kabul edilir
-00:00 +0 ~2 -1: backend yapılandırıldığında kaynaklı uzak yanıt kabul edilir [E]
-  Expected: AiSourceKind:<AiSourceKind.quran>
-    Actual: AiSourceKind:<AiSourceKind.other>
-  
-  package:matcher                                     expect
-  package:flutter_test/src/widget_tester.dart 473:18  expect
-  test/data/ai_remote_test.dart 93:7                  main.<fn>.<fn>
-  
-00:00 +0 ~2 -1: backend yapılandırıldığında kaynaksız uzak yanıt reddedilir, yerel tabana düşülür
-00:00 +1 ~2 -1: backend yapılandırıldığında sunucu hatasında (500) uygulama çökmez
-00:00 +2 ~2 -1: backend yapılandırıldığında bozuk JSON yanıtında uygulama çökmez
-00:00 +3 ~2 -1: backend yapılandırıldığında bilinmeyen soruda uzaktan kaynaksız yanıt gelirse dürüst cevap
-00:00 +4 ~2 -1: backend yapılandırıldığında uzak yanıtlara da öneri soruları eklenir
-00:00 +5 ~2 -1: Some tests failed.
+lib/data/ai/ai_service.dart:61:18: Error: The method '_isHadithCitation' isn't defined for the type 'LocalKnowledgeSource'.
+ - 'LocalKnowledgeSource' is from 'package:ezanai/data/ai/ai_service.dart' ('lib/data/ai/ai_service.dart').
+Try correcting the name to the name of an existing method, or defining a method named '_isHadithCitation'.
+      } else if (_isHadithCitation(citation)) {
+                 ^^^^^^^^^^^^^^^^^
+00:00 +0 -1: loading /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart [E]
+  Failed to load "/home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart":
+  Compilation failed for testPath=/home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: lib/data/ai/ai_service.dart:61:18: Error: The method '_isHadithCitation' isn't defined for the type 'LocalKnowledgeSource'.
+   - 'LocalKnowledgeSource' is from 'package:ezanai/data/ai/ai_service.dart' ('lib/data/ai/ai_service.dart').
+  Try correcting the name to the name of an existing method, or defining a method named '_isHadithCitation'.
+        } else if (_isHadithCitation(citation)) {
+                   ^^^^^^^^^^^^^^^^^
+  .
+00:00 +0 -1: Some tests failed.
 
 Failing tests:
-  /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında kaynaklı uzak yanıt kabul edilir
+  /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: loading /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart
 ```
 
 ## build
@@ -380,8 +407,15 @@ Note: Some input files use or override a deprecated API.
 Note: Recompile with -Xlint:deprecation for details.
 Note: /home/runner/.pub-cache/hosted/pub.dev/geolocator_android-5.1.1+1/android/src/main/java/com/baseflow/geolocator/location/LocationMapper.java uses or overrides a deprecated API.
 Note: Recompile with -Xlint:deprecation for details.
+lib/data/ai/ai_service.dart:61:18: Error: The method '_isHadithCitation' isn't defined for the type 'LocalKnowledgeSource'.
+ - 'LocalKnowledgeSource' is from 'package:ezanai/data/ai/ai_service.dart' ('lib/data/ai/ai_service.dart').
+Try correcting the name to the name of an existing method, or defining a method named '_isHadithCitation'.
+      } else if (_isHadithCitation(citation)) {
+                 ^^^^^^^^^^^^^^^^^
 Note: Some input files use or override a deprecated API.
 Note: Recompile with -Xlint:deprecation for details.
+Target kernel_snapshot_program failed: Exception
+
 Checking the license for package CMake 3.22.1 in /usr/local/lib/android/sdk/licenses
 License for package CMake 3.22.1 accepted.
 Preparing "Install CMake 3.22.1 v.3.22.1".
@@ -389,8 +423,22 @@ Preparing "Install CMake 3.22.1 v.3.22.1".
 Installing CMake 3.22.1 in /usr/local/lib/android/sdk/cmake/3.22.1
 "Install CMake 3.22.1 v.3.22.1" complete.
 "Install CMake 3.22.1 v.3.22.1" finished.
-Running Gradle task 'assembleDebug'...                            374.6s
-✓ Built build/app/outputs/flutter-apk/app-debug.apk
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileFlutterBuildDebug'.
+> Process 'command '/opt/hostedtoolcache/flutter/stable-3.47.6-x64/flutter/bin/flutter'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 4m 16s
+Running Gradle task 'assembleDebug'...                            257.9s
+Gradle task assembleDebug failed with exit code 1
 ```
 
 ## release
@@ -417,7 +465,6 @@ Alternatively, use the flag "--android-skip-build-dependency-validation" to bypa
 Potential fix: Your project's KGP version is typically defined in the plugins block of the `settings.gradle` file (/home/runner/work/ezanapp/ezanapp/android/settings.gradle), by a plugin with the id of org.jetbrains.kotlin.android. 
 If you don't see a plugins block, your project was likely created with an older template version, in which case it is most likely defined in the top-level build.gradle file (/home/runner/work/ezanapp/ezanapp/android/build.gradle) by the ext.kotlin_version property.
 
-Caught exception: Already watching path: /home/runner/work/ezanapp/ezanapp/android
 Note: /home/runner/.pub-cache/hosted/pub.dev/cloud_firestore-6.10.0/android/src/main/java/io/flutter/plugins/firebase/firestore/utils/PipelineStageHandlers.java uses unchecked or unsafe operations.
 Note: Recompile with -Xlint:unchecked for details.
 Note: Some input files use or override a deprecated API.
@@ -426,8 +473,27 @@ Note: /home/runner/.pub-cache/hosted/pub.dev/geolocator_android-5.1.1+1/android/
 Note: Recompile with -Xlint:deprecation for details.
 Note: Some input files use or override a deprecated API.
 Note: Recompile with -Xlint:deprecation for details.
-Expected to find fonts for (packages/cupertino_icons/CupertinoIcons, MaterialIcons), but found (MaterialIcons). This usually means you are referring to font families in an IconData class but not including them in the assets section of your pubspec.yaml, are missing the package that would include them, or are missing "uses-material-design: true".
-Font asset "MaterialIcons-Regular.otf" was tree-shaken, reducing it from 1645184 to 24916 bytes (98.5% reduction). Tree-shaking can be disabled by providing the --no-tree-shake-icons flag when building your app.
-Running Gradle task 'bundleRelease'...                            375.1s
-✓ Built build/app/outputs/bundle/release/app-release.aab (78.0MB)
+lib/data/ai/ai_service.dart:61:18: Error: The method '_isHadithCitation' isn't defined for the type 'LocalKnowledgeSource'.
+ - 'LocalKnowledgeSource' is from 'package:ezanai/data/ai/ai_service.dart' ('lib/data/ai/ai_service.dart').
+Try correcting the name to the name of an existing method, or defining a method named '_isHadithCitation'.
+      } else if (_isHadithCitation(citation)) {
+                 ^^^^^^^^^^^^^^^^^
+Target kernel_snapshot_program failed: Exception
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileFlutterBuildRelease'.
+> Process 'command '/opt/hostedtoolcache/flutter/stable-3.47.6-x64/flutter/bin/flutter'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 1m 17s
+Running Gradle task 'bundleRelease'...                             77.8s
+Gradle task bundleRelease failed with exit code 1
 ```
