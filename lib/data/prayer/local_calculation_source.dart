@@ -65,12 +65,14 @@ class LocalCalculationSource implements PrayerTimesSource {
       latitude: location.latitude,
       longitude: location.longitude,
       method: method,
-      timeZoneOffsetHours: location.city?.timeZoneOffsetHours ?? 3.0,
+      timeZoneOffsetHours: _timeZoneOffset(location, date),
       manualOffsets: method.manualOffsets,
     );
     final Map<Prayer, DateTime> mapped = <Prayer, DateTime>{
+      // Hesap motoru ondalık SAAT üretir (örn. 5.56 = 05:34); dönüştürücü
+      // ise gece yarısından itibaren DAKİKA bekler.
       for (final MapEntry<Prayer, double> entry in _asMap(times).entries)
-        entry.key: _toDateTime(date, entry.value),
+        entry.key: _toDateTime(date, entry.value * 60.0),
     };
     return PrayerTimesDay(
       date: DateTime(date.year, date.month, date.day),
@@ -89,20 +91,32 @@ class LocalCalculationSource implements PrayerTimesSource {
     Prayer.yatsi: times.yatsi,
   };
 
-  /// Dakikayı (gece yarısından itibaren) tarihe dönüştürür.
+  /// Hesapta kullanılacak UTC farkını belirler.
   ///
-  /// Önemli: imsak ve güneş vakti bir önceki güne ait olabilir; bu yüzden
-  /// negatif değerler bir sonraki güne taşınırken doğru şekilde ele alınır.
+  /// Seçili şehir varsa şehrin saat dilimi (yaz/kış saati dahil) kullanılır.
+  /// Konum GPS ile alındıysa şehir bilgisi olmadığından cihazın o günkü
+  /// saat dilimi farkı esas alınır; böylece yurt dışındaki kullanıcılar için
+  /// vakitler 3 saat kaymaz.
+  double _timeZoneOffset(UserLocation location, DateTime date) {
+    final double? cityOffset = location.city?.timeZoneOffsetHours;
+    if (cityOffset != null) return cityOffset;
+    final DateTime probe = DateTime(date.year, date.month, date.day, 12);
+    return probe.timeZoneOffset.inMinutes / 60.0;
+  }
+
+  /// Gece yarısından itibaren geçen [minutes] dakikayı tarihe dönüştürür.
+  ///
+  /// Gün sınırı aşılırsa (imsak/güneş bir önceki güne, yatsı bir sonraki güne
+  /// taşabilir) komşu güne geçilir; negatif değerler de doğru ele alınır.
   DateTime _toDateTime(DateTime date, double minutes) {
     final int totalMinutes = minutes.round();
-    final int hour = (totalMinutes ~/ 60) % 24;
-    final int minute = totalMinutes % 60;
-    final int dayShift = totalMinutes < 0 ? -1 : (totalMinutes >= 1440 ? 1 : 0);
+    final int dayShift = (totalMinutes / 1440).floor();
+    final int inDay = totalMinutes - dayShift * 1440;
     final DateTime base = DateTime(
       date.year,
       date.month,
       date.day,
     ).add(Duration(days: dayShift));
-    return DateTime(base.year, base.month, base.day, hour, minute);
+    return DateTime(base.year, base.month, base.day, inDay ~/ 60, inDay % 60);
   }
 }

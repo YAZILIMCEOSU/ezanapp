@@ -60,11 +60,36 @@ class PremiumProduct {
 ///   Play tarafında iade sürecine girer, uygulama durumu açıkça gösterir.
 class BillingService {
   BillingService({InAppPurchase? iap, http.Client? client})
-    : _iap = iap ?? InAppPurchase.instance,
+    : _iapOverride = iap,
       _client = client ?? http.Client();
 
-  final InAppPurchase _iap;
+  /// Test/önizleme ortamları için dışarıdan verilebilen mağaza istemcisi.
+  final InAppPurchase? _iapOverride;
   final http.Client _client;
+
+  InAppPurchase? _iapCache;
+  bool _iapUnavailable = false;
+
+  /// Mağaza istemcisini tembel çözer.
+  ///
+  /// `InAppPurchase.instance` platform eklentisini kaydeder; eklentinin
+  /// bulunmadığı ortamlarda (test, masaüstü önizleme, Play hizmeti olmayan
+  /// cihazlar) bu çağrı hata fırlatır. Uygulamanın düşmemesi için hata
+  /// yakalanır ve özellik "kullanılamıyor" durumuna geçer.
+  InAppPurchase? get _iap {
+    if (_iapOverride != null) return _iapOverride;
+    if (_iapUnavailable) return null;
+    try {
+      return _iapCache ??= InAppPurchase.instance;
+    } catch (error) {
+      _iapUnavailable = true;
+      _lastError =
+          'Google Play faturalandırma servisi bu cihazda kullanılamıyor. '
+          'Premium özellikler Play Store sürümünde etkinleşir.';
+      AppLog.warning('Play Billing başlatılamadı: $error');
+      return null;
+    }
+  }
 
   StreamSubscription<List<PurchaseDetails>>? _subscription;
 
@@ -104,14 +129,21 @@ class BillingService {
 
   /// Başlatır, ürünleri yükler ve satın alma akışını dinlemeye başlar.
   Future<void> initialize() async {
+    final InAppPurchase? iap = _iap;
+    if (iap == null) {
+      _storeAvailable = false;
+      _set(PremiumStatus.free);
+      return;
+    }
+
     try {
-      _storeAvailable = await _iap.isAvailable();
+      _storeAvailable = await iap.isAvailable();
     } catch (error) {
       _storeAvailable = false;
       AppLog.warning('Play Billing kullanılamıyor: $error');
     }
 
-    _subscription ??= _iap.purchaseStream.listen(
+    _subscription ??= iap.purchaseStream.listen(
       _onPurchases,
       onError: (Object error) {
         _lastError = 'Satın alma akışı hatası: $error';
@@ -131,8 +163,10 @@ class BillingService {
   }
 
   Future<void> loadProducts() async {
+    final InAppPurchase? iap = _iap;
+    if (iap == null) return;
     try {
-      final ProductDetailsResponse response = await _iap.queryProductDetails(
+      final ProductDetailsResponse response = await iap.queryProductDetails(
         productIds,
       );
       if (response.error != null) {
@@ -180,7 +214,13 @@ class BillingService {
       final PurchaseParam param = PurchaseParam(productDetails: details);
       // Abonelikler ve tek seferlik "ömür boyu" ürünü de aynı çağrıyla
       // başlatılır; Play Console'da ürün tipiyle ayrılır.
-      final bool started = await _iap.buyNonConsumable(purchaseParam: param);
+      final InAppPurchase? iap = _iap;
+      if (iap == null) {
+        _lastError =
+            'Google Play hizmetine ulaşılamıyor. Lütfen daha sonra tekrar deneyin.';
+        return false;
+      }
+      final bool started = await iap.buyNonConsumable(purchaseParam: param);
       if (!started) {
         _lastError = 'Satın alma başlatılamadı.';
         return false;
@@ -198,9 +238,10 @@ class BillingService {
 
   /// Daha önce yapılan satın alımları geri yükler.
   Future<void> restore() async {
-    if (!_storeAvailable) return;
+    final InAppPurchase? iap = _iap;
+    if (!_storeAvailable || iap == null) return;
     try {
-      await _iap.restorePurchases();
+      await iap.restorePurchases();
     } catch (error) {
       AppLog.warning('Satın alımlar geri yüklenemedi: $error');
     }
@@ -237,8 +278,10 @@ class BillingService {
 
   Future<void> _complete(PurchaseDetails purchase) async {
     if (!purchase.pendingCompletePurchase) return;
+    final InAppPurchase? iap = _iap;
+    if (iap == null) return;
     try {
-      await _iap.completePurchase(purchase);
+      await iap.completePurchase(purchase);
     } catch (error) {
       AppLog.warning('Satın alma tamamlanamadı: $error');
     }

@@ -580,14 +580,25 @@ void main() {
         expect(day.source, 'calculation');
         expect(day.isSane, isTrue);
         final DateTime imsak = day.timeOf(Prayer.imsak)!;
+        final DateTime gunes = day.timeOf(Prayer.gunes)!;
         final DateTime yatsi = day.timeOf(Prayer.yatsi)!;
         expect(imsak.hour, inInclusiveRange(4, 7));
+        expect(gunes.hour, inInclusiveRange(5, 8));
         expect(yatsi.hour, inInclusiveRange(19, 23));
         expect(
           yatsi.difference(imsak).inHours,
           greaterThan(12),
           reason: 'İmsak ile yatsı arası gerçekçi olmalı',
         );
+
+        // Regresyon kilidi: hesap motoru ondalık saat üretir; gün içi saat ve
+        // dakika değerleri gece yarısına kaymamalı (eski hata: 05:34 → 00:06).
+        expect(imsak.minute, inInclusiveRange(0, 59));
+        for (final DateTime time in day.times.values) {
+          expect(time.day, today.day, reason: 'Vakitler aynı güne ait olmalı');
+        }
+        expect(imsak.isBefore(gunes), isTrue);
+        expect(gunes.isBefore(day.timeOf(Prayer.ogle)!), isTrue);
       },
     );
   });

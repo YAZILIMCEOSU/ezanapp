@@ -334,7 +334,8 @@ class _SunData {
   final double equationOfTime;
 }
 
-/// Bir günün hesaplanmış vakitleri (yerel saat, dakika cinsinden gece yarısından).
+/// Bir günün hesaplanmış vakitleri: yerel saat, gece yarısından itibaren
+/// ondalık saat cinsinden (örn. 5.559 = 05:33:32).
 class CalculatedTimes {
   const CalculatedTimes({
     required this.imsak,
