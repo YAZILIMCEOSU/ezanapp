@@ -33,9 +33,10 @@ gh_raw "HasanEksi/Riyazus-Salihin-Veritabani-HadisKitaplari.com" \
 # --- Şehir/koordinat veri kümesi (Diyanet tabanlı)
 gh_raw "furkantektas/EzanVaktiAPI" "app/static/data/lookup.json" "$RAW_DIR/city_lookup.json"
 
-# --- Diyanet resmî vakit doğrulama örneği
-gh_raw "YAZILIMCEOSU/ezanapp" "tools/data/raw/official_diyanet_sample.json" \
-       "$RAW_DIR/official_diyanet_sample.json" || true
+# --- Diyanet resmî vakit doğrulama verisi (kalibrasyon/doğrulama için)
+# Açık API'den indirilir; depoda tutulmaz.
+python3 "$(dirname "$0")/fetch_official_times.py" --months 2 || \
+  echo "! Resmî vakit örneklemi indirilemedi (ağ erişimi gerekir)." 
 
 echo
 echo "Ham veriler hazır: $RAW_DIR"

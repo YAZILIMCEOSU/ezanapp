@@ -1,0 +1,50 @@
+# --- Flutter / Dart ---
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.iml
+.idea/
+.vscode/
+*.log
+
+# --- Android ---
+android/.gradle/
+android/captures/
+android/local.properties
+android/app/debug/
+android/app/profile/
+android/app/release/
+android/key.properties
+*.jks
+*.keystore
+android/app/google-services.json
+
+# --- iOS (gelecek) ---
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Runner/GoogleService-Info.plist
+
+# --- Sırlar / yerel yapılandırma ---
+.env
+.env.*
+*.props.local
+config/release.json
+config/staging.json
+
+# --- Ham veri kümesi (tools/data/fetch_sources.sh ile yeniden üretilir) ---
+tools/data/raw/
+
+# --- Üretilen analiz/veri çıktıları ---
+datasets/*.large.json
+coverage/
+*.lcov
+
+# --- İşletim sistemi ---
+.DS_Store
+Thumbs.db

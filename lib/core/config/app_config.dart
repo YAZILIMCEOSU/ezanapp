@@ -56,6 +56,15 @@ abstract final class AppConfig {
     defaultValue: '',
   );
 
+  /// Web adresleri (gizlilik politikası ve destek).
+  ///
+  /// Play Console'a girilen gizlilik politikası adresiyle aynı olmalıdır;
+  /// uygulama içinden de erişilebilir (Hakkında > Yasal).
+  static const String websiteUrl = 'https://ezanai.app';
+  static const String privacyPolicyUrl = 'https://ezanai.app/gizlilik';
+  static const String termsUrl = 'https://ezanai.app/kullanim-kosullari';
+  static const String supportEmail = 'destek@ezanai.app';
+
   /// Abonelik ürün kimlikleri (Google Play Console ile eşleşmeli).
   static const String premiumMonthlyId = 'ezanai_premium_monthly';
   static const String premiumYearlyId = 'ezanai_premium_yearly';

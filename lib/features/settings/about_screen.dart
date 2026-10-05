@@ -153,6 +153,20 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
           ),
           const SectionHeader(title: 'Yasal'),
           ListTile(
+            leading: const Icon(Icons.privacy_tip_outlined),
+            title: const Text('Gizlilik politikası'),
+            subtitle: const Text('Hangi veriler işleniyor, nasıl silinir?'),
+            trailing: const Icon(Icons.open_in_new_rounded, size: 18),
+            onTap: () => _openUrl(AppConfig.privacyPolicyUrl),
+          ),
+          ListTile(
+            leading: const Icon(Icons.description_outlined),
+            title: const Text('Kullanım koşulları'),
+            subtitle: const Text('Uygulamanın kullanım şartları'),
+            trailing: const Icon(Icons.open_in_new_rounded, size: 18),
+            onTap: () => _openUrl(AppConfig.termsUrl),
+          ),
+          ListTile(
             leading: const Icon(Icons.gavel_outlined),
             title: const Text('Açık kaynak lisansları'),
             subtitle: const Text('Kullanılan paketlerin lisans metinleri'),
@@ -169,25 +183,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
             leading: const Icon(Icons.mail_outline_rounded),
             title: const Text('İletişim ve destek'),
             subtitle: const Text('destek@ezanai.app'),
-            onTap: () async {
-              final Uri uri = Uri(
-                scheme: 'mailto',
-                path: 'destek@ezanai.app',
-                query: 'subject=EzanAI $_version',
-              );
-              try {
-                await launchUrl(uri);
-              } catch (error) {
-                AppLog.warning('E-posta uygulaması açılamadı: $error');
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('E-posta uygulaması bulunamadı.'),
-                    ),
-                  );
-                }
-              }
-            },
+            onTap: () => _openMail(subject: 'EzanAI $_version'),
           ),
           if (AppConfig.apiBaseUrl.isNotEmpty)
             const ListTile(
@@ -216,6 +212,42 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> _openUrl(String url) async {
+    final Uri uri = Uri.parse(url);
+    try {
+      final bool opened = await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication,
+      );
+      if (!opened && mounted) {
+        _showMessage('Bağlantı açılamadı: $url');
+      }
+    } catch (error) {
+      AppLog.warning('Bağlantı açılamadı ($url): $error');
+      if (mounted) _showMessage('Bağlantı açılamadı: $url');
+    }
+  }
+
+  Future<void> _openMail({required String subject}) async {
+    final Uri uri = Uri(
+      scheme: 'mailto',
+      path: AppConfig.supportEmail,
+      query: 'subject=$subject',
+    );
+    try {
+      await launchUrl(uri);
+    } catch (error) {
+      AppLog.warning('E-posta uygulaması açılamadı: $error');
+      if (mounted) _showMessage('E-posta uygulaması bulunamadı.');
+    }
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
     );
   }
 }
