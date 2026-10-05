@@ -90,8 +90,13 @@ void main() {
       expect(answer.mode, AiAnswerMode.remote);
       expect(answer.text, contains('kaynaklarda'));
       expect(answer.sources.length, 2);
-      expect(answer.sources.first.kind, AiSourceKind.quran);
+      expect(
+        answer.sources.first.kind,
+        AiSourceKind.quran,
+        reason: 'Düz metin künyede de tür çıkarılmalı',
+      );
       expect(answer.sources[1].kind, AiSourceKind.hadith);
+      expect(answer.sources[1].detail, 'Hadis kaynağı');
       expect(answer.madhabNotes, isNotEmpty);
       expect(answer.disclaimer, contains('kesin'));
     });

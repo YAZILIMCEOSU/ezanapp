@@ -58,12 +58,7 @@ class LocalKnowledgeSource {
             detail: 'Kur\'an-ı Kerim',
           ),
         );
-      } else if (citation.contains('Buhârî') ||
-          citation.contains('Müslim') ||
-          citation.contains('Tirmizî') ||
-          citation.contains('İbn Mâce') ||
-          citation.contains('Dârimî') ||
-          citation.contains('Taberânî')) {
+      } else if (_isHadithCitation(citation)) {
         sources.add(
           AiSource(
             kind: AiSourceKind.hadith,
@@ -353,7 +348,11 @@ class AiService {
     final List<AiSource> sources = <AiSource>[];
     for (final Object? item in raw) {
       if (item is String) {
-        sources.add(AiSource(kind: AiSourceKind.other, label: item));
+        final String label = item.trim();
+        if (label.isEmpty) continue;
+        sources.add(
+          AiSource(kind: _kindFromLabel(label), label: label),
+        );
       } else if (item is Map) {
         final Object? label =
             item['label'] ?? item['ref'] ?? item['citation'] ?? item['title'];
@@ -361,7 +360,9 @@ class AiService {
         final Object? kind = item['type'] ?? item['kind'];
         sources.add(
           AiSource(
-            kind: AiSourceKind.fromJson(kind),
+            kind: kind == null
+                ? _kindFromLabel(label.trim())
+                : AiSourceKind.fromJson(kind),
             label: label.trim(),
             detail: item['detail'] is String ? item['detail'] as String : null,
             url: item['url'] is String ? item['url'] as String : null,
@@ -371,6 +372,37 @@ class AiService {
     }
     return sources;
   }
+
+  /// Hadis kaynağı künyesi mi? (Buhârî, Müslim, sünenler, müsnedler…)
+  static bool _isHadithCitation(String citation) {
+    for (final String collection in _hadithCollections) {
+      if (citation.contains(collection)) return true;
+    }
+    return false;
+  }
+
+  /// Künye metninden kaynak türü çıkarımı.
+  ///
+  /// Backend bazen künyeleri düz metin olarak döner; bu durumda tür
+  /// kaybolmasın diye aynı sınıflandırma uygulanır.
+  static AiSourceKind _kindFromLabel(String label) {
+    if (label.startsWith('Kur')) return AiSourceKind.quran;
+    if (_isHadithCitation(label)) return AiSourceKind.hadith;
+    return AiSourceKind.other;
+  }
+
+  /// Tanınan hadis kaynakları.
+  static const List<String> _hadithCollections = <String>[
+    'Buhârî',
+    'Müslim',
+    'Tirmizî',
+    'İbn Mâce',
+    'Dârimî',
+    'Taberânî',
+    'Nesâî',
+    'Ebû Dâvûd',
+    'Ahmed b. Hanbel',
+  ];
 
   List<String> _parseStringList(Object? raw) {
     if (raw is! List) return const <String>[];
