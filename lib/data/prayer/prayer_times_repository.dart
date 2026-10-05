@@ -25,21 +25,24 @@ import 'prayer_times_source.dart';
 /// Hiçbir adım istisna fırlatıp kullanıcıyı boş ekranla bırakmaz; en kötü
 /// durumda bile yerel hesap sonuç üretir ve durum `source` alanıyla bildirilir.
 class PrayerTimesRepository {
+  /// Kaynaklar arayüz tipiyle alınır; böylece zincire yeni bir sağlayıcı
+  /// (ör. kurumsal bir ezan servisi) takmak veya testte sahtesini kullanmak
+  /// için repository'yi değiştirmek gerekmez.
   PrayerTimesRepository({
     required this._cache,
     required this._connectivity,
-    DiyanetApiSource? diyanet,
-    AladhanApiSource? aladhan,
-    LocalCalculationSource? local,
+    PrayerTimesSource? diyanet,
+    PrayerTimesSource? aladhan,
+    PrayerTimesSource? local,
   }) : _diyanet = diyanet ?? DiyanetApiSource(),
        _aladhan = aladhan ?? AladhanApiSource(),
        _local = local ?? const LocalCalculationSource();
 
   final PrayerTimesCache _cache;
   final ConnectivityService _connectivity;
-  final DiyanetApiSource _diyanet;
-  final AladhanApiSource _aladhan;
-  final LocalCalculationSource _local;
+  final PrayerTimesSource _diyanet;
+  final PrayerTimesSource _aladhan;
+  final PrayerTimesSource _local;
 
   final Map<String, PrayerTimesDay> _memory = <String, PrayerTimesDay>{};
   final Map<String, List<PrayerTimesDay>> _rangeMemory =

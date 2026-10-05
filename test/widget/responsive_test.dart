@@ -47,11 +47,6 @@ void main() {
     });
   }
 
-  /// Vakit sağlayıcısını sabitleyen override (ağa çıkılmaz).
-  List<Override> timesOverride() => <Override>[
-    prayerTimesProvider.overrideWith(() => FixedPrayerTimesNotifier(times)),
-  ];
-
   final Map<String, Widget Function()> screens = <String, Widget Function()>{
     'Ana sayfa': HomeScreen.new,
     'Vakitler': PrayersScreen.new,
@@ -75,7 +70,7 @@ void main() {
             screen.value(),
             runtime: runtime,
             size: size.value,
-            overrides: timesOverride(),
+            times: times,
           );
         });
       }
@@ -90,7 +85,7 @@ void main() {
         tester,
         const DuaScreen(),
         runtime: runtime,
-        overrides: timesOverride(),
+        times: times,
       );
 
       expect(find.text('Dualar'), findsWidgets);
@@ -106,7 +101,7 @@ void main() {
         tester,
         const HadithScreen(),
         runtime: runtime,
-        overrides: timesOverride(),
+        times: times,
       );
 
       expect(find.text('Hadis'), findsWidgets);
@@ -120,7 +115,7 @@ void main() {
         tester,
         const ZikirScreen(),
         runtime: runtime,
-        overrides: timesOverride(),
+        times: times,
       );
 
       expect(find.text('Tesbih'), findsWidgets);
@@ -131,7 +126,7 @@ void main() {
         tester,
         const QuranScreen(),
         runtime: runtime,
-        overrides: timesOverride(),
+        times: times,
       );
 
       expect(find.textContaining('Kur'), findsWidgets);
@@ -146,7 +141,7 @@ void main() {
         const MoreScreen(),
         runtime: runtime,
         size: TestScreens.tablet,
-        overrides: timesOverride(),
+        times: times,
       );
 
       expect(find.text('Dualar'), findsWidgets);
@@ -166,7 +161,7 @@ void main() {
           body: ErrorView(error: AppException.network(), onRetry: () {}),
         ),
         runtime: runtime,
-        overrides: timesOverride(),
+        times: times,
       );
 
       expect(find.text('Bir şeyler ters gitti'), findsOneWidget);
@@ -189,7 +184,7 @@ void main() {
           ),
         ),
         runtime: runtime,
-        overrides: timesOverride(),
+        times: times,
       );
 
       expect(find.textContaining('Konum servisleri kapalı'), findsOneWidget);
@@ -203,16 +198,11 @@ void main() {
         tester,
         const HomeScreen(),
         runtime: runtime,
-        overrides: <Override>[
-          prayerTimesProvider.overrideWith(
-            () => FixedPrayerTimesNotifier(
-              fixedTimes(
-                DateTime.now(),
-                warning: 'Resmî vakit servisine ulaşılamadı; vakitler cihazda hesaplandı.',
-              ),
-            ),
-          ),
-        ],
+        times: fixedTimes(
+          DateTime.now(),
+          warning:
+              'Resmî vakit servisine ulaşılamadı; vakitler cihazda hesaplandı.',
+        ),
       );
 
       expect(find.textContaining('cihazda hesaplandı'), findsOneWidget);

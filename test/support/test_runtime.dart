@@ -108,7 +108,7 @@ AppSettings testSettings() => const AppSettings().copyWith(
 
 /// Gerçek repository'lerle bir [AppRuntime] kurar.
 Future<AppRuntime> createTestRuntime({
-  Map<String, Object?> preferences = const <String, Object?>{},
+  Map<String, Object> preferences = const <String, Object>{},
   String? databasePath,
 }) async {
   final AppDatabase database = await AppDatabase.open(
@@ -126,6 +126,9 @@ Future<AppRuntime> createTestRuntime({
     connectivity: connectivity,
   );
   final HijriCalendar hijri = await HijriCalendar.load(bundle: assets);
+  final QuranRepository quran = QuranRepository(database, bundle: assets);
+  final HadithRepository hadith = HadithRepository(database, bundle: assets);
+  final ZikirRepository zikir = ZikirRepository(database, bundle: assets);
 
   return AppRuntime(
     database: database,
@@ -139,9 +142,9 @@ Future<AppRuntime> createTestRuntime({
     hijri: hijri,
     prayerTimes: prayerTimes,
     cities: CityRepository(),
-    quran: QuranRepository(database, bundle: assets),
-    hadith: HadithRepository(database, bundle: assets),
-    zikir: ZikirRepository(database, bundle: assets),
+    quran: quran,
+    hadith: hadith,
+    zikir: zikir,
     ilahi: IlahiRepository(database),
     ramadan: RamadanRepository(database, prayerTimes, hijri),
     dailyContent: DailyContentRepository(database, quran, hadith, zikir),
@@ -204,7 +207,7 @@ Future<List<Object>> renderScreen(
   Widget screen, {
   required AppRuntime runtime,
   Size size = TestScreens.phone,
-  List<Override> overrides = const <Override>[],
+  TodayTimes? times,
   Duration settle = const Duration(milliseconds: 400),
   bool strict = true,
 }) async {
@@ -219,15 +222,24 @@ Future<List<Object>> renderScreen(
   tester.view.devicePixelRatio = 1.0;
   addTearDown(tester.view.reset);
 
-  await tester.pumpWidget(
-    ProviderScope(
-      overrides: <Override>[
-        runtimeProvider.overrideWithValue(runtime),
-        ...overrides,
-      ],
-      child: MaterialApp(home: screen),
-    ),
-  );
+  final Widget content = MaterialApp(home: screen);
+  // `times` verilirse vakit sağlayıcısı sabitlenir: ağa çıkılmaz ve geri
+  // sayım deterministik olur.
+  final Widget app = times == null
+      ? ProviderScope(
+          overrides: [runtimeProvider.overrideWithValue(runtime)],
+          child: content,
+        )
+      : ProviderScope(
+          overrides: [
+            runtimeProvider.overrideWithValue(runtime),
+            prayerTimesProvider.overrideWith(
+              () => FixedPrayerTimesNotifier(times),
+            ),
+          ],
+          child: content,
+        );
+  await tester.pumpWidget(app);
   await tester.pump(settle);
 
   // Ekranı kapat: saniyelik saat gibi abonelikler ve zamanlayıcılar serbest
