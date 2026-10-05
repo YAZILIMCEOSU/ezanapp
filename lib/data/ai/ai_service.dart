@@ -203,8 +203,7 @@ class _TermWeights {
   double idf(String term) {
     final int frequency = _frequencies[term] ?? 1;
     final double raw =
-        log((_documents + 1) / (frequency + 1)) /
-        log((_documents + 1) / 2);
+        log((_documents + 1) / (frequency + 1)) / log((_documents + 1) / 2);
     return raw.clamp(_minimumWeight, _maximumWeight).toDouble();
   }
 

@@ -15,7 +15,11 @@ void main() {
       final List<String> ids = KnowledgeBase.entries
           .map((KnowledgeEntry entry) => entry.id)
           .toList();
-      expect(ids.toSet().length, ids.length, reason: 'Kimlikler benzersiz olmalı');
+      expect(
+        ids.toSet().length,
+        ids.length,
+        reason: 'Kimlikler benzersiz olmalı',
+      );
     });
 
     test('her kayıtta başlık, cevap, anahtar kelime ve kaynak var', () {
@@ -36,7 +40,9 @@ void main() {
       final List<String> offenders = <String>[];
       for (final KnowledgeEntry entry in KnowledgeBase.entries) {
         for (final String keyword in entry.keywords) {
-          final bool asciiOnly = keyword.codeUnits.every((int code) => code < 128);
+          final bool asciiOnly = keyword.codeUnits.every(
+            (int code) => code < 128,
+          );
           if (!asciiOnly || keyword != keyword.toLowerCase()) {
             offenders.add('${entry.id}: "$keyword"');
           }
@@ -45,14 +51,19 @@ void main() {
       expect(
         offenders,
         isEmpty,
-        reason: 'Anahtar kelimeler normalleştirilmiş olmalı:\n${offenders.join('\n')}',
+        reason:
+            'Anahtar kelimeler normalleştirilmiş olmalı:\n${offenders.join('\n')}',
       );
     });
 
     test('anahtar kelimeler yeterince ayırt edici', () {
       for (final KnowledgeEntry entry in KnowledgeBase.entries) {
         for (final String keyword in entry.keywords) {
-          expect(keyword.trim().length, greaterThanOrEqualTo(3), reason: entry.id);
+          expect(
+            keyword.trim().length,
+            greaterThanOrEqualTo(3),
+            reason: entry.id,
+          );
         }
       }
     });
