@@ -53,7 +53,6 @@ class _DuaScreenState extends ConsumerState<DuaScreen> {
     final AsyncValue<DuaCatalog> catalog = ref.watch(duaCatalogProvider);
     final Set<String> favorites =
         ref.watch(duaFavoriteKeysProvider).value ?? const <String>{};
-    final ThemeData theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBarHeader(

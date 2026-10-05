@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:ezanai/core/services/notification_service.dart';
 import 'package:ezanai/router/app_router.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -120,6 +122,31 @@ void main() {
           NotificationRoute.fromPayload('bilinmeyen-deger'),
         ),
       );
+    });
+  });
+
+  group('kaynak taraması', () {
+    // Yeni bir yol sabiti eklenip GoRoute yazılması unutulursa bu test yakalar:
+    // sabitler kaynak dosyadan okunur ve her biri gerçekten çözümlenmek
+    // zorundadır.
+    test('app_router.dart içindeki her yol sabiti çözümlenir', () {
+      final String source = File('lib/router/app_router.dart').readAsStringSync();
+      final RegExp pattern = RegExp(
+        r"static const String \w+ = '(/[^']*)';",
+      );
+      final List<String> locations = pattern
+          .allMatches(source)
+          .map((RegExpMatch match) => match.group(1)!)
+          .toList();
+
+      expect(
+        locations.length,
+        greaterThanOrEqualTo(20),
+        reason: 'Yol sabitleri okunamadı (kaynak ayrıştırma bozulmuş olabilir)',
+      );
+      for (final String location in locations) {
+        expectResolves(location);
+      }
     });
   });
 

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
+import '../../router/app_router.dart';
 import '../config/app_config.dart';
 import '../utils/logger.dart';
 import 'notification_service.dart';
@@ -52,15 +53,9 @@ class PushMessage {
       data: message.data.map(
         (String key, Object? value) => MapEntry<String, String>(key, '$value'),
       ),
-      route: switch (route) {
-        NotificationRoute.home => '/home',
-        NotificationRoute.times => '/prayers',
-        NotificationRoute.quran => '/quran',
-        NotificationRoute.ramadan => '/ramazan',
-        NotificationRoute.zikir => '/zikir',
-        NotificationRoute.hadith => '/hadis',
-        NotificationRoute.adhan => '/prayers',
-      },
+      // Yol eşlemesi tek yerde tutulur (AppRoutes.fromNotification); böylece
+      // yeni bir bildirim hedefi eklendiğinde buranın güncellenmesi unutulamaz.
+      route: AppRoutes.fromNotification(route),
     );
   }
 }
