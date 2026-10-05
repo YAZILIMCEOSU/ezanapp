@@ -50,6 +50,8 @@ void main() {
     });
   }, skip: configured ? 'Bu koşuda backend adresi tanımlı' : false);
 
+  // Not: uzak yola giden sorular, yerel bilgi tabanında karşılığı olmayan
+  // sorulardır; yerel eşleşme varsa AiService zaten çevrimdışı yanıt verir.
   group('backend yapılandırıldığında', () {
     test('kaynaklı uzak yanıt kabul edilir', () async {
       final AiService service = serviceWith(
@@ -62,12 +64,14 @@ void main() {
           expect(body['question'], isNotEmpty);
           return http.Response(
             jsonEncode(<String, Object?>{
-              'answer': 'Zekât, Tevbe 9/60\'ta sayılan sınıflara verilir.',
+              'answer': 'Bu konunun ayrıntısı kaynaklarda yer alır.',
               'sources': <Object>[
-                'Kur\'an-ı Kerim, Tevbe 9/60',
-                <String, Object?>{'label': 'Buhârî, Zekât 1', 'kind': 'hadith'},
+                'Kur\'an-ı Kerim, Târık 86/1-17',
+                <String, Object?>{'label': 'Buhârî, Tefsîr 1', 'kind': 'hadith'},
               ],
-              'madhab_notes': <String>['Hanefî: nisab 80,18 gr altın.'],
+              'madhab_notes': <String>[
+                'Görüş ayrılığı olan noktalar mezhebe göre belirtilir.',
+              ],
             }),
             200,
             headers: <String, String>{'content-type': 'application/json'},
@@ -75,9 +79,13 @@ void main() {
         }),
       );
 
-      final AiAnswer answer = await service.ask('Zekât kimlere verilir?');
+      // Yerel bilgi tabanında karşılığı olmayan bir soru seçilir; aksi hâlde
+      // AiService haklı olarak çevrimdışı yanıt döndürür ve uzak yol denenmez.
+      final AiAnswer answer = await service.ask(
+        'Tarık suresinin fazileti nedir?',
+      );
       expect(answer.mode, AiAnswerMode.remote);
-      expect(answer.text, contains('Tevbe'));
+      expect(answer.text, contains('kaynaklarda'));
       expect(answer.sources.length, 2);
       expect(answer.sources.first.kind, AiSourceKind.quran);
       expect(answer.sources[1].kind, AiSourceKind.hadith);
@@ -161,7 +169,9 @@ void main() {
         ),
       );
 
-      final AiAnswer answer = await service.ask('Dua nasıl kabul olur?');
+      final AiAnswer answer = await service.ask(
+        'Şeytan taşlama kaç taşla yapılır?',
+      );
       expect(answer.mode, AiAnswerMode.remote);
       expect(answer.relatedQuestions, isNotEmpty);
       expect(
