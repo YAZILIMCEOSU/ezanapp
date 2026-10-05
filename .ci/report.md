@@ -1,15 +1,146 @@
-# CI raporu (2026-10-05 07:28 UTC)
+# CI raporu (2026-10-05 07:35 UTC)
 
 | adım | sonuç |
 |---|---|
 | pub get | success |
 | format | success |
-| analyze | failure |
+| analyze | success |
 | test | failure |
 | build | failure |
 
 ## pubget
 ```
+Resolving dependencies...
+Downloading packages...
++ _flutterfire_internals 1.3.77
++ app_links 7.2.1
++ app_links_linux 1.0.3
++ app_links_platform_interface 2.0.4
++ app_links_web 1.0.4
++ args 2.7.0
++ async 2.13.1
++ audio_service 0.18.19
++ audio_service_platform_interface 0.1.3
++ audio_service_web 0.1.4
++ audio_session 0.2.4
++ boolean_selector 2.1.2
++ characters 1.4.1
++ clock 1.1.3
++ cloud_firestore 6.10.0
++ cloud_firestore_platform_interface 8.0.7
++ cloud_firestore_web 5.7.3
++ code_assets 2.1.0
++ collection 1.19.1
++ connectivity_plus 7.3.1 (7.3.2 available)
++ connectivity_plus_platform_interface 2.1.0
++ convert 3.1.2
++ cross_file 0.3.5+5 (0.4.0 available)
++ crypto 3.0.7
++ cupertino_ui 1.1.1
++ dart_jsonwebtoken 3.4.1
++ dbus 0.7.15 (0.8.0 available)
++ device_info_plus 13.3.0
++ device_info_plus_platform_interface 8.1.0
++ equatable 2.1.0 (3.0.0 available)
++ fake_async 1.3.3
++ ffi 2.2.0
++ ffi_leak_tracker 0.1.2
++ file 7.0.1
++ file_selector 1.1.0
++ file_selector_android 0.5.2+11
++ file_selector_ios 0.5.3+6
++ file_selector_linux 0.9.4+1
++ file_selector_macos 0.9.5+1
++ file_selector_platform_interface 2.7.0
++ file_selector_web 0.9.5
++ file_selector_windows 0.9.3+6
++ firebase_analytics 12.6.0
++ firebase_analytics_platform_interface 6.0.7
++ firebase_analytics_web 0.6.1+13
++ firebase_auth 6.7.0
++ firebase_auth_platform_interface 9.1.0
++ firebase_auth_web 6.3.0
++ firebase_core 4.15.0
++ firebase_core_platform_interface 8.1.1
++ firebase_core_web 3.12.0
++ firebase_crashlytics 5.4.0
++ firebase_crashlytics_platform_interface 3.9.0
++ firebase_messaging 16.7.0
++ firebase_messaging_platform_interface 4.10.0
++ firebase_messaging_web 4.2.5
++ firebase_remote_config 6.7.0
++ firebase_remote_config_platform_interface 3.0.7
++ firebase_remote_config_web 1.10.14
++ fixnum 1.1.1
++ fl_chart 1.2.0
++ flutter 0.0.0 from sdk flutter
++ flutter_cache_manager 3.4.5
++ flutter_lints 6.0.0
++ flutter_local_notifications 22.3.1
++ flutter_local_notifications_linux 8.0.1
++ flutter_local_notifications_platform_interface 12.2.0
++ flutter_local_notifications_web 1.0.0
++ flutter_local_notifications_windows 3.1.1
++ flutter_localizations 0.0.0 from sdk flutter
++ flutter_riverpod 3.4.3
++ flutter_secure_storage 11.2.0
++ flutter_secure_storage_darwin 0.4.3
++ flutter_secure_storage_linux 3.0.3
++ flutter_secure_storage_platform_interface 2.1.1
++ flutter_secure_storage_web 2.1.1
++ flutter_secure_storage_windows 4.2.2
++ flutter_test 0.0.0 from sdk flutter
++ flutter_web_plugins 0.0.0 from sdk flutter
++ functions_client 2.7.1
++ geoclue 0.1.1
++ geolocator 14.1.1
++ geolocator_android 5.1.1+1
++ geolocator_apple 2.3.14
++ geolocator_linux 0.2.6
++ geolocator_platform_interface 4.4.0
++ geolocator_web 4.1.4
++ geolocator_windows 0.2.5
++ glob 2.2.0
++ go_router 18.0.2
++ google_mobile_ads 9.1.0
++ gotrue 2.27.2
++ gsettings 0.2.8 (0.2.9 available)
++ gtk 2.2.0
++ hooks 2.2.0
++ http 1.6.0
++ http_parser 4.1.2
++ in_app_purchase 3.3.1
++ in_app_purchase_android 0.5.3
++ in_app_purchase_platform_interface 1.4.1
++ in_app_purchase_storekit 0.4.13
++ intl 0.20.3
++ jni 1.1.0
++ jni_flutter 1.0.3
++ jni_util 1.0.0
++ js 0.7.2
++ json_annotation 4.12.0
++ just_audio 0.10.6
++ just_audio_background 0.0.1-beta.17
++ just_audio_platform_interface 4.6.0
++ just_audio_web 0.4.16
++ leak_tracker 11.0.2
++ leak_tracker_flutter_testing 3.0.10
++ leak_tracker_testing 3.0.2
++ lints 6.1.0
++ listen 1.0.1
++ logging 1.3.0
++ matcher 0.12.20
++ material_color_utilities 0.13.0 (0.13.1 available)
++ material_ui 1.5.0
++ meta 1.19.0
++ mime 2.1.0
++ native_toolchain_c 0.19.5
++ nm 0.5.0 (0.6.0 available)
++ objective_c 9.6.2
++ package_config 3.0.0
++ package_info_plus 10.2.2
++ package_info_plus_platform_interface 4.1.0
++ passkeys_platform_interface 2.10.0
 + path 1.9.1
 + path_provider 2.1.6
 + path_provider_android 2.3.1
@@ -96,137 +227,70 @@ Upgrading analysis_options.yaml to exclude build and platform directories.
 ```
 == dart fix --apply ==
 Computing fixes in ezanapp...
-Applying fixes...
-
-lib/core/services/push_service.dart
-  prefer_initializing_formals - 1 fix
-
-lib/core/utils/app_time.dart
-  unused_import - 1 fix
-
-lib/data/models/app_settings.dart
-  directives_ordering - 1 fix
-
-lib/features/ai/ai_screen.dart
-  curly_braces_in_flow_control_structures - 1 fix
-
-lib/features/ilahi/player_controller.dart
-  curly_braces_in_flow_control_structures - 1 fix
-
-lib/features/more/more_screen.dart
-  curly_braces_in_flow_control_structures - 1 fix
-
-lib/features/settings/about_screen.dart
-  curly_braces_in_flow_control_structures - 1 fix
-
-test/prayer_calculation_test.dart
-  prefer_const_declarations - 1 fix
-  unnecessary_brace_in_string_interps - 1 fix
-
-9 fixes made in 8 files.
+Nothing to fix!
 == dart format ==
-Formatted lib/core/services/push_service.dart
-Formatted lib/core/services/sync_service.dart
-Formatted lib/core/utils/app_time.dart
-Formatted lib/features/quran/surah_screen.dart
-Formatted lib/features/settings/backup_screen.dart
-Formatted test/core/text_normalizer_test.dart
 Formatted test/data/models_test.dart
-Formatted 93 files (7 changed) in 0.53 seconds.
+Formatted test/prayer_calculation_test.dart
+Formatted 93 files (2 changed) in 0.71 seconds.
 ```
 
 ## analyze
 ```
 Analyzing ezanapp...                                            
-
-   info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check. Guard a 'State.context' use with a 'mounted' check on the State, and other BuildContext use with a 'mounted' check on the BuildContext • lib/features/settings/notification_settings_screen.dart:345:36 • use_build_context_synchronously
-  error • A value of type 'dynamic' can't be assigned to a variable of type 'Object'. Try changing the type of the variable, or casting the right-hand type to 'Object' • test/prayer_calculation_test.dart:22:28 • invalid_assignment
-
-2 issues found. (ran in 14.6s)
+No issues found! (ran in 16.7s)
 ```
 
 ## test
 ```
-  package:flutter/src/services/asset_bundle.dart 328:54  PlatformAssetBundle.load
-  package:flutter/src/services/asset_bundle.dart 92:33   AssetBundle.loadString
-  package:flutter/src/services/asset_bundle.dart 193:56  CachingAssetBundle.loadString.<fn>
-  dart:_compact_hash                                     _LinkedHashMapMixin.putIfAbsent
-  package:flutter/src/services/asset_bundle.dart 193:27  CachingAssetBundle.loadString
-  package:ezanai/data/hijri/hijri_calendar.dart 33:37    HijriCalendar.load
-  test/data/models_test.dart 116:38                      main.<fn>.<fn>
-  
-00:00 +9 -2: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Türkçe karakterleri sadeleştirir
-00:00 +10 -2: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Türkçe karakterleri sadeleştirir
-00:00 +11 -2: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay sonraki vakit ve içinde bulunulan vakit doğru bulunur
-00:00 +12 -2: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer kelimelere ayırır ve kısa kelimeleri atar
-00:00 +13 -2: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer kelimelere ayırır ve kısa kelimeleri atar
-00:00 +14 -2: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay JSON gidiş-dönüşü vakitleri korur
-00:00 +15 -2: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay JSON gidiş-dönüşü vakitleri korur
-00:00 +16 -2: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer eşleştirme aksan ve ek farklarını tolere eder
-00:00 +17 -2: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Arapça harekeleri kaldırır
-00:00 +18 -2: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer yüzde biçimi
-00:00 +19 -2: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime geri sayım ve dijital sayaç biçimi
-00:00 +20 -2: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime 24 saat ve 12 saat biçimi
-00:00 +21 -2: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime gün karşılaştırması
-00:00 +22 -2: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: (setUpAll)
-00:00 +22 -2: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: doğrulama verisi yüklendi
-00:00 +23 -2: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: yerel hesap, Diyanet vakitlerine ±4 dakika içinde kalır
-00:00 +23 -3: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: yerel hesap, Diyanet vakitlerine ±4 dakika içinde kalır [E]
-  Expected: empty
-    Actual: [
-              'Adana 2022-01-15 imsak: hesap 06:20, Diyanet 06:20 (21240.1 dk)',
-              'Adana 2022-01-15 gunes: hesap 07:36, Diyanet 07:44 (24787.7 dk)',
-              'Adana 2022-01-15 ogle: hesap 12:53, Diyanet 12:53 (42479.5 dk)',
-              'Adana 2022-01-15 ikindi: hesap 15:31, Diyanet 15:30 (53099.3 dk)',
-              'Adana 2022-01-15 aksam: hesap 18:02, Diyanet 17:52 (60170.3 dk)',
-              'Adana 2022-01-15 yatsi: hesap 19:13, Diyanet 19:11 (67258.1 dk)',
-              'Adana 2022-03-21 imsak: hesap 05:14, Diyanet 05:15 (17700.7 dk)',
-              'Adana 2022-03-21 gunes: hesap 06:26, Diyanet 06:34 (21247.8 dk)',
-              'Adana 2022-03-21 ogle: hesap 12:51, Diyanet 12:51 (42479.7 dk)',
-              'Adana 2022-03-21 ikindi: hesap 16:18, Diyanet 16:17 (56639.5 dk)',
-              'Adana 2022-03-21 aksam: hesap 19:07, Diyanet 18:58 (63710.6 dk)',
-              'Adana 2022-03-21 yatsi: hesap 20:14, Diyanet 20:12 (70797.9 dk)',
-              'Adana 2022-06-21 imsak: hesap 03:27, Diyanet 03:27 (10619.6 dk)',
-              'Adana 2022-06-21 gunes: hesap 05:05, Diyanet 05:12 (17707.0 dk)',
-              'Adana 2022-06-21 ogle: hesap 12:46, Diyanet 12:45 (42479.1 dk)',
-              'Adana 2022-06-21 ikindi: hesap 16:37, Diyanet 16:37 (56640.1 dk)',
-              'Adana 2022-06-21 aksam: hesap 20:18, Diyanet 20:09 (70791.1 dk)',
-              'Adana 2022-06-21 yatsi: hesap 21:48, Diyanet 21:46 (74338.3 dk)',
-              'Adana 2022-09-23 imsak: hesap 05:01, Diyanet 05:00 (17699.0 dk)',
-              'Adana 2022-09-23 gunes: hesap 06:13, Diyanet 06:20 (21247.2 dk)',
-              'Adana 2022-09-23 ogle: hesap 12:37, Diyanet 12:36 (42479.5 dk)',
-              'Adana 2022-09-23 ikindi: hesap 16:02, Diyanet 16:02 (56640.1 dk)',
-              'Adana 2022-09-23 aksam: hesap 18:51, Diyanet 18:42 (63710.7 dk)',
-              'Adana 2022-09-23 yatsi: hesap 19:58, Diyanet 19:57 (67259.1 dk)',
-              ...
-            ]
-  Adana 2022-01-15 imsak: hesap 06:20, Diyanet 06:20 (21240.1 dk)
-  Adana 2022-01-15 gunes: hesap 07:36, Diyanet 07:44 (24787.7 dk)
-  Adana 2022-01-15 ogle: hesap 12:53, Diyanet 12:53 (42479.5 dk)
-  Adana 2022-01-15 ikindi: hesap 15:31, Diyanet 15:30 (53099.3 dk)
-  Adana 2022-01-15 aksam: hesap 18:02, Diyanet 17:52 (60170.3 dk)
-  Adana 2022-01-15 yatsi: hesap 19:13, Diyanet 19:11 (67258.1 dk)
-  Adana 2022-03-21 imsak: hesap 05:14, Diyanet 05:15 (17700.7 dk)
-  Adana 2022-03-21 gunes: hesap 06:26, Diyanet 06:34 (21247.8 dk)
-  Adana 2022-03-21 ogle: hesap 12:51, Diyanet 12:51 (42479.7 dk)
-  Adana 2022-03-21 ikindi: hesap 16:18, Diyanet 16:17 (56639.5 dk)
-  Adana 2022-03-21 aksam: hesap 19:07, Diyanet 18:58 (63710.6 dk)
-  Adana 2022-03-21 yatsi: hesap 20:14, Diyanet 20:12 (70797.9 dk)
+00:00 +0: loading /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart
+00:00 +0: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings varsayılan ayarlar Diyanet yöntemini kullanır
+00:00 +1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings JSON gidiş-dönüşü değerleri korur
+00:00 +2: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings bozuk yedek varsayılanlara döner
+00:00 +3: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings Hanefî ikindi yalnızca desteklenen yöntemlerde uygulanır
+00:00 +4: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings manuel düzeltmeler her yöntemde aktarılır
+00:00 +5: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: CalculationMethod bilinmeyen kimlik Diyanet'e döner
+00:00 +6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: CalculationMethod tüm yöntemler geçerli açılara sahip
+00:00 +6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: CalculationMethod tüm yöntemler geçerli açılara sahip [E]
+  Expected: be in range from 12 (inclusive) to 20 (inclusive)
+    Actual: <0.0>
   
   package:matcher                                     expect
   package:flutter_test/src/widget_tester.dart 473:18  expect
-  test/prayer_calculation_test.dart 94:5              main.<fn>
+  test/data/models_test.dart 89:9                     main.<fn>.<fn>
   
-00:00 +23 -3: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: vakitler gün içinde artan sırada
-00:00 +24 -3: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: Hanefî ikindi vakti Şâfiî'den sonra olur
-00:00 +25 -3: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: yüksek enlemlerde gece ortası kuralı vakit üretir
-00:00 +26 -3: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: (tearDownAll)
-00:00 +26 -3: Some tests failed.
+00:00 +6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils Kâbe yönü Türkiye için güneydoğuyu gösterir
+00:00 +7 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils Kâbe koordinatında mesafe sıfıra yakındır
+00:00 +8 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils İstanbul-Kâbe mesafesi ~2400 km
+00:00 +9 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar (setUpAll)
+00:00 +9 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar bugünü hicri tarihe çevirir
+00:00 +10 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar gün farkı hesabı ve geri dönüş tutarlı
+00:00 +11 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar ay uzunluğu 29 veya 30 gündür
+00:00 +12 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar Ramazan başlangıcı hicri 9. ayın 1. günüdür
+00:00 +13 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar (tearDownAll)
+00:00 +13 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay sıralı veri sağlıklı kabul edilir
+00:00 +14 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay sonraki vakit ve içinde bulunulan vakit doğru bulunur
+00:00 +15 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay bozuk veri sağlıksız kabul edilir
+00:00 +16 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay JSON gidiş-dönüşü vakitleri korur
+00:00 +17 -1: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Türkçe karakterleri sadeleştirir
+00:00 +18 -1: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer kelimelere ayırır ve kısa kelimeleri atar
+00:00 +19 -1: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer ekleri kaba biçimde kırpar
+00:00 +20 -1: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer eşleştirme aksan ve ek farklarını tolere eder
+00:00 +21 -1: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Arapça harekeleri kaldırır
+00:00 +22 -1: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer yüzde biçimi
+00:00 +23 -1: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime geri sayım ve dijital sayaç biçimi
+00:00 +24 -1: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime 24 saat ve 12 saat biçimi
+00:00 +25 -1: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime gün karşılaştırması
+00:00 +26 -1: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: (setUpAll)
+00:00 +26 -1: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: doğrulama verisi yüklendi
+00:00 +27 -1: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: yerel hesap, Diyanet vakitlerine ±3 dakika içinde kalır
+00:00 +28 -1: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: vakitler gün içinde artan sırada
+00:00 +29 -1: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: Hanefî ikindi vakti Şâfiî'den sonra olur
+00:00 +30 -1: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: yüksek enlemlerde gece ortası kuralı vakit üretir
+00:00 +31 -1: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: (tearDownAll)
+00:00 +31 -1: Some tests failed.
 
 Failing tests:
   /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: CalculationMethod tüm yöntemler geçerli açılara sahip
-  /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar (setUpAll)
-  /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: yerel hesap, Diyanet vakitlerine ±4 dakika içinde kalır
 ```
 
 ## build
@@ -287,7 +351,7 @@ Execution failed for task ':app:processDebugMainManifest'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 3m 27s
-Running Gradle task 'assembleDebug'...                            207.9s
+BUILD FAILED in 4m
+Running Gradle task 'assembleDebug'...                            240.7s
 Gradle task assembleDebug failed with exit code 1
 ```
