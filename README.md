@@ -129,6 +129,15 @@ flutter build apk --debug
   vakit modeli.
 - `test/core/text_normalizer_test.dart` — Türkçe/arapça metin normalizasyonu ve
   zaman biçimlendirme.
+- `test/data/knowledge_base_test.dart` — AI bilgi tabanı: kaynak zorunluluğu,
+  anahtar kelime hijyeni, eşleştirme doğruluğu ve "bilgi tabanında yok"
+  durumunda uydurmama davranışı.
+
+Flutter kurulu olmayan ortamlarda hızlı ön denetim:
+
+```bash
+python3 tools/lint/check_strings.py lib test   # dize değişmezlerinde sözdizimi hatası arar
+```
 
 CI (`.github/workflows/analyze.yml`) her push'ta `dart fix` + `dart format`,
 `flutter analyze`, `flutter test` ve `flutter build apk --debug` çalıştırır; sonucu

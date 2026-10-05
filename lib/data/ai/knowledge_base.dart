@@ -501,7 +501,7 @@ abstract final class KnowledgeBase {
           'Abdestli olmak, saygıyla ve anlamını düşünerek okumak âdâbtır.',
       details: <String>[
         'Hatim: Kur\'an’ın tamamını okumak; Ramazan’da geleneksel olarak tamamlanır.',
-        'Meali okumak konuyu anlamaya yardımcıdır; ancak meal, Kur\'an'ın kendisi yerine geçmez.',
+        'Meali okumak konuyu anlamaya yardımcıdır; ancak meal, Kur\'an\'ın kendisi yerine geçmez.',
         'Tilavet secdesi: secde âyeti okunduğunda yapılır.',
       ],
       citations: <String>[
@@ -566,7 +566,7 @@ abstract final class KnowledgeBase {
           'Kabir ziyareti sünnettir; ölümü hatırlatır ve âhirete hazırlığı artırır. '
           'Kabrin karşısında ayakta dua edilir; kabirden bir şey istenmez.',
       details: <String>[
-        'Ziyaret eden kişi: "Esselâmü aleyküm ehle'd-diyâri mine'l-mü'minîn…" der.',
+        'Ziyaret eden kişi: "Esselâmü aleyküm ehle\'d-diyâri mine\'l-mü\'minîn…" der.',
         'Kabir üzerine taş dikmek, üzerine basmamak, mezarlığı temiz tutmak âdâbtır.',
         'Ölüden medet ummak, kabir için kurban kesip adakta bulunmak dinen caiz değildir.',
       ],
