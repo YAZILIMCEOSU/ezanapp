@@ -67,7 +67,10 @@ void main() {
               'answer': 'Bu konunun ayrıntısı kaynaklarda yer alır.',
               'sources': <Object>[
                 'Kur\'an-ı Kerim, Târık 86/1-17',
-                <String, Object?>{'label': 'Buhârî, Tefsîr 1', 'kind': 'hadith'},
+                <String, Object?>{
+                  'label': 'Buhârî, Tefsîr 1',
+                  'kind': 'hadith',
+                },
               ],
               'madhab_notes': <String>[
                 'Görüş ayrılığı olan noktalar mezhebe göre belirtilir.',
