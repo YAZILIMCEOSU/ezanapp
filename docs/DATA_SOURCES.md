@@ -31,10 +31,22 @@ Dosya: `assets/data/hadith_riyazus_salihin.json` —
 
 ## 3. Zikir ve dualar
 
-Kur'an ayetleri ve sahih hadis kaynaklı zikir metinleri; Arapça metin, okunuş,
-anlam ve **kaynak künyesi** birlikte verilir.
+Kur'an ayetleri ve sahih hadis kaynaklı zikir/dua metinleri; Arapça metin,
+okunuş, anlam ve **kaynak künyesi** birlikte verilir.
 Dosya: `assets/data/adhkar/adhkar.json` —
-`{key, name, arabic, transliteration, meaning, reference}`.
+`{key, name, arabic, transliteration, meaning, reference, category, time}` +
+`dua_categories` listesi (9 kategori, 32 dua).
+
+| İçerik | Kaynak | Yükümlülük |
+|---|---|---|
+| Zikirler (15) | Kur'an ve sahih hadis metinleri (Buhârî, Müslim, Tirmizî…) | Her kaydın `reference` alanında künye zorunlu |
+| Dualar (32) | Aynı kaynaklar + Kur'an ayet duaları | Kur'an kaynaklı dualarda sure/ayet numarası zorunlu (`test/data/dua_assets_test.dart` doğrular) |
+| Kur'an ayet duaları | Tanzil metni üzerinden meal | Atıf §1'deki gibidir; Arapça metin değiştirilmez |
+
+> **Yayın öncesi:** dua ve zikir metinlerinin bir ilahiyat uzmanınca gözden
+> geçirilmesi önerilir. Mezhebe göre farklı okuma/uygulama biçimleri bulunan
+> kayıtlarda künye esas alınır; içerik eklerken `dua_assets_test.dart`
+> sözleşmesi (künye, kategori, sure/ayet) korunmalıdır.
 
 ## 4. Namaz vakti verisi ve kalibrasyon
 

@@ -23,6 +23,7 @@ destekli İslami soru-cevap özelliklerini tek uygulamada birleştiren, çevrimd
 | **İlahi / dini ses** | Kategori–sanatçı–albüm filtreleri, favoriler, son dinlenenler, çalma listeleri, arka planda ve ekran kapalıyken oynatma, indirip çevrimdışı dinleme, cihazdan dosya ekleme, **yalnızca lisans bilgisi bulunan içerik** |
 | **Tesbih / zikir** | Dokunsal geri bildirim, ses, hedef belirleme, günlük hedef, otomatik ilerleme, geçmiş ve istatistik grafikleri, özel zikir tanımlama |
 | **Hadis** | Günün hadisi, konu kategorileri, metin arama, favoriler, kaynak künyesi (kitap/hadis no) ve paylaşım |
+| **Dualar** | 9 kategori (sabah, akşam, namaz, günlük hayat, Kur'an'dan, Ramazan, sıkıntı anı, ziyaret/şifa, salavat), 32 dua; Arapça + okunuş + meal, kaynak künyesi, arama, favoriler, kopyala/paylaş, ana ekranda günün duası |
 | **Ramazan** | Sahur/iftar geri sayımı, imsakiye, günlük dua, hatim takibi, zikir takibi, kaza orucu takibi, Ramazan bildirimleri |
 | **AI İslam Asistanı** | Doğal dil soru-cevap; cevaplar Kur'an, sahih hadis ve güvenilir fıkıh kaynaklarına dayandırılır, mezhep farklılıkları ayrıca belirtilir, **kesin hüküm vermez** ve tereddütte müftülüğe yönlendirir |
 | **Freemium** | Ücretsiz: vakitler, kıble, Kur'an, tesbih, temel içerik (reklamlı). Premium: reklamsız, sınırsız AI, premium ilahi, gelişmiş istatistik, bulut yedekleme |
@@ -107,7 +108,7 @@ internet gerektirmez:
 | `quran/{1..114}.json` | Arapça metin + Türkçe meal (ayet ayet) |
 | `surah_meta.json` | Sure künyeleri, cüz başlangıçları, okuyucu listesi, kaynak künyeleri |
 | `hadith_riyazus_salihin.json` | Hadis metinleri (Arapça + Türkçe) ve kaynak künyeleri |
-| `adhkar/adhkar.json` | Zikir ve dualar (Arapça, okunuş, anlam, kaynak) |
+| `adhkar/adhkar.json` | Zikirler ve 32 dua (kategorili; Arapça, okunuş, anlam, kaynak künyesi) |
 | `cities_turkey.json`, `cities_world.json` | Şehir/ilçe ve koordinat verisi |
 | `hijri_ummalqura.json` | Hicri takvim (Ümmü'l-Kurâ, 1343–1500 H) |
 | `diyanet_validation_sample.json` | Resmî vakit doğrulama fikstürü (11 il × 6 tarih) |
@@ -137,6 +138,9 @@ flutter build apk --debug
 - `test/core/notification_plan_test.dart` — bildirim kimlikleri, yük biçimi,
   vakit başına aç/kapat, sessiz saat ve uyku modu kararları.
 - `test/data/ai_remote_test.dart` — uzak AI sözleşmesi (bkz. §Faz 4).
+- `test/data/dua_models_test.dart` ve `test/data/dua_assets_test.dart` — dua
+  modeli/kataloğu ve içerik sözleşmesi (her duada kaynak künyesi, tanımlı
+  kategori, boş kategori yok, Kur'an künyelerinde sure/ayet).
 
 Flutter kurulu olmayan ortamlarda hızlı ön denetim:
 

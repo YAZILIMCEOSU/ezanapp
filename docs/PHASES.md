@@ -13,7 +13,7 @@ yapılabileceği listelenir.
 | Faz | Kapsam | Durum | Otomatik kanıt |
 |---|---|---|---|
 | **MVP** | Ana sayfa, vakitler, bildirim, kıble, tesbih, ayarlar | ✅ Yazılı + CI yeşil | `navigation_test.dart`, `notification_plan_test.dart`, `prayer_calculation_test.dart`, debug/release derleme |
-| **Faz 2** | Kur'an, hadis, **dualar** | 🟡 Kur'an + hadis tam; dualar yalnızca Ramazan ekranı içinde | `knowledge_base_test.dart`, `models_test.dart` |
+| **Faz 2** | Kur'an, hadis, **dualar** | ✅ Yazılı + CI yeşil | `dua_models_test.dart`, `dua_assets_test.dart`, `knowledge_base_test.dart` |
 | **Faz 3** | İlahi + player + indirme + playlist | ✅ Yazılı | `navigation_test.dart` (yollar), release derleme; cihaz testi bekliyor |
 | **Faz 4** | AI İslam asistanı | ✅ Yazılı + sözleşme testleri | `knowledge_base_test.dart`, `ai_remote_test.dart` (kaynak zorunluluğu, zarif bozulma) |
 | **Faz 5** | Ramazan + kişisel takip/istatistik | ✅ Yazılı | `navigation_test.dart`, `models_test.dart`; Ramazan başlangıcı cihazda |
@@ -47,7 +47,7 @@ yapılabileceği listelenir.
 | Yazı boyutu, gece modu, paylaşma | `surah_screen.dart` (paylaşım `share_plus`) | cihaz testi §4 |
 | Sesli Kur'an | `AppAudioService` + EveryAyah kataloğu | cihaz testi §4 |
 | Günün hadisi, kategoriler, arama, kaynak | `lib/features/hadith/*`, `hadith_riyazus_salihin.json` | `assets/data`, `navigation_test.dart` |
-| **Dualar (kategorili bölüm)** | ⚠️ Yalnızca Ramazan ekranı içinde (`duaListProvider`) | **Eksik: bağımsız ekran planlanıyor** |
+| **Dualar (kategorili bölüm)** | `lib/features/dua/dua_screen.dart`, `dua_models.dart`, `duaCatalogProvider` | `dua_models_test.dart`, `dua_assets_test.dart`, `navigation_test.dart` (`/dualar`) |
 
 ### Faz 3 — İlahi ve ses platformu
 
@@ -146,9 +146,7 @@ bayraklama yapılır (geri dönüşü kolay, veri kaybı yok).
 
 ## 6. Önerilen sıradaki iş sırası
 
-1. **Dualar bölümü** (Faz 2'nin tek gerçek eksiği): kategorili dua listesi,
-   favoriler, arama — `adhkar` varlıkları üzerine bağımsız ekran + "Daha Fazla"
-   girişi + navigasyon testi.
+1. ~~**Dualar bölümü** (Faz 2'nin tek gerçek eksiği)~~ ✅ Tamamlandı.
 2. **Responsive otomatik testi**: 320×568 ve 1024×1366 için anahtar ekranların
    overflow üretmediğini doğrulayan widget testleri.
 3. **Vakit zinciri testi**: önbellek → Diyanet → Aladhan → yerel hesap
