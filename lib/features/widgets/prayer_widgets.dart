@@ -272,8 +272,9 @@ class NextPrayerCountdownCard extends StatelessWidget {
                       sourceLabel!,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.labelSmall
-                          ?.copyWith(color: Colors.white.withValues(alpha: 0.7)),
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: Colors.white.withValues(alpha: 0.7),
+                      ),
                     ),
                   ),
                 ],

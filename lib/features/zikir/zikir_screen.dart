@@ -88,88 +88,97 @@ class ZikirScreen extends ConsumerWidget {
                             minHeight: constraints.maxHeight,
                           ),
                           child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () => _increment(ref, settings),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            selected.arabic,
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.headlineSmall?.copyWith(
-                              fontFamily: 'Amiri',
-                              color: AppColors.gold600,
-                              height: 1.8,
-                            ),
-                          ),
-                          const SizedBox(height: AppSpacing.sm),
-                          Text(
-                            selected.transliteration,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                          const SizedBox(height: AppSpacing.xl),
-                          Stack(
-                            alignment: Alignment.center,
-                            children: <Widget>[
-                              SizedBox(
-                                width: 250,
-                                height: 250,
-                                child: CircularProgressIndicator(
-                                  value: counter.progress,
-                                  strokeWidth: 12,
-                                  backgroundColor: theme.colorScheme.outlineVariant
-                                      .withValues(alpha: 0.3),
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                    counter.reached
-                                        ? AppColors.success
-                                        : AppColors.emerald500,
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () => _increment(ref, settings),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  selected.arabic,
+                                  textAlign: TextAlign.center,
+                                  style: theme.textTheme.headlineSmall
+                                      ?.copyWith(
+                                        fontFamily: 'Amiri',
+                                        color: AppColors.gold600,
+                                        height: 1.8,
+                                      ),
+                                ),
+                                const SizedBox(height: AppSpacing.sm),
+                                Text(
+                                  selected.transliteration,
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: theme.colorScheme.onSurfaceVariant,
                                   ),
                                 ),
-                              ),
-                              Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  Text(
-                                    '${counter.count}',
-                                    style: theme.textTheme.displayMedium?.copyWith(
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: -2,
+                                const SizedBox(height: AppSpacing.xl),
+                                Stack(
+                                  alignment: Alignment.center,
+                                  children: <Widget>[
+                                    SizedBox(
+                                      width: 250,
+                                      height: 250,
+                                      child: CircularProgressIndicator(
+                                        value: counter.progress,
+                                        strokeWidth: 12,
+                                        backgroundColor: theme
+                                            .colorScheme
+                                            .outlineVariant
+                                            .withValues(alpha: 0.3),
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                              counter.reached
+                                                  ? AppColors.success
+                                                  : AppColors.emerald500,
+                                            ),
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    'hedef ${counter.target}',
-                                    style: theme.textTheme.labelMedium?.copyWith(
-                                      color: theme.colorScheme.onSurfaceVariant,
+                                    Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        Text(
+                                          '${counter.count}',
+                                          style: theme.textTheme.displayMedium
+                                              ?.copyWith(
+                                                fontWeight: FontWeight.w800,
+                                                letterSpacing: -2,
+                                              ),
+                                        ),
+                                        Text(
+                                          'hedef ${counter.target}',
+                                          style: theme.textTheme.labelMedium
+                                              ?.copyWith(
+                                                color: theme
+                                                    .colorScheme
+                                                    .onSurfaceVariant,
+                                              ),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: AppSpacing.lg),
-                          Text(
-                            'Saymak için ekrana dokunun',
-                            style: theme.textTheme.labelSmall?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                          if (counter.completedSessions > 0)
-                            Padding(
-                              padding: const EdgeInsets.only(top: AppSpacing.sm),
-                              child: Text(
-                                'Bu oturumda ${counter.completedSessions} tur tamamlandı',
-                                style: theme.textTheme.labelSmall?.copyWith(
-                                  color: AppColors.success,
+                                  ],
                                 ),
-                              ),
+                                const SizedBox(height: AppSpacing.lg),
+                                Text(
+                                  'Saymak için ekrana dokunun',
+                                  style: theme.textTheme.labelSmall?.copyWith(
+                                    color: theme.colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                                if (counter.completedSessions > 0)
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      top: AppSpacing.sm,
+                                    ),
+                                    child: Text(
+                                      'Bu oturumda ${counter.completedSessions} tur tamamlandı',
+                                      style: theme.textTheme.labelSmall
+                                          ?.copyWith(color: AppColors.success),
+                                    ),
+                                  ),
+                              ],
                             ),
-                        ],
-                      ),
-                          ),
                           ),
                         ),
+                      ),
                 ),
               ),
               Padding(

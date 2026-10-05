@@ -63,18 +63,18 @@ class PrayersScreen extends ConsumerWidget {
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: SegmentedButton<PrayerRangeView>(
-              segments: <ButtonSegment<PrayerRangeView>>[
-                for (final PrayerRangeView item in PrayerRangeView.values)
-                  ButtonSegment<PrayerRangeView>(
-                    value: item,
-                    label: Text(item.label),
-                    icon: Icon(item.icon, size: 16),
-                  ),
-              ],
-              selected: <PrayerRangeView>{view},
-              onSelectionChanged: (Set<PrayerRangeView> selection) => ref
-                  .read(prayerRangeViewProvider.notifier)
-                  .select(selection.first),
+                segments: <ButtonSegment<PrayerRangeView>>[
+                  for (final PrayerRangeView item in PrayerRangeView.values)
+                    ButtonSegment<PrayerRangeView>(
+                      value: item,
+                      label: Text(item.label),
+                      icon: Icon(item.icon, size: 16),
+                    ),
+                ],
+                selected: <PrayerRangeView>{view},
+                onSelectionChanged: (Set<PrayerRangeView> selection) => ref
+                    .read(prayerRangeViewProvider.notifier)
+                    .select(selection.first),
                 showSelectedIcon: false,
               ),
             ),

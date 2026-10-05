@@ -194,7 +194,10 @@ void main() {
         runtime: runtime,
         times: times,
         verify: () {
-          expect(find.textContaining('Konum servisleri kapalı'), findsOneWidget);
+          expect(
+            find.textContaining('Konum servisleri kapalı'),
+            findsOneWidget,
+          );
           expect(find.text('Tekrar dene'), findsNothing);
         },
       );

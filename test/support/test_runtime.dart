@@ -288,8 +288,7 @@ Future<List<FlutterErrorDetails>> renderScreen(
     expect(
       overflows,
       isEmpty,
-      reason:
-          'Taşma hatası:\n${overflows.map(describeError).join('\n---\n')}',
+      reason: 'Taşma hatası:\n${overflows.map(describeError).join('\n---\n')}',
     );
     final List<FlutterErrorDetails> problems = reported
         .where(
