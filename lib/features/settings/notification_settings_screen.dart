@@ -335,6 +335,9 @@ class _NotificationSettingsScreenState
               'Önümüzdeki ${settings.daysToSchedule} gün için yeniden planlanır',
             ),
             onTap: () async {
+              final ScaffoldMessengerState messenger = ScaffoldMessenger.of(
+                context,
+              );
               setState(() => _busy = true);
               final int count = await ref
                   .read(notificationCoordinatorProvider)
@@ -342,7 +345,7 @@ class _NotificationSettingsScreenState
               await _refreshStatus();
               if (!mounted) return;
               setState(() => _busy = false);
-              ScaffoldMessenger.of(context).showSnackBar(
+              messenger.showSnackBar(
                 SnackBar(content: Text('$count bildirim zamanlandı.')),
               );
             },

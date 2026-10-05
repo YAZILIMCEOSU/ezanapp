@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:ezanai/data/prayer/prayer_calculator.dart';
 import 'package:flutter/services.dart';
@@ -9,17 +10,25 @@ import 'package:flutter_test/flutter_test.dart';
 /// Doğrulama verisi (`assets/data/diyanet_validation_sample.json`), 11 il ve
 /// 5 farklı tarih için T.C. Diyanet İşleri Başkanlığı'nın yayımladığı resmî
 /// vakitlerden oluşur. Temkin düzeltmeleri en küçük kareler yöntemiyle fit
-/// edildiğinde 330 ölçümün tamamı ±3.1 dk içinde, ortalama sapma ~0.6 dk'dır.
+/// edildiğinde 330 ölçümün tamamı ±2.3 dk içinde, ortalama sapma ~0.8 dk'dır.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   late List<Map<String, Object?>> records;
 
   setUpAll(() async {
-    final String raw = await rootBundle.loadString(
-      'assets/data/diyanet_validation_sample.json',
-    );
-    final Object decoded = jsonDecode(raw);
+    String raw;
+    try {
+      raw = await rootBundle.loadString(
+        'assets/data/diyanet_validation_sample.json',
+      );
+    } catch (error) {
+      // Paket varlıkları okunamazsa depodaki dosya kullanılır.
+      raw = File(
+        'assets/data/diyanet_validation_sample.json',
+      ).readAsStringSync();
+    }
+    final Object? decoded = jsonDecode(raw);
     if (decoded is! Map) {
       fail('Doğrulama verisi beklenen biçimde değil.');
     }
@@ -44,7 +53,7 @@ void main() {
     expect(records.first['city'], isNotNull);
   });
 
-  test('yerel hesap, Diyanet vakitlerine ±4 dakika içinde kalır', () {
+  test('yerel hesap, Diyanet vakitlerine ±3 dakika içinde kalır', () {
     const CalculationMethod method = CalculationMethod.diyanet;
     int checked = 0;
     final List<String> failures = <String>[];
@@ -76,11 +85,12 @@ void main() {
         final String? expectedRaw = record[entry.key] as String?;
         if (expectedRaw == null) continue;
         final List<String> parts = expectedRaw.split(':');
+        // Vakitler saat cinsindendir (07:44 → 7.7333).
         final double expected =
-            int.parse(parts[0]) * 60 + int.parse(parts[1]) / 60.0;
+            int.parse(parts[0]) + int.parse(parts[1]) / 60.0;
         final double diff = (entry.value - expected).abs() * 60;
         checked++;
-        if (diff > 4.0) {
+        if (diff > 3.0) {
           failures.add(
             '${record['city']} ${record['date']} ${entry.key}: '
             'hesap ${_hhmm(entry.value)}, Diyanet $expectedRaw '

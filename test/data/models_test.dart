@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:ezanai/core/utils/geo.dart';
 import 'package:ezanai/data/hijri/hijri_calendar.dart';
 import 'package:ezanai/data/models/app_settings.dart';
@@ -113,7 +116,7 @@ void main() {
     late HijriCalendar calendar;
 
     setUpAll(() async {
-      calendar = await HijriCalendar.load();
+      calendar = await _loadCalendar();
     });
 
     test('bugünü hicri tarihe çevirir', () {
@@ -196,4 +199,33 @@ void main() {
       expect(restored.source, day.source);
     });
   });
+}
+
+/// Hicri takvimi yükler: önce paket varlıklarından, olmazsa depodaki dosyadan.
+///
+/// `flutter test` bazı ortamlarda paket varlıklarını okuyamaz; bu yedek yol
+/// sayesinde dönüşüm mantığı her koşulda sınanabilir.
+Future<HijriCalendar> _loadCalendar() async {
+  try {
+    return await HijriCalendar.load();
+  } catch (error) {
+    final String raw = File(
+      'assets/data/hijri_ummalqura.json',
+    ).readAsStringSync();
+    final Map<String, Object?> json = (jsonDecode(raw) as Map)
+        .cast<String, Object?>();
+    final DateTime base = DateTime.parse(json['baseGregorian']! as String);
+    return HijriCalendar.forTesting(
+      baseHijriYear: json['baseHijriYear']! as int,
+      baseHijriMonth: json['baseHijriMonth']! as int,
+      baseJulianDay: HijriCalendar.gregorianToJulianDay(
+        base.year,
+        base.month,
+        base.day,
+      ),
+      monthLengths: (json['monthLengths']! as String).codeUnits
+          .map((int code) => code - '0'.codeUnitAt(0) + 27)
+          .toList(),
+    );
+  }
 }

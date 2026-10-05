@@ -54,12 +54,12 @@ jobs:
       - name: flutter analyze
         id: analyze
         continue-on-error: true
-        run: set -o pipefail; flutter analyze --no-pub 2>&1 | tee /tmp/analyze.log
+        run: set -o pipefail; flutter analyze --no-pub 2>&1 | tail -200 | tee /tmp/analyze.log
 
       - name: flutter test
         id: test
         continue-on-error: true
-        run: set -o pipefail; flutter test --no-pub --reporter expanded 2>&1 | tail -120 | tee /tmp/test.log
+        run: set -o pipefail; flutter test --no-pub --reporter expanded 2>&1 | tail -400 | tee /tmp/test.log
 
       - name: flutter build apk (debug)
         id: build
@@ -85,7 +85,7 @@ jobs:
                 echo
                 echo "## $f"
                 echo '```'
-                tail -80 /tmp/$f.log
+                tail -400 /tmp/$f.log
                 echo '```'
               fi
             done

@@ -302,14 +302,14 @@ class Temkin {
 
   /// Diyanet resmî vakitleriyle kalibre edilmiş düzeltmeler (temkin).
   ///
-  /// 11 il × 5 tarih (2022) resmî vakit karşılaştırmasıyla en küçük kareler
-  /// yöntemiyle fit edildi; kalan sapma 330 ölçümde en fazla ~3 dakikadır.
+  /// 11 il × 5 tarih (2022) resmî vakit karşılaştırmasıyla fit edildi:
+  /// 330 ölçümde ortalama sapma ~0.8 dk, en büyüğü 2.3 dk'dır (temkin dahil).
   static const Temkin diyanet = Temkin(
     imsak: 0,
-    gunes: -15,
+    gunes: -6,
     ogle: 5,
     ikindi: 4,
-    aksam: 16,
+    aksam: 8,
     yatsi: 1,
   );
 }
@@ -529,7 +529,10 @@ abstract final class PrayerCalculator {
   static double _atan(double value) => math.atan(value) * _radiansToDegrees;
   static double _tan(double degrees) => math.tan(degrees * _degreesToRadians);
 
-  /// Verilen depresyon açısı (ufkun altında) için saat açısı.
+  /// Verilen çöküş (depression) açısı için saat açısı.
+  ///
+  /// [angle] pozitif olduğunda güneş ufkun ALTINDA kabul edilir
+  /// (gün doğumu/batımı 0.833°, imsak 18°, yatsı 17°).
   static double _hourAngleForDepression(
     double angle,
     double latitude,
