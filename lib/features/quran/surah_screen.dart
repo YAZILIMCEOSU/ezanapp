@@ -46,11 +46,10 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
   }
 
   void _rememberPosition() {
-    final Iterable<ItemPosition> visible = _positions.itemPositions.value
-        .where(
-          (ItemPosition position) =>
-              position.itemLeadingEdge >= 0 && position.itemLeadingEdge < 0.4,
-        );
+    final Iterable<ItemPosition> visible = _positions.itemPositions.value.where(
+      (ItemPosition position) =>
+          position.itemLeadingEdge >= 0 && position.itemLeadingEdge < 0.4,
+    );
     if (visible.isEmpty) return;
     final int index = visible.first.index;
     final int ayahNumber = index + 1;

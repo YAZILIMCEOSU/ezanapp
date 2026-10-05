@@ -1,5 +1,3 @@
-import 'package:intl/intl.dart';
-
 /// Tarih/saat yardımcıları — Türkçe yerelleştirme ile.
 abstract final class AppTime {
   static const List<String> turkishMonths = <String>[

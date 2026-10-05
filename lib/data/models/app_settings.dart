@@ -1,10 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-
-import '../../core/utils/logger.dart';
 import 'package:flutter/material.dart';
 
+import '../../core/utils/logger.dart';
 import '../../design/app_theme.dart';
 import '../models/prayer.dart';
 import '../prayer/prayer_calculator.dart';

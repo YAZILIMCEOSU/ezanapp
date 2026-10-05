@@ -51,7 +51,9 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
               child: Row(
                 children: <Widget>[
                   Icon(
-                    premium ? Icons.cloud_done_outlined : Icons.lock_outline_rounded,
+                    premium
+                        ? Icons.cloud_done_outlined
+                        : Icons.lock_outline_rounded,
                     color: premium ? AppColors.emerald500 : AppColors.warning,
                   ),
                   const SizedBox(width: AppSpacing.md),
@@ -71,7 +73,8 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
           if (!configured)
             const StatusBanner(
               icon: Icons.cloud_off_outlined,
-              message: 'Sunucu yapılandırılmadığı için bulut yedekleme kullanılamıyor. '
+              message:
+                  'Sunucu yapılandırılmadığı için bulut yedekleme kullanılamıyor. '
                   'Ayarlar yedekleme özelliğiyle verilerinizi dosya olarak saklayabilirsiniz.',
             ),
           const SectionHeader(title: 'Yedekleme'),
@@ -101,7 +104,9 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
             subtitle: const Text(
               'Sunucudaki yedeği indirir ve cihazdaki verileri değiştirir',
             ),
-            onTap: _busy || !configured ? null : () => _restore(requirePremium: !premium),
+            onTap: _busy || !configured
+                ? null
+                : () => _restore(requirePremium: !premium),
           ),
           ListTile(
             leading: const Icon(Icons.logout_rounded),
@@ -138,7 +143,9 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
               child: Container(
                 padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.6),
+                  color: theme.colorScheme.surfaceContainerHighest.withValues(
+                    alpha: 0.6,
+                  ),
                   borderRadius: AppRadius.allMd,
                 ),
                 child: Text(_status!, style: theme.textTheme.bodySmall),
@@ -161,8 +168,11 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
 
   Future<void> _upload({required bool requirePremium}) async {
     if (requirePremium) {
-      setState(() => _status = 'Bulut yedekleme Premium aboneliğine dahildir. '
-          'Premium ile sınırsız yedekleme yapabilirsiniz.');
+      setState(
+        () => _status =
+            'Bulut yedekleme Premium aboneliğine dahildir. '
+            'Premium ile sınırsız yedekleme yapabilirsiniz.',
+      );
       return;
     }
     setState(() {
@@ -217,16 +227,22 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
       _status = null;
     });
     try {
-      final Map<String, Object?>? payload =
-          await ref.read(runtimeProvider).sync.downloadBackup();
+      final Map<String, Object?>? payload = await ref
+          .read(runtimeProvider)
+          .sync
+          .downloadBackup();
       if (payload == null) {
         setState(() {
-          _status = ref.read(runtimeProvider).sync.lastError ??
+          _status =
+              ref.read(runtimeProvider).sync.lastError ??
               'Sunucuda yedek bulunamadı.';
         });
         return;
       }
-      final int restored = await ref.read(runtimeProvider).sync.restoreBackup(payload);
+      final int restored = await ref
+          .read(runtimeProvider)
+          .sync
+          .restoreBackup(payload);
       ref.invalidate(quranBookmarksProvider);
       ref.invalidate(hadithFavoritesProvider);
       ref.invalidate(zikirDailySummaryProvider);

@@ -45,7 +45,7 @@ void main() {
   });
 
   test('yerel hesap, Diyanet vakitlerine ±4 dakika içinde kalır', () {
-    final CalculationMethod method = CalculationMethod.diyanet;
+    const CalculationMethod method = CalculationMethod.diyanet;
     int checked = 0;
     final List<String> failures = <String>[];
 
@@ -83,7 +83,7 @@ void main() {
         if (diff > 4.0) {
           failures.add(
             '${record['city']} ${record['date']} ${entry.key}: '
-            'hesap ${_hhmm(entry.value)}, Diyanet ${expectedRaw} '
+            'hesap ${_hhmm(entry.value)}, Diyanet $expectedRaw '
             '(${diff.toStringAsFixed(1)} dk)',
           );
         }
