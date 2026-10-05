@@ -130,10 +130,9 @@ void main() {
     // sabitler kaynak dosyadan okunur ve her biri gerçekten çözümlenmek
     // zorundadır.
     test('app_router.dart içindeki her yol sabiti çözümlenir', () {
-      final String source = File('lib/router/app_router.dart').readAsStringSync();
-      final RegExp pattern = RegExp(
-        r"static const String \w+ = '(/[^']*)';",
-      );
+      final String source = File('lib/router/app_router.dart')
+          .readAsStringSync();
+      final RegExp pattern = RegExp(r"static const String \w+ = '(/[^']*)';");
       final List<String> locations = pattern
           .allMatches(source)
           .map((RegExpMatch match) => match.group(1)!)
