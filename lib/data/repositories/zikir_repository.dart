@@ -57,7 +57,10 @@ class ZikirRepository {
       final Map<String, Object?> json = await _loadAdhkar();
       final List<Dua> dualar = ((json['dualar'] as List?) ?? <Object?>[])
           .whereType<Map<Object?, Object?>>()
-          .map((Map<Object?, Object?> m) => Dua.fromJson(m.cast<String, Object?>()))
+          .map(
+            (Map<Object?, Object?> m) =>
+                Dua.fromJson(m.cast<String, Object?>()),
+          )
           .where((Dua dua) => dua.key.isNotEmpty && dua.name.isNotEmpty)
           .toList();
       final List<DuaCategory> categories =
@@ -110,7 +113,9 @@ class ZikirRepository {
     final List<Map<String, Object?>> rows = await _database.raw.query(
       'dua_favorites',
     );
-    return rows.map((Map<String, Object?> row) => row['dua_key']! as String).toSet();
+    return rows
+        .map((Map<String, Object?> row) => row['dua_key']! as String)
+        .toSet();
   }
 
   Future<bool> isDuaFavorite(String key) async {
@@ -144,9 +149,7 @@ class ZikirRepository {
     final Set<String> keys = await duaFavoriteKeys();
     if (keys.isEmpty) return <Dua>[];
     final DuaCatalog catalog = await duaCatalog();
-    return catalog.dualar
-        .where((Dua dua) => keys.contains(dua.key))
-        .toList();
+    return catalog.dualar.where((Dua dua) => keys.contains(dua.key)).toList();
   }
 
   /// Kullanıcı tanımlı zikirler.

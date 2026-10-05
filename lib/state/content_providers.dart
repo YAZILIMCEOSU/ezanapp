@@ -166,9 +166,10 @@ final FutureProvider<List<Zikir>> zikirListProvider =
     });
 
 /// Tüm dualar (kategorilenmiş katalog).
-final FutureProvider<DuaCatalog> duaCatalogProvider = FutureProvider<DuaCatalog>(
-  (Ref ref) => ref.watch(runtimeProvider).zikir.duaCatalog(),
-);
+final FutureProvider<DuaCatalog> duaCatalogProvider =
+    FutureProvider<DuaCatalog>(
+      (Ref ref) => ref.watch(runtimeProvider).zikir.duaCatalog(),
+    );
 
 /// Günün duası (deterministik seçim).
 final FutureProvider<Dua?> dailyDuaProvider = FutureProvider<Dua?>(

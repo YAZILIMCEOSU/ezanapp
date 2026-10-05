@@ -342,10 +342,7 @@ class _DuaCard extends StatelessWidget {
                     text: categoryLabel!,
                   ),
                 if (dua.time != null)
-                  _MetaChip(
-                    icon: Icons.schedule_rounded,
-                    text: dua.time!,
-                  ),
+                  _MetaChip(icon: Icons.schedule_rounded, text: dua.time!),
               ],
             ),
           ],

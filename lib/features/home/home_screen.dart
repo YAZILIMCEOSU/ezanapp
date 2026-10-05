@@ -6,10 +6,10 @@ import 'package:share_plus/share_plus.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/utils/app_time.dart';
 import '../../data/models/app_settings.dart';
+import '../../data/models/dua_models.dart';
 import '../../data/models/hadith_models.dart';
 import '../../data/models/hijri_date.dart';
 import '../../data/models/prayer.dart';
-import '../../data/models/dua_models.dart';
 import '../../data/models/prayer_times_day.dart';
 import '../../data/models/zikir_models.dart';
 import '../../data/repositories/daily_content_repository.dart';
@@ -586,10 +586,7 @@ class _DailyDuaCard extends ConsumerWidget {
                   tooltip: 'Paylaş',
                   visualDensity: VisualDensity.compact,
                   onPressed: () => SharePlus.instance.share(
-                    ShareParams(
-                      text: dua.shareText(),
-                      subject: 'Günün duası',
-                    ),
+                    ShareParams(text: dua.shareText(), subject: 'Günün duası'),
                   ),
                   icon: const Icon(Icons.ios_share_rounded, size: 18),
                 ),

@@ -22,9 +22,8 @@ void main() {
       );
       json = (jsonDecode(raw) as Map).cast<String, Object?>();
     } catch (_) {
-      final String raw = File(
-        'assets/data/adhkar/adhkar.json',
-      ).readAsStringSync();
+      final String raw = File('assets/data/adhkar/adhkar.json')
+          .readAsStringSync();
       json = (jsonDecode(raw) as Map).cast<String, Object?>();
     }
   });
@@ -42,7 +41,10 @@ void main() {
     expect(raw, isNotEmpty, reason: 'dua_categories tanımlı olmalı');
     final List<DuaCategory> categories = raw
         .whereType<Map<Object?, Object?>>()
-        .map((Map<Object?, Object?> m) => DuaCategory.fromJson(m.cast<String, Object?>()))
+        .map(
+          (Map<Object?, Object?> m) =>
+              DuaCategory.fromJson(m.cast<String, Object?>()),
+        )
         .toList();
     expect(categories.length, greaterThanOrEqualTo(6));
     for (final DuaCategory category in categories) {
@@ -60,7 +62,11 @@ void main() {
     final List<Dua> items = dualar();
     expect(items.length, greaterThanOrEqualTo(30));
     final Set<String> keys = items.map((Dua dua) => dua.key).toSet();
-    expect(keys.length, items.length, reason: 'Dua kimlikleri benzersiz olmalı');
+    expect(
+      keys.length,
+      items.length,
+      reason: 'Dua kimlikleri benzersiz olmalı',
+    );
     expect(keys.every((String key) => key.trim().isNotEmpty), isTrue);
   });
 
@@ -121,10 +127,11 @@ void main() {
   });
 
   test('her duanın kategorisi kategori listesinde tanımlı', () {
-    final Set<String> tanimli = (((json['dua_categories'] as List?) ?? <Object?>[])
-            .whereType<Map<Object?, Object?>>()
-            .map((Map<Object?, Object?> m) => m['key'].toString()))
-        .toSet();
+    final Set<String> tanimli =
+        (((json['dua_categories'] as List?) ?? <Object?>[])
+                .whereType<Map<Object?, Object?>>()
+                .map((Map<Object?, Object?> m) => m['key'].toString()))
+            .toSet();
     for (final Dua dua in dualar()) {
       expect(
         tanimli.contains(dua.category),
@@ -136,7 +143,8 @@ void main() {
 
   test('her kategoride en az bir dua var (boş sekme olmasın)', () {
     final List<Dua> items = dualar();
-    for (final Object? entry in (json['dua_categories'] as List?) ?? <Object?>[]) {
+    for (final Object? entry
+        in (json['dua_categories'] as List?) ?? <Object?>[]) {
       if (entry is! Map) continue;
       final String key = entry['key'].toString();
       final int count = items.where((Dua dua) => dua.category == key).length;
@@ -172,13 +180,14 @@ void main() {
 
   test('katalogda arama ve kategori süzme çalışıyor', () {
     final DuaCatalog catalog = DuaCatalog(
-      categories: (((json['dua_categories'] as List?) ?? <Object?>[])
-              .whereType<Map<Object?, Object?>>()
-              .map(
-                (Map<Object?, Object?> m) =>
-                    DuaCategory.fromJson(m.cast<String, Object?>()),
-              ))
-          .toList(),
+      categories:
+          (((json['dua_categories'] as List?) ?? <Object?>[])
+                  .whereType<Map<Object?, Object?>>()
+                  .map(
+                    (Map<Object?, Object?> m) =>
+                        DuaCategory.fromJson(m.cast<String, Object?>()),
+                  ))
+              .toList(),
       dualar: dualar(),
     );
     expect(catalog.byCategory('sabah'), isNotEmpty);

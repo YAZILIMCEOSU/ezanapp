@@ -180,8 +180,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.dualar,
-      builder: (BuildContext context, GoRouterState state) =>
-          const DuaScreen(),
+      builder: (BuildContext context, GoRouterState state) => const DuaScreen(),
     ),
     GoRoute(
       path: AppRoutes.hadith,

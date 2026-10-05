@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/utils/app_time.dart';
 import '../../core/utils/logger.dart';
+import '../../data/models/dua_models.dart';
 import '../../data/models/hijri_date.dart';
 import '../../data/models/prayer.dart';
 import '../../data/models/prayer_times_day.dart';
@@ -13,7 +14,6 @@ import '../../data/models/ramadan_models.dart';
 import '../../design/app_colors.dart';
 import '../../design/app_spacing.dart';
 import '../../router/app_router.dart';
-import '../../data/models/dua_models.dart';
 import '../../state/content_providers.dart';
 import '../../state/providers.dart';
 import '../widgets/ad_banner.dart';
