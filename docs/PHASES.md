@@ -14,9 +14,9 @@ yapılabileceği listelenir.
 |---|---|---|---|
 | **MVP** | Ana sayfa, vakitler, bildirim, kıble, tesbih, ayarlar | ✅ Yazılı + CI yeşil | `navigation_test.dart`, `notification_plan_test.dart`, `prayer_calculation_test.dart`, debug/release derleme |
 | **Faz 2** | Kur'an, hadis, **dualar** | ✅ Yazılı + CI yeşil | `dua_models_test.dart`, `dua_assets_test.dart`, `knowledge_base_test.dart` |
-| **Faz 3** | İlahi + player + indirme + playlist | ✅ Yazılı | `navigation_test.dart` (yollar), release derleme; cihaz testi bekliyor |
+| **Faz 3** | İlahi + player + indirme + playlist | ✅ Yazılı + CI yeşil | `navigation_test.dart` (yollar), `responsive_test.dart` (ekranlar), release derleme; cihaz testi bekliyor |
 | **Faz 4** | AI İslam asistanı | ✅ Yazılı + sözleşme testleri | `knowledge_base_test.dart`, `ai_remote_test.dart` (kaynak zorunluluğu, zarif bozulma) |
-| **Faz 5** | Ramazan + kişisel takip/istatistik | ✅ Yazılı | `navigation_test.dart`, `models_test.dart`; Ramazan başlangıcı cihazda |
+| **Faz 5** | Ramazan + kişisel takip/istatistik | ✅ Yazılı + CI yeşil | `navigation_test.dart`, `models_test.dart`, `responsive_test.dart`; Ramazan başlangıcı cihazda |
 | **Faz 6** | Premium + reklam + abonelik | ✅ Yazılı (konsol kurulumu bekliyor) | release derleme; Play Billing cihaz/hesap testi bekliyor |
 | **Faz 7** | Hesap, bulut, cami bulucu, widget, Wear OS, çoklu dil | ⛔ Planlı (hesap/senkron altyapısı hazır) | — |
 
@@ -104,7 +104,7 @@ Bu faz kullanıcı kitlesi oluştuktan sonra açılır.
 | 4 | API çalışır / çöktüğünde uygulama durmaz | `flutter test test/data/ai_remote_test.dart` (deneme backend adresiyle) |
 | 5 | Bildirim çalışır | `flutter test test/core/notification_plan_test.dart` + cihaz kontrolü §4 |
 | 6 | Responsive (telefon + tablet) | Cihaz/emülatör kontrolü §4 (otomatik test yok) |
-| 7 | Hatalar temizlendi | `.ci/report.md` tablosunda tüm satırlar `success` |
+| 7 | Hatalar temizlendi | `.ci/report.md` tablosunda tüm satırlar `success` (son koşu: ✅ 7/7) |
 
 ## 4. Yalnızca cihazda yapılabilen kontroller
 
@@ -147,10 +147,35 @@ bayraklama yapılır (geri dönüşü kolay, veri kaybı yok).
 ## 6. Önerilen sıradaki iş sırası
 
 1. ~~**Dualar bölümü** (Faz 2'nin tek gerçek eksiği)~~ ✅ Tamamlandı.
-2. **Responsive otomatik testi**: 320×568 ve 1024×1366 için anahtar ekranların
-   overflow üretmediğini doğrulayan widget testleri.
-3. **Vakit zinciri testi**: önbellek → Diyanet → Aladhan → yerel hesap
-   sırasının bozulmadığını doğrulayan repository testi (sahte HTTP + geçici DB).
+2. ~~**Responsive otomatik testi**: 320×568 / 411×914 / 1024×1366 için anahtar
+   ekranların (11 ekran) overflow üretmediğini doğrulayan widget testleri~~
+   ✅ Tamamlandı — CI'da tüm satırlar `success`
+   (`.ci/report.md`: analyze + test + uzak AI sözleşmesi + debug APK + release AAB).
+3. ~~**Vakit zinciri testi**: önbellek → Diyanet → Aladhan → yerel hesap
+   sırasının bozulmadığını doğrulayan repository testi (sahte HTTP + geçici DB)~~
+   ✅ Tamamlandı (`test/data/prayer_chain_test.dart`, 6 grup / 24 test).
 4. **Cihaz kontrol listesi** (§4) sizin cihazınızda uygulanır; çıkan hatalar
-   bu belgeye işlenir.
+   bu belgeye işlenir. → **Sıradaki adım.**
 5. Ardından Faz 6 kurulumu (Play Console ürünleri) ve imzalama/`google-services.json`.
+
+## 7. Yayın (Play Store) zaman çizelgesi ve kapılar
+
+| Aşama | Kim yapar | Süre (tipik) |
+|---|---|---|
+| Kod + CI yeşil (analyze, test, APK, AAB) | tamamlandı | ✅ bitti |
+| Cihazda kurulum (CI'daki debug APK ya da kendi derlemeniz) | siz | 10 dakika |
+| Cihaz kontrol listesi (§4, 12 madde) | siz | 1–2 saat |
+| Firebase (`google-services.json`) + imzalama anahtarı (`key.properties`) | siz | 1 saat |
+| Play Console: uygulama kaydı, mağaza metni/görselleri, veri güvenliği, içerik derecelendirmesi | siz (metinler `docs/PLAY_STORE.md`) | 2–4 saat |
+| **Dahili test** kanalı (kendi telefonunuz) | siz | Yükleme sonrası ~1 saat içinde kurulabilir |
+| **Kapalı test**: en az 12 test kullanıcısı, 14 gün aralıksız | siz + 12 kişi | **zorunlu 14 gün** |
+| Üretim erişimi başvurusu + inceleme | Google | genelde ≤ 7 gün |
+| Üretime yayın (inceleme) | Google | genelde ≤ 7 gün |
+
+> **Önemli (kişisel geliştirici hesapları, 13 Kasım 2023 sonrası açılanlar):**
+> Google, üretim erişimi vermeden önce **en az 12 test kullanıcısının aralıksız
+> 14 gün** kapalı teste kayıtlı kalmasını şart koşar. Kurumsal (organizasyon)
+> hesaplar bu şartın dışındadır. Bu 14 gün, kod tarafında hızlandırılamayan tek
+> kapıdır; kapalı test takvimi bu yüzden **en erken** başlatılmalıdır.
+> Kaynak: Google Play Console Yardım — "Yeni kişisel geliştirici hesapları için
+> uygulama test şartları".

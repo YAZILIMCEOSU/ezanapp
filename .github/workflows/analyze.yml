@@ -106,6 +106,20 @@ jobs:
           rm -f android/key.properties
           exit $status
 
+      # Derleme çıktılarını indirilebilir yap: cihazda denemek için debug APK,
+      # Play yükleme dosyası biçimi için AAB. (AAB tek kullanımlık CI
+      # anahtarıyla imzalanır; Play'e değil, cihaza kurmak için APK kullanılır.)
+      - name: Derleme çıktılarını yükle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ezanai-derlemeleri
+          if-no-files-found: warn
+          retention-days: 14
+          path: |
+            build/app/outputs/flutter-apk/app-debug.apk
+            build/app/outputs/bundle/release/app-release.aab
+
       - name: Raporu yaz
         if: always()
         run: |
