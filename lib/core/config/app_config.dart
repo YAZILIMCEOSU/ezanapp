@@ -1,3 +1,5 @@
+import '../constants/app_constants.dart';
+
 /// Derleme zamanı yapılandırması.
 ///
 /// **Güvenlik:** Hiçbir sır (API anahtarı, servis anahtarı) uygulama içine
@@ -60,10 +62,10 @@ abstract final class AppConfig {
   ///
   /// Play Console'a girilen gizlilik politikası adresiyle aynı olmalıdır;
   /// uygulama içinden de erişilebilir (Hakkında > Yasal).
-  static const String websiteUrl = 'https://ezanai.app';
-  static const String privacyPolicyUrl = 'https://ezanai.app/gizlilik';
-  static const String termsUrl = 'https://ezanai.app/kullanim-kosullari';
-  static const String supportEmail = 'destek@ezanai.app';
+  static const String websiteUrl = AppConstants.websiteUrl;
+  static const String privacyPolicyUrl = AppConstants.privacyUrl;
+  static const String termsUrl = AppConstants.termsUrl;
+  static const String supportEmail = AppConstants.supportEmail;
 
   /// Abonelik ürün kimlikleri (Google Play Console ile eşleşmeli).
   static const String premiumMonthlyId = 'ezanai_premium_monthly';

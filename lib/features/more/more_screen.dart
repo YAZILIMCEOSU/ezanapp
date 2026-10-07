@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../core/config/app_config.dart';
+import '../../core/config/app_features.dart';
 import '../../design/app_colors.dart';
 import '../../design/app_spacing.dart';
 import '../../router/app_router.dart';
@@ -36,6 +37,7 @@ class _MoreScreenState extends ConsumerState<MoreScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final AppFeatures features = ref.watch(appFeaturesProvider);
     final bool premium = ref.watch(isPremiumProvider);
     final ThemeData theme = Theme.of(context);
 
@@ -47,7 +49,7 @@ class _MoreScreenState extends ConsumerState<MoreScreen> {
       body: ListView(
         padding: const EdgeInsets.only(bottom: AppSpacing.xl),
         children: <Widget>[
-          _PremiumCard(premium: premium),
+          if (features.premium) _PremiumCard(premium: premium),
           const SectionHeader(title: 'İbadet'),
           const _Tile(
             icon: Icons.explore_outlined,
@@ -61,24 +63,27 @@ class _MoreScreenState extends ConsumerState<MoreScreen> {
             subtitle: 'Sayaç, günlük hedef, istatistik',
             route: AppRoutes.zikir,
           ),
-          const _Tile(
-            icon: Icons.volunteer_activism_outlined,
-            title: 'Dualar',
-            subtitle: 'Sabah, akşam, namaz ve günlük dualar; kaynak künyeli',
-            route: AppRoutes.dualar,
-          ),
-          const _Tile(
-            icon: Icons.format_quote_outlined,
-            title: 'Hadis',
-            subtitle: '1900 sahih hadis, konu ve arama',
-            route: AppRoutes.hadith,
-          ),
-          const _Tile(
-            icon: Icons.nightlight_outlined,
-            title: 'Ramazan',
-            subtitle: 'Sahur/iftar, imsakiye, hatim, kaza takibi',
-            route: AppRoutes.ramadan,
-          ),
+          if (features.dua)
+            const _Tile(
+              icon: Icons.volunteer_activism_outlined,
+              title: 'Dualar',
+              subtitle: 'Sabah, akşam, namaz ve günlük dualar; kaynak künyeli',
+              route: AppRoutes.dualar,
+            ),
+          if (features.hadith)
+            const _Tile(
+              icon: Icons.format_quote_outlined,
+              title: 'Hadis',
+              subtitle: '1900 sahih hadis, konu ve arama',
+              route: AppRoutes.hadith,
+            ),
+          if (features.ramadan)
+            const _Tile(
+              icon: Icons.nightlight_outlined,
+              title: 'Ramazan',
+              subtitle: 'Sahur/iftar, imsakiye, hatim, kaza takibi',
+              route: AppRoutes.ramadan,
+            ),
           _Tile(
             icon: Icons.calendar_month_outlined,
             title: 'Hicri Takvim ve Önemli Günler',
@@ -89,26 +94,32 @@ class _MoreScreenState extends ConsumerState<MoreScreen> {
               style: theme.textTheme.labelSmall,
             ),
           ),
-          const SectionHeader(title: 'İçerik'),
-          const _Tile(
-            icon: Icons.menu_book_outlined,
-            title: 'Kur\'an-ı Kerim',
-            subtitle: 'Arapça, Türkçe meal, tilavet, favoriler',
-            route: AppRoutes.quran,
+          if (features.quran || features.ilahi)
+              const SectionHeader(title: 'İçerik'),
+          if (features.quran)
+            const _Tile(
+              icon: Icons.menu_book_outlined,
+              title: 'Kur\'an-ı Kerim',
+              subtitle: 'Arapça, Türkçe meal, tilavet, favoriler',
+              route: AppRoutes.quran,
+            ),
+          if (features.ilahi)
+            const _Tile(
+              icon: Icons.library_music_outlined,
+              title: 'İlahi ve Dini Sesler',
+              subtitle: 'Kategori, çalma listesi, çevrimdışı indirme',
+              route: AppRoutes.ilahi,
+            ),
+          SectionHeader(
+            title: features.ai ? 'Asistan ve Ayarlar' : 'Ayarlar',
           ),
-          const _Tile(
-            icon: Icons.library_music_outlined,
-            title: 'İlahi ve Dini Sesler',
-            subtitle: 'Kategori, çalma listesi, çevrimdışı indirme',
-            route: AppRoutes.ilahi,
-          ),
-          const SectionHeader(title: 'Asistan ve Ayarlar'),
-          const _Tile(
-            icon: Icons.auto_awesome_outlined,
-            title: 'AI İslam Asistanı',
-            subtitle: 'Kaynaklı, mezhep farklarını belirten yanıtlar',
-            route: AppRoutes.ai,
-          ),
+          if (features.ai)
+            const _Tile(
+              icon: Icons.auto_awesome_outlined,
+              title: 'AI İslam Asistanı',
+              subtitle: 'Kaynaklı, mezhep farklarını belirten yanıtlar',
+              route: AppRoutes.ai,
+            ),
           const _Tile(
             icon: Icons.settings_outlined,
             title: 'Ayarlar',

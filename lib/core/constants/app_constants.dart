@@ -2,10 +2,32 @@
 abstract final class AppConstants {
   static const String appName = 'EzanAI';
   static const String tagline = 'Akıllı İslam Asistanı';
-  static const String supportEmail = 'destek@ezanai.app';
-  static const String privacyUrl = 'https://ezanai.app/gizlilik';
-  static const String termsUrl = 'https://ezanai.app/kullanim-kosullari';
-  static const String websiteUrl = 'https://ezanai.app';
+  /// Destek adresi ve yasal sayfa adresleri.
+  ///
+  /// Yayın derlemesinde `--dart-define` ile gerçek adreslere çevrilebilir;
+  /// böylece uygulama içi bağlantılar Play Console'a girilen adresle ve
+  /// yayımlanan gizlilik politikasıyla **aynı** kalır (ör. GitHub Pages):
+  ///
+  /// ```bash
+  /// flutter build appbundle --release \
+  ///   --dart-define=PRIVACY_URL=https://ornek.github.io/ezanapp/privacy.html
+  /// ```
+  static const String supportEmail = String.fromEnvironment(
+    'SUPPORT_EMAIL',
+    defaultValue: 'destek@ezanai.app',
+  );
+  static const String privacyUrl = String.fromEnvironment(
+    'PRIVACY_URL',
+    defaultValue: 'https://ezanai.app/gizlilik',
+  );
+  static const String termsUrl = String.fromEnvironment(
+    'TERMS_URL',
+    defaultValue: 'https://ezanai.app/kullanim-kosullari',
+  );
+  static const String websiteUrl = String.fromEnvironment(
+    'WEBSITE_URL',
+    defaultValue: 'https://ezanai.app',
+  );
 
   /// Mekke — Kâbe koordinatları.
   static const double kaabaLat = 21.4224779;

@@ -144,6 +144,14 @@ Dezavantaj: bayrak bakımı ve iki kez test yükü.
 Karar verilmeden **hiçbir özellik koddan çıkarılmaz**; B seçilirse yalnızca
 bayraklama yapılır (geri dönüşü kolay, veri kaybı yok).
 
+> **Karar (7 Ekim 2026): B — MVP kapılı ilk sürüm.**
+> Bayraklar `lib/core/config/app_features.dart` içinde tanımlı ve varsayılan olarak
+> **açık** (CI tam kapsamı test eder); Play derlemesinde `--dart-define=FEATURE_*=false`
+> ile kapatılır. Kapalı modüllerin sekmeleri ve girişleri gizlenir, kapalı yollara
+> gelen bağlantılar ana sayfaya yönlendirilir. Davranış
+> `test/widget/mvp_mode_test.dart` ile doğrulanır; derleme komutu ve mağaza metinleri
+> `docs/KURULUM.md` §6 ile `docs/MAGAZA_GORSELLERI.md` içindedir.
+
 ## 6. Önerilen sıradaki iş sırası
 
 1. ~~**Dualar bölümü** (Faz 2'nin tek gerçek eksiği)~~ ✅ Tamamlandı.

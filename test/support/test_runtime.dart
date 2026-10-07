@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:ezanai/app/app_runtime.dart';
+import 'package:ezanai/core/config/app_features.dart';
 import 'package:ezanai/core/audio/audio_service.dart';
 import 'package:ezanai/core/db/app_database.dart';
 import 'package:ezanai/core/services/ads_service.dart';
@@ -227,6 +228,7 @@ Future<List<FlutterErrorDetails>> renderScreen(
   required AppRuntime runtime,
   Size size = TestScreens.phone,
   TodayTimes? times,
+  AppFeatures? features,
   Duration settle = const Duration(milliseconds: 400),
   bool strict = true,
   void Function()? verify,
@@ -255,20 +257,17 @@ Future<List<FlutterErrorDetails>> renderScreen(
   final Widget content = MaterialApp(home: screen);
   // `times` verilirse vakit sağlayıcısı sabitlenir: ağa çıkılmaz ve geri
   // sayım deterministik olur.
-  final Widget app = times == null
-      ? ProviderScope(
-          overrides: [runtimeProvider.overrideWithValue(runtime)],
-          child: content,
-        )
-      : ProviderScope(
-          overrides: [
-            runtimeProvider.overrideWithValue(runtime),
-            prayerTimesProvider.overrideWith(
-              () => FixedPrayerTimesNotifier(times),
-            ),
-          ],
-          child: content,
-        );
+  // `features` verilirse özellik bayrakları geçersiz kılınır (kademeli yayın
+  // testleri): kapalı modüllerin sekmeleri/kartları/girişleri gizlenmelidir.
+  final Widget app = ProviderScope(
+    overrides: [
+      runtimeProvider.overrideWithValue(runtime),
+      if (times != null)
+        prayerTimesProvider.overrideWith(() => FixedPrayerTimesNotifier(times)),
+      if (features != null) appFeaturesProvider.overrideWithValue(features),
+    ],
+    child: content,
+  );
 
   await tester.pumpWidget(app);
   // Sağlayıcıların (varlık/veritabanı okumaları) yerleşmesi için iki ek kare:

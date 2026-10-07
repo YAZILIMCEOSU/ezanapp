@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../core/config/app_features.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/utils/app_time.dart';
 import '../../data/models/app_settings.dart';
@@ -223,48 +224,62 @@ class _QuickActions extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final AppFeatures features = ref.watch(appFeaturesProvider);
     final bool isRamadan = ref.watch(runtimeProvider).ramadan.isRamadan;
     final List<({IconData icon, String label, String route, Color color})>
-    actions = <({IconData icon, String label, String route, Color color})>[
+    allActions = <({IconData icon, String label, String route, Color color})>[
       (
         icon: Icons.explore_outlined,
         label: 'Kıble',
         route: AppRoutes.qibla,
         color: AppColors.emerald500,
       ),
-      (
-        icon: Icons.auto_awesome_outlined,
-        label: 'AI Asistan',
-        route: AppRoutes.ai,
-        color: AppColors.gold500,
-      ),
-      (
-        icon: Icons.menu_book_outlined,
-        label: 'Kur\'an',
-        route: AppRoutes.quran,
-        color: AppColors.info,
-      ),
+      if (features.ai)
+        (
+          icon: Icons.auto_awesome_outlined,
+          label: 'AI Asistan',
+          route: AppRoutes.ai,
+          color: AppColors.gold500,
+        ),
+      if (features.quran)
+        (
+          icon: Icons.menu_book_outlined,
+          label: 'Kur\'an',
+          route: AppRoutes.quran,
+          color: AppColors.info,
+        ),
       (
         icon: Icons.fingerprint_rounded,
         label: 'Tesbih',
         route: AppRoutes.zikir,
         color: AppColors.emerald600,
       ),
-      (
-        icon: Icons.format_quote_outlined,
-        label: 'Hadis',
-        route: AppRoutes.hadith,
-        color: AppColors.aksam,
-      ),
-      (
-        icon: isRamadan
-            ? Icons.nightlight_outlined
-            : Icons.star_outline_rounded,
-        label: isRamadan ? 'Ramazan' : 'Ramazan Modu',
-        route: AppRoutes.ramadan,
-        color: AppColors.imsak,
-      ),
+      if (features.hadith)
+        (
+          icon: Icons.format_quote_outlined,
+          label: 'Hadis',
+          route: AppRoutes.hadith,
+          color: AppColors.aksam,
+        ),
+      if (features.ramadan)
+        (
+          icon: isRamadan
+              ? Icons.nightlight_outlined
+              : Icons.star_outline_rounded,
+          label: isRamadan ? 'Ramazan' : 'Ramazan Modu',
+          route: AppRoutes.ramadan,
+          color: AppColors.imsak,
+        ),
     ];
+
+    // Kapatılan modüllerin girişleri hiç gösterilmez (ölü buton olmaz).
+    final List<({IconData icon, String label, String route, Color color})>
+    actions = allActions
+        .where(
+          (({IconData icon, String label, String route, Color color}) action) =>
+              features.allows(action.route),
+        )
+        .toList(growable: false);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
@@ -354,6 +369,9 @@ class _DailyVerseCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (!ref.watch(appFeaturesProvider).quran) {
+      return const SizedBox.shrink();
+    }
     final AsyncValue<DailyContent> content = ref.watch(dailyContentProvider);
     final DailyAyah? verse = content.value?.verse;
     if (verse == null) return const SizedBox.shrink();
@@ -451,6 +469,9 @@ class _DailyHadithCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (!ref.watch(appFeaturesProvider).hadith) {
+      return const SizedBox.shrink();
+    }
     final AsyncValue<DailyContent> content = ref.watch(dailyContentProvider);
     final DailyContent? daily = content.value;
     final Hadith? hadith = daily?.hadith;
@@ -549,6 +570,9 @@ class _DailyDuaCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (!ref.watch(appFeaturesProvider).dua) {
+      return const SizedBox.shrink();
+    }
     final AsyncValue<Dua?> content = ref.watch(dailyDuaProvider);
     final Dua? dua = content.value;
     if (dua == null) return const SizedBox.shrink();

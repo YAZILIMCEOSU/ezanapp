@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../core/config/app_features.dart';
 import '../core/services/notification_service.dart';
 import '../features/ai/ai_screen.dart';
 import '../features/dua/dua_screen.dart';
@@ -93,6 +94,14 @@ abstract final class AppRoutes {
 /// * Sekmeler `StatefulShellRoute` ile korunur (sekme değişince durum kaybolmaz).
 /// * Detay ekranları tam ekran açılır; geri dönüşte sekme konumu korunur.
 final GoRouter appRouter = GoRouter(
+  // Kapatılan modülün yolu (ör. eski bir bildirim bağlantısı) ana sayfaya
+  // yönlendirilir: kullanıcı boş/çalışmayan ekranla karşılaşmaz.
+  redirect: (BuildContext context, GoRouterState state) {
+    final String location = state.matchedLocation;
+    if (location == AppRoutes.home) return null;
+    if (AppFeatures.active.allows(location)) return null;
+    return AppRoutes.home;
+  },
   navigatorKey: rootNavigatorKey,
   initialLocation: AppRoutes.home,
   debugLogDiagnostics: false,

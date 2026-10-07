@@ -17,7 +17,9 @@ sıraya koyar. Her adımın **sorumlusu** ve **tahmini süresi** yazar.
 | Yükleme (upload) anahtarı | ❌ sende | `android/key.properties` + `.jks` (bu depoya girmez) |
 | Firebase (FCM/Crashlytics) | ❌ sende | `google-services.json` yoksa uygulama **Firebase'siz** çalışır |
 | Play Console kaydı + mağaza metinleri | ❌ sende | Metinler hazır: `docs/PLAY_STORE.md` |
-| Mağaza görselleri | 🟡 kısmi | Simge + öne çıkan görsel `store/` içinde; **ekran görüntüleri sende** |
+| Mağaza görselleri | 🟡 kısmi | Simge + öne çıkan görsel `store/` içinde; **ekran görüntüleri sende** (`docs/MAGAZA_GORSELLERI.md`) |
+| MVP kapsamı (bayraklar) | ✅ hazır | Kapatma/açma: `--dart-define=FEATURE_*=false` (bkz. §7) |
+| Gizlilik politikası sayfası | ✅ hazır | `docs/privacy.html` — GitHub Pages ile yayımlanır (§7) |
 | 12 kullanıcı × 14 gün kapalı test | ⏳ takvim | Kişisel hesaplarda zorunlu (bkz. §5) |
 
 ## 1. Kritik yol (tek bakışta)
@@ -106,7 +108,67 @@ kapalı teste kayıtlı kalmasını şart koşar. Kurumsal hesaplar bu şartın 
 - Play Console, koşullar sağlanınca **Dashboard → "Üretim erişimi için başvur"**
   düğmesini açar; başvuruda test süreci ve yapılan iyileştirmeler sorulur.
 
-## 6. Sık yapılan hatalar
+## 6. MVP kapsamıyla derleme (kapsam B)
+
+İlk Play sürümü **MVP** olacak: Kur'an, hadis, dualar, ilahi, Ramazan modülü, AI ve
+premium kapalı; vakitler, bildirimler, kıble, tesbih, hicri takvim ve ayarlar açık.
+
+`config/release.json` dosyasına şu satırları ekleyin (dosya depoya girmez):
+
+```json
+{
+  "EZANAI_API_BASE": "",
+  "FIREBASE_ENABLED": true,
+  "FEATURE_QURAN": false,
+  "FEATURE_HADITH": false,
+  "FEATURE_DUA": false,
+  "FEATURE_ILAHI": false,
+  "FEATURE_RAMADAN": false,
+  "FEATURE_AI": false,
+  "FEATURE_PREMIUM": false,
+  "FEATURE_SYNC": false,
+  "PRIVACY_URL": "https://KULLANICI.github.io/ezanapp/privacy.html",
+  "TERMS_URL": "https://KULLANICI.github.io/ezanapp/terms.html",
+  "WEBSITE_URL": "https://KULLANICI.github.io/ezanapp/"
+}
+```
+
+```bash
+flutter build appbundle --release --dart-define-from-file=config/release.json
+```
+
+Kapatılan modüllerin **sekmesi**, ana ekran kartları, hızlı erişim girişleri ve "Daha
+Fazla" menüsündeki döşemeler görünmez; kapalı bir yola gelen bağlantı (ör. eski bir
+bildirim) ana sayfaya yönlendirilir. Bu davranış `test/widget/mvp_mode_test.dart`
+ile CI'da doğrulanır.
+
+Sonraki sürümde bir modülü açmak için tek yapılacak: ilgili `FEATURE_*` değerini
+`true` yapmak (kod değişikliği gerekmez).
+
+## 7. Gizlilik politikasını yayımlama (GitHub Pages)
+
+Play Console, geçerli bir **gizlilik politikası adresi** ister. Adres depoda hazır
+duruyor: `docs/privacy.html` (+ `docs/terms.html`, `docs/index.html`).
+
+1. Bu dalı `main`'e birleştirin (PR ile) — Pages, `main` dalındaki `docs/` klasörünü
+   yayımlar.
+2. GitHub → **Settings → Pages** → *Source*: **Deploy from a branch** →
+   *Branch*: `main`, *Folder*: `/docs` → **Save**.
+3. 1–2 dakika sonra adres canlı olur:
+
+   ```
+   https://KULLANICI.github.io/ezanapp/privacy.html
+   ```
+
+   (`KULLANICI` = GitHub kullanıcı adınız, ör. `yazilimceosu`.)
+4. Play Console → Uygulama içeriği → **Gizlilik politikası** alanına bu adresi girin.
+5. Uygulama içi bağlantıların aynı adrese gitmesi için derlemede
+   `--dart-define=PRIVACY_URL=... --dart-define=TERMS_URL=...` verin (§6).
+
+> `docs/.nojekyll` dosyası eklendi: sayfalar olduğu gibi (araya Jekyll işlemi
+> girmeden) sunulur.
+
+## 8. Sık yapılan hatalar
 
 | Hata | Doğrusu |
 |---|---|
@@ -116,3 +178,5 @@ kapalı teste kayıtlı kalmasını şart koşar. Kurumsal hesaplar bu şartın 
 | Kapalı testi mağaza metinleri hazır olmadan başlatmak | Play, testi başlatmadan önce mağaza girişini eksiksiz ister |
 | Ekran görüntülerini sonraya bırakmak | Kapalı test başvurusu bunlarsız ilerlemez |
 | `google-services.json` olmadan FCM beklemek | Yerel bildirimler çalışır; uzak bildirim için dosya şart |
+| Mağaza açıklamasında kapalı modüllerden söz etmek | Play, listelemenin uygulamayla uyuşmasını ister; MVP metnini kullanın (`docs/MAGAZA_GORSELLERI.md`) |
+| Gizlilik politikası adresini `ezanai.app` bırakmak | Alan adı yayında değilse Pages adresini `PRIVACY_URL` ile verin |

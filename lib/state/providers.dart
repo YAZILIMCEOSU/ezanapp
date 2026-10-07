@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../app/app_runtime.dart';
+import '../core/config/app_features.dart';
 import '../core/constants/app_constants.dart';
 import '../core/errors/app_exception.dart';
 import '../core/services/billing_service.dart';
@@ -696,6 +697,16 @@ final Provider<double> qiblaDirectionProvider = Provider<double>((Ref ref) {
   final UserLocation location = ref.watch(activeLocationProvider);
   return GeoUtils.qiblaBearing(location.latitude, location.longitude);
 });
+
+// ------------------------------------------------------------- Özellik bayrakları
+
+/// Etkin özellik bayrakları (derleme zamanı; testler geçersiz kılabilir).
+///
+/// Kapatılan modüllerin sekmeleri, kartları ve menü girişleri gizlenir
+/// (bkz. `AppFeatures` ve `docs/KURULUM.md` §7).
+final Provider<AppFeatures> appFeaturesProvider = Provider<AppFeatures>(
+  (Ref ref) => AppFeatures.active,
+);
 
 /// Kâbe'ye kuş uçuşu mesafe (km).
 final Provider<double> qiblaDistanceProvider = Provider<double>((Ref ref) {
