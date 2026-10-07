@@ -113,6 +113,8 @@ void main() {
         runtime: runtime,
         times: times,
         features: AppFeatures.mvp,
+        // Günlük zikir özeti veritabanından gelir; yerleşmesi için ek süre.
+        settle: const Duration(seconds: 2),
         verify: () {
           // MVP içerik: vakitler ve günlük zikir özeti görünür.
           expect(find.text('Bugünün vakitleri'), findsWidgets);
