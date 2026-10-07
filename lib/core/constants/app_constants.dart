@@ -2,6 +2,7 @@
 abstract final class AppConstants {
   static const String appName = 'EzanAI';
   static const String tagline = 'Akıllı İslam Asistanı';
+
   /// Destek adresi ve yasal sayfa adresleri.
   ///
   /// Yayın derlemesinde `--dart-define` ile gerçek adreslere çevrilebilir;

@@ -95,7 +95,7 @@ class _MoreScreenState extends ConsumerState<MoreScreen> {
             ),
           ),
           if (features.quran || features.ilahi)
-              const SectionHeader(title: 'İçerik'),
+            const SectionHeader(title: 'İçerik'),
           if (features.quran)
             const _Tile(
               icon: Icons.menu_book_outlined,
@@ -110,9 +110,7 @@ class _MoreScreenState extends ConsumerState<MoreScreen> {
               subtitle: 'Kategori, çalma listesi, çevrimdışı indirme',
               route: AppRoutes.ilahi,
             ),
-          SectionHeader(
-            title: features.ai ? 'Asistan ve Ayarlar' : 'Ayarlar',
-          ),
+          SectionHeader(title: features.ai ? 'Asistan ve Ayarlar' : 'Ayarlar'),
           if (features.ai)
             const _Tile(
               icon: Icons.auto_awesome_outlined,

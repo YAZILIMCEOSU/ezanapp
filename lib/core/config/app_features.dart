@@ -99,7 +99,8 @@ class AppFeatures {
   /// Yönlendirme (redirect) ve menü süzme aynı kuralı kullanır; böylece
   /// "girişi gizledim ama yol açık kaldı" durumu oluşmaz.
   bool allows(String location) {
-    if (!quran && (location.startsWith('/quran') || location.startsWith('/kuran'))) {
+    if (!quran &&
+        (location.startsWith('/quran') || location.startsWith('/kuran'))) {
       return false;
     }
     if (!hadith && location.startsWith('/hadis')) return false;

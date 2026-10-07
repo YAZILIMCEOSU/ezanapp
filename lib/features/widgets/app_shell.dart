@@ -8,7 +8,12 @@ import '../../state/providers.dart';
 import 'prayer_countdown_chip.dart';
 
 /// Alt gezinme çubuğunda görünecek sekme tanımı.
-typedef ShellTab = ({int branch, String label, IconData icon, IconData activeIcon});
+typedef ShellTab = ({
+  int branch,
+  String label,
+  IconData icon,
+  IconData activeIcon,
+});
 
 /// Etkin özellik bayraklarına göre sekmeleri döner.
 ///

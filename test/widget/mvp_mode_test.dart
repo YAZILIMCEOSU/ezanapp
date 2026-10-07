@@ -4,7 +4,6 @@ import 'package:ezanai/features/home/home_screen.dart';
 import 'package:ezanai/features/more/more_screen.dart';
 import 'package:ezanai/features/widgets/app_shell.dart';
 import 'package:ezanai/state/providers.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../support/test_runtime.dart';
@@ -19,27 +18,31 @@ void main() {
   group('sekme süzme', () {
     test('tam kapsamda beş sekme, sıraları korunarak görünür', () {
       final List<ShellTab> tabs = shellTabs(const AppFeatures());
-      expect(
-        tabs.map((ShellTab tab) => tab.label).toList(),
-        <String>['Ana Sayfa', 'Vakitler', 'Kur\'an', 'İlahi', 'Daha Fazla'],
-      );
-      expect(
-        tabs.map((ShellTab tab) => tab.branch).toList(),
-        <int>[0, 1, 2, 3, 4],
-      );
+      expect(tabs.map((ShellTab tab) => tab.label).toList(), <String>[
+        'Ana Sayfa',
+        'Vakitler',
+        'Kur\'an',
+        'İlahi',
+        'Daha Fazla',
+      ]);
+      expect(tabs.map((ShellTab tab) => tab.branch).toList(), <int>[
+        0,
+        1,
+        2,
+        3,
+        4,
+      ]);
     });
 
     test('MVP kapsamında içerik sekmeleri gizlenir', () {
       final List<ShellTab> tabs = shellTabs(AppFeatures.mvp);
-      expect(
-        tabs.map((ShellTab tab) => tab.label).toList(),
-        <String>['Ana Sayfa', 'Vakitler', 'Daha Fazla'],
-      );
+      expect(tabs.map((ShellTab tab) => tab.label).toList(), <String>[
+        'Ana Sayfa',
+        'Vakitler',
+        'Daha Fazla',
+      ]);
       // Sekme sırası StatefulShellRoute dal sırasıdır; "Daha Fazla" 4. daldır.
-      expect(
-        tabs.map((ShellTab tab) => tab.branch).toList(),
-        <int>[0, 1, 4],
-      );
+      expect(tabs.map((ShellTab tab) => tab.branch).toList(), <int>[0, 1, 4]);
     });
 
     test('kapalı modüllerin yolları yönlendirilir, açık olanlar kalır', () {
