@@ -113,6 +113,9 @@ void main() {
         runtime: runtime,
         times: times,
         features: AppFeatures.mvp,
+        // Sliver'lar tembel çizilir: kartların tamamının kurulması için geniş
+        // ekran kullanılır (telefonda alt kartlar görünür alana girmez).
+        size: TestScreens.tablet,
         // Günlük zikir özeti veritabanından gelir; yerleşmesi için ek süre.
         settle: const Duration(seconds: 2),
         verify: () {
