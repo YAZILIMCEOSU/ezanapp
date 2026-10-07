@@ -327,12 +327,12 @@ class _QuickActionTile extends StatelessWidget {
                 ),
                 child: Icon(icon, size: 18, color: color),
               ),
-              // Etiket esnektir: küçük ekranlarda iki satıra sığmazsa kırpılır,
-              // kutu taşmaz (Spacer ile birlikte taşma veriyordu).
+              // Etiket esnektir: küçük ekranlarda sığmazsa kırpılır, kutu
+              // taşmaz (Spacer + iki satıra kayan etiket taşma veriyordu).
               Flexible(
                 child: Text(
                   label,
-                  maxLines: 2,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.labelMedium?.copyWith(
                     fontWeight: FontWeight.w700,
