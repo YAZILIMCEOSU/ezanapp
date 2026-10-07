@@ -1,11 +1,11 @@
-# CI raporu (2026-10-05 13:45 UTC)
+# CI raporu (2026-10-07 09:35 UTC)
 
 | adım | sonuç |
 |---|---|
 | pub get | success |
 | format | success |
-| analyze | failure |
-| test | failure |
+| analyze | success |
+| test | success |
 | test (uzak AI sözleşmesi) | success |
 | build (debug apk) | success |
 | build (release appbundle) | success |
@@ -15,10 +15,10 @@
 Resolving dependencies...
 Downloading packages...
 + _flutterfire_internals 1.3.77
-+ app_links 7.2.1
-+ app_links_linux 1.0.3
++ app_links 7.2.2
++ app_links_linux 1.0.4
 + app_links_platform_interface 2.0.4
-+ app_links_web 1.0.4
++ app_links_web 1.0.5
 + args 2.7.0
 + async 2.13.1
 + audio_service 0.18.19
@@ -38,7 +38,7 @@ Downloading packages...
 + convert 3.1.2
 + cross_file 0.3.5+5 (0.4.0 available)
 + crypto 3.0.7
-+ cupertino_ui 1.1.1
++ cupertino_ui 1.1.2
 + dart_jsonwebtoken 3.4.1
 + dbus 0.7.15 (0.8.0 available)
 + device_info_plus 13.3.0
@@ -107,7 +107,6 @@ Downloading packages...
 + google_mobile_ads 9.1.0
 + gotrue 2.27.2
 + gsettings 0.2.8 (0.2.9 available)
-+ gtk 2.2.0
 + hooks 2.2.0
 + http 1.6.0
 + http_parser 4.1.2
@@ -117,7 +116,7 @@ Downloading packages...
 + in_app_purchase_storekit 0.4.13
 + intl 0.20.3
 + jni 1.1.0
-+ jni_flutter 1.0.3
++ jni_flutter 1.0.4+1
 + jni_util 1.0.0
 + js 0.7.2
 + json_annotation 4.12.0
@@ -133,7 +132,7 @@ Downloading packages...
 + logging 1.3.0
 + matcher 0.12.20
 + material_color_utilities 0.13.0 (0.13.1 available)
-+ material_ui 1.5.0
++ material_ui 1.6.0
 + meta 1.19.0
 + mime 2.1.0
 + native_toolchain_c 0.19.5
@@ -164,7 +163,7 @@ Downloading packages...
 + scrollable_positioned_list 0.3.8
 + share_plus 13.3.1
 + share_plus_platform_interface 7.2.0
-+ shared_preferences 2.5.5
++ shared_preferences 2.5.6
 + shared_preferences_android 2.4.28
 + shared_preferences_foundation 2.5.7
 + shared_preferences_linux 2.4.1
@@ -173,9 +172,9 @@ Downloading packages...
 + shared_preferences_windows 2.4.1
 + sky_engine 0.0.0 from sdk flutter
 + source_span 1.10.2
-+ sqflite 2.4.4
++ sqflite 2.4.4+1
 + sqflite_android 2.4.4
-+ sqflite_common 2.5.13
++ sqflite_common 2.5.13+1
 + sqflite_common_ffi 2.4.3
 + sqflite_darwin 2.4.4
 + sqflite_platform_interface 2.4.2
@@ -219,7 +218,7 @@ Downloading packages...
 + xml 7.1.0
 + yaml 3.1.4
 + yet_another_json_isolate 2.1.1
-Changed 205 dependencies!
+Changed 204 dependencies!
 8 packages have newer versions incompatible with dependency constraints.
 Try `flutter pub outdated` for more information.
 Upgrading analysis_options.yaml to exclude build and platform directories.
@@ -231,20 +230,13 @@ Upgrading analysis_options.yaml to exclude build and platform directories.
 Computing fixes in ezanapp...
 Nothing to fix!
 == dart format ==
-Formatted 104 files (0 changed) in 1.02 seconds.
+Formatted 104 files (0 changed) in 0.89 seconds.
 ```
 
 ## analyze
 ```
 Analyzing ezanapp...                                            
-
-  error • The name 'RenderFlex' isn't defined, so it can't be used in an 'is' expression. Try changing the name to the name of an existing type, or creating a type with the name 'RenderFlex' • test/support/test_runtime.dart:343:20 • type_test_with_undefined_name
-  error • The getter 'hasSize' isn't defined for the type 'RenderObject'. Try importing the library that defines 'hasSize', correcting the name to the name of an existing getter, or defining a getter or field named 'hasSize' • test/support/test_runtime.dart:343:42 • undefined_getter
-  error • The getter 'direction' isn't defined for the type 'RenderObject'. Try importing the library that defines 'direction', correcting the name to the name of an existing getter, or defining a getter or field named 'direction' • test/support/test_runtime.dart:344:36 • undefined_getter
-  error • The getter 'size' isn't defined for the type 'RenderObject'. Try importing the library that defines 'size', correcting the name to the name of an existing getter, or defining a getter or field named 'size' • test/support/test_runtime.dart:346:18 • undefined_getter
-  error • The getter 'size' isn't defined for the type 'RenderObject'. Try importing the library that defines 'size', correcting the name to the name of an existing getter, or defining a getter or field named 'size' • test/support/test_runtime.dart:347:18 • undefined_getter
-
-5 issues found. (ran in 20.7s)
+No issues found! (ran in 17.1s)
 ```
 
 ## test
@@ -286,194 +278,158 @@ Analyzing ezanapp...
   Skip: EZANAI_API_BASE tanımlı değil
 00:01 +24 ~5: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında uzak yanıtlara da öneri soruları eklenir
   Skip: EZANAI_API_BASE tanımlı değil
-test/support/test_runtime.dart:343:20: Error: 'RenderFlex' isn't a type.
-    if (object is! RenderFlex || !object.hasSize) continue;
-                   ^^^^^^^^^^
-test/support/test_runtime.dart:343:42: Error: The getter 'hasSize' isn't defined for the type 'RenderObject'.
- - 'RenderObject' is from 'package:flutter/src/rendering/object.dart' ('/opt/hostedtoolcache/flutter/stable-3.47.6-x64/flutter/packages/flutter/lib/src/rendering/object.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'hasSize'.
-    if (object is! RenderFlex || !object.hasSize) continue;
-                                         ^^^^^^^
-test/support/test_runtime.dart:344:36: Error: The getter 'direction' isn't defined for the type 'RenderObject'.
- - 'RenderObject' is from 'package:flutter/src/rendering/object.dart' ('/opt/hostedtoolcache/flutter/stable-3.47.6-x64/flutter/packages/flutter/lib/src/rendering/object.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'direction'.
-    final bool horizontal = object.direction == Axis.horizontal;
-                                   ^^^^^^^^^
-test/support/test_runtime.dart:346:18: Error: The getter 'size' isn't defined for the type 'RenderObject'.
- - 'RenderObject' is from 'package:flutter/src/rendering/object.dart' ('/opt/hostedtoolcache/flutter/stable-3.47.6-x64/flutter/packages/flutter/lib/src/rendering/object.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'size'.
-        ? object.size.width
-                 ^^^^
-test/support/test_runtime.dart:347:18: Error: The getter 'size' isn't defined for the type 'RenderObject'.
- - 'RenderObject' is from 'package:flutter/src/rendering/object.dart' ('/opt/hostedtoolcache/flutter/stable-3.47.6-x64/flutter/packages/flutter/lib/src/rendering/object.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'size'.
-        : object.size.height;
-                 ^^^^
-00:01 +24 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings varsayılan ayarlar Diyanet yöntemini kullanır
-00:01 +25 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings JSON gidiş-dönüşü değerleri korur
-00:01 +26 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings bozuk yedek varsayılanlara döner
-00:01 +26 ~6 -1: loading /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart [E]
-  Failed to load "/home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart":
-  Compilation failed for testPath=/home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: test/support/test_runtime.dart:343:20: Error: 'RenderFlex' isn't a type.
-      if (object is! RenderFlex || !object.hasSize) continue;
-                     ^^^^^^^^^^
-  test/support/test_runtime.dart:343:42: Error: The getter 'hasSize' isn't defined for the type 'RenderObject'.
-   - 'RenderObject' is from 'package:flutter/src/rendering/object.dart' ('/opt/hostedtoolcache/flutter/stable-3.47.6-x64/flutter/packages/flutter/lib/src/rendering/object.dart').
-  Try correcting the name to the name of an existing getter, or defining a getter or field named 'hasSize'.
-      if (object is! RenderFlex || !object.hasSize) continue;
-                                           ^^^^^^^
-  test/support/test_runtime.dart:344:36: Error: The getter 'direction' isn't defined for the type 'RenderObject'.
-   - 'RenderObject' is from 'package:flutter/src/rendering/object.dart' ('/opt/hostedtoolcache/flutter/stable-3.47.6-x64/flutter/packages/flutter/lib/src/rendering/object.dart').
-  Try correcting the name to the name of an existing getter, or defining a getter or field named 'direction'.
-      final bool horizontal = object.direction == Axis.horizontal;
-                                     ^^^^^^^^^
-  test/support/test_runtime.dart:346:18: Error: The getter 'size' isn't defined for the type 'RenderObject'.
-   - 'RenderObject' is from 'package:flutter/src/rendering/object.dart' ('/opt/hostedtoolcache/flutter/stable-3.47.6-x64/flutter/packages/flutter/lib/src/rendering/object.dart').
-  Try correcting the name to the name of an existing getter, or defining a getter or field named 'size'.
-          ? object.size.width
-                   ^^^^
-  test/support/test_runtime.dart:347:18: Error: The getter 'size' isn't defined for the type 'RenderObject'.
-   - 'RenderObject' is from 'package:flutter/src/rendering/object.dart' ('/opt/hostedtoolcache/flutter/stable-3.47.6-x64/flutter/packages/flutter/lib/src/rendering/object.dart').
-  Try correcting the name to the name of an existing getter, or defining a getter or field named 'size'.
-          : object.size.height;
-                   ^^^^
-  .
-00:01 +27 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings Hanefî ikindi yalnızca desteklenen yöntemlerde uygulanır
-00:01 +28 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings manuel düzeltmeler her yöntemde aktarılır
-00:01 +29 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: CalculationMethod bilinmeyen kimlik Diyanet'e döner
-00:01 +30 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: CalculationMethod tüm yöntemler geçerli açılara sahip
-00:01 +31 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils Kâbe yönü Türkiye için güneydoğuyu gösterir
-00:01 +32 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils Kâbe koordinatında mesafe sıfıra yakındır
-00:01 +33 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils İstanbul-Kâbe mesafesi ~2400 km
-00:01 +34 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar (setUpAll)
-00:01 +34 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar bugünü hicri tarihe çevirir
-00:01 +35 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar gün farkı hesabı ve geri dönüş tutarlı
-00:01 +36 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar ay uzunluğu 29 veya 30 gündür
-00:01 +37 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar Ramazan başlangıcı hicri 9. ayın 1. günüdür
-00:01 +38 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar (tearDownAll)
-00:01 +38 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay sıralı veri sağlıklı kabul edilir
-00:01 +39 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay sonraki vakit ve içinde bulunulan vakit doğru bulunur
-00:01 +40 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay bozuk veri sağlıksız kabul edilir
-00:01 +41 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay JSON gidiş-dönüşü vakitleri korur
-00:04 +42 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: (setUpAll)
-00:04 +42 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: kategoriler tanımlı ve benzersiz
-00:04 +43 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: en az 30 dua var ve kimlikler benzersiz
-00:04 +44 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duada ad, okunuş, meal ve kategori dolu
-00:04 +45 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duada kaynak künyesi var
-00:04 +46 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: kaynak künyeleri ya Kur'an ya muteber hadis kaynağına dayanır
-00:04 +47 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duanın kategorisi kategori listesinde tanımlı
-00:04 +48 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her kategoride en az bir dua var (boş sekme olmasın)
-00:04 +49 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: Kur'an kaynaklı duaların künyesi sure/ayet içerir
-00:04 +50 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: Arapça metin içeren dualar Arapça alfabede
-00:04 +51 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: katalogda arama ve kategori süzme çalışıyor
-00:04 +52 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: (tearDownAll)
-00:04 +52 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı en az 20 kayıt ve benzersiz kimlikler
-00:04 +53 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı her kayıtta başlık, cevap, anahtar kelime ve kaynak var
-00:04 +54 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı anahtar kelimeler küçük harf ve ASCII (arama uyumu)
-00:04 +55 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı anahtar kelimeler yeterince ayırt edici
-00:04 +56 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı ilişkili kayıt kimlikleri geçerli
-00:04 +57 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı mezhep farkı notları en az birkaç kayıtta bulunur
-00:04 +58 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı kaynak künyeleri kaynak türüne ayrılabiliyor
-00:04 +59 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi namaz rekatı sorusu doğru kayda gider
-00:04 +60 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi abdest sorusu doğru kayda gider
-00:04 +61 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi zekât sorusu doğru kayda gider
-00:04 +62 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi kıble sorusu doğru kayda gider
-00:04 +63 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi Türkçe karakter ve büyük harf farkı eşleşmeyi bozmaz
-00:04 +64 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi her yerel cevap kaynak, uyarı ve mezhep bilgisi taşır
-00:04 +65 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi konu kelimesi genel kelimelere üstün gelir (vitir/teravih)
-00:04 +66 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi ayırt edici kelime puanı, genel kelimelerden yüksektir
-00:04 +67 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi harf düşmesi olan sorular da eşleşir (hatim → hatmi)
-00:04 +68 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi Kâbe yönü sorusu kıble kaydına gider
-00:04 +69 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi önerilen sorular kimlik değil, okunabilir başlık olarak döner
-00:04 +70 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi kayda uymayan soru için uydurma cevap üretilmez
-00:04 +71 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi soru boşsa eşleşme yapılmaz
-00:04 +72 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi paylaşım metni kaynakları ve mezhep notlarını içerir
-00:05 +73 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri yedi gün × altı vakit için kimlikler benzersiz
-00:05 +74 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri kimlikler ilgili aralıkta kalır
-00:05 +75 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri vakit kimlikleri tekil bildirim kimlikleriyle çakışmaz
-00:05 +76 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim yönlendirme yükü her hedef kendi yüküyle ayrışır
-00:05 +77 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim yönlendirme yükü ayrıntılı yükler ve tanımsız yükler güvenli
-00:05 +78 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları varsayılan olarak güneş vakti bildirilmez
-00:05 +79 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları kullanıcı bir vakti kapatabilir
-00:05 +80 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları bildirimler tümden kapatılınca hiçbir vakit bildirilmez
-00:05 +81 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları eksik ayar güvenli tarafta kalır (kapalı sayılır)
-00:05 +82 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu varsayılan sessiz saat kapalı
-00:05 +83 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu sessiz saat aralığı gece yarısını aşabilir
-00:05 +84 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu uyku modu 22:00–07:00 arasını kapsar
-00:05 +85 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu öğle vakti sessiz saate girmez
-00:05 +86 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı ön hatırlatma varsayılan olarak kapalı
-00:05 +87 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı ön hatırlatma dakikası ayarlanabilir
-00:05 +88 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı zamanlanan gün sayısı makul aralıkta
-test/support/test_runtime.dart:343:20: Error: 'RenderFlex' isn't a type.
-    if (object is! RenderFlex || !object.hasSize) continue;
-                   ^^^^^^^^^^
-test/support/test_runtime.dart:343:42: Error: The getter 'hasSize' isn't defined for the type 'RenderObject'.
- - 'RenderObject' is from 'package:flutter/src/rendering/object.dart' ('/opt/hostedtoolcache/flutter/stable-3.47.6-x64/flutter/packages/flutter/lib/src/rendering/object.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'hasSize'.
-    if (object is! RenderFlex || !object.hasSize) continue;
-                                         ^^^^^^^
-test/support/test_runtime.dart:344:36: Error: The getter 'direction' isn't defined for the type 'RenderObject'.
- - 'RenderObject' is from 'package:flutter/src/rendering/object.dart' ('/opt/hostedtoolcache/flutter/stable-3.47.6-x64/flutter/packages/flutter/lib/src/rendering/object.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'direction'.
-    final bool horizontal = object.direction == Axis.horizontal;
-                                   ^^^^^^^^^
-test/support/test_runtime.dart:346:18: Error: The getter 'size' isn't defined for the type 'RenderObject'.
- - 'RenderObject' is from 'package:flutter/src/rendering/object.dart' ('/opt/hostedtoolcache/flutter/stable-3.47.6-x64/flutter/packages/flutter/lib/src/rendering/object.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'size'.
-        ? object.size.width
-                 ^^^^
-test/support/test_runtime.dart:347:18: Error: The getter 'size' isn't defined for the type 'RenderObject'.
- - 'RenderObject' is from 'package:flutter/src/rendering/object.dart' ('/opt/hostedtoolcache/flutter/stable-3.47.6-x64/flutter/packages/flutter/lib/src/rendering/object.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'size'.
-        : object.size.height;
-                 ^^^^
-00:05 +89 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Türkçe karakterleri sadeleştirir
-00:05 +90 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer kelimelere ayırır ve kısa kelimeleri atar
-00:05 +91 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer ekleri kaba biçimde kırpar
-00:05 +92 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer eşleştirme aksan ve ek farklarını tolere eder
-00:05 +93 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Arapça harekeleri kaldırır
-00:05 +94 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer yüzde biçimi
-00:05 +95 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime geri sayım ve dijital sayaç biçimi
-00:05 +96 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime 24 saat ve 12 saat biçimi
-00:05 +97 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime gün karşılaştırması
-00:05 +98 ~6 -2: loading /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart [E]
-  Failed to load "/home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart":
-  Compilation failed for testPath=/home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: test/support/test_runtime.dart:343:20: Error: 'RenderFlex' isn't a type.
-      if (object is! RenderFlex || !object.hasSize) continue;
-                     ^^^^^^^^^^
-  test/support/test_runtime.dart:343:42: Error: The getter 'hasSize' isn't defined for the type 'RenderObject'.
-   - 'RenderObject' is from 'package:flutter/src/rendering/object.dart' ('/opt/hostedtoolcache/flutter/stable-3.47.6-x64/flutter/packages/flutter/lib/src/rendering/object.dart').
-  Try correcting the name to the name of an existing getter, or defining a getter or field named 'hasSize'.
-      if (object is! RenderFlex || !object.hasSize) continue;
-                                           ^^^^^^^
-  test/support/test_runtime.dart:344:36: Error: The getter 'direction' isn't defined for the type 'RenderObject'.
-   - 'RenderObject' is from 'package:flutter/src/rendering/object.dart' ('/opt/hostedtoolcache/flutter/stable-3.47.6-x64/flutter/packages/flutter/lib/src/rendering/object.dart').
-  Try correcting the name to the name of an existing getter, or defining a getter or field named 'direction'.
-      final bool horizontal = object.direction == Axis.horizontal;
-                                     ^^^^^^^^^
-  test/support/test_runtime.dart:346:18: Error: The getter 'size' isn't defined for the type 'RenderObject'.
-   - 'RenderObject' is from 'package:flutter/src/rendering/object.dart' ('/opt/hostedtoolcache/flutter/stable-3.47.6-x64/flutter/packages/flutter/lib/src/rendering/object.dart').
-  Try correcting the name to the name of an existing getter, or defining a getter or field named 'size'.
-          ? object.size.width
-                   ^^^^
-  test/support/test_runtime.dart:347:18: Error: The getter 'size' isn't defined for the type 'RenderObject'.
-   - 'RenderObject' is from 'package:flutter/src/rendering/object.dart' ('/opt/hostedtoolcache/flutter/stable-3.47.6-x64/flutter/packages/flutter/lib/src/rendering/object.dart').
-  Try correcting the name to the name of an existing getter, or defining a getter or field named 'size'.
-          : object.size.height;
-                   ^^^^
-  .
-00:08 +98 ~6 -2: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: (setUpAll)
-00:08 +98 ~6 -2: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: doğrulama verisi yüklendi
-00:08 +99 ~6 -2: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: yerel hesap, Diyanet vakitlerine ±3 dakika içinde kalır
-00:08 +100 ~6 -2: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: vakitler gün içinde artan sırada
-00:08 +101 ~6 -2: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: Hanefî ikindi vakti Şâfiî'den sonra olur
-00:08 +102 ~6 -2: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: yüksek enlemlerde gece ortası kuralı vakit üretir
-00:08 +103 ~6 -2: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: (tearDownAll)
-00:08 +103 ~6 -2: Some tests failed.
-
-Failing tests:
-  /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: loading /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart
-  /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: loading /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart
+00:03 +24 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings varsayılan ayarlar Diyanet yöntemini kullanır
+00:03 +25 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings JSON gidiş-dönüşü değerleri korur
+00:03 +26 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings bozuk yedek varsayılanlara döner
+00:03 +27 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings Hanefî ikindi yalnızca desteklenen yöntemlerde uygulanır
+00:03 +28 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings manuel düzeltmeler her yöntemde aktarılır
+00:03 +29 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: CalculationMethod bilinmeyen kimlik Diyanet'e döner
+00:03 +30 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: CalculationMethod tüm yöntemler geçerli açılara sahip
+00:03 +31 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils Kâbe yönü Türkiye için güneydoğuyu gösterir
+00:03 +32 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils Kâbe koordinatında mesafe sıfıra yakındır
+00:03 +33 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils İstanbul-Kâbe mesafesi ~2400 km
+00:03 +34 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar (setUpAll)
+00:03 +34 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar bugünü hicri tarihe çevirir
+00:03 +35 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar gün farkı hesabı ve geri dönüş tutarlı
+00:03 +36 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar ay uzunluğu 29 veya 30 gündür
+00:03 +37 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar Ramazan başlangıcı hicri 9. ayın 1. günüdür
+00:03 +38 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar (tearDownAll)
+00:03 +38 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay sıralı veri sağlıklı kabul edilir
+00:03 +39 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay sonraki vakit ve içinde bulunulan vakit doğru bulunur
+00:03 +40 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay bozuk veri sağlıksız kabul edilir
+00:03 +41 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay JSON gidiş-dönüşü vakitleri korur
+00:04 +42 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: (setUpAll)
+00:04 +42 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: zincir sırası Diyanet resmî verisi ilk sırada kullanılır ve önbelleğe yazılır
+00:04 +43 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: zincir sırası Diyanet başarısızsa AlAdhan devreye girer
+00:04 +44 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: zincir sırası her iki servis de çökerse yerel hesap devreye girer
+00:04 +45 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: zincir sırası tutarsız (bozuk) servis verisi reddedilir ve zincir devam eder
+00:04 +46 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış çevrimdışıyken son başarılı veri önbellekten okunur
+00:04 +47 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış süresi geçmiş (6 saatten eski) önbellek kullanılmaz
+00:04 +48 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış çevrimdışı ve önbellek boşsa yerel hesap sonuç üretir
+00:04 +49 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış ilçe seçilmemişse (GPS) resmî servis çağrılmaz, hesap kullanılır
+00:04 +50 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış bellek önbelleği aynı gün için tekrar sorguda ağa çıkmaz
+00:04 +51 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış zorla yenileme önbelleği atlar
+00:04 +52 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: aralık (haftalık/aylık tablo) önbellek aralığı kapsıyorsa ağa çıkılmaz
+00:04 +53 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: aralık (haftalık/aylık tablo) önbellek yoksa çevrimdışı aralık yerel hesapla doldurulur
+00:04 +54 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) resmî yanıt çözümlenir (zarf + hicri tarih)
+00:04 +55 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) 5xx yanıtı geçici hata olarak bildirilir
+00:04 +56 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) bozuk JSON çökme yerine kaynak hatası üretir
+00:04 +57 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) ilçe kimliği yoksa servis çağrılmadan hata verir
+00:04 +58 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) AlAdhan yanıtı çözümlenir ve hicri etiket üretilir
+00:04 +59 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) AlAdhan boş vakit verisinde hata üretir
+00:04 +60 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: kaynak bilgisi (kullanıcı mesajları) resmî veri varken son güncelleme bilgisi gösterilir
+00:04 +61 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: kaynak bilgisi (kullanıcı mesajları) konum seçilmemişse hesap bilgisi gösterilir
+00:04 +62 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: yerel hesap kalibrasyonu Diyanet yöntemiyle İstanbul için tutarlı vakitler üretir
+00:04 +63 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: (tearDownAll)
+00:05 +63 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: (setUpAll)
+00:05 +63 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: kategoriler tanımlı ve benzersiz
+00:05 +64 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: en az 30 dua var ve kimlikler benzersiz
+00:05 +65 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duada ad, okunuş, meal ve kategori dolu
+00:05 +66 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duada kaynak künyesi var
+00:05 +67 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: kaynak künyeleri ya Kur'an ya muteber hadis kaynağına dayanır
+00:05 +68 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duanın kategorisi kategori listesinde tanımlı
+00:05 +69 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her kategoride en az bir dua var (boş sekme olmasın)
+00:05 +70 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: Kur'an kaynaklı duaların künyesi sure/ayet içerir
+00:05 +71 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: Arapça metin içeren dualar Arapça alfabede
+00:05 +72 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: katalogda arama ve kategori süzme çalışıyor
+00:05 +73 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: (tearDownAll)
+00:06 +73 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı en az 20 kayıt ve benzersiz kimlikler
+00:06 +74 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı her kayıtta başlık, cevap, anahtar kelime ve kaynak var
+00:06 +75 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı anahtar kelimeler küçük harf ve ASCII (arama uyumu)
+00:06 +76 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı anahtar kelimeler yeterince ayırt edici
+00:06 +77 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı ilişkili kayıt kimlikleri geçerli
+00:06 +78 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı mezhep farkı notları en az birkaç kayıtta bulunur
+00:06 +79 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı kaynak künyeleri kaynak türüne ayrılabiliyor
+00:06 +80 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi namaz rekatı sorusu doğru kayda gider
+00:06 +81 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi abdest sorusu doğru kayda gider
+00:06 +82 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi zekât sorusu doğru kayda gider
+00:06 +83 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi kıble sorusu doğru kayda gider
+00:06 +84 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi Türkçe karakter ve büyük harf farkı eşleşmeyi bozmaz
+00:06 +85 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi her yerel cevap kaynak, uyarı ve mezhep bilgisi taşır
+00:06 +86 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi konu kelimesi genel kelimelere üstün gelir (vitir/teravih)
+00:06 +87 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi ayırt edici kelime puanı, genel kelimelerden yüksektir
+00:06 +88 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi harf düşmesi olan sorular da eşleşir (hatim → hatmi)
+00:06 +89 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi Kâbe yönü sorusu kıble kaydına gider
+00:06 +90 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi önerilen sorular kimlik değil, okunabilir başlık olarak döner
+00:06 +91 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi kayda uymayan soru için uydurma cevap üretilmez
+00:06 +92 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi soru boşsa eşleşme yapılmaz
+00:06 +93 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi paylaşım metni kaynakları ve mezhep notlarını içerir
+00:07 +94 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri yedi gün × altı vakit için kimlikler benzersiz
+00:07 +95 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri kimlikler ilgili aralıkta kalır
+00:07 +96 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri vakit kimlikleri tekil bildirim kimlikleriyle çakışmaz
+00:07 +97 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim yönlendirme yükü her hedef kendi yüküyle ayrışır
+00:07 +98 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim yönlendirme yükü ayrıntılı yükler ve tanımsız yükler güvenli
+00:07 +99 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları varsayılan olarak güneş vakti bildirilmez
+00:07 +100 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları kullanıcı bir vakti kapatabilir
+00:07 +101 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları bildirimler tümden kapatılınca hiçbir vakit bildirilmez
+00:07 +102 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları eksik ayar güvenli tarafta kalır (kapalı sayılır)
+00:07 +103 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu varsayılan sessiz saat kapalı
+00:07 +104 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu sessiz saat aralığı gece yarısını aşabilir
+00:07 +105 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu uyku modu 22:00–07:00 arasını kapsar
+00:07 +106 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu öğle vakti sessiz saate girmez
+00:07 +107 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı ön hatırlatma varsayılan olarak kapalı
+00:07 +108 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı ön hatırlatma dakikası ayarlanabilir
+00:07 +109 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı zamanlanan gün sayısı makul aralıkta
+00:07 +110 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Türkçe karakterleri sadeleştirir
+00:07 +111 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer kelimelere ayırır ve kısa kelimeleri atar
+00:07 +112 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer ekleri kaba biçimde kırpar
+00:07 +113 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer eşleştirme aksan ve ek farklarını tolere eder
+00:07 +114 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Arapça harekeleri kaldırır
+00:07 +115 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer yüzde biçimi
+00:07 +116 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime geri sayım ve dijital sayaç biçimi
+00:07 +117 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime 24 saat ve 12 saat biçimi
+00:07 +118 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime gün karşılaştırması
+00:08 +119 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: (setUpAll)
+00:08 +119 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
+00:09 +120 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
+00:09 +121 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
+00:09 +122 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
+00:09 +123 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
+00:09 +124 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
+00:09 +125 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — telefon 411×914
+00:09 +126 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — tablet 1024×1366
+00:09 +127 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakitler — küçük telefon 320×568
+00:09 +128 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakitler — telefon 411×914
+00:09 +129 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakitler — tablet 1024×1366
+00:09 +130 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Kur'an — küçük telefon 320×568
+00:09 +131 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Kur'an — telefon 411×914
+00:10 +132 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Kur'an — tablet 1024×1366
+00:10 +133 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — küçük telefon 320×568
+00:10 +134 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — telefon 411×914
+00:10 +135 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — tablet 1024×1366
+00:10 +136 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — küçük telefon 320×568
+00:10 +137 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — telefon 411×914
+00:10 +138 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — tablet 1024×1366
+00:10 +139 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — küçük telefon 320×568
+00:10 +140 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — telefon 411×914
+00:10 +141 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — tablet 1024×1366
+00:11 +142 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — küçük telefon 320×568
+00:11 +143 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — telefon 411×914
+00:11 +144 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — tablet 1024×1366
+00:11 +145 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — küçük telefon 320×568
+00:11 +146 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — telefon 411×914
+00:11 +147 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — tablet 1024×1366
+00:11 +148 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — küçük telefon 320×568
+00:11 +149 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — telefon 411×914
+00:11 +150 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — tablet 1024×1366
+00:11 +151 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — küçük telefon 320×568
+00:11 +152 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — telefon 411×914
+00:11 +153 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — tablet 1024×1366
+00:11 +154 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — küçük telefon 320×568
+00:11 +155 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — telefon 411×914
+00:11 +156 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — tablet 1024×1366
+00:11 +157 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Dualar: künye özeti ve kategori çipleri görünür
+00:12 +158 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Hadis: başlık ve konu çipleri görünür
+[hadis tanısı] çipler: false · yükleniyor: true · metinler: Hadis metni veya konu ara | Hadisler yükleniyor… | Hadis | Sahih kaynaklardan seçkiler
+00:12 +159 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Zikir: tesbih ekranı sayaç ile çizilir
+00:12 +160 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Vakitler: liste başlığı ve ayar ipucu birlikte görünür
+00:12 +161 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Kur'an: sure listesi yüklenir
+00:12 +162 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Daha Fazla: tüm bölüm girişleri listelenir
+00:12 +163 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir hata görünümü anlaşılır mesaj ve "Tekrar dene" sunar
+00:12 +164 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir izni olmayan hatalarda "Tekrar dene" gösterilmez
+00:12 +165 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir vakitler cihazda hesaplandıysa uyarı şeridi görünür
+00:12 +166 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: (tearDownAll)
+00:12 +166 ~6: All tests passed!
 ```
 
 ## ai
@@ -494,27 +450,48 @@ Failing tests:
 
 ## build
 ```
-Upgrading build.gradle.kts
-Upgrading gradle.properties
-Upgrading gradle.properties
-Running Gradle task 'assembleDebug'...                          
-Warning: Flutter support for your project's Gradle version (8.14.3) will soon be dropped. Please upgrade your Gradle version to a version of at least 9.1.0 soon.
-Alternatively, use the flag "--android-skip-build-dependency-validation" to bypass this check.
-
-Potential fix: Your project's gradle version is typically defined in the gradle wrapper file. By default, this can be found at /home/runner/work/ezanapp/ezanapp/android/gradle/wrapper/gradle-wrapper.properties. 
-For more information, see https://docs.gradle.org/current/userguide/gradle_wrapper.html.
-
-Warning: Flutter support for your project's Android Gradle Plugin version (Android Gradle Plugin version 8.12.1) will soon be dropped. Please upgrade your Android Gradle Plugin version to a version of at least Android Gradle Plugin version 9.0.1 soon.
-Alternatively, use the flag "--android-skip-build-dependency-validation" to bypass this check.
-
-Potential fix: Your project's AGP version is typically defined in the plugins block of the `settings.gradle` file (/home/runner/work/ezanapp/ezanapp/android/settings.gradle), by a plugin with the id of com.android.application. 
-If you don't see a plugins block, your project was likely created with an older template version. In this case it is most likely defined in the top-level build.gradle file (/home/runner/work/ezanapp/ezanapp/android/build.gradle) by the following line in the dependencies block of the buildscript: "classpath 'com.android.tools.build:gradle:<version>'".
-
-Warning: Flutter support for your project's Kotlin version (2.2.20) will soon be dropped. Please upgrade your Kotlin version to a version of at least 2.3.20 soon.
-Alternatively, use the flag "--android-skip-build-dependency-validation" to bypass this check.
-
-Potential fix: Your project's KGP version is typically defined in the plugins block of the `settings.gradle` file (/home/runner/work/ezanapp/ezanapp/android/settings.gradle), by a plugin with the id of org.jetbrains.kotlin.android. 
-If you don't see a plugins block, your project was likely created with an older template version, in which case it is most likely defined in the top-level build.gradle file (/home/runner/work/ezanapp/ezanapp/android/build.gradle) by the ext.kotlin_version property.
+[=============                          ] 33% Unzipping... android-ndk-r28c/ndk-
+[=============                          ] 33% Unzipping... android-ndk-r28c/wrap
+[=============                          ] 33% Unzipping... android-ndk-r28c/ndk-
+[=============                          ] 33% Unzipping... android-ndk-r28c/tool
+[=============                          ] 34% Unzipping... android-ndk-r28c/tool
+[=============                          ] 35% Unzipping... android-ndk-r28c/tool
+[==============                         ] 35% Unzipping... android-ndk-r28c/tool
+[==============                         ] 36% Unzipping... android-ndk-r28c/tool
+[==============                         ] 37% Unzipping... android-ndk-r28c/tool
+[===============                        ] 38% Unzipping... android-ndk-r28c/tool
+[===============                        ] 39% Unzipping... android-ndk-r28c/tool
+[===============                        ] 40% Unzipping... android-ndk-r28c/tool
+[================                       ] 40% Unzipping... android-ndk-r28c/tool
+[================                       ] 41% Unzipping... android-ndk-r28c/tool
+[================                       ] 42% Unzipping... android-ndk-r28c/tool
+[=================                      ] 43% Unzipping... android-ndk-r28c/tool
+[=================                      ] 44% Unzipping... android-ndk-r28c/tool
+[=================                      ] 45% Unzipping... android-ndk-r28c/tool
+[==================                     ] 45% Unzipping... android-ndk-r28c/tool
+[==================                     ] 46% Unzipping... android-ndk-r28c/tool
+[==================                     ] 47% Unzipping... android-ndk-r28c/tool
+[===================                    ] 48% Unzipping... android-ndk-r28c/tool
+[===================                    ] 49% Unzipping... android-ndk-r28c/tool
+[===================                    ] 50% Unzipping... android-ndk-r28c/tool
+[====================                   ] 50% Unzipping... android-ndk-r28c/tool
+[====================                   ] 51% Unzipping... android-ndk-r28c/tool
+[====================                   ] 52% Unzipping... android-ndk-r28c/tool
+[=====================                  ] 53% Unzipping... android-ndk-r28c/tool
+[=====================                  ] 54% Unzipping... android-ndk-r28c/tool
+[=====================                  ] 54% Unzipping... android-ndk-r28c/buil
+[=====================                  ] 54% Unzipping... android-ndk-r28c/sour
+[=====================                  ] 54% Unzipping... android-ndk-r28c/NOTI
+[=====================                  ] 54% Unzipping... android-ndk-r28c/ndk-
+[=====================                  ] 54% Unzipping... android-ndk-r28c/NOTI
+[=====================                  ] 54% Unzipping... android-ndk-r28c/pyth
+[=====================                  ] 54% Unzipping... android-ndk-r28c/preb
+[=====================                  ] 54% Unzipping... android-ndk-r28c/ndk-
+[=====================                  ] 54% Unzipping... android-ndk-r28c/sour
+[=====================                  ] 54% Unzipping... android-ndk-r28c/simp
+[=====================                  ] 55% Unzipping... android-ndk-r28c/simp
+[=====================                  ] 55% Unzipping... android-ndk-r28c/CHAN
+[=======================================] 100% Unzipping... android-ndk-r28c/CHA
 
 Note: /home/runner/.pub-cache/hosted/pub.dev/cloud_firestore-6.10.0/android/src/main/java/io/flutter/plugins/firebase/firestore/utils/PipelineStageHandlers.java uses unchecked or unsafe operations.
 Note: Recompile with -Xlint:unchecked for details.
@@ -531,7 +508,7 @@ Preparing "Install CMake 3.22.1 v.3.22.1".
 Installing CMake 3.22.1 in /usr/local/lib/android/sdk/cmake/3.22.1
 "Install CMake 3.22.1 v.3.22.1" complete.
 "Install CMake 3.22.1 v.3.22.1" finished.
-Running Gradle task 'assembleDebug'...                            382.4s
+Running Gradle task 'assembleDebug'...                            390.6s
 ✓ Built build/app/outputs/flutter-apk/app-debug.apk
 ```
 
@@ -570,6 +547,6 @@ Note: Some input files use or override a deprecated API.
 Note: Recompile with -Xlint:deprecation for details.
 Expected to find fonts for (packages/cupertino_icons/CupertinoIcons, MaterialIcons), but found (MaterialIcons). This usually means you are referring to font families in an IconData class but not including them in the assets section of your pubspec.yaml, are missing the package that would include them, or are missing "uses-material-design: true".
 Font asset "MaterialIcons-Regular.otf" was tree-shaken, reducing it from 1645184 to 25180 bytes (98.5% reduction). Tree-shaking can be disabled by providing the --no-tree-shake-icons flag when building your app.
-Running Gradle task 'bundleRelease'...                            390.6s
+Running Gradle task 'bundleRelease'...                            322.5s
 ✓ Built build/app/outputs/bundle/release/app-release.aab (78.0MB)
 ```
