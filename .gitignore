@@ -52,3 +52,7 @@ coverage/
 # --- İşletim sistemi ---
 .DS_Store
 Thumbs.db
+
+# --- CI paket inceleme çıktıları (pkgdocs.yml üretir; depoda tutulmaz) ---
+.ci/pkgs/
+.ci/deps.txt

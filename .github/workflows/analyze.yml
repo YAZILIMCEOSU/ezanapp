@@ -120,6 +120,27 @@ jobs:
             build/app/outputs/flutter-apk/app-debug.apk
             build/app/outputs/bundle/release/app-release.aab
 
+      # Telefonda denemek için tek tık indirme bağlantısı: debug APK, "dene-apk"
+      # adlı GitHub sürümüne eklenir. Play'e yüklenen dosya (AAB) ayrıdır ve
+      # yukarıdaki artefaktta kalır. Böylece teknik bilgisi olmayan kullanıcı
+      # zip açmak zorunda kalmadan APK'yı indirip kurabilir.
+      - name: Deneme APK'sını indirmeye aç (sürüm dosyası)
+        id: apk_release
+        if: always() && steps.build.outcome == 'success'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          TAG="dene-apk"
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+            gh release create "$TAG" \
+              --title "EzanAI — telefonda deneme sürümü (kurulabilir APK)" \
+              --notes "Bu dosya yalnızca telefonda denemek içindir; mağazaya yüklenmez. Kurulum: dosyayı indirin, telefonda açın, izin isteyince onaylayın ve kurun."
+          fi
+          gh release upload "$TAG" build/app/outputs/flutter-apk/app-debug.apk --clobber
+          gh release view "$TAG" --json assets --jq '.assets[] | "indirmeye hazır: \(.name) (\(.size) bayt)"'
+
       - name: Raporu yaz
         if: always()
         run: |
@@ -136,6 +157,7 @@ jobs:
             echo "| test (uzak AI sözleşmesi) | ${{ steps.ai.outcome }} |"
             echo "| build (debug apk) | ${{ steps.build.outcome }} |"
             echo "| build (release appbundle) | ${{ steps.release.outcome }} |"
+            echo "| dene-apk indirmeye açıldı | ${{ steps.apk_release.outcome }} |"
             for f in pubget fmt analyze test ai build release; do
               if [ -f /tmp/$f.log ]; then
                 echo
