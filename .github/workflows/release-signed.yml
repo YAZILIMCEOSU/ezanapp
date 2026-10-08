@@ -1,0 +1,94 @@
+name: 2) Play'e yüklenecek dosyayı üret (imzalı AAB)
+
+# Play Store'a yüklenen dosyayı (AAB) üretir ve imzalar.
+# Bilgisayara hiçbir şey kurmanız gerekmez. Ayrıntılı anlatım: docs/BASLA.md §7.
+#
+# Gerekli gizli değişkenler (Settings > Secrets and variables > Actions):
+#   KEYSTORE_BASE64     -> "1) İmzalama anahtarı oluştur" işinin ürettiği
+#                          keystore.base64.txt dosyasının tam içeriği
+#   KEYSTORE_PASSWORD   -> anahtarı üretirken seçtiğiniz parola
+#
+# Not: Play, her yüklemede bir öncekinden **büyük** bir sürüm numarası ister.
+# Yüklemeden önce pubspec.yaml dosyasındaki "version: 1.0.0+1" satırındaki
+# +N değerini artırın (ör. +2, +3 ...). Ayrıntı: docs/BASLA.md §7.
+
+on:
+  workflow_dispatch:
+    inputs:
+      kapsam:
+        description: 'Kapsam: mvp = yalnız temel özellikler, tam = tüm özellikler'
+        required: true
+        default: mvp
+        type: choice
+        options:
+          - mvp
+          - tam
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: flutter pub get
+        run: flutter pub get
+
+      - name: İmzalama yapılandırması
+        env:
+          KS_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KS_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          set -e
+          if [ -z "$KS_BASE64" ] || [ -z "$KS_PASSWORD" ]; then
+            echo "::error::KEYSTORE_BASE64 veya KEYSTORE_PASSWORD gizli değişkeni eksik (docs/BASLA.md §6)."
+            exit 1
+          fi
+          printf '%s' "$KS_BASE64" | base64 -d > "$GITHUB_WORKSPACE/android/ezanai-upload.jks"
+          printf 'storePassword=%s\nkeyPassword=%s\nkeyAlias=ezanai\nstoreFile=%s\n' \
+            "$KS_PASSWORD" "$KS_PASSWORD" \
+            "$GITHUB_WORKSPACE/android/ezanai-upload.jks" > android/key.properties
+          echo "İmzalama yapılandırıldı."
+
+      - name: AAB derle (imzalı)
+        run: |
+          set -o pipefail
+          FLAGS=""
+          if [ "${{ inputs.kapsam }}" = "mvp" ]; then
+            FLAGS="--dart-define=FEATURE_QURAN=false \
+              --dart-define=FEATURE_HADITH=false \
+              --dart-define=FEATURE_DUA=false \
+              --dart-define=FEATURE_ILAHI=false \
+              --dart-define=FEATURE_RAMADAN=false \
+              --dart-define=FEATURE_AI=false \
+              --dart-define=FEATURE_PREMIUM=false \
+              --dart-define=FEATURE_SYNC=false"
+            echo "Kapsam: MVP (temel özellikler)"
+          else
+            echo "Kapsam: tam (tüm özellikler)"
+          fi
+          flutter build appbundle --release --no-pub $FLAGS 2>&1 | tail -40
+
+      - name: Anahtarı temizle
+        if: always()
+        run: rm -f android/key.properties android/ezanai-upload.jks
+
+      - name: Sürüm bilgisi
+        run: |
+          VERSION=$(grep -m1 '^version:' pubspec.yaml | awk '{print $2}')
+          echo "Sürüm: $VERSION"
+          ls -lh build/app/outputs/bundle/release/app-release.aab
+
+      - name: Play yükleme dosyasını yükle
+        uses: actions/upload-artifact@v4
+        with:
+          name: play-yukleme-dosyasi
+          retention-days: 30
+          if-no-files-found: error
+          path: build/app/outputs/bundle/release/app-release.aab

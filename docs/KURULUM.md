@@ -1,5 +1,9 @@
 # Bugün ilerleme planı — koddan Play Store'a
 
+> 👉 **Yazılım bilmiyorsan önce `docs/BASLA.md` dosyasını oku.** Bu belge teknik
+> özet/başvuru niteliğindedir; `BASLA.md` aynı işleri "hangi düğmeye basılacak"
+> düzeyinde, sıfırdan anlatır.
+
 Bu belge, **kod tarafı bittiği noktadan** (CI tamamen yeşil) itibaren yapılacakları
 sıraya koyar. Her adımın **sorumlusu** ve **tahmini süresi** yazar.
 
@@ -60,6 +64,12 @@ flutter build appbundle --release     # → build/app/outputs/bundle/release/app
 ⚠️ **Bu anahtarı kaybetme.** Play App Signing kullanıyorsan (önerilir) Play,
 yayın anahtarını kendisi yönetir; senin anahtarın yalnızca "yükleme anahtarı"
 olur. Kaybolursa Play Console'dan sıfırlama talep edilir.
+
+**Komut satırı olmadan üretmek istersen:** depodaki GitHub Actions düğmeleri bunu
+senin yerine yapar — `Actions → 1) İmzalama anahtarı oluştur (bir kez)`, ardından
+`Actions → 2) Play'e yüklenecek dosyayı üret (imzalı AAB)`. Kurulum sırası
+(geçici gizli depo, secret'lar, indirilen dosyaların saklanması) adım adım
+`docs/BASLA.md` §6–7 içindedir.
 
 ⚠️ CI'ın ürettiği `app-release.aab` **tek kullanımlık deneme anahtarıyla**
 imzalanır — Play'e yüklemeyin, sadece derlemenin çalıştığının kanıtıdır.
@@ -167,6 +177,10 @@ duruyor: `docs/privacy.html` (+ `docs/terms.html`, `docs/index.html`).
 
 > `docs/.nojekyll` dosyası eklendi: sayfalar olduğu gibi (araya Jekyll işlemi
 > girmeden) sunulur.
+
+> Depoyu geçici olarak **private** yaptıysan (imzalama anahtarı adımı, `BASLA.md` §6),
+> Pages'i açmadan önce tekrar **public** yapmayı unutma; ücretsiz planda private
+> depoda Pages yayımlanamaz.
 
 ## 8. Sık yapılan hatalar
 
