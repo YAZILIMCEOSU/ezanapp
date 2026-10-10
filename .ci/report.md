@@ -1,4 +1,4 @@
-# CI raporu (2026-10-08 11:34 UTC)
+# CI raporu (2026-10-10 13:04 UTC)
 
 | adım | sonuç |
 |---|---|
@@ -29,9 +29,6 @@ Downloading packages...
 + boolean_selector 2.1.2
 + characters 1.4.1
 + clock 1.1.3
-+ cloud_firestore 6.10.0
-+ cloud_firestore_platform_interface 8.0.7
-+ cloud_firestore_web 5.7.3
 + code_assets 2.1.0
 + collection 1.19.1
 + connectivity_plus 7.3.1 (7.3.2 available)
@@ -57,23 +54,12 @@ Downloading packages...
 + file_selector_platform_interface 2.7.0
 + file_selector_web 0.9.5
 + file_selector_windows 0.9.3+6
-+ firebase_analytics 12.6.0
-+ firebase_analytics_platform_interface 6.0.7
-+ firebase_analytics_web 0.6.1+13
-+ firebase_auth 6.7.0
-+ firebase_auth_platform_interface 9.1.0
-+ firebase_auth_web 6.3.0
 + firebase_core 4.15.0
 + firebase_core_platform_interface 8.1.1
 + firebase_core_web 3.12.0
-+ firebase_crashlytics 5.4.0
-+ firebase_crashlytics_platform_interface 3.9.0
 + firebase_messaging 16.7.0
 + firebase_messaging_platform_interface 4.10.0
 + firebase_messaging_web 4.2.5
-+ firebase_remote_config 6.7.0
-+ firebase_remote_config_platform_interface 3.0.7
-+ firebase_remote_config_web 1.10.14
 + fixnum 1.1.1
 + fl_chart 1.2.0
 + flutter 0.0.0 from sdk flutter
@@ -106,7 +92,7 @@ Downloading packages...
 + glob 2.2.0
 + go_router 18.0.2
 + google_mobile_ads 9.1.0
-+ gotrue 2.27.2
++ gotrue 2.27.3
 + gsettings 0.2.8 (0.2.9 available)
 + hooks 2.2.0
 + http 1.6.0
@@ -114,7 +100,7 @@ Downloading packages...
 + in_app_purchase 3.3.1
 + in_app_purchase_android 0.5.3
 + in_app_purchase_platform_interface 1.4.1
-+ in_app_purchase_storekit 0.4.13
++ in_app_purchase_storekit 0.4.13+1
 + intl 0.20.3
 + jni 1.1.0
 + jni_flutter 1.0.4+1
@@ -157,7 +143,7 @@ Downloading packages...
 + postgrest 2.9.1
 + process 5.0.6
 + pub_semver 2.2.1
-+ realtime_client 2.13.0
++ realtime_client 2.13.1
 + record_use 1.1.1
 + riverpod 3.4.3
 + rxdart 0.28.0
@@ -185,12 +171,12 @@ Downloading packages...
 + storage_client 2.8.1
 + stream_channel 2.1.4
 + string_scanner 1.4.1
-+ supabase 2.16.2
++ supabase 2.16.4
 + supabase_common 0.1.2
-+ supabase_flutter 2.18.0
++ supabase_flutter 2.18.2
 + synchronized 3.4.2
 + term_glyph 1.2.2
-+ test_api 0.7.12 (0.7.14 available)
++ test_api 0.7.12 (0.7.15 available)
 + timezone 0.11.1
 + typed_data 1.4.0
 + url_launcher 6.3.3
@@ -219,7 +205,7 @@ Downloading packages...
 + xml 7.1.0
 + yaml 3.1.4
 + yet_another_json_isolate 2.1.1
-Changed 204 dependencies!
+Changed 190 dependencies!
 8 packages have newer versions incompatible with dependency constraints.
 Try `flutter pub outdated` for more information.
 Upgrading analysis_options.yaml to exclude build and platform directories.
@@ -231,13 +217,13 @@ Upgrading analysis_options.yaml to exclude build and platform directories.
 Computing fixes in ezanapp...
 Nothing to fix!
 == dart format ==
-Formatted 106 files (0 changed) in 0.83 seconds.
+Formatted 106 files (0 changed) in 0.77 seconds.
 ```
 
 ## analyze
 ```
 Analyzing ezanapp...                                            
-No issues found! (ran in 17.2s)
+No issues found! (ran in 17.1s)
 ```
 
 ## test
@@ -300,27 +286,27 @@ No issues found! (ran in 17.2s)
 00:03 +40 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay bozuk veri sağlıksız kabul edilir
 00:03 +41 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay JSON gidiş-dönüşü vakitleri korur
 00:04 +42 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: (setUpAll)
-00:04 +42 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: zincir sırası Diyanet resmî verisi ilk sırada kullanılır ve önbelleğe yazılır
-00:04 +43 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: zincir sırası Diyanet başarısızsa AlAdhan devreye girer
-00:04 +44 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: zincir sırası her iki servis de çökerse yerel hesap devreye girer
-00:04 +45 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: zincir sırası tutarsız (bozuk) servis verisi reddedilir ve zincir devam eder
-00:04 +46 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış çevrimdışıyken son başarılı veri önbellekten okunur
-00:04 +47 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış süresi geçmiş (6 saatten eski) önbellek kullanılmaz
-00:04 +48 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış çevrimdışı ve önbellek boşsa yerel hesap sonuç üretir
-00:04 +49 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış ilçe seçilmemişse (GPS) resmî servis çağrılmaz, hesap kullanılır
-00:04 +50 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış bellek önbelleği aynı gün için tekrar sorguda ağa çıkmaz
-00:04 +51 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış zorla yenileme önbelleği atlar
-00:04 +52 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: aralık (haftalık/aylık tablo) önbellek aralığı kapsıyorsa ağa çıkılmaz
-00:04 +53 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: aralık (haftalık/aylık tablo) önbellek yoksa çevrimdışı aralık yerel hesapla doldurulur
-00:04 +54 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) resmî yanıt çözümlenir (zarf + hicri tarih)
-00:04 +55 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) 5xx yanıtı geçici hata olarak bildirilir
-00:04 +56 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) bozuk JSON çökme yerine kaynak hatası üretir
-00:04 +57 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) ilçe kimliği yoksa servis çağrılmadan hata verir
-00:04 +58 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) AlAdhan yanıtı çözümlenir ve hicri etiket üretilir
-00:04 +59 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) AlAdhan boş vakit verisinde hata üretir
-00:04 +60 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: kaynak bilgisi (kullanıcı mesajları) resmî veri varken son güncelleme bilgisi gösterilir
-00:04 +61 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: kaynak bilgisi (kullanıcı mesajları) konum seçilmemişse hesap bilgisi gösterilir
-00:04 +62 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: yerel hesap kalibrasyonu Diyanet yöntemiyle İstanbul için tutarlı vakitler üretir
+00:05 +42 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: zincir sırası Diyanet resmî verisi ilk sırada kullanılır ve önbelleğe yazılır
+00:05 +43 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: zincir sırası Diyanet başarısızsa AlAdhan devreye girer
+00:05 +44 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: zincir sırası her iki servis de çökerse yerel hesap devreye girer
+00:05 +45 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: zincir sırası tutarsız (bozuk) servis verisi reddedilir ve zincir devam eder
+00:05 +46 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış çevrimdışıyken son başarılı veri önbellekten okunur
+00:05 +47 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış süresi geçmiş (6 saatten eski) önbellek kullanılmaz
+00:05 +48 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış çevrimdışı ve önbellek boşsa yerel hesap sonuç üretir
+00:05 +49 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış ilçe seçilmemişse (GPS) resmî servis çağrılmaz, hesap kullanılır
+00:05 +50 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış bellek önbelleği aynı gün için tekrar sorguda ağa çıkmaz
+00:05 +51 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış zorla yenileme önbelleği atlar
+00:05 +52 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: aralık (haftalık/aylık tablo) önbellek aralığı kapsıyorsa ağa çıkılmaz
+00:05 +53 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: aralık (haftalık/aylık tablo) önbellek yoksa çevrimdışı aralık yerel hesapla doldurulur
+00:05 +54 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) resmî yanıt çözümlenir (zarf + hicri tarih)
+00:05 +55 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) 5xx yanıtı geçici hata olarak bildirilir
+00:05 +56 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) bozuk JSON çökme yerine kaynak hatası üretir
+00:05 +57 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) ilçe kimliği yoksa servis çağrılmadan hata verir
+00:05 +58 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) AlAdhan yanıtı çözümlenir ve hicri etiket üretilir
+00:05 +59 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) AlAdhan boş vakit verisinde hata üretir
+00:05 +60 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: kaynak bilgisi (kullanıcı mesajları) resmî veri varken son güncelleme bilgisi gösterilir
+00:05 +61 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: kaynak bilgisi (kullanıcı mesajları) konum seçilmemişse hesap bilgisi gösterilir
+00:05 +62 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: yerel hesap kalibrasyonu Diyanet yöntemiyle İstanbul için tutarlı vakitler üretir
 00:05 +63 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: (tearDownAll)
 00:05 +63 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: (setUpAll)
 00:05 +63 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: kategoriler tanımlı ve benzersiz
@@ -355,22 +341,22 @@ No issues found! (ran in 17.2s)
 00:06 +91 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi kayda uymayan soru için uydurma cevap üretilmez
 00:06 +92 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi soru boşsa eşleşme yapılmaz
 00:06 +93 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi paylaşım metni kaynakları ve mezhep notlarını içerir
-00:06 +94 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri yedi gün × altı vakit için kimlikler benzersiz
-00:06 +95 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri kimlikler ilgili aralıkta kalır
-00:06 +96 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri vakit kimlikleri tekil bildirim kimlikleriyle çakışmaz
-00:06 +97 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim yönlendirme yükü her hedef kendi yüküyle ayrışır
-00:06 +98 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim yönlendirme yükü ayrıntılı yükler ve tanımsız yükler güvenli
-00:06 +99 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları varsayılan olarak güneş vakti bildirilmez
-00:06 +100 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları kullanıcı bir vakti kapatabilir
-00:06 +101 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları bildirimler tümden kapatılınca hiçbir vakit bildirilmez
-00:06 +102 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları eksik ayar güvenli tarafta kalır (kapalı sayılır)
-00:06 +103 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu varsayılan sessiz saat kapalı
-00:06 +104 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu sessiz saat aralığı gece yarısını aşabilir
-00:06 +105 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu uyku modu 22:00–07:00 arasını kapsar
-00:06 +106 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu öğle vakti sessiz saate girmez
-00:06 +107 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı ön hatırlatma varsayılan olarak kapalı
-00:06 +108 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı ön hatırlatma dakikası ayarlanabilir
-00:06 +109 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı zamanlanan gün sayısı makul aralıkta
+00:07 +94 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri yedi gün × altı vakit için kimlikler benzersiz
+00:07 +95 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri kimlikler ilgili aralıkta kalır
+00:07 +96 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri vakit kimlikleri tekil bildirim kimlikleriyle çakışmaz
+00:07 +97 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim yönlendirme yükü her hedef kendi yüküyle ayrışır
+00:07 +98 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim yönlendirme yükü ayrıntılı yükler ve tanımsız yükler güvenli
+00:07 +99 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları varsayılan olarak güneş vakti bildirilmez
+00:07 +100 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları kullanıcı bir vakti kapatabilir
+00:07 +101 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları bildirimler tümden kapatılınca hiçbir vakit bildirilmez
+00:07 +102 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları eksik ayar güvenli tarafta kalır (kapalı sayılır)
+00:07 +103 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu varsayılan sessiz saat kapalı
+00:07 +104 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu sessiz saat aralığı gece yarısını aşabilir
+00:07 +105 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu uyku modu 22:00–07:00 arasını kapsar
+00:07 +106 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu öğle vakti sessiz saate girmez
+00:07 +107 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı ön hatırlatma varsayılan olarak kapalı
+00:07 +108 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı ön hatırlatma dakikası ayarlanabilir
+00:07 +109 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı zamanlanan gün sayısı makul aralıkta
 00:07 +110 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Türkçe karakterleri sadeleştirir
 00:07 +111 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer kelimelere ayırır ve kısa kelimeleri atar
 00:07 +112 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer ekleri kaba biçimde kırpar
@@ -382,53 +368,53 @@ No issues found! (ran in 17.2s)
 00:07 +118 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime gün karşılaştırması
 00:08 +119 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: (setUpAll)
 00:08 +119 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
-00:08 +120 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
-00:08 +121 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
-00:08 +122 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
-00:08 +123 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
+00:09 +120 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
+00:09 +121 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
+00:09 +122 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
+00:09 +123 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları (setUpAll)
+00:09 +123 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — telefon 411×914
 00:09 +124 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
 00:09 +125 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
 00:09 +126 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
-00:09 +127 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
-00:09 +128 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
-00:09 +129 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Kur'an — küçük telefon 320×568
-00:09 +130 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları Daha Fazla ekranı yalnızca açık modülleri listeler
-00:09 +131 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Kur'an — telefon 411×914
-00:09 +132 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Kur'an — tablet 1024×1366
-00:09 +133 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — küçük telefon 320×568
+00:10 +127 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
+00:10 +128 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
+00:10 +129 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
+00:10 +130 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
+00:10 +131 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
+00:10 +132 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — küçük telefon 320×568
+00:10 +133 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — küçük telefon 320×568
 00:10 +134 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — telefon 411×914
 00:10 +135 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — tablet 1024×1366
 00:10 +136 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — küçük telefon 320×568
-00:10 +137 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — telefon 411×914
-00:10 +138 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — tablet 1024×1366
-00:10 +139 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — küçük telefon 320×568
-00:10 +140 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — telefon 411×914
-00:10 +141 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — tablet 1024×1366
-00:10 +142 ~6: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: (setUpAll)
-00:10 +142 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — küçük telefon 320×568
-00:10 +143 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — küçük telefon 320×568
-00:10 +144 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — küçük telefon 320×568
-00:10 +145 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — küçük telefon 320×568
-00:10 +146 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — küçük telefon 320×568
-00:10 +147 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — küçük telefon 320×568
-00:10 +148 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — telefon 411×914
-00:10 +149 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — tablet 1024×1366
-00:10 +150 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — küçük telefon 320×568
-00:11 +151 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — telefon 411×914
-00:11 +152 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — tablet 1024×1366
-00:11 +153 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — küçük telefon 320×568
+00:11 +137 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — telefon 411×914
+00:11 +138 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — tablet 1024×1366
+00:11 +139 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — küçük telefon 320×568
+00:11 +140 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — telefon 411×914
+00:11 +141 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — tablet 1024×1366
+00:11 +142 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — küçük telefon 320×568
+00:11 +143 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — telefon 411×914
+00:11 +144 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — tablet 1024×1366
+00:11 +145 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — küçük telefon 320×568
+00:11 +146 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — telefon 411×914
+00:11 +147 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — tablet 1024×1366
+00:11 +148 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — küçük telefon 320×568
+00:11 +149 ~6: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: doğrulama verisi yüklendi
+00:11 +150 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — telefon 411×914
+00:11 +151 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — telefon 411×914
+00:11 +152 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — telefon 411×914
+00:11 +153 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — telefon 411×914
 00:11 +154 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — telefon 411×914
 00:11 +155 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — tablet 1024×1366
-00:11 +156 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — küçük telefon 320×568
-00:11 +157 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — telefon 411×914
-00:11 +158 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — tablet 1024×1366
-00:11 +159 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — küçük telefon 320×568
-00:11 +160 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — telefon 411×914
-00:11 +161 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — tablet 1024×1366
-00:11 +162 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Dualar: künye özeti ve kategori çipleri görünür
-00:11 +163 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Hadis: başlık ve konu çipleri görünür
+00:12 +156 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — küçük telefon 320×568
+00:12 +157 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — telefon 411×914
+00:12 +158 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — tablet 1024×1366
+00:12 +159 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — küçük telefon 320×568
+00:12 +160 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — telefon 411×914
+00:12 +161 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — tablet 1024×1366
+00:12 +162 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Dualar: künye özeti ve kategori çipleri görünür
+00:12 +163 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Hadis: başlık ve konu çipleri görünür
 [hadis tanısı] çipler: false · yükleniyor: true · metinler: Hadis metni veya konu ara | Hadisler yükleniyor… | Hadis | Sahih kaynaklardan seçkiler
-00:11 +164 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Zikir: tesbih ekranı sayaç ile çizilir
+00:12 +164 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Zikir: tesbih ekranı sayaç ile çizilir
 00:12 +165 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Vakitler: liste başlığı ve ayar ipucu birlikte görünür
 00:12 +166 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Kur'an: sure listesi yüklenir
 00:12 +167 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Daha Fazla: tüm bölüm girişleri listelenir
@@ -457,7 +443,6 @@ No issues found! (ran in 17.2s)
 
 ## build
 ```
-[=============                          ] 33% Unzipping... android-ndk-r28c/ndk-
 [=============                          ] 33% Unzipping... android-ndk-r28c/wrap
 [=============                          ] 33% Unzipping... android-ndk-r28c/ndk-
 [=============                          ] 33% Unzipping... android-ndk-r28c/tool
@@ -500,14 +485,6 @@ No issues found! (ran in 17.2s)
 [=====================                  ] 55% Unzipping... android-ndk-r28c/CHAN
 [=======================================] 100% Unzipping... android-ndk-r28c/CHA
 
-Note: /home/runner/.pub-cache/hosted/pub.dev/cloud_firestore-6.10.0/android/src/main/java/io/flutter/plugins/firebase/firestore/utils/PipelineStageHandlers.java uses unchecked or unsafe operations.
-Note: Recompile with -Xlint:unchecked for details.
-Note: Some input files use or override a deprecated API.
-Note: Recompile with -Xlint:deprecation for details.
-Note: /home/runner/.pub-cache/hosted/pub.dev/geolocator_android-5.1.1+1/android/src/main/java/com/baseflow/geolocator/location/LocationMapper.java uses or overrides a deprecated API.
-Note: Recompile with -Xlint:deprecation for details.
-Note: Some input files use or override a deprecated API.
-Note: Recompile with -Xlint:deprecation for details.
 Checking the license for package CMake 3.22.1 in /usr/local/lib/android/sdk/licenses
 License for package CMake 3.22.1 accepted.
 Preparing "Install CMake 3.22.1 v.3.22.1".
@@ -515,15 +492,21 @@ Preparing "Install CMake 3.22.1 v.3.22.1".
 Installing CMake 3.22.1 in /usr/local/lib/android/sdk/cmake/3.22.1
 "Install CMake 3.22.1 v.3.22.1" complete.
 "Install CMake 3.22.1 v.3.22.1" finished.
-Running Gradle task 'assembleDebug'...                            368.7s
-✓ Built build/app/outputs/flutter-apk/app-debug.apk
+Note: /home/runner/.pub-cache/hosted/pub.dev/geolocator_android-5.1.1+1/android/src/main/java/com/baseflow/geolocator/location/LocationMapper.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Expected to find fonts for (packages/cupertino_icons/CupertinoIcons, MaterialIcons), but found (MaterialIcons). This usually means you are referring to font families in an IconData class but not including them in the assets section of your pubspec.yaml, are missing the package that would include them, or are missing "uses-material-design: true".
+Font asset "MaterialIcons-Regular.otf" was tree-shaken, reducing it from 1645184 to 25180 bytes (98.5% reduction). Tree-shaking can be disabled by providing the --no-tree-shake-icons flag when building your app.
+Caught exception: Already watching path: /home/runner/work/ezanapp/ezanapp/android
+Running Gradle task 'assembleRelease'...                          470.4s
+✓ Built build/app/outputs/flutter-apk/app-release.apk (77.5MB)
 ```
 
 ## release
 ```
-Generating 2,048 bit RSA key pair and self-signed certificate (SHA256withRSA) with a validity of 30 days
-	for: CN=EzanAI CI, OU=QA, O=Yazilimceosu, L=Istanbul, C=TR
-[Storing /home/runner/work/_temp/ci-release.jks]
 Running Gradle task 'bundleRelease'...                          
 Warning: Flutter support for your project's Gradle version (8.14.3) will soon be dropped. Please upgrade your Gradle version to a version of at least 9.1.0 soon.
 Alternatively, use the flag "--android-skip-build-dependency-validation" to bypass this check.
@@ -543,17 +526,9 @@ Alternatively, use the flag "--android-skip-build-dependency-validation" to bypa
 Potential fix: Your project's KGP version is typically defined in the plugins block of the `settings.gradle` file (/home/runner/work/ezanapp/ezanapp/android/settings.gradle), by a plugin with the id of org.jetbrains.kotlin.android. 
 If you don't see a plugins block, your project was likely created with an older template version, in which case it is most likely defined in the top-level build.gradle file (/home/runner/work/ezanapp/ezanapp/android/build.gradle) by the ext.kotlin_version property.
 
-Caught exception: Already watching path: /home/runner/work/ezanapp/ezanapp/android
-Note: /home/runner/.pub-cache/hosted/pub.dev/cloud_firestore-6.10.0/android/src/main/java/io/flutter/plugins/firebase/firestore/utils/PipelineStageHandlers.java uses unchecked or unsafe operations.
-Note: Recompile with -Xlint:unchecked for details.
-Note: Some input files use or override a deprecated API.
-Note: Recompile with -Xlint:deprecation for details.
-Note: /home/runner/.pub-cache/hosted/pub.dev/geolocator_android-5.1.1+1/android/src/main/java/com/baseflow/geolocator/location/LocationMapper.java uses or overrides a deprecated API.
-Note: Recompile with -Xlint:deprecation for details.
-Note: Some input files use or override a deprecated API.
-Note: Recompile with -Xlint:deprecation for details.
 Expected to find fonts for (packages/cupertino_icons/CupertinoIcons, MaterialIcons), but found (MaterialIcons). This usually means you are referring to font families in an IconData class but not including them in the assets section of your pubspec.yaml, are missing the package that would include them, or are missing "uses-material-design: true".
 Font asset "MaterialIcons-Regular.otf" was tree-shaken, reducing it from 1645184 to 25180 bytes (98.5% reduction). Tree-shaking can be disabled by providing the --no-tree-shake-icons flag when building your app.
-Running Gradle task 'bundleRelease'...                            314.5s
-✓ Built build/app/outputs/bundle/release/app-release.aab (78.0MB)
+Caught exception: Already watching path: /home/runner/work/ezanapp/ezanapp/android
+Running Gradle task 'bundleRelease'...                             19.3s
+✓ Built build/app/outputs/bundle/release/app-release.aab (77.6MB)
 ```
