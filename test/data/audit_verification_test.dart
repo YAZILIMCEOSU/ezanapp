@@ -7,7 +7,6 @@ import 'package:ezanai/core/constants/app_constants.dart';
 import 'package:ezanai/core/l10n/app_strings.dart';
 import 'package:ezanai/core/services/billing_service.dart';
 import 'package:ezanai/core/services/compass_service.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:ezanai/core/utils/geo.dart';
 import 'package:ezanai/core/utils/logger.dart';
 import 'package:ezanai/data/ai/ai_service.dart';
@@ -27,6 +26,7 @@ import 'package:ezanai/state/content_providers.dart';
 import 'package:ezanai/state/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 
 import '../support/test_runtime.dart';
 

@@ -168,7 +168,10 @@ class PlayerController extends Notifier<PlayerUiState> {
 
     final bool started;
     if (source.startsWith('asset:')) {
-      started = await audio.playAsset(source.substring(6), volume: state.volume);
+      started = await audio.playAsset(
+        source.substring(6),
+        volume: state.volume,
+      );
     } else if (source.startsWith('everyayah:') || source.contains('|')) {
       final List<String> urls = track.resolvedAudioUrls;
       started = await audio.playUrlList(urls, volume: state.volume);

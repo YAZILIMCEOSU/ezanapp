@@ -83,7 +83,8 @@ class IlahiRepository {
       audioUrl: 'asset:assets/audio/adhan/ilahi_ussak.wav',
       durationSeconds: 48,
       license: 'Telifsiz (CC0 — Özgün Makam Kaydı)',
-      description: 'Anadolu ilahi geleneğinde Uşşak makamı ney ve vokal ezgisi.',
+      description:
+          'Anadolu ilahi geleneğinde Uşşak makamı ney ve vokal ezgisi.',
     ),
     IlahiTrack(
       id: 'zikir_huseyni_halka',
@@ -119,8 +120,7 @@ class IlahiRepository {
       audioUrl: 'everyayah:Alafasy_128kbps:1:1-7',
       durationSeconds: 46,
       license: 'Açık Arşiv (EveryAyah — Ticari Olmayan / Eğitim Kullanımı)',
-      description:
-          'Fâtiha Suresinin 1–7. ayetlerinin eksiksiz tam tilaveti.',
+      description: 'Fâtiha Suresinin 1–7. ayetlerinin eksiksiz tam tilaveti.',
     ),
     IlahiTrack(
       id: 'tilavet_bakara_eliflammim',
@@ -158,8 +158,7 @@ class IlahiRepository {
       audioUrl: 'everyayah:Alafasy_128kbps:2:285-286:bismillah',
       durationSeconds: 92,
       license: 'Açık Arşiv (EveryAyah — Ticari Olmayan / Eğitim Kullanımı)',
-      description:
-          'Bakara Suresi 285 ve 286. ayetlerin (Âmenerrasûlü) eksiksiz tilaveti.',
+      description: 'Bakara Suresi 285 ve 286. ayetlerin (Âmenerrasûlü) eksiksiz tilaveti.',
     ),
     IlahiTrack(
       id: 'tilavet_yasin',
@@ -171,8 +170,7 @@ class IlahiRepository {
       audioUrl: 'everyayah:Alafasy_128kbps:36:1-83:bismillah',
       durationSeconds: 1110,
       license: 'Açık Arşiv (EveryAyah — Ticari Olmayan / Eğitim Kullanımı)',
-      description:
-          'Yâsîn-i Şerîf Suresinin 83 ayetinin tamamı (kesintisiz sıralı tilavet).',
+      description: 'Yâsîn-i Şerîf Suresinin 83 ayetinin tamamı (kesintisiz sıralı tilavet).',
     ),
     IlahiTrack(
       id: 'tilavet_mulk',
@@ -184,8 +182,7 @@ class IlahiRepository {
       audioUrl: 'everyayah:Alafasy_128kbps:67:1-30:bismillah',
       durationSeconds: 495,
       license: 'Açık Arşiv (EveryAyah — Ticari Olmayan / Eğitim Kullanımı)',
-      description:
-          'Mülk (Tebâreke) Suresinin 30 ayetinin tamamı.',
+      description: 'Mülk (Tebâreke) Suresinin 30 ayetinin tamamı.',
     ),
     IlahiTrack(
       id: 'tilavet_huvallahullezi',
@@ -197,8 +194,7 @@ class IlahiRepository {
       audioUrl: 'everyayah:Alafasy_128kbps:59:22-24:bismillah',
       durationSeconds: 72,
       license: 'Açık Arşiv (EveryAyah — Ticari Olmayan / Eğitim Kullanımı)',
-      description:
-          'Sabah ve akşam namazları sonrasında okunan Haşr Suresi 22–24. ayetler.',
+      description: 'Sabah ve akşam namazları sonrasında okunan Haşr Suresi 22–24. ayetler.',
     ),
     IlahiTrack(
       id: 'tilavet_ihlas',

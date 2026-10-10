@@ -368,11 +368,15 @@ class BillingService {
     final String? activePkg = integrity?['packageName'] as String?;
     final bool? isOfficial = integrity?['isOfficialPackage'] as bool?;
     if (isOfficial == false) {
-      AppLog.warning('Resmi olmayan / klonlanmış paket tespit edildi: $activePkg');
+      AppLog.warning(
+        'Resmi olmayan / klonlanmış paket tespit edildi: $activePkg',
+      );
       return false;
     }
     if (!verifyReceiptIntegrity(purchase, activePackageName: activePkg)) {
-      AppLog.warning('Makbuz bütünlük doğrulaması reddedildi: ${purchase.productID}');
+      AppLog.warning(
+        'Makbuz bütünlük doğrulaması reddedildi: ${purchase.productID}',
+      );
       return false;
     }
 
