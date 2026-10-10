@@ -202,10 +202,10 @@ class NotificationService {
     for (final AdhanSound sound in AdhanSound.values) {
       try {
         await android.deleteNotificationChannel(
-          '${NotificationChannels.adhan}_${sound.name}',
+          channelId: '${NotificationChannels.adhan}_${sound.name}',
         );
         await android.deleteNotificationChannel(
-          '${NotificationChannels.adhan}_v2_${sound.name}',
+          channelId: '${NotificationChannels.adhan}_v2_${sound.name}',
         );
       } catch (_) {}
     }

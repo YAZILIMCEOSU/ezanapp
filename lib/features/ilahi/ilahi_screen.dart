@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/audio/audio_service.dart';
 import '../../core/utils/app_time.dart';
 import '../../data/models/ilahi_models.dart';
 import '../../design/app_colors.dart';
@@ -285,7 +286,7 @@ class _IlahiScreenState extends ConsumerState<IlahiScreen> {
                         if (ref.read(playerControllerProvider).currentTrackId ==
                             track.id) {
                           if (context.mounted) {
-                            context.push(AppRoutes.player);
+                            await context.push(AppRoutes.player);
                           }
                           return;
                         }

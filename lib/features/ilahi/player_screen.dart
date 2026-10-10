@@ -40,14 +40,16 @@ class PlayerScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Şimdi çalıyor'),
         actions: <Widget>[
-          TextButton(
-            tooltip: 'Oynatma hızı',
-            onPressed: controller.cycleSpeed,
-            child: Text(
-              '${player.speed}x',
-              style: theme.textTheme.labelLarge?.copyWith(
-                fontWeight: FontWeight.w800,
-                color: AppColors.emerald500,
+          Tooltip(
+            message: 'Oynatma hızı',
+            child: TextButton(
+              onPressed: controller.cycleSpeed,
+              child: Text(
+                '${player.speed}x',
+                style: theme.textTheme.labelLarge?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.emerald500,
+                ),
               ),
             ),
           ),
