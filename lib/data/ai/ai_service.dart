@@ -251,7 +251,8 @@ class LocalKnowledgeSource {
         if (tokenSet.contains(part) || stemSet.contains(partStem)) {
           exactHits++;
           if (!isStop) hasTopicHit = true;
-        } else if (!isStop && _matchesFuzzy(part, partStem, tokenSet, stemSet)) {
+        } else if (!isStop &&
+            _matchesFuzzy(part, partStem, tokenSet, stemSet)) {
           fuzzyHits++;
           hasTopicHit = true;
         }
