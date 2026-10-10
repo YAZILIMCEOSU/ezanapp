@@ -45,7 +45,14 @@ class AppStrings {
       Prayer.aksam => 'Maghrib',
       Prayer.yatsi => 'Isha',
     },
-    'ar' => prayer.arabicLabel,
+    'ar' => switch (prayer) {
+      Prayer.imsak => 'الفجر',
+      Prayer.gunes => 'الشروق',
+      Prayer.ogle => 'الظهر',
+      Prayer.ikindi => 'العصر',
+      Prayer.aksam => 'المغرب',
+      Prayer.yatsi => 'العشاء',
+    },
     _ => prayer.label,
   };
 
