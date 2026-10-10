@@ -1,15 +1,15 @@
-# CI raporu (2026-10-10 13:58 UTC)
+# CI raporu (2026-10-10 15:31 UTC)
 
 | adım | sonuç |
 |---|---|
 | pub get | success |
 | format | success |
-| analyze | success |
-| test | success |
+| analyze | failure |
+| test | failure |
 | test (uzak AI sözleşmesi) | success |
-| build (debug apk) | success |
-| build (release appbundle) | success |
-| dene-apk indirmeye açıldı | success |
+| build (debug apk) | failure |
+| build (release appbundle) | failure |
+| dene-apk indirmeye açıldı | skipped |
 
 ## pubget
 ```
@@ -215,213 +215,441 @@ Upgrading analysis_options.yaml to exclude build and platform directories.
 ```
 == dart fix --apply ==
 Computing fixes in ezanapp...
-Nothing to fix!
+Applying fixes...
+
+test/data/audit_verification_test.dart
+  prefer_const_declarations - 1 fix
+
+1 fix made in 1 file.
 == dart format ==
-Formatted 106 files (0 changed) in 0.77 seconds.
+Formatted lib/core/services/compass_service.dart
+Formatted lib/data/ai/ai_service.dart
+Formatted lib/data/ai/knowledge_base.dart
+Formatted lib/data/models/prayer_times_day.dart
+Formatted lib/data/prayer/prayer_times_repository.dart
+Formatted lib/data/repositories/zikir_repository.dart
+Formatted lib/features/widgets/prayer_widgets.dart
+Formatted lib/state/content_providers.dart
+Formatted test/data/audit_verification_test.dart
+Formatted test/data/knowledge_base_test.dart
+Formatted 107 files (10 changed) in 1.06 seconds.
 ```
 
 ## analyze
 ```
 Analyzing ezanapp...                                            
-No issues found! (ran in 15.9s)
+
+  error • The getter 'adjustments' isn't defined for the type 'CalculationMethod'. Try importing the library that defines 'adjustments', correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments' • lib/data/prayer/prayer_times_repository.dart:267:19 • undefined_getter
+  error • The getter 'adjustments' isn't defined for the type 'CalculationMethod'. Try importing the library that defines 'adjustments', correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments' • lib/data/prayer/prayer_times_repository.dart:267:48 • undefined_getter
+  error • The getter 'adjustments' isn't defined for the type 'CalculationMethod'. Try importing the library that defines 'adjustments', correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments' • lib/data/prayer/prayer_times_repository.dart:276:47 • undefined_getter
+  error • The getter 'adjustments' isn't defined for the type 'CalculationMethod'. Try importing the library that defines 'adjustments', correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments' • lib/data/prayer/prayer_times_repository.dart:294:19 • undefined_getter
+  error • The getter 'adjustments' isn't defined for the type 'CalculationMethod'. Try importing the library that defines 'adjustments', correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments' • lib/data/prayer/prayer_times_repository.dart:294:53 • undefined_getter
+
+5 issues found. (ran in 20.3s)
 ```
 
 ## test
 ```
-00:00 +0: loading /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart
-00:00 +0: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: sekme yolları beş ana sekme de çözümlenir
-00:00 +1: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: sekme yolları beş ana sekme de çözümlenir
-00:00 +2: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: sekme yolları beş ana sekme de çözümlenir
-00:00 +3: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: sekme yolları beş ana sekme de çözümlenir
-00:00 +4: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: sekme yolları beş ana sekme de çözümlenir
-00:00 +5: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: sekme yolları beş ana sekme de çözümlenir
-00:00 +6: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: sekme yolları beş ana sekme de çözümlenir
-00:00 +7: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: sekme yolları beş ana sekme de çözümlenir
-00:00 +8: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: sekme yolları beş ana sekme de çözümlenir
-00:00 +9: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: sekme yolları beş ana sekme de çözümlenir
-00:00 +10: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: sekme yolları beş ana sekme de çözümlenir
-00:00 +11: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: sekme yolları beş ana sekme de çözümlenir
-00:00 +12: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: sekme yolları beş ana sekme de çözümlenir
-00:00 +13: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: tüm sabit yollar çözümlenir sabit yol sabitleri
-00:00 +14: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: tüm sabit yollar çözümlenir parametreli yollar çözümlenir
-00:00 +15: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: tüm sabit yollar çözümlenir son sekmedeki alt sayfalar da çözümlenir
-00:00 +16: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: bildirim yönlendirmesi her bildirim hedefi geçerli bir yola gider
-00:00 +17: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: bildirim yönlendirmesi eski bildirim yükleri doğru ekrana yönlendirir
-00:00 +18: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: kaynak taraması app_router.dart içindeki her yol sabiti çözümlenir
-00:00 +19: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: bilinmeyen yol tanımsız yol hata ekranına düşer (çökme yok)
-00:00 +20: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: yol sabitleri tutarlı yol sabitleri Türkçe ve küçük harfli
-00:00 +21: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: yol sabitleri tutarlı sure/ayet yolu sorgu parametresiyle kurulur
-00:01 +22: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında soru yerel bilgi tabanından kaynaklı yanıtlanır
-00:01 +23: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında bilinmeyen soruda dürüst "bilmiyorum" cevabı döner
-00:01 +24: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında kaynaklı uzak yanıt kabul edilir
+00:00 +13 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında bilinmeyen soruda dürüst "bilmiyorum" cevabı döner
+00:00 +14 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında kaynaklı uzak yanıt kabul edilir
   Skip: EZANAI_API_BASE tanımlı değil
-00:01 +24 ~1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında kaynaksız uzak yanıt reddedilir, yerel tabana düşülür
+00:00 +14 ~1 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında kaynaksız uzak yanıt reddedilir, yerel tabana düşülür
   Skip: EZANAI_API_BASE tanımlı değil
-00:01 +24 ~2: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında sunucu hatasında (500) uygulama çökmez
+00:00 +14 ~2 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında sunucu hatasında (500) uygulama çökmez
   Skip: EZANAI_API_BASE tanımlı değil
-00:01 +24 ~3: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında bozuk JSON yanıtında uygulama çökmez
+00:00 +14 ~3 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında bozuk JSON yanıtında uygulama çökmez
   Skip: EZANAI_API_BASE tanımlı değil
-00:01 +24 ~4: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında bilinmeyen soruda uzaktan kaynaksız yanıt gelirse dürüst cevap
+00:00 +14 ~4 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında bilinmeyen soruda uzaktan kaynaksız yanıt gelirse dürüst cevap
   Skip: EZANAI_API_BASE tanımlı değil
-00:01 +24 ~5: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında uzak yanıtlara da öneri soruları eklenir
+00:00 +14 ~5 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında uzak yanıtlara da öneri soruları eklenir
   Skip: EZANAI_API_BASE tanımlı değil
-00:03 +24 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings varsayılan ayarlar Diyanet yöntemini kullanır
-00:03 +25 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings JSON gidiş-dönüşü değerleri korur
-00:03 +26 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings bozuk yedek varsayılanlara döner
-00:03 +27 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings Hanefî ikindi yalnızca desteklenen yöntemlerde uygulanır
-00:03 +28 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings manuel düzeltmeler her yöntemde aktarılır
-00:03 +29 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: CalculationMethod bilinmeyen kimlik Diyanet'e döner
-00:03 +30 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: CalculationMethod tüm yöntemler geçerli açılara sahip
-00:03 +31 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils Kâbe yönü Türkiye için güneydoğuyu gösterir
-00:03 +32 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils Kâbe koordinatında mesafe sıfıra yakındır
-00:03 +33 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils İstanbul-Kâbe mesafesi ~2400 km
-00:03 +34 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar (setUpAll)
-00:03 +34 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar bugünü hicri tarihe çevirir
-00:03 +35 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar gün farkı hesabı ve geri dönüş tutarlı
-00:03 +36 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar ay uzunluğu 29 veya 30 gündür
-00:03 +37 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar Ramazan başlangıcı hicri 9. ayın 1. günüdür
-00:03 +38 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar (tearDownAll)
-00:03 +38 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay sıralı veri sağlıklı kabul edilir
-00:03 +39 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay sonraki vakit ve içinde bulunulan vakit doğru bulunur
-00:03 +40 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay bozuk veri sağlıksız kabul edilir
-00:03 +41 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay JSON gidiş-dönüşü vakitleri korur
-00:05 +42 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: (setUpAll)
-00:05 +42 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: zincir sırası Diyanet resmî verisi ilk sırada kullanılır ve önbelleğe yazılır
-00:05 +43 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: zincir sırası Diyanet başarısızsa AlAdhan devreye girer
-00:05 +44 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: zincir sırası her iki servis de çökerse yerel hesap devreye girer
-00:05 +45 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: zincir sırası tutarsız (bozuk) servis verisi reddedilir ve zincir devam eder
-00:05 +46 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış çevrimdışıyken son başarılı veri önbellekten okunur
-00:05 +47 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış süresi geçmiş (6 saatten eski) önbellek kullanılmaz
-00:05 +48 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış çevrimdışı ve önbellek boşsa yerel hesap sonuç üretir
-00:05 +49 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış ilçe seçilmemişse (GPS) resmî servis çağrılmaz, hesap kullanılır
-00:05 +50 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış bellek önbelleği aynı gün için tekrar sorguda ağa çıkmaz
-00:05 +51 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış zorla yenileme önbelleği atlar
-00:05 +52 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: aralık (haftalık/aylık tablo) önbellek aralığı kapsıyorsa ağa çıkılmaz
-00:05 +53 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: aralık (haftalık/aylık tablo) önbellek yoksa çevrimdışı aralık yerel hesapla doldurulur
-00:05 +54 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) resmî yanıt çözümlenir (zarf + hicri tarih)
-00:05 +55 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) 5xx yanıtı geçici hata olarak bildirilir
-00:05 +56 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) bozuk JSON çökme yerine kaynak hatası üretir
-00:05 +57 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) ilçe kimliği yoksa servis çağrılmadan hata verir
-00:05 +58 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) AlAdhan yanıtı çözümlenir ve hicri etiket üretilir
-00:05 +59 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) AlAdhan boş vakit verisinde hata üretir
-00:05 +60 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: kaynak bilgisi (kullanıcı mesajları) resmî veri varken son güncelleme bilgisi gösterilir
-00:05 +61 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: kaynak bilgisi (kullanıcı mesajları) konum seçilmemişse hesap bilgisi gösterilir
-00:05 +62 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: yerel hesap kalibrasyonu Diyanet yöntemiyle İstanbul için tutarlı vakitler üretir
-00:05 +63 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: (tearDownAll)
-00:05 +63 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: (setUpAll)
-00:05 +63 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: kategoriler tanımlı ve benzersiz
-00:05 +64 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: en az 30 dua var ve kimlikler benzersiz
-00:05 +65 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duada ad, okunuş, meal ve kategori dolu
-00:05 +66 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duada kaynak künyesi var
-00:05 +67 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: kaynak künyeleri ya Kur'an ya muteber hadis kaynağına dayanır
-00:05 +68 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duanın kategorisi kategori listesinde tanımlı
-00:05 +69 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her kategoride en az bir dua var (boş sekme olmasın)
-00:05 +70 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: Kur'an kaynaklı duaların künyesi sure/ayet içerir
-00:05 +71 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: Arapça metin içeren dualar Arapça alfabede
-00:05 +72 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: katalogda arama ve kategori süzme çalışıyor
-00:05 +73 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: (tearDownAll)
-00:06 +73 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı en az 20 kayıt ve benzersiz kimlikler
-00:06 +74 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı her kayıtta başlık, cevap, anahtar kelime ve kaynak var
-00:06 +75 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı anahtar kelimeler küçük harf ve ASCII (arama uyumu)
-00:06 +76 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı anahtar kelimeler yeterince ayırt edici
-00:06 +77 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı ilişkili kayıt kimlikleri geçerli
-00:06 +78 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı mezhep farkı notları en az birkaç kayıtta bulunur
-00:06 +79 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı kaynak künyeleri kaynak türüne ayrılabiliyor
-00:06 +80 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi namaz rekatı sorusu doğru kayda gider
-00:06 +81 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi abdest sorusu doğru kayda gider
-00:06 +82 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi zekât sorusu doğru kayda gider
-00:06 +83 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi kıble sorusu doğru kayda gider
-00:06 +84 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi Türkçe karakter ve büyük harf farkı eşleşmeyi bozmaz
-00:06 +85 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi her yerel cevap kaynak, uyarı ve mezhep bilgisi taşır
-00:06 +86 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi konu kelimesi genel kelimelere üstün gelir (vitir/teravih)
-00:06 +87 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi ayırt edici kelime puanı, genel kelimelerden yüksektir
-00:06 +88 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi harf düşmesi olan sorular da eşleşir (hatim → hatmi)
-00:06 +89 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi Kâbe yönü sorusu kıble kaydına gider
-00:06 +90 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi önerilen sorular kimlik değil, okunabilir başlık olarak döner
-00:06 +91 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi kayda uymayan soru için uydurma cevap üretilmez
-00:06 +92 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi soru boşsa eşleşme yapılmaz
-00:06 +93 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi paylaşım metni kaynakları ve mezhep notlarını içerir
-00:06 +94 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri yedi gün × altı vakit için kimlikler benzersiz
-00:06 +95 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri kimlikler ilgili aralıkta kalır
-00:06 +96 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri vakit kimlikleri tekil bildirim kimlikleriyle çakışmaz
-00:06 +97 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim yönlendirme yükü her hedef kendi yüküyle ayrışır
-00:06 +98 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim yönlendirme yükü ayrıntılı yükler ve tanımsız yükler güvenli
-00:06 +99 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları varsayılan olarak güneş vakti bildirilmez
-00:06 +100 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları kullanıcı bir vakti kapatabilir
-00:06 +101 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları bildirimler tümden kapatılınca hiçbir vakit bildirilmez
-00:06 +102 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları eksik ayar güvenli tarafta kalır (kapalı sayılır)
-00:06 +103 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu varsayılan sessiz saat kapalı
-00:06 +104 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu sessiz saat aralığı gece yarısını aşabilir
-00:06 +105 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu uyku modu 22:00–07:00 arasını kapsar
-00:06 +106 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu öğle vakti sessiz saate girmez
-00:06 +107 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı ön hatırlatma varsayılan olarak kapalı
-00:06 +108 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı ön hatırlatma dakikası ayarlanabilir
-00:06 +109 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı zamanlanan gün sayısı makul aralıkta
-00:07 +110 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Türkçe karakterleri sadeleştirir
-00:07 +111 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer kelimelere ayırır ve kısa kelimeleri atar
-00:07 +112 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer ekleri kaba biçimde kırpar
-00:07 +113 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer eşleştirme aksan ve ek farklarını tolere eder
-00:07 +114 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Arapça harekeleri kaldırır
-00:07 +115 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer yüzde biçimi
-00:07 +116 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime geri sayım ve dijital sayaç biçimi
-00:07 +117 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime 24 saat ve 12 saat biçimi
-00:07 +118 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime gün karşılaştırması
-00:08 +119 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: (setUpAll)
-00:08 +119 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
-00:08 +120 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
-00:08 +121 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
-00:08 +122 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
-00:09 +123 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
-00:09 +124 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
-00:09 +125 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
-00:09 +126 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
-00:09 +127 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
-00:09 +128 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakitler — tablet 1024×1366
-00:09 +129 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları Daha Fazla ekranı yalnızca açık modülleri listeler
-00:09 +130 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Kur'an — küçük telefon 320×568
-00:09 +131 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Kur'an — telefon 411×914
-00:09 +132 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Kur'an — tablet 1024×1366
-00:10 +133 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — küçük telefon 320×568
-00:10 +134 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — telefon 411×914
-00:10 +135 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — tablet 1024×1366
-00:10 +136 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — küçük telefon 320×568
-00:10 +137 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — telefon 411×914
-00:10 +138 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — tablet 1024×1366
-00:10 +139 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — küçük telefon 320×568
-00:10 +140 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — küçük telefon 320×568
-00:10 +141 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — küçük telefon 320×568
-00:10 +142 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — küçük telefon 320×568
-00:10 +143 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — küçük telefon 320×568
-00:10 +144 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — küçük telefon 320×568
-00:10 +145 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — telefon 411×914
-00:10 +146 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — tablet 1024×1366
-00:10 +147 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — küçük telefon 320×568
-00:11 +148 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — telefon 411×914
-00:11 +149 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — tablet 1024×1366
-00:11 +150 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — küçük telefon 320×568
-00:11 +151 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — telefon 411×914
-00:11 +152 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — tablet 1024×1366
-00:11 +153 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — küçük telefon 320×568
-00:11 +154 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — telefon 411×914
-00:11 +155 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — tablet 1024×1366
-00:11 +156 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — küçük telefon 320×568
-00:11 +157 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — telefon 411×914
-00:11 +158 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — tablet 1024×1366
-00:11 +159 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — küçük telefon 320×568
-00:11 +160 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — telefon 411×914
-00:11 +161 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — tablet 1024×1366
-00:11 +162 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Dualar: künye özeti ve kategori çipleri görünür
-00:12 +163 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Hadis: başlık ve konu çipleri görünür
-[hadis tanısı] çipler: false · yükleniyor: true · metinler: Hadis metni veya konu ara | Hadisler yükleniyor… | Hadis | Sahih kaynaklardan seçkiler
-00:12 +164 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Zikir: tesbih ekranı sayaç ile çizilir
-00:12 +165 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Vakitler: liste başlığı ve ayar ipucu birlikte görünür
-00:12 +166 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Kur'an: sure listesi yüklenir
-00:12 +167 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Daha Fazla: tüm bölüm girişleri listelenir
-00:12 +168 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir hata görünümü anlaşılır mesaj ve "Tekrar dene" sunar
-00:12 +169 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir izni olmayan hatalarda "Tekrar dene" gösterilmez
-00:12 +170 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir vakitler cihazda hesaplandıysa uyarı şeridi görünür
-00:12 +171 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: (tearDownAll)
-00:12 +171 ~6: All tests passed!
+00:00 +14 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings varsayılan ayarlar Diyanet yöntemini kullanır
+00:00 +15 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings JSON gidiş-dönüşü değerleri korur
+00:00 +16 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings bozuk yedek varsayılanlara döner
+00:00 +17 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings Hanefî ikindi yalnızca desteklenen yöntemlerde uygulanır
+00:00 +18 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings manuel düzeltmeler her yöntemde aktarılır
+00:00 +19 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: CalculationMethod bilinmeyen kimlik Diyanet'e döner
+00:00 +20 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: CalculationMethod tüm yöntemler geçerli açılara sahip
+00:00 +21 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils Kâbe yönü Türkiye için güneydoğuyu gösterir
+00:00 +22 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils Kâbe koordinatında mesafe sıfıra yakındır
+00:00 +23 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils İstanbul-Kâbe mesafesi ~2400 km
+00:00 +24 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar (setUpAll)
+00:00 +24 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar bugünü hicri tarihe çevirir
+00:00 +25 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar gün farkı hesabı ve geri dönüş tutarlı
+00:00 +26 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar ay uzunluğu 29 veya 30 gündür
+00:00 +27 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar Ramazan başlangıcı hicri 9. ayın 1. günüdür
+00:00 +28 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar (tearDownAll)
+00:00 +28 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay sıralı veri sağlıklı kabul edilir
+00:00 +29 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay sonraki vakit ve içinde bulunulan vakit doğru bulunur
+00:00 +30 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay bozuk veri sağlıksız kabul edilir
+00:00 +31 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay JSON gidiş-dönüşü vakitleri korur
+lib/data/prayer/prayer_times_repository.dart:267:19: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+      if ((method.adjustments[p] ?? 0) != (def.adjustments[p] ?? 0)) {
+                  ^^^^^^^^^^^
+lib/data/prayer/prayer_times_repository.dart:267:48: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+      if ((method.adjustments[p] ?? 0) != (def.adjustments[p] ?? 0)) {
+                                               ^^^^^^^^^^^
+lib/data/prayer/prayer_times_repository.dart:276:47: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+        .map((Prayer p) => '${p.key}:${method.adjustments[p] ?? 0}')
+                                              ^^^^^^^^^^^
+lib/data/prayer/prayer_times_repository.dart:294:19: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+          (method.adjustments[prayer] ?? 0) - (base.adjustments[prayer] ?? 0);
+                  ^^^^^^^^^^^
+lib/data/prayer/prayer_times_repository.dart:294:53: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+          (method.adjustments[prayer] ?? 0) - (base.adjustments[prayer] ?? 0);
+                                                    ^^^^^^^^^^^
+00:12 +32 ~6 -2: loading /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart [E]
+  Failed to load "/home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart":
+  Compilation failed for testPath=/home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: lib/data/prayer/prayer_times_repository.dart:267:19: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+   - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+        if ((method.adjustments[p] ?? 0) != (def.adjustments[p] ?? 0)) {
+                    ^^^^^^^^^^^
+  lib/data/prayer/prayer_times_repository.dart:267:48: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+   - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+        if ((method.adjustments[p] ?? 0) != (def.adjustments[p] ?? 0)) {
+                                                 ^^^^^^^^^^^
+  lib/data/prayer/prayer_times_repository.dart:276:47: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+   - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+          .map((Prayer p) => '${p.key}:${method.adjustments[p] ?? 0}')
+                                                ^^^^^^^^^^^
+  lib/data/prayer/prayer_times_repository.dart:294:19: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+   - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+            (method.adjustments[prayer] ?? 0) - (base.adjustments[prayer] ?? 0);
+                    ^^^^^^^^^^^
+  lib/data/prayer/prayer_times_repository.dart:294:53: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+   - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+            (method.adjustments[prayer] ?? 0) - (base.adjustments[prayer] ?? 0);
+                                                      ^^^^^^^^^^^
+  .
+00:12 +32 ~6 -2: loading /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart [E]
+  Error: The Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 1024:11   DefaultResidentCompiler._compile.<fn>
+  dart:async/zone_root.dart 48:47                  _rootRunUnary
+  dart:async/zone.dart 816:35                      _CustomZone.runUnary
+  dart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 977:13               Future._propagateToListeners
+  dart:async/future_impl.dart 862:9                Future._propagateToListeners
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 810:35                      _CustomZone.run
+  dart:async/zone.dart 702:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 743:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+lib/data/prayer/prayer_times_repository.dart:267:19: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+      if ((method.adjustments[p] ?? 0) != (def.adjustments[p] ?? 0)) {
+                  ^^^^^^^^^^^
+lib/data/prayer/prayer_times_repository.dart:267:48: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+      if ((method.adjustments[p] ?? 0) != (def.adjustments[p] ?? 0)) {
+                                               ^^^^^^^^^^^
+lib/data/prayer/prayer_times_repository.dart:276:47: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+        .map((Prayer p) => '${p.key}:${method.adjustments[p] ?? 0}')
+                                              ^^^^^^^^^^^
+lib/data/prayer/prayer_times_repository.dart:294:19: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+          (method.adjustments[prayer] ?? 0) - (base.adjustments[prayer] ?? 0);
+                  ^^^^^^^^^^^
+lib/data/prayer/prayer_times_repository.dart:294:53: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+          (method.adjustments[prayer] ?? 0) - (base.adjustments[prayer] ?? 0);
+                                                    ^^^^^^^^^^^
+00:24 +32 ~6 -3: loading /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart [E]
+  Failed to load "/home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart":
+  Compilation failed for testPath=/home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: lib/data/prayer/prayer_times_repository.dart:267:19: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+   - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+        if ((method.adjustments[p] ?? 0) != (def.adjustments[p] ?? 0)) {
+                    ^^^^^^^^^^^
+  lib/data/prayer/prayer_times_repository.dart:267:48: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+   - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+        if ((method.adjustments[p] ?? 0) != (def.adjustments[p] ?? 0)) {
+                                                 ^^^^^^^^^^^
+  lib/data/prayer/prayer_times_repository.dart:276:47: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+   - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+          .map((Prayer p) => '${p.key}:${method.adjustments[p] ?? 0}')
+                                                ^^^^^^^^^^^
+  lib/data/prayer/prayer_times_repository.dart:294:19: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+   - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+            (method.adjustments[prayer] ?? 0) - (base.adjustments[prayer] ?? 0);
+                    ^^^^^^^^^^^
+  lib/data/prayer/prayer_times_repository.dart:294:53: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+   - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+            (method.adjustments[prayer] ?? 0) - (base.adjustments[prayer] ?? 0);
+                                                      ^^^^^^^^^^^
+  .
+00:24 +32 ~6 -3: loading /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart [E]
+  Error: The Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 1024:11   DefaultResidentCompiler._compile.<fn>
+  dart:async/zone_root.dart 48:47                  _rootRunUnary
+  dart:async/zone.dart 816:35                      _CustomZone.runUnary
+  dart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 977:13               Future._propagateToListeners
+  dart:async/future_impl.dart 862:9                Future._propagateToListeners
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 810:35                      _CustomZone.run
+  dart:async/zone.dart 702:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 743:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+00:26 +32 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: (setUpAll)
+00:26 +32 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: kategoriler tanımlı ve benzersiz
+00:26 +33 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: en az 30 dua var ve kimlikler benzersiz
+00:26 +34 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duada ad, okunuş, meal ve kategori dolu
+00:26 +35 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duada kaynak künyesi var
+00:26 +36 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: kaynak künyeleri ya Kur'an ya muteber hadis kaynağına dayanır
+00:26 +37 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duanın kategorisi kategori listesinde tanımlı
+00:26 +38 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her kategoride en az bir dua var (boş sekme olmasın)
+00:26 +39 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: Kur'an kaynaklı duaların künyesi sure/ayet içerir
+00:26 +40 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: Arapça metin içeren dualar Arapça alfabede
+00:26 +41 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: katalogda arama ve kategori süzme çalışıyor
+00:26 +42 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı en az 20 kayıt ve benzersiz kimlikler
+00:26 +43 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı her kayıtta başlık, cevap, anahtar kelime ve kaynak var
+00:26 +44 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı anahtar kelimeler küçük harf ve ASCII (arama uyumu)
+00:26 +45 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı anahtar kelimeler yeterince ayırt edici
+00:26 +46 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı ilişkili kayıt kimlikleri geçerli
+00:26 +47 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı mezhep farkı notları en az birkaç kayıtta bulunur
+00:26 +48 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı kaynak künyeleri kaynak türüne ayrılabiliyor
+00:26 +49 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi namaz rekatı sorusu doğru kayda gider
+00:26 +50 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi abdest sorusu doğru kayda gider
+00:26 +51 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi zekât sorusu doğru kayda gider
+00:26 +52 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi kıble sorusu doğru kayda gider
+00:26 +53 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi Türkçe karakter ve büyük harf farkı eşleşmeyi bozmaz
+00:26 +54 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi her yerel cevap kaynak, uyarı ve mezhep bilgisi taşır
+00:26 +55 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi konu kelimesi genel kelimelere üstün gelir (vitir/teravih)
+00:26 +56 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi ayırt edici kelime puanı, genel kelimelerden yüksektir
+00:26 +57 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi harf düşmesi olan sorular da eşleşir (hatim → hatmi)
+00:26 +58 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi Kâbe yönü sorusu kıble kaydına gider
+00:26 +59 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi önerilen sorular kimlik değil, okunabilir başlık olarak döner
+00:26 +60 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi kayda uymayan soru için uydurma cevap üretilmez
+00:26 +61 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi soru boşsa eşleşme yapılmaz
+00:26 +62 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi paylaşım metni kaynakları ve mezhep notlarını içerir
+00:26 +63 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi İslam'ın şartları sorusuna beş şartı doğru sırayla ve kaynaklı cevaplar
+00:26 +64 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi İmanın şartları sorusuna altı iman esasını doğru sırayla ve kaynaklı cevaplar
+00:26 +65 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi birleşik sorularda RAG yaklaşımıyla her iki doğrulanmış kayıt birleştirilir
+00:27 +66 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri yedi gün × altı vakit için kimlikler benzersiz
+00:27 +67 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri kimlikler ilgili aralıkta kalır
+00:27 +68 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri vakit kimlikleri tekil bildirim kimlikleriyle çakışmaz
+00:27 +69 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim yönlendirme yükü her hedef kendi yüküyle ayrışır
+00:27 +70 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim yönlendirme yükü ayrıntılı yükler ve tanımsız yükler güvenli
+00:27 +71 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları varsayılan olarak güneş vakti bildirilmez
+00:27 +72 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları kullanıcı bir vakti kapatabilir
+00:27 +73 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları bildirimler tümden kapatılınca hiçbir vakit bildirilmez
+00:27 +74 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları eksik ayar güvenli tarafta kalır (kapalı sayılır)
+00:27 +75 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Türkçe karakterleri sadeleştirir
+00:27 +76 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Türkçe karakterleri sadeleştirir
+00:27 +77 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Türkçe karakterleri sadeleştirir
+00:27 +78 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Türkçe karakterleri sadeleştirir
+00:27 +79 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Türkçe karakterleri sadeleştirir
+00:27 +80 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Türkçe karakterleri sadeleştirir
+00:27 +81 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Türkçe karakterleri sadeleştirir
+00:27 +82 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Türkçe karakterleri sadeleştirir
+00:27 +83 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer kelimelere ayırır ve kısa kelimeleri atar
+00:27 +84 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer ekleri kaba biçimde kırpar
+00:27 +85 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer eşleştirme aksan ve ek farklarını tolere eder
+00:27 +86 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Arapça harekeleri kaldırır
+00:27 +87 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer yüzde biçimi
+00:27 +88 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime geri sayım ve dijital sayaç biçimi
+00:27 +89 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime 24 saat ve 12 saat biçimi
+00:27 +90 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime gün karşılaştırması
+lib/data/prayer/prayer_times_repository.dart:267:19: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+      if ((method.adjustments[p] ?? 0) != (def.adjustments[p] ?? 0)) {
+                  ^^^^^^^^^^^
+lib/data/prayer/prayer_times_repository.dart:267:48: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+      if ((method.adjustments[p] ?? 0) != (def.adjustments[p] ?? 0)) {
+                                               ^^^^^^^^^^^
+lib/data/prayer/prayer_times_repository.dart:276:47: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+        .map((Prayer p) => '${p.key}:${method.adjustments[p] ?? 0}')
+                                              ^^^^^^^^^^^
+lib/data/prayer/prayer_times_repository.dart:294:19: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+          (method.adjustments[prayer] ?? 0) - (base.adjustments[prayer] ?? 0);
+                  ^^^^^^^^^^^
+lib/data/prayer/prayer_times_repository.dart:294:53: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+          (method.adjustments[prayer] ?? 0) - (base.adjustments[prayer] ?? 0);
+                                                    ^^^^^^^^^^^
+00:38 +91 ~6 -4: loading /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart [E]
+  Failed to load "/home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart":
+  Compilation failed for testPath=/home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: lib/data/prayer/prayer_times_repository.dart:267:19: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+   - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+        if ((method.adjustments[p] ?? 0) != (def.adjustments[p] ?? 0)) {
+                    ^^^^^^^^^^^
+  lib/data/prayer/prayer_times_repository.dart:267:48: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+   - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+        if ((method.adjustments[p] ?? 0) != (def.adjustments[p] ?? 0)) {
+                                                 ^^^^^^^^^^^
+  lib/data/prayer/prayer_times_repository.dart:276:47: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+   - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+          .map((Prayer p) => '${p.key}:${method.adjustments[p] ?? 0}')
+                                                ^^^^^^^^^^^
+  lib/data/prayer/prayer_times_repository.dart:294:19: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+   - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+            (method.adjustments[prayer] ?? 0) - (base.adjustments[prayer] ?? 0);
+                    ^^^^^^^^^^^
+  lib/data/prayer/prayer_times_repository.dart:294:53: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+   - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+            (method.adjustments[prayer] ?? 0) - (base.adjustments[prayer] ?? 0);
+                                                      ^^^^^^^^^^^
+  .
+00:38 +91 ~6 -4: loading /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart [E]
+  Error: The Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 1024:11   DefaultResidentCompiler._compile.<fn>
+  dart:async/zone_root.dart 48:47                  _rootRunUnary
+  dart:async/zone.dart 816:35                      _CustomZone.runUnary
+  dart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 977:13               Future._propagateToListeners
+  dart:async/future_impl.dart 862:9                Future._propagateToListeners
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 810:35                      _CustomZone.run
+  dart:async/zone.dart 702:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 743:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+lib/data/prayer/prayer_times_repository.dart:267:19: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+      if ((method.adjustments[p] ?? 0) != (def.adjustments[p] ?? 0)) {
+                  ^^^^^^^^^^^
+lib/data/prayer/prayer_times_repository.dart:267:48: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+      if ((method.adjustments[p] ?? 0) != (def.adjustments[p] ?? 0)) {
+                                               ^^^^^^^^^^^
+lib/data/prayer/prayer_times_repository.dart:276:47: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+        .map((Prayer p) => '${p.key}:${method.adjustments[p] ?? 0}')
+                                              ^^^^^^^^^^^
+lib/data/prayer/prayer_times_repository.dart:294:19: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+          (method.adjustments[prayer] ?? 0) - (base.adjustments[prayer] ?? 0);
+                  ^^^^^^^^^^^
+lib/data/prayer/prayer_times_repository.dart:294:53: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+          (method.adjustments[prayer] ?? 0) - (base.adjustments[prayer] ?? 0);
+                                                    ^^^^^^^^^^^
+00:50 +91 ~6 -5: loading /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart [E]
+  Failed to load "/home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart":
+  Compilation failed for testPath=/home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: lib/data/prayer/prayer_times_repository.dart:267:19: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+   - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+        if ((method.adjustments[p] ?? 0) != (def.adjustments[p] ?? 0)) {
+                    ^^^^^^^^^^^
+  lib/data/prayer/prayer_times_repository.dart:267:48: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+   - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+        if ((method.adjustments[p] ?? 0) != (def.adjustments[p] ?? 0)) {
+                                                 ^^^^^^^^^^^
+  lib/data/prayer/prayer_times_repository.dart:276:47: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+   - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+          .map((Prayer p) => '${p.key}:${method.adjustments[p] ?? 0}')
+                                                ^^^^^^^^^^^
+  lib/data/prayer/prayer_times_repository.dart:294:19: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+   - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+            (method.adjustments[prayer] ?? 0) - (base.adjustments[prayer] ?? 0);
+                    ^^^^^^^^^^^
+  lib/data/prayer/prayer_times_repository.dart:294:53: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+   - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+            (method.adjustments[prayer] ?? 0) - (base.adjustments[prayer] ?? 0);
+                                                      ^^^^^^^^^^^
+  .
+00:50 +91 ~6 -5: loading /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart [E]
+  Error: The Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 1024:11   DefaultResidentCompiler._compile.<fn>
+  dart:async/zone_root.dart 48:47                  _rootRunUnary
+  dart:async/zone.dart 816:35                      _CustomZone.runUnary
+  dart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 977:13               Future._propagateToListeners
+  dart:async/future_impl.dart 862:9                Future._propagateToListeners
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 810:35                      _CustomZone.run
+  dart:async/zone.dart 702:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 743:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+00:51 +91 ~6 -5: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: (setUpAll)
+00:52 +91 ~6 -5: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: doğrulama verisi yüklendi
+00:52 +92 ~6 -5: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: yerel hesap, Diyanet vakitlerine ±3 dakika içinde kalır
+00:52 +93 ~6 -5: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: vakitler gün içinde artan sırada
+00:52 +94 ~6 -5: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: Hanefî ikindi vakti Şâfiî'den sonra olur
+00:52 +95 ~6 -5: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: yüksek enlemlerde gece ortası kuralı vakit üretir
+00:52 +96 ~6 -5: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: (tearDownAll)
+00:52 +96 ~6 -5: Some tests failed.
+
+Failing tests:
+  /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: loading /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart
+  /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: loading /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart
+  /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: loading /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart
+  /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: loading /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart
+  /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: loading /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart
 ```
 
 ## ai
@@ -442,42 +670,6 @@ No issues found! (ran in 15.9s)
 
 ## build
 ```
-[=============                          ] 33% Unzipping... android-ndk-r28c/wrap
-[=============                          ] 33% Unzipping... android-ndk-r28c/ndk-
-[=============                          ] 33% Unzipping... android-ndk-r28c/tool
-[=============                          ] 34% Unzipping... android-ndk-r28c/tool
-[=============                          ] 35% Unzipping... android-ndk-r28c/tool
-[==============                         ] 35% Unzipping... android-ndk-r28c/tool
-[==============                         ] 36% Unzipping... android-ndk-r28c/tool
-[==============                         ] 37% Unzipping... android-ndk-r28c/tool
-[===============                        ] 38% Unzipping... android-ndk-r28c/tool
-[===============                        ] 39% Unzipping... android-ndk-r28c/tool
-[===============                        ] 40% Unzipping... android-ndk-r28c/tool
-[================                       ] 40% Unzipping... android-ndk-r28c/tool
-[================                       ] 41% Unzipping... android-ndk-r28c/tool
-[================                       ] 42% Unzipping... android-ndk-r28c/tool
-[=================                      ] 43% Unzipping... android-ndk-r28c/tool
-[=================                      ] 44% Unzipping... android-ndk-r28c/tool
-[=================                      ] 45% Unzipping... android-ndk-r28c/tool
-[==================                     ] 45% Unzipping... android-ndk-r28c/tool
-[==================                     ] 46% Unzipping... android-ndk-r28c/tool
-[==================                     ] 47% Unzipping... android-ndk-r28c/tool
-[===================                    ] 48% Unzipping... android-ndk-r28c/tool
-[===================                    ] 49% Unzipping... android-ndk-r28c/tool
-[===================                    ] 50% Unzipping... android-ndk-r28c/tool
-[====================                   ] 50% Unzipping... android-ndk-r28c/tool
-[====================                   ] 51% Unzipping... android-ndk-r28c/tool
-[====================                   ] 52% Unzipping... android-ndk-r28c/tool
-[=====================                  ] 53% Unzipping... android-ndk-r28c/tool
-[=====================                  ] 54% Unzipping... android-ndk-r28c/tool
-[=====================                  ] 54% Unzipping... android-ndk-r28c/buil
-[=====================                  ] 54% Unzipping... android-ndk-r28c/sour
-[=====================                  ] 54% Unzipping... android-ndk-r28c/NOTI
-[=====================                  ] 54% Unzipping... android-ndk-r28c/ndk-
-[=====================                  ] 54% Unzipping... android-ndk-r28c/NOTI
-[=====================                  ] 54% Unzipping... android-ndk-r28c/pyth
-[=====================                  ] 54% Unzipping... android-ndk-r28c/preb
-[=====================                  ] 54% Unzipping... android-ndk-r28c/ndk-
 [=====================                  ] 54% Unzipping... android-ndk-r28c/sour
 [=====================                  ] 54% Unzipping... android-ndk-r28c/simp
 [=====================                  ] 55% Unzipping... android-ndk-r28c/simp
@@ -491,17 +683,53 @@ Preparing "Install CMake 3.22.1 v.3.22.1".
 Installing CMake 3.22.1 in /usr/local/lib/android/sdk/cmake/3.22.1
 "Install CMake 3.22.1 v.3.22.1" complete.
 "Install CMake 3.22.1 v.3.22.1" finished.
+lib/data/prayer/prayer_times_repository.dart:267:19: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+      if ((method.adjustments[p] ?? 0) != (def.adjustments[p] ?? 0)) {
+                  ^^^^^^^^^^^
+lib/data/prayer/prayer_times_repository.dart:267:48: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+      if ((method.adjustments[p] ?? 0) != (def.adjustments[p] ?? 0)) {
+                                               ^^^^^^^^^^^
+lib/data/prayer/prayer_times_repository.dart:276:47: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+        .map((Prayer p) => '${p.key}:${method.adjustments[p] ?? 0}')
+                                              ^^^^^^^^^^^
+lib/data/prayer/prayer_times_repository.dart:294:19: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+          (method.adjustments[prayer] ?? 0) - (base.adjustments[prayer] ?? 0);
+                  ^^^^^^^^^^^
+lib/data/prayer/prayer_times_repository.dart:294:53: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+          (method.adjustments[prayer] ?? 0) - (base.adjustments[prayer] ?? 0);
+                                                    ^^^^^^^^^^^
 Note: /home/runner/.pub-cache/hosted/pub.dev/geolocator_android-5.1.1+1/android/src/main/java/com/baseflow/geolocator/location/LocationMapper.java uses or overrides a deprecated API.
 Note: Recompile with -Xlint:deprecation for details.
 Note: Some input files use or override a deprecated API.
 Note: Recompile with -Xlint:deprecation for details.
-Expected to find fonts for (packages/cupertino_icons/CupertinoIcons, MaterialIcons), but found (MaterialIcons). This usually means you are referring to font families in an IconData class but not including them in the assets section of your pubspec.yaml, are missing the package that would include them, or are missing "uses-material-design: true".
-Font asset "MaterialIcons-Regular.otf" was tree-shaken, reducing it from 1645184 to 25180 bytes (98.5% reduction). Tree-shaking can be disabled by providing the --no-tree-shake-icons flag when building your app.
-Note: Some input files use or override a deprecated API.
-Note: Recompile with -Xlint:deprecation for details.
-Caught exception: Already watching path: /home/runner/work/ezanapp/ezanapp/android
-Running Gradle task 'assembleRelease'...                          457.5s
-✓ Built build/app/outputs/flutter-apk/app-release.apk (77.5MB)
+Target kernel_snapshot_program failed: Exception
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileFlutterBuildRelease'.
+> Process 'command '/opt/hostedtoolcache/flutter/stable-3.47.7-x64/flutter/bin/flutter'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 3m 39s
+Running Gradle task 'assembleRelease'...                          219.6s
+Gradle task assembleRelease failed with exit code 1
 ```
 
 ## release
@@ -525,9 +753,49 @@ Alternatively, use the flag "--android-skip-build-dependency-validation" to bypa
 Potential fix: Your project's KGP version is typically defined in the plugins block of the `settings.gradle` file (/home/runner/work/ezanapp/ezanapp/android/settings.gradle), by a plugin with the id of org.jetbrains.kotlin.android. 
 If you don't see a plugins block, your project was likely created with an older template version, in which case it is most likely defined in the top-level build.gradle file (/home/runner/work/ezanapp/ezanapp/android/build.gradle) by the ext.kotlin_version property.
 
-Expected to find fonts for (packages/cupertino_icons/CupertinoIcons, MaterialIcons), but found (MaterialIcons). This usually means you are referring to font families in an IconData class but not including them in the assets section of your pubspec.yaml, are missing the package that would include them, or are missing "uses-material-design: true".
-Font asset "MaterialIcons-Regular.otf" was tree-shaken, reducing it from 1645184 to 25180 bytes (98.5% reduction). Tree-shaking can be disabled by providing the --no-tree-shake-icons flag when building your app.
-Caught exception: Already watching path: /home/runner/work/ezanapp/ezanapp/android
-Running Gradle task 'bundleRelease'...                             17.9s
-✓ Built build/app/outputs/bundle/release/app-release.aab (77.7MB)
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+lib/data/prayer/prayer_times_repository.dart:267:19: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+      if ((method.adjustments[p] ?? 0) != (def.adjustments[p] ?? 0)) {
+                  ^^^^^^^^^^^
+lib/data/prayer/prayer_times_repository.dart:267:48: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+      if ((method.adjustments[p] ?? 0) != (def.adjustments[p] ?? 0)) {
+                                               ^^^^^^^^^^^
+lib/data/prayer/prayer_times_repository.dart:276:47: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+        .map((Prayer p) => '${p.key}:${method.adjustments[p] ?? 0}')
+                                              ^^^^^^^^^^^
+lib/data/prayer/prayer_times_repository.dart:294:19: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+          (method.adjustments[prayer] ?? 0) - (base.adjustments[prayer] ?? 0);
+                  ^^^^^^^^^^^
+lib/data/prayer/prayer_times_repository.dart:294:53: Error: The getter 'adjustments' isn't defined for the type 'CalculationMethod'.
+ - 'CalculationMethod' is from 'package:ezanai/data/prayer/prayer_calculator.dart' ('lib/data/prayer/prayer_calculator.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'adjustments'.
+          (method.adjustments[prayer] ?? 0) - (base.adjustments[prayer] ?? 0);
+                                                    ^^^^^^^^^^^
+Target kernel_snapshot_program failed: Exception
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileFlutterBuildRelease'.
+> Process 'command '/opt/hostedtoolcache/flutter/stable-3.47.7-x64/flutter/bin/flutter'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 1m 10s
+Running Gradle task 'bundleRelease'...                             70.2s
+Gradle task bundleRelease failed with exit code 1
 ```
