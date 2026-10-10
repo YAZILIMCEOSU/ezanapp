@@ -354,7 +354,10 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
     }
     if (!launched) {
       try {
-        launched = await launchUrl(mapsDirUri, mode: LaunchMode.platformDefault);
+        launched = await launchUrl(
+          mapsDirUri,
+          mode: LaunchMode.platformDefault,
+        );
       } catch (_) {}
     }
     if (!launched && mounted) {

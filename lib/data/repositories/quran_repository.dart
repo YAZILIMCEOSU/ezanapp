@@ -225,8 +225,8 @@ class QuranRepository {
       if (response.statusCode == 200) {
         final Object? decoded = jsonDecode(utf8.decode(response.bodyBytes));
         if (decoded is Map<String, Object?>) {
-          final Map<String, Object?>? data =
-              (decoded['data'] as Map?)?.cast<String, Object?>();
+          final Map<String, Object?>? data = (decoded['data'] as Map?)
+              ?.cast<String, Object?>();
           final List<Object?>? ayahs = data?['ayahs'] as List<Object?>?;
           if (ayahs != null && ayahs.isNotEmpty) {
             final List<String> lines = <String>[
@@ -248,49 +248,49 @@ class QuranRepository {
     return null;
   }
 
-  static const Map<int, List<String>> _offlineEnglishSurahs =
-      <int, List<String>>{
-        1: <String>[
-          'In the name of Allah, the Entirely Merciful, the Especially Merciful.',
-          '[All] praise is [due] to Allah, Lord of the worlds -',
-          'The Entirely Merciful, the Especially Merciful,',
-          'Sovereign of the Day of Recompense.',
-          'It is You we worship and You we ask for help.',
-          'Guide us to the straight path -',
-          'The path of those upon whom You have bestowed favor, not of those who have evoked [Your] anger or of those who are astray.',
-        ],
-        103: <String>[
-          'By time,',
-          'Indeed, mankind is in loss,',
-          'Except for those who have believed and done righteous deeds and advised each other to truth and advised each other to patience.',
-        ],
-        108: <String>[
-          'Indeed, We have granted you, [O Muhammad], al-Kawthar.',
-          'So pray to your Lord and sacrifice [to Him alone].',
-          'Indeed, your enemy is the one cut off.',
-        ],
-        112: <String>[
-          'Say, "He is Allah, [who is] One,',
-          'Allah, the Eternal Refuge.',
-          'He neither begets nor is born,',
-          'Nor is there to Him any equivalent."',
-        ],
-        113: <String>[
-          'Say, "I seek refuge in the Lord of daybreak',
-          'From the evil of that which He created',
-          'And from the evil of darkness when it settles',
-          'And from the evil of the blowers in knots',
-          'And from the evil of an envier when he envies."',
-        ],
-        114: <String>[
-          'Say, "I seek refuge in the Lord of mankind,',
-          'The Sovereign of mankind,',
-          'The God of mankind,',
-          'From the evil of the retreating whisperer -',
-          'Who whispers [evil] into the breasts of mankind -',
-          'From among the jinn and mankind."',
-        ],
-      };
+  static const Map<int, List<String>>
+  _offlineEnglishSurahs = <int, List<String>>{
+    1: <String>[
+      'In the name of Allah, the Entirely Merciful, the Especially Merciful.',
+      '[All] praise is [due] to Allah, Lord of the worlds -',
+      'The Entirely Merciful, the Especially Merciful,',
+      'Sovereign of the Day of Recompense.',
+      'It is You we worship and You we ask for help.',
+      'Guide us to the straight path -',
+      'The path of those upon whom You have bestowed favor, not of those who have evoked [Your] anger or of those who are astray.',
+    ],
+    103: <String>[
+      'By time,',
+      'Indeed, mankind is in loss,',
+      'Except for those who have believed and done righteous deeds and advised each other to truth and advised each other to patience.',
+    ],
+    108: <String>[
+      'Indeed, We have granted you, [O Muhammad], al-Kawthar.',
+      'So pray to your Lord and sacrifice [to Him alone].',
+      'Indeed, your enemy is the one cut off.',
+    ],
+    112: <String>[
+      'Say, "He is Allah, [who is] One,',
+      'Allah, the Eternal Refuge.',
+      'He neither begets nor is born,',
+      'Nor is there to Him any equivalent."',
+    ],
+    113: <String>[
+      'Say, "I seek refuge in the Lord of daybreak',
+      'From the evil of that which He created',
+      'And from the evil of darkness when it settles',
+      'And from the evil of the blowers in knots',
+      'And from the evil of an envier when he envies."',
+    ],
+    114: <String>[
+      'Say, "I seek refuge in the Lord of mankind,',
+      'The Sovereign of mankind,',
+      'The God of mankind,',
+      'From the evil of the retreating whisperer -',
+      'Who whispers [evil] into the breasts of mankind -',
+      'From among the jinn and mankind."',
+    ],
+  };
 
   static const Map<int, List<String>> _offlineArabicTafsir =
       <int, List<String>>{

@@ -264,10 +264,7 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
     ];
     if (urls.isEmpty) return;
     setState(() => _playingAyah = content.ayahs.first.number);
-    final bool ok = await ref
-        .read(runtimeProvider)
-        .audio
-        .playUrlList(urls);
+    final bool ok = await ref.read(runtimeProvider).audio.playUrlList(urls);
     if (!ok) {
       AppLog.warning('Sure sesi başlatılamadı');
       if (mounted) {

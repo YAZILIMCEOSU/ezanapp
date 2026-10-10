@@ -256,7 +256,11 @@ class AppAudioService {
       if (!_statusController.isClosed) _statusController.add(_status);
       return true;
     } catch (error, stackTrace) {
-      AppLog.error('URL listesi çalınamadı', error: error, stackTrace: stackTrace);
+      AppLog.error(
+        'URL listesi çalınamadı',
+        error: error,
+        stackTrace: stackTrace,
+      );
       return false;
     }
   }

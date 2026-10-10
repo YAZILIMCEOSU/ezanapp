@@ -484,8 +484,14 @@ void main() {
       expect(arabicTafsir.ayahs, hasLength(7));
 
       expect(diyanet.ayahs.first.turkish, isNotEmpty);
-      expect(english.ayahs.first.turkish, isNot(equals(diyanet.ayahs.first.turkish)));
-      expect(arabicTafsir.ayahs.first.turkish, isNot(equals(diyanet.ayahs.first.turkish)));
+      expect(
+        english.ayahs.first.turkish,
+        isNot(equals(diyanet.ayahs.first.turkish)),
+      );
+      expect(
+        arabicTafsir.ayahs.first.turkish,
+        isNot(equals(diyanet.ayahs.first.turkish)),
+      );
 
       for (final AdhanSound sound in AdhanSound.values) {
         final String? asset = BundledSounds.assetFor(sound);

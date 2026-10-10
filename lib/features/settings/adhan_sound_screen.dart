@@ -297,9 +297,8 @@ class _AdhanSoundScreenState extends ConsumerState<AdhanSoundScreen> {
     if (!mounted) return;
     if (!ok) {
       setState(() => _previewingSound = null);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Ses oynatılamadı.')),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Ses oynatılamadı.')));
       return;
     }
     ScaffoldMessenger.of(context)
