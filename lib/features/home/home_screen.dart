@@ -273,12 +273,9 @@ class _QuickActions extends ConsumerWidget {
           route: AppRoutes.ramadan,
           color: AppColors.imsak,
         ),
-      if (features.hadith) ...<({
-        IconData icon,
-        String label,
-        String route,
-        Color color,
-      })>[
+      if (features.hadith) ...<
+        ({IconData icon, String label, String route, Color color})
+      >[
         (
           icon: Icons.mosque_outlined,
           label: 'Camiler',
