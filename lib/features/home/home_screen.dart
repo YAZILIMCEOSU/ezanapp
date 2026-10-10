@@ -273,24 +273,31 @@ class _QuickActions extends ConsumerWidget {
           route: AppRoutes.ramadan,
           color: AppColors.imsak,
         ),
-      (
-        icon: Icons.mosque_outlined,
-        label: 'Camiler',
-        route: AppRoutes.mosques,
-        color: AppColors.emerald500,
-      ),
-      (
-        icon: Icons.stars_outlined,
-        label: 'Esmaül Hüsna',
-        route: AppRoutes.esmaulHusna,
-        color: AppColors.gold500,
-      ),
-      (
-        icon: Icons.fact_check_outlined,
-        label: 'Kaza & Hutbe',
-        route: AppRoutes.kazaTracker,
-        color: AppColors.info,
-      ),
+      if (features.hadith) ...<({
+        IconData icon,
+        String label,
+        String route,
+        Color color,
+      })>[
+        (
+          icon: Icons.mosque_outlined,
+          label: 'Camiler',
+          route: AppRoutes.mosques,
+          color: AppColors.emerald500,
+        ),
+        (
+          icon: Icons.stars_outlined,
+          label: 'Esmaül Hüsna',
+          route: AppRoutes.esmaulHusna,
+          color: AppColors.gold500,
+        ),
+        (
+          icon: Icons.fact_check_outlined,
+          label: 'Kaza & Hutbe',
+          route: AppRoutes.kazaTracker,
+          color: AppColors.info,
+        ),
+      ],
     ];
 
     // Kapatılan modüllerin girişleri hiç gösterilmez (ölü buton olmaz).
