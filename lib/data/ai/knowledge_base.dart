@@ -93,7 +93,13 @@ abstract final class KnowledgeBase {
       madhabNotes: <String>[
         'Dört Sünnî mezhepte (Hanefî, Şâfiî, Mâlikî, Hanbelî) İslam\'ın beş temel şartı ve sıralaması üzerinde tam ittifak vardır.',
       ],
-      related: <String>['iman_sartlari', 'namaz_rekat', 'zekat', 'imsak_orucu', 'hac_umre'],
+      related: <String>[
+        'iman_sartlari',
+        'namaz_rekat',
+        'zekat',
+        'imsak_orucu',
+        'hac_umre',
+      ],
       category: 'İman ve İslam',
     ),
     KnowledgeEntry(

@@ -293,9 +293,7 @@ class PrayerTimesRepository {
       final int extra =
           (method.adjustments[prayer] ?? 0) - (base.adjustments[prayer] ?? 0);
       if (extra != 0) hasExtra = true;
-      adjusted[prayer] = extra == 0
-          ? time
-          : time.add(Duration(minutes: extra));
+      adjusted[prayer] = extra == 0 ? time : time.add(Duration(minutes: extra));
     }
     if (!hasExtra) return day;
     return day.copyWith(times: adjusted);

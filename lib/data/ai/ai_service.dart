@@ -371,10 +371,8 @@ class AiService {
   }
 
   /// Soruya ilişkin doğrulanmış RAG pasajlarını getirir.
-  List<RetrievedPassage> retrieveRagContext(
-    String question, {
-    int limit = 3,
-  }) => _local.retrievePassages(question, limit: limit);
+  List<RetrievedPassage> retrieveRagContext(String question, {int limit = 3}) =>
+      _local.retrievePassages(question, limit: limit);
 
   /// Sorunun dinî hüküm / fetva niteliği taşıyıp taşımadığını belirler.
   static bool isFatwaQuestion(String question) {
@@ -438,13 +436,13 @@ class AiService {
         AiSource(
           kind: AiSourceKind.other,
           label: 'Günlük kullanım kotası',
-          detail: 'Temel onaylı bilgi tabanı sorularında kota sınırı uygulanmaz.',
+          detail:
+              'Temel onaylı bilgi tabanı sorularında kota sınırı uygulanmaz.',
         ),
       ],
       mode: AiAnswerMode.offline,
       failureKind: AiFailureKind.quotaExceeded,
-      disclaimer:
-          'Temel ilmihal sorularınızı sormaya devam edebilirsiniz.',
+      disclaimer: 'Temel ilmihal sorularınızı sormaya devam edebilirsiniz.',
       createdAt: DateTime.now(),
     );
   }
@@ -500,7 +498,9 @@ class AiService {
           createdAt: DateTime.now(),
         );
       } on _RemoteAiException catch (error) {
-        AppLog.warning('AI uzak çağrısı (${error.kind.name}): ${error.message}');
+        AppLog.warning(
+          'AI uzak çağrısı (${error.kind.name}): ${error.message}',
+        );
         if (error.kind == AiFailureKind.quotaExceeded) {
           return quotaExceededAnswer(question: trimmed);
         }
@@ -737,8 +737,7 @@ class AiService {
       AiFailureKind.apiError =>
         'Yapay zekâ servisine şu anda ulaşılamadı ve bu soru için çevrimdışı '
             'bilgi tabanında doğrudan eşleşme bulunamadı. ',
-      AiFailureKind.quotaExceeded =>
-        'Günlük ücretsiz soru kotanız doldu. ',
+      AiFailureKind.quotaExceeded => 'Günlük ücretsiz soru kotanız doldu. ',
       AiFailureKind.noVerifiedSource || AiFailureKind.none =>
         'Bu sorunun cevabını güvenilir kaynaklarla eşleştiremedim. ',
     };

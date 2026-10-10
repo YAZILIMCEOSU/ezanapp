@@ -70,8 +70,7 @@ class PrayerScheduleSnapshot {
       }
     }
 
-    final Duration remaining =
-        next == null || !next.time.isAfter(now)
+    final Duration remaining = next == null || !next.time.isAfter(now)
         ? Duration.zero
         : next.time.difference(now);
 

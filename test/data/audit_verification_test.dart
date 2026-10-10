@@ -27,64 +27,69 @@ void main() {
   });
 
   group('AI kota, kaynak doğrulama ve fetva güvenliği', () {
-    test(
-      'günlük kota dolsa bile İslam\'ın ve imanın şartları gibi onaylı cevaplar engellenmez',
-      () async {
-        if (skipWithoutDatabase(databaseProblem)) return;
-        final AppRuntime runtime = await createTestRuntime();
-        addTearDown(runtime.dispose);
+    test('günlük kota dolsa bile İslam\'ın ve imanın şartları gibi onaylı cevaplar engellenmez', () async {
+      if (skipWithoutDatabase(databaseProblem)) return;
+      final AppRuntime runtime = await createTestRuntime();
+      addTearDown(runtime.dispose);
 
-        // Günlük ücretsiz kotayı tamamen doldur:
-        for (int i = 0; i < kFreeDailyAiLimit; i++) {
-          await runtime.ai.incrementUsage();
-        }
-        expect(await runtime.ai.canAsk(premium: false), isFalse);
+      // Günlük ücretsiz kotayı tamamen doldur:
+      for (int i = 0; i < kFreeDailyAiLimit; i++) {
+        await runtime.ai.incrementUsage();
+      }
+      expect(await runtime.ai.canAsk(premium: false), isFalse);
 
-        // 1) Kota doluyken "İslam'ın şartları nelerdir?" sorusu engellenmemeli:
-        final AiAnswer islamAnswer = await runtime.ai.askWithQuota(
-          'İslam\'ın şartları nelerdir?',
-          premium: false,
-        );
-        expect(islamAnswer.failureKind, AiFailureKind.none);
-        expect(islamAnswer.isVerifiedLocal, isTrue);
-        expect(islamAnswer.hasSources, isTrue);
-        expect(islamAnswer.text, contains('Kelime-i şehâdet'));
+      // 1) Kota doluyken "İslam'ın şartları nelerdir?" sorusu engellenmemeli:
+      final AiAnswer islamAnswer = await runtime.ai.askWithQuota(
+        'İslam\'ın şartları nelerdir?',
+        premium: false,
+      );
+      expect(islamAnswer.failureKind, AiFailureKind.none);
+      expect(islamAnswer.isVerifiedLocal, isTrue);
+      expect(islamAnswer.hasSources, isTrue);
+      expect(islamAnswer.text, contains('Kelime-i şehâdet'));
 
-        // 2) Kota doluyken "İmanın şartları nelerdir?" sorusu engellenmemeli:
-        final AiAnswer imanAnswer = await runtime.ai.askWithQuota(
-          'İmanın şartları nelerdir?',
-          premium: false,
-        );
-        expect(imanAnswer.failureKind, AiFailureKind.none);
-        expect(imanAnswer.isVerifiedLocal, isTrue);
-        expect(imanAnswer.hasSources, isTrue);
-        expect(imanAnswer.text, contains('Allah\'a iman'));
+      // 2) Kota doluyken "İmanın şartları nelerdir?" sorusu engellenmemeli:
+      final AiAnswer imanAnswer = await runtime.ai.askWithQuota(
+        'İmanın şartları nelerdir?',
+        premium: false,
+      );
+      expect(imanAnswer.failureKind, AiFailureKind.none);
+      expect(imanAnswer.isVerifiedLocal, isTrue);
+      expect(imanAnswer.hasSources, isTrue);
+      expect(imanAnswer.text, contains('Allah\'a iman'));
 
-        // 3) Yerel bilgi tabanında olmayan kapsamlı soru ise kota uyarısı döndürmeli:
-        final AiAnswer blocked = await runtime.ai.askWithQuota(
-          'Endülüs döneminde vakıf muhasebesi nasıl tutulurdu?',
-          premium: false,
-        );
-        expect(blocked.failureKind, AiFailureKind.quotaExceeded);
-        expect(blocked.text, contains('ücretsiz yapay zekâ soru hakkınız doldu'));
-      },
-    );
+      // 3) Yerel bilgi tabanında olmayan kapsamlı soru ise kota uyarısı döndürmeli:
+      final AiAnswer blocked = await runtime.ai.askWithQuota(
+        'Endülüs döneminde vakıf muhasebesi nasıl tutulurdu?',
+        premium: false,
+      );
+      expect(blocked.failureKind, AiFailureKind.quotaExceeded);
+      expect(blocked.text, contains('ücretsiz yapay zekâ soru hakkınız doldu'));
+    });
 
     test('fetva soruları tespit edilir ve uydurma kaynaklar elenir', () {
       expect(AiService.isFatwaQuestion('Kripto para caiz midir?'), isTrue);
-      expect(AiService.isFatwaQuestion('Diş fırçalamak orucu bozar mı?'), isTrue);
-      expect(AiService.isFatwaQuestion('İslam\'ın şartları nelerdir?'), isFalse);
+      expect(
+        AiService.isFatwaQuestion('Diş fırçalamak orucu bozar mı?'),
+        isTrue,
+      );
+      expect(
+        AiService.isFatwaQuestion('İslam\'ın şartları nelerdir?'),
+        isFalse,
+      );
 
-      final List<AiSource> filtered = AiService.validateRemoteSources(<AiSource>[
-        const AiSource(kind: AiSourceKind.other, label: 'unknown'),
-        const AiSource(kind: AiSourceKind.other, label: 'uydurma kaynak'),
-        const AiSource(kind: AiSourceKind.other, label: 'ab'),
-        const AiSource(
-          kind: AiSourceKind.hadith,
-          label: 'Buhârî, Îmân 1',
-          detail: 'Hadis kaynağı',
-        ),
-      ]);
+      final List<AiSource> filtered = AiService.validateRemoteSources(
+        <AiSource>[
+          const AiSource(kind: AiSourceKind.other, label: 'unknown'),
+          const AiSource(kind: AiSourceKind.other, label: 'uydurma kaynak'),
+          const AiSource(kind: AiSourceKind.other, label: 'ab'),
+          const AiSource(
+            kind: AiSourceKind.hadith,
+            label: 'Buhârî, Îmân 1',
+            detail: 'Hadis kaynağı',
+          ),
+        ],
+      );
       expect(filtered.length, 1);
       expect(filtered.first.label, 'Buhârî, Îmân 1');
     });
@@ -151,116 +156,119 @@ void main() {
       expect(snap.isAfterIsha, isTrue);
     });
 
-    test('gece yarısı geçildiğinde aktif gün otomatik olarak yarına devreder', () {
-      final DateTime now = DateTime(2026, 10, 11, 0, 35);
-      final PrayerScheduleSnapshot snap = PrayerScheduleSnapshot.resolve(
-        day: today,
-        tomorrow: tomorrow,
-        now: now,
-      );
-      expect(snap.rolledOverToTomorrow, isTrue);
-      expect(snap.activeDay, same(tomorrow));
-      expect(snap.currentPrayer, Prayer.yatsi);
-      expect(snap.nextPrayer?.prayer, Prayer.imsak);
-      expect(snap.remaining, const Duration(hours: 5));
-    });
-
-    test('hesaplama yöntemi ve Hanefî ikindi değişimi vakitleri yeniler', () async {
-      if (skipWithoutDatabase(databaseProblem)) return;
-      final AppRuntime runtime = await createTestRuntime();
-      addTearDown(runtime.dispose);
-
-      const UserLocation loc = UserLocation(
-        mode: LocationMode.gps,
-        latitude: 41.0082,
-        longitude: 28.9784,
-      );
-
-      final PrayerTimesDay standardDay = await runtime.prayerTimes.getDay(
-        location: loc,
-        date: dayDate,
-        method: CalculationMethod.diyanet,
-      );
-      final PrayerTimesDay hanafiDay = await runtime.prayerTimes.getDay(
-        location: loc,
-        date: dayDate,
-        method: CalculationMethod.diyanet.copyWith(asrFactor: 2),
-      );
-      expect(
-        hanafiDay.timeOf(Prayer.ikindi)!.isAfter(
-          standardDay.timeOf(Prayer.ikindi)!,
-        ),
-        isTrue,
-        reason: 'Asr-ı sânî (Hanefî) ikindi vakti asr-ı evvelden daha geç olmalıdır',
-      );
-    });
-  });
-
-  group('Dijital tesbih tutarlılığı ve kalıcılığı', () {
     test(
-      'oturum sayacı, günlük toplam, hedef değişimi, sıfırlama ve yeniden açılış tutarlıdır',
+      'gece yarısı geçildiğinde aktif gün otomatik olarak yarına devreder',
+      () {
+        final DateTime now = DateTime(2026, 10, 11, 0, 35);
+        final PrayerScheduleSnapshot snap = PrayerScheduleSnapshot.resolve(
+          day: today,
+          tomorrow: tomorrow,
+          now: now,
+        );
+        expect(snap.rolledOverToTomorrow, isTrue);
+        expect(snap.activeDay, same(tomorrow));
+        expect(snap.currentPrayer, Prayer.yatsi);
+        expect(snap.nextPrayer?.prayer, Prayer.imsak);
+        expect(snap.remaining, const Duration(hours: 5));
+      },
+    );
+
+    test(
+      'hesaplama yöntemi ve Hanefî ikindi değişimi vakitleri yeniler',
       () async {
         if (skipWithoutDatabase(databaseProblem)) return;
         final AppRuntime runtime = await createTestRuntime();
         addTearDown(runtime.dispose);
 
-        final ProviderContainer container = ProviderContainer(
-          overrides: [runtimeProvider.overrideWithValue(runtime)],
-        );
-        addTearDown(container.dispose);
-
-        final ZikirCounterController controller = container.read(
-          zikirCounterProvider.notifier,
+        const UserLocation loc = UserLocation(
+          mode: LocationMode.gps,
+          latitude: 41.0082,
+          longitude: 28.9784,
         );
 
-        // 1) 15 kez hızlı artış (çift sayım veya kayıp olmamalı):
-        for (int i = 0; i < 15; i++) {
-          await controller.increment();
-        }
-        expect(container.read(zikirCounterProvider).count, 15);
-
-        // 2) Hedef değiştirildiğinde mevcut oturum sayacı sıfırlanmamalı:
-        controller.setTarget(99);
-        expect(container.read(zikirCounterProvider).target, 99);
+        final PrayerTimesDay standardDay = await runtime.prayerTimes.getDay(
+          location: loc,
+          date: dayDate,
+          method: CalculationMethod.diyanet,
+        );
+        final PrayerTimesDay hanafiDay = await runtime.prayerTimes.getDay(
+          location: loc,
+          date: dayDate,
+          method: CalculationMethod.diyanet.copyWith(asrFactor: 2),
+        );
         expect(
-          container.read(zikirCounterProvider).count,
-          15,
-          reason: 'Hedef değişimi oturum sayacını sıfırlamamalı',
+          hanafiDay
+              .timeOf(Prayer.ikindi)!
+              .isAfter(standardDay.timeOf(Prayer.ikindi)!),
+          isTrue,
+          reason: 'Asr-ı sânî (Hanefî) ikindi vakti asr-ı evvelden daha geç olmalıdır',
         );
-
-        // 3) Başka zikre geçip geri dönüldüğünde önceki zikir sayacı korunmalı:
-        controller.selectZikir('elhamdulillah', 33);
-        await controller.increment();
-        await controller.increment();
-        expect(container.read(zikirCounterProvider).count, 2);
-
-        controller.selectZikir('subhanallah', 33);
-        expect(container.read(zikirCounterProvider).count, 15);
-        expect(container.read(zikirCounterProvider).target, 99);
-
-        // 4) Uygulama yeniden açıldığında (yeni ProviderContainer) oturum korunmalı:
-        final ProviderContainer reopened = ProviderContainer(
-          overrides: [runtimeProvider.overrideWithValue(runtime)],
-        );
-        addTearDown(reopened.dispose);
-        final ZikirCounterState restored = reopened.read(zikirCounterProvider);
-        expect(restored.zikirKey, 'subhanallah');
-        expect(restored.count, 15);
-        expect(restored.target, 99);
-
-        // 5) Oturum sayacı sıfırlandığında günlük toplam (15 + 2 = 17) silinmemeli:
-        await controller.reset();
-        expect(container.read(zikirCounterProvider).count, 0);
-
-        final ZikirDailySummary summary = await runtime.zikir.todaySummary(
-          target: 100,
-        );
-        expect(summary.totalCount, 17);
-        expect(summary.byZikir['subhanallah'], 15);
-        expect(summary.byZikir['elhamdulillah'], 2);
-        expect(summary.progress, closeTo(0.17, 0.001));
       },
     );
+  });
+
+  group('Dijital tesbih tutarlılığı ve kalıcılığı', () {
+    test('oturum sayacı, günlük toplam, hedef değişimi, sıfırlama ve yeniden açılış tutarlıdır', () async {
+      if (skipWithoutDatabase(databaseProblem)) return;
+      final AppRuntime runtime = await createTestRuntime();
+      addTearDown(runtime.dispose);
+
+      final ProviderContainer container = ProviderContainer(
+        overrides: [runtimeProvider.overrideWithValue(runtime)],
+      );
+      addTearDown(container.dispose);
+
+      final ZikirCounterController controller = container.read(
+        zikirCounterProvider.notifier,
+      );
+
+      // 1) 15 kez hızlı artış (çift sayım veya kayıp olmamalı):
+      for (int i = 0; i < 15; i++) {
+        await controller.increment();
+      }
+      expect(container.read(zikirCounterProvider).count, 15);
+
+      // 2) Hedef değiştirildiğinde mevcut oturum sayacı sıfırlanmamalı:
+      controller.setTarget(99);
+      expect(container.read(zikirCounterProvider).target, 99);
+      expect(
+        container.read(zikirCounterProvider).count,
+        15,
+        reason: 'Hedef değişimi oturum sayacını sıfırlamamalı',
+      );
+
+      // 3) Başka zikre geçip geri dönüldüğünde önceki zikir sayacı korunmalı:
+      controller.selectZikir('elhamdulillah', 33);
+      await controller.increment();
+      await controller.increment();
+      expect(container.read(zikirCounterProvider).count, 2);
+
+      controller.selectZikir('subhanallah', 33);
+      expect(container.read(zikirCounterProvider).count, 15);
+      expect(container.read(zikirCounterProvider).target, 99);
+
+      // 4) Uygulama yeniden açıldığında (yeni ProviderContainer) oturum korunmalı:
+      final ProviderContainer reopened = ProviderContainer(
+        overrides: [runtimeProvider.overrideWithValue(runtime)],
+      );
+      addTearDown(reopened.dispose);
+      final ZikirCounterState restored = reopened.read(zikirCounterProvider);
+      expect(restored.zikirKey, 'subhanallah');
+      expect(restored.count, 15);
+      expect(restored.target, 99);
+
+      // 5) Oturum sayacı sıfırlandığında günlük toplam (15 + 2 = 17) silinmemeli:
+      await controller.reset();
+      expect(container.read(zikirCounterProvider).count, 0);
+
+      final ZikirDailySummary summary = await runtime.zikir.todaySummary(
+        target: 100,
+      );
+      expect(summary.totalCount, 17);
+      expect(summary.byZikir['subhanallah'], 15);
+      expect(summary.byZikir['elhamdulillah'], 2);
+      expect(summary.progress, closeTo(0.17, 0.001));
+    });
   });
 
   group('Kıble pusulası doğrulama, manyetik sapma ve kalibrasyon', () {
@@ -332,7 +340,7 @@ void main() {
 
   group('Gizlilik ve log temizliği', () {
     test('AppLog.sanitize koordinat, e-posta ve anahtarları maskeler', () {
-      final String raw =
+      const String raw =
           'Kullanıcı ali.veli@ornek.com konum 41.0082, 28.9784 '
           'url ?latitude=41.00821&longitude=28.97842 Bearer secretToken12345';
       final String sanitized = AppLog.sanitize(raw);

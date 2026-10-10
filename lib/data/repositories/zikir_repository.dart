@@ -212,18 +212,15 @@ class ZikirRepository {
   }) async {
     if (count <= 0) return 0;
     final DateTime timestamp = now ?? DateTime.now();
-    return _database.raw.insert(
-      'zikir_sessions',
-      <String, Object?>{
-        'zikir_key': zikirKey,
-        'target': target,
-        'count': count,
-        'started_at': timestamp
-            .subtract(const Duration(minutes: 1))
-            .millisecondsSinceEpoch,
-        'finished_at': timestamp.millisecondsSinceEpoch,
-      },
-    );
+    return _database.raw.insert('zikir_sessions', <String, Object?>{
+      'zikir_key': zikirKey,
+      'target': target,
+      'count': count,
+      'started_at': timestamp
+          .subtract(const Duration(minutes: 1))
+          .millisecondsSinceEpoch,
+      'finished_at': timestamp.millisecondsSinceEpoch,
+    });
   }
 
   /// Bir zikir sayımını hem oturum hem günlük özet olarak kaydeder.

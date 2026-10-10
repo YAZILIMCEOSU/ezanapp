@@ -103,10 +103,7 @@ class CompassReading {
   }
 
   /// Kıble yönü ve isteğe bağlı manyetik sapma ile güncellenmiş ölçüm döner.
-  CompassReading withQibla(
-    double qiblaDirection, {
-    double? declination,
-  }) {
+  CompassReading withQibla(double qiblaDirection, {double? declination}) {
     final double rawMagnetic = magneticHeading ?? heading;
     final double appliedDeclination = declination ?? this.declination;
     final double trueHeading = GeoUtils.normalizeDegrees(
@@ -207,8 +204,8 @@ class CompassService {
             final double accuracy = (map['accuracy'] as num).toDouble();
             final double tilt = (map['tilt'] as num?)?.toDouble() ?? 0;
             final double roll = (map['roll'] as num?)?.toDouble() ?? 0;
-            final double? fieldStrength =
-                (map['fieldStrength'] as num?)?.toDouble();
+            final double? fieldStrength = (map['fieldStrength'] as num?)
+                ?.toDouble();
 
             _recentHeadings.add(rawHeading);
             if (_recentHeadings.length > 8) {
@@ -282,7 +279,10 @@ class CompassService {
       sumCos += math.cos(rad);
     }
     final double mean = GeoUtils.normalizeDegrees(
-      math.atan2(sumSin / recentHeadings.length, sumCos / recentHeadings.length) *
+      math.atan2(
+            sumSin / recentHeadings.length,
+            sumCos / recentHeadings.length,
+          ) *
           180.0 /
           math.pi,
     );

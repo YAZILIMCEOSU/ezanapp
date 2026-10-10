@@ -430,7 +430,8 @@ class ChatController extends AsyncNotifier<AiConversation?> {
         mode: answer.mode,
         disclaimer: answer.disclaimer,
         relatedQuestions: answer.relatedQuestions,
-        failed: answer.failureKind == AiFailureKind.quotaExceeded ||
+        failed:
+            answer.failureKind == AiFailureKind.quotaExceeded ||
             answer.failureKind == AiFailureKind.networkError ||
             answer.failureKind == AiFailureKind.apiError,
         failureKind: answer.failureKind,
@@ -628,7 +629,8 @@ class ZikirCounterController extends Notifier<ZikirCounterState> {
           (saved['zikirKey'] as String?)?.trim().isNotEmpty == true
           ? saved['zikirKey']! as String
           : defaultKey;
-      final int activeTarget = _targetsByZikir[activeKey] ??
+      final int activeTarget =
+          _targetsByZikir[activeKey] ??
           ((saved['target'] as num?)?.toInt().clamp(1, 10000) ?? defaultTarget);
       final int activeCount = isSameDay
           ? (_countsByZikir[activeKey] ??
@@ -652,10 +654,7 @@ class ZikirCounterController extends Notifier<ZikirCounterState> {
     }
 
     _targetsByZikir[defaultKey] = defaultTarget;
-    return ZikirCounterState(
-      zikirKey: defaultKey,
-      target: defaultTarget,
-    );
+    return ZikirCounterState(zikirKey: defaultKey, target: defaultTarget);
   }
 
   Future<void> _persistSession(ZikirCounterState current) async {
@@ -731,8 +730,7 @@ class ZikirCounterController extends Notifier<ZikirCounterState> {
     _completedByZikir[state.zikirKey] = state.completedSessions;
 
     ref.read(selectedZikirKeyProvider.notifier).select(key);
-    final int resolvedTarget =
-        (_targetsByZikir[key] ?? target).clamp(1, 10000);
+    final int resolvedTarget = (_targetsByZikir[key] ?? target).clamp(1, 10000);
     final int restoredCount = _countsByZikir[key] ?? 0;
     final int restoredCompleted = _completedByZikir[key] ?? 0;
 

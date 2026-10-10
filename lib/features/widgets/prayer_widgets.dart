@@ -145,11 +145,7 @@ class NextPrayerCountdownCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final PrayerScheduleSnapshot snap =
         snapshot ??
-        PrayerScheduleSnapshot.resolve(
-          day: day,
-          tomorrow: tomorrow,
-          now: now,
-        );
+        PrayerScheduleSnapshot.resolve(day: day, tomorrow: tomorrow, now: now);
     final Prayer current = snap.currentPrayer;
     final PrayerTime? next = snap.nextPrayer;
     final Duration remaining = snap.remaining;
