@@ -96,10 +96,14 @@ class _NotificationSettingsScreenState
                   'Bildirim izni verilmemiş. Vakit bildirimlerinin çalışması için '
                   'sistem ayarlarından izin vermeniz gerekir.',
               action: TextButton(
-                onPressed: () => ref
-                    .read(runtimeProvider)
-                    .notifications
-                    .openSystemSettings(),
+                onPressed: () async {
+                  await ref
+                      .read(runtimeProvider)
+                      .notifications
+                      .requestPermission();
+                  await ref.read(notificationCoordinatorProvider).reschedule();
+                  await _refreshStatus();
+                },
                 child: const Text('Ayarları aç'),
               ),
             ),
@@ -135,8 +139,8 @@ class _NotificationSettingsScreenState
               title: Text(prayer.label),
               subtitle: Text(
                 prayer == Prayer.gunes
-                    ? 'Güneş doğuşu için bildirim (ezan okunmaz)'
-                    : '${prayer.notificationTitle} · ezan bildirimi',
+                    ? 'Güneş doğuşu için bildirim · ${settings.soundFor(prayer).label}'
+                    : '${prayer.notificationTitle} · ${settings.soundFor(prayer).label}',
               ),
               value: settings.prayerEnabled[prayer] ?? false,
               onChanged: settings.enabled

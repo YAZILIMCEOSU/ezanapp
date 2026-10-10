@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -11,6 +12,7 @@ import '../core/services/push_service.dart';
 import '../core/utils/logger.dart';
 import '../data/models/app_settings.dart';
 import '../data/models/prayer.dart';
+import '../data/models/prayer_times_day.dart';
 import '../design/app_theme.dart';
 import '../router/app_router.dart';
 import '../state/providers.dart';
@@ -25,11 +27,14 @@ class EzanAiApp extends ConsumerStatefulWidget {
 
 class _EzanAiAppState extends ConsumerState<EzanAiApp>
     with WidgetsBindingObserver {
+  final GlobalKey<ScaffoldMessengerState> _messengerKey =
+      GlobalKey<ScaffoldMessengerState>();
   StreamSubscription<NotificationRoute>? _routeSub;
   StreamSubscription<Prayer>? _adhanSub;
   StreamSubscription<PushMessage>? _pushSub;
   DateTime _lastDayCheck = DateTime.now();
   Duration _lastTimeZoneOffset = DateTime.now().timeZoneOffset;
+  String? _lastTriggeredPrayerKey;
 
   @override
   void initState() {
@@ -95,12 +100,41 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp>
     }
   }
 
+  /// Uygulama açıkken namaz vakti girdiği saniyede ezan/bildirim sesini tetikler.
+  void _checkPrayerTimeEntered(DateTime now) {
+    final TodayTimes? times = ref.read(prayerTimesProvider).value;
+    if (times == null) return;
+    final AppSettings settings = ref.read(settingsProvider);
+    if (!settings.notifications.inAppAdhanEnabled) return;
+
+    final PrayerScheduleSnapshot snapshot = times.snapshot(now);
+    for (final Prayer prayer in Prayer.values) {
+      final DateTime? when = snapshot.activeDay.timeOf(prayer);
+      if (when == null) continue;
+      final int diffSeconds = now.difference(when).inSeconds;
+      if (diffSeconds >= 0 && diffSeconds < 45) {
+        final String key =
+            '${when.year}-${when.month}-${when.day}:${prayer.key}';
+        if (_lastTriggeredPrayerKey == key) continue;
+        _lastTriggeredPrayerKey = key;
+
+        if (!settings.notifications.isEnabledFor(prayer)) continue;
+        if (settings.notifications.isInQuietHours(
+          now.hour * 60 + now.minute,
+        )) {
+          continue;
+        }
+        ref.read(runtimeProvider).notifications.emitAdhanNow(prayer);
+      }
+    }
+  }
+
   void _onPushMessage(PushMessage message) {
     if (!mounted) return;
     final String text = message.body.isEmpty
         ? message.title
         : '${message.title}\n${message.body}';
-    ScaffoldMessenger.of(context).showSnackBar(
+    _messengerKey.currentState?.showSnackBar(
       SnackBar(
         content: Text(text),
         duration: const Duration(seconds: 8),
@@ -116,25 +150,47 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp>
 
   Future<void> _playAdhan(Prayer prayer, AppSettings settings) async {
     final runtime = ref.read(runtimeProvider);
-    final String? asset = BundledSounds.assetFor(
-      settings.notifications.adhanSound,
-    );
-    if (asset == null) return;
+    final NotificationSettings notif = settings.notifications;
+    final AdhanSound sound = notif.soundFor(prayer);
+    if (sound.isSilent) return;
 
-    final bool started = await runtime.audio.playAsset(
-      asset,
-      volume: settings.notifications.adhanVolume,
-    );
+    await runtime.audio.initialize(ducking: settings.adhanPlaybackDucking);
+    final double targetVolume = notif.adhanVolume.clamp(0.1, 1.0);
+    final double initialVolume = notif.adhanFadeIn
+        ? (targetVolume * 0.25).clamp(0.05, 1.0)
+        : targetVolume;
+
+    bool started = false;
+    if (sound == AdhanSound.downloaded &&
+        notif.customAdhanPath != null &&
+        notif.customAdhanPath!.isNotEmpty &&
+        File(notif.customAdhanPath!).existsSync()) {
+      started = await runtime.audio.playFile(
+        notif.customAdhanPath!,
+        volume: initialVolume,
+      );
+    } else {
+      final String asset =
+          BundledSounds.assetFor(sound) ?? BundledSounds.ezanMelodi;
+      started = await runtime.audio.playAsset(asset, volume: initialVolume);
+    }
+
     if (!started || !mounted) return;
+    if (notif.adhanFadeIn) {
+      unawaited(runtime.audio.fadeIn(to: targetVolume));
+    }
 
-    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
-    messenger.showSnackBar(
+    final ScaffoldMessengerState? messenger = _messengerKey.currentState;
+    messenger?.hideCurrentSnackBar();
+    messenger?.showSnackBar(
       SnackBar(
-        content: Text('${prayer.label} vakti girdi'),
-        duration: const Duration(seconds: 12),
+        content: Text(
+          '${prayer.label} vakti girdi • ${sound == AdhanSound.downloaded ? (notif.customAdhanTitle ?? sound.label) : sound.label}',
+        ),
+        duration: const Duration(seconds: 25),
         action: SnackBarAction(
           label: 'Sesi durdur',
-          onPressed: () => runtime.audio.pause(),
+          onPressed: () => runtime.audio.stop(),
         ),
       ),
     );
@@ -152,9 +208,17 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp>
   @override
   Widget build(BuildContext context) {
     final AppThemeMode mode = ref.watch(themeModeProvider);
+    ref.listen<AsyncValue<DateTime>>(clockProvider, (
+      AsyncValue<DateTime>? previous,
+      AsyncValue<DateTime> next,
+    ) {
+      final DateTime? now = next.value;
+      if (now != null) _checkPrayerTimeEntered(now);
+    });
 
     return MaterialApp.router(
       title: 'EzanAI',
+      scaffoldMessengerKey: _messengerKey,
       debugShowCheckedModeBanner: false,
       routerConfig: appRouter,
       theme: AppTheme.light(),

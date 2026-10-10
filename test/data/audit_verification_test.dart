@@ -1,10 +1,13 @@
 import 'package:ezanai/app/app_runtime.dart';
+import 'package:ezanai/core/audio/audio_service.dart';
 import 'package:ezanai/core/services/compass_service.dart';
 import 'package:ezanai/core/utils/geo.dart';
 import 'package:ezanai/core/utils/logger.dart';
 import 'package:ezanai/data/ai/ai_service.dart';
 import 'package:ezanai/data/models/ai_models.dart';
+import 'package:ezanai/data/models/app_settings.dart';
 import 'package:ezanai/data/models/city.dart';
+import 'package:ezanai/data/models/ilahi_models.dart';
 import 'package:ezanai/data/models/prayer.dart';
 import 'package:ezanai/data/models/prayer_times_day.dart';
 import 'package:ezanai/data/models/zikir_models.dart';
@@ -351,6 +354,63 @@ void main() {
       expect(sanitized, contains('[e-posta-gizlendi]'));
       expect(sanitized, contains('[konum-gizlendi]'));
       expect(sanitized, contains('[anahtar-gizlendi]'));
+    });
+  });
+
+  group('Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu', () {
+    test('varsayılan ezan sesi Hicaz makamıdır ve vakit bazlı ses özelleştirmesi korunur', () {
+      const NotificationSettings defaults = NotificationSettings();
+      expect(defaults.adhanSound, AdhanSound.ezanMelodi);
+      expect(BundledSounds.assetFor(AdhanSound.ezanMelodi), isNotNull);
+      expect(BundledSounds.assetFor(AdhanSound.sabaMelodi), isNotNull);
+      expect(BundledSounds.assetFor(AdhanSound.segahMelodi), isNotNull);
+      expect(BundledSounds.assetFor(AdhanSound.tekbirMelodi), isNotNull);
+
+      final NotificationSettings customized = defaults.copyWith(
+        perPrayerSound: <Prayer, AdhanSound>{
+          Prayer.imsak: AdhanSound.sabaMelodi,
+          Prayer.ogle: AdhanSound.tone3,
+          Prayer.yatsi: AdhanSound.ezanMelodi,
+        },
+        customAdhanPath: '/tmp/ozel_ezan.mp3',
+        customAdhanTitle: 'Özel Ezan',
+      );
+      expect(customized.soundFor(Prayer.imsak), AdhanSound.sabaMelodi);
+      expect(customized.soundFor(Prayer.ogle), AdhanSound.tone3);
+      expect(customized.soundFor(Prayer.aksam), AdhanSound.ezanMelodi);
+
+      final NotificationSettings restored = NotificationSettings.fromJson(
+        customized.toJson(),
+      );
+      expect(restored.soundFor(Prayer.imsak), AdhanSound.sabaMelodi);
+      expect(restored.soundFor(Prayer.ogle), AdhanSound.tone3);
+      expect(restored.customAdhanPath, '/tmp/ozel_ezan.mp3');
+      expect(restored.customAdhanTitle, 'Özel Ezan');
+    });
+
+    test('ilahi ve dini sesler kataloğu telifsiz ve indirilebilir içeriklerle dolu gelir', () async {
+      if (skipWithoutDatabase(databaseProblem)) return;
+      final AppRuntime runtime = await createTestRuntime();
+      addTearDown(runtime.dispose);
+
+      final List<IlahiTrack> tracks = await runtime.ilahi.catalog();
+      expect(tracks.length, greaterThanOrEqualTo(10));
+      expect(
+        tracks.any((IlahiTrack t) => t.id == 'makam_hicaz_ezan'),
+        isTrue,
+      );
+      expect(
+        tracks.any((IlahiTrack t) => t.id == 'ilahi_ussak_yunus'),
+        isTrue,
+      );
+      expect(
+        tracks.any((IlahiTrack t) => t.id == 'tilavet_ayetel_kursi'),
+        isTrue,
+      );
+      for (final IlahiTrack track in tracks) {
+        expect(track.hasLicenseInfo, isTrue);
+        expect(track.audioUrl, isNotEmpty);
+      }
     });
   });
 }

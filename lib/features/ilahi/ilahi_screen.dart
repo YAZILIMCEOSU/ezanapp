@@ -1,3 +1,4 @@
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -14,7 +15,7 @@ import '../widgets/app_shell.dart';
 import '../widgets/state_views.dart';
 import 'player_controller.dart';
 
-/// İlahi/dini ses ana ekranı: katalog, arama, kategori ve çalma listeleri.
+/// İlahi/dini ses ana ekranı: telifsiz katalog, isteğe bağlı indirme/yükleme, arama ve çalma listeleri.
 class IlahiScreen extends ConsumerStatefulWidget {
   const IlahiScreen({super.key});
 
@@ -25,6 +26,7 @@ class IlahiScreen extends ConsumerStatefulWidget {
 class _IlahiScreenState extends ConsumerState<IlahiScreen> {
   String _query = '';
   String? _category;
+  final Set<String> _downloadingIds = <String>{};
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +43,13 @@ class _IlahiScreenState extends ConsumerState<IlahiScreen> {
     return Scaffold(
       appBar: AppBarHeader(
         title: 'İlahi ve Dini Sesler',
-        subtitle: 'Yalnızca izinli/lisanslı içerik',
+        subtitle: 'Telifsiz makamlar ve indirilebilir içerikler',
         actions: <Widget>[
+          IconButton(
+            tooltip: 'Cihazdan ses dosyası yükle',
+            onPressed: () => _importLocalFile(context),
+            icon: const Icon(Icons.upload_file_rounded, size: 20),
+          ),
           IconButton(
             tooltip: 'Çalma listeleri',
             onPressed: () => context.push(AppRoutes.ilahiPlaylists),
@@ -68,7 +75,7 @@ class _IlahiScreenState extends ConsumerState<IlahiScreen> {
             child: TextField(
               onChanged: (String value) => setState(() => _query = value),
               decoration: const InputDecoration(
-                hintText: 'İlahi, sanatçı veya albüm ara',
+                hintText: 'İlahi, makam, sure veya sanatçı ara',
                 prefixIcon: Icon(Icons.search_rounded, size: 20),
               ),
             ),
@@ -160,6 +167,14 @@ class _IlahiScreenState extends ConsumerState<IlahiScreen> {
                     final IlahiTrack track = filtered[index];
                     final bool isFavorite = favorites.contains(track.id);
                     final bool isCurrent = playingId == track.id;
+                    final bool isDownloading = _downloadingIds.contains(
+                      track.id,
+                    );
+                    final bool isOfflineReady =
+                        track.isLocal ||
+                        (track.localPath != null &&
+                            track.localPath!.isNotEmpty);
+
                     return ListTile(
                       leading: CircleAvatar(
                         backgroundColor: isCurrent
@@ -183,13 +198,16 @@ class _IlahiScreenState extends ConsumerState<IlahiScreen> {
                       subtitle: Text(
                         <String>[
                           if (track.artist.isNotEmpty) track.artist,
-                          if (track.album != null && track.album!.isNotEmpty)
-                            track.album!,
                           if (track.durationSeconds > 0)
                             AppTime.formatClock(
                               Duration(seconds: track.durationSeconds),
                             ),
-                          if (track.isLocal) 'çevrimdışı',
+                          if (isOfflineReady)
+                            'çevrimdışı yüklü'
+                          else if (track.audioUrl.startsWith('asset:'))
+                            'telifsiz dahili'
+                          else
+                            'indirilebilir',
                         ].join(' · '),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -197,6 +215,38 @@ class _IlahiScreenState extends ConsumerState<IlahiScreen> {
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
+                          if (isDownloading)
+                            const Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: AppSpacing.sm,
+                              ),
+                              child: SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              ),
+                            )
+                          else
+                            IconButton(
+                              visualDensity: VisualDensity.compact,
+                              tooltip: isOfflineReady
+                                  ? 'Cihaza yüklendi (çevrimdışı hazır)'
+                                  : 'Cihaza yükle / indir',
+                              onPressed: isOfflineReady
+                                  ? null
+                                  : () => _downloadTrack(context, track),
+                              icon: Icon(
+                                isOfflineReady
+                                    ? Icons.download_done_rounded
+                                    : Icons.download_for_offline_outlined,
+                                size: 20,
+                                color: isOfflineReady
+                                    ? AppColors.success
+                                    : null,
+                              ),
+                            ),
                           IconButton(
                             visualDensity: VisualDensity.compact,
                             tooltip: isFavorite
@@ -240,6 +290,54 @@ class _IlahiScreenState extends ConsumerState<IlahiScreen> {
           ),
           const AdBanner(),
         ],
+      ),
+    );
+  }
+
+  Future<void> _downloadTrack(BuildContext context, IlahiTrack track) async {
+    setState(() => _downloadingIds.add(track.id));
+    final String? path = await ref.read(runtimeProvider).ilahi.download(track);
+    if (!mounted) return;
+    setState(() => _downloadingIds.remove(track.id));
+    ref.invalidate(ilahiCatalogProvider);
+    ref.invalidate(ilahiDownloadsProvider);
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            path != null
+                ? '${track.title} çevrimdışı dinleme için cihaza yüklendi.'
+                : 'İndirme tamamlanamadı; internet bağlantınızı kontrol edin.',
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _importLocalFile(BuildContext context) async {
+    const XTypeGroup audioGroup = XTypeGroup(
+      label: 'Ses dosyaları',
+      extensions: <String>['mp3', 'wav', 'm4a', 'aac', 'ogg', 'flac'],
+    );
+    final XFile? file = await openFile(
+      acceptedTypeGroups: <XTypeGroup>[audioGroup],
+    );
+    if (file == null) return;
+    final IlahiTrack? added = await ref
+        .read(runtimeProvider)
+        .ilahi
+        .importLocalFile(file.path);
+    ref.invalidate(ilahiLocalProvider);
+    ref.invalidate(ilahiCatalogProvider);
+    ref.invalidate(ilahiFacetsProvider);
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          added != null
+              ? '${added.title} listeye eklendi.'
+              : 'Dosya içe aktarılamadı.',
+        ),
       ),
     );
   }

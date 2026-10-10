@@ -95,7 +95,20 @@ class NotificationService {
     await _plugin.initialize(
       settings: const InitializationSettings(android: android, iOS: ios),
       onDidReceiveNotificationResponse: (NotificationResponse response) {
-        _routeController.add(NotificationRoute.fromPayload(response.payload));
+        final String? payload = response.payload;
+        if (payload != null &&
+            payload.startsWith('${NotificationRoute.adhan.value}:')) {
+          final String key = payload.substring(
+            NotificationRoute.adhan.value.length + 1,
+          );
+          for (final Prayer p in Prayer.values) {
+            if (p.key == key) {
+              emitAdhanNow(p);
+              break;
+            }
+          }
+        }
+        _routeController.add(NotificationRoute.fromPayload(payload));
       },
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
@@ -162,6 +175,21 @@ class NotificationService {
     return 'Etc/GMT${hours > 0 ? '-' : '+'}${hours.abs()}';
   }
 
+  static String _adhanChannelId(AdhanSound sound) {
+    if (sound.isSilent) return NotificationChannels.prayer;
+    return '${NotificationChannels.adhan}_${sound.name}';
+  }
+
+  static AndroidNotificationSound? _rawSoundFor(AdhanSound sound) {
+    if (sound.isSilent || sound == AdhanSound.systemDefault) return null;
+    if (sound == AdhanSound.downloaded) {
+      return const RawResourceAndroidNotificationSound('ezan_melodi');
+    }
+    final String? res = sound.resource;
+    if (res == null || res == 'system') return null;
+    return RawResourceAndroidNotificationSound(res);
+  }
+
   Future<void> _createAndroidChannels() async {
     final AndroidFlutterLocalNotificationsPlugin? android = _plugin
         .resolvePlatformSpecificImplementation<
@@ -174,6 +202,8 @@ class NotificationService {
       String name,
       String description, {
       bool silent = false,
+      AndroidNotificationSound? customSound =
+          const RawResourceAndroidNotificationSound('ezan_melodi'),
     }) async {
       await android.createNotificationChannel(
         AndroidNotificationChannel(
@@ -182,9 +212,7 @@ class NotificationService {
           description: description,
           importance: silent ? Importance.low : Importance.max,
           playSound: !silent,
-          sound: silent
-              ? null
-              : const RawResourceAndroidNotificationSound('ezan_ton_1'),
+          sound: silent ? null : customSound,
           enableVibration: !silent,
         ),
       );
@@ -195,6 +223,15 @@ class NotificationService {
       'Ezan ve vakit bildirimleri',
       'Namaz vakti girdiğinde ve ezan öncesi hatırlatmalarda gösterilir.',
     );
+    for (final AdhanSound sound in AdhanSound.values) {
+      if (sound.isSilent) continue;
+      await channel(
+        _adhanChannelId(sound),
+        'Ezan bildirimi (${sound.label})',
+        sound.description,
+        customSound: _rawSoundFor(sound),
+      );
+    }
     await channel(
       NotificationChannels.prayer,
       'Namaz vakti hatırlatmaları',
@@ -308,18 +345,19 @@ class NotificationService {
 
         // Ana vakit bildirimi
         if (when.isAfter(now)) {
+          final AdhanSound prayerSound = quiet
+              ? AdhanSound.silent
+              : settings.soundFor(prayer);
           await _schedule(
             id: NotificationIds.adhan(dayIndex, prayer),
             title: _titleFor(prayer, quiet),
             body: _bodyFor(prayer, locationLabel, day),
             when: when,
-            channelId: prayer == Prayer.imsak
-                ? NotificationChannels.prayer
-                : NotificationChannels.adhan,
+            channelId: _adhanChannelId(prayerSound),
             settings: settings,
-            quiet: quiet,
-            payload:
-                '${prayer == Prayer.imsak ? NotificationRoute.times.value : NotificationRoute.adhan.value}:${prayer.key}',
+            quiet: quiet || prayerSound.isSilent,
+            soundOverride: prayerSound,
+            payload: '${NotificationRoute.adhan.value}:${prayer.key}',
             hijriOffsetDays: hijriOffsetDays,
           );
           scheduled++;
@@ -560,18 +598,25 @@ class NotificationService {
     required String channelId,
     required NotificationSettings settings,
     required bool quiet,
+    AdhanSound? soundOverride,
     String? payload,
     int hijriOffsetDays = 0,
   }) async {
     final tz.TZDateTime scheduled = tz.TZDateTime.from(when, tz.local);
     if (scheduled.isBefore(tz.TZDateTime.now(tz.local))) return;
+    final NotificationDetails details = _details(
+      channelId,
+      settings,
+      silent: quiet,
+      soundOverride: soundOverride,
+    );
     try {
       await _plugin.zonedSchedule(
         id: id,
         title: title,
         body: body,
         scheduledDate: scheduled,
-        notificationDetails: _details(channelId, settings, silent: quiet),
+        notificationDetails: details,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         payload: payload,
       );
@@ -585,7 +630,7 @@ class NotificationService {
         title: title,
         body: body,
         scheduledDate: scheduled,
-        notificationDetails: _details(channelId, settings, silent: quiet),
+        notificationDetails: details,
         androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
         payload: payload,
       );
@@ -596,14 +641,12 @@ class NotificationService {
     String channelId,
     NotificationSettings settings, {
     required bool silent,
+    AdhanSound? soundOverride,
   }) {
-    final AdhanSound sound = silent ? AdhanSound.silent : settings.adhanSound;
-    AndroidNotificationSound? androidSound;
-    if (!sound.isSilent) {
-      androidSound = sound.resource == 'system' || sound.resource == null
-          ? null
-          : RawResourceAndroidNotificationSound(sound.resource!);
-    }
+    final AdhanSound sound = silent
+        ? AdhanSound.silent
+        : (soundOverride ?? settings.adhanSound);
+    final AndroidNotificationSound? androidSound = _rawSoundFor(sound);
     return NotificationDetails(
       android: AndroidNotificationDetails(
         channelId,

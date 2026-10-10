@@ -305,13 +305,23 @@ class AppAudioService {
   }
 }
 
-/// Dahili bildirim tonlarının varlık yolları.
+/// Dahili ezan makamları, bildirim tonları ve dini ezgilerin varlık yolları.
 abstract final class BundledSounds {
+  static const String ezanMelodi = 'assets/audio/adhan/ezan_melodi.wav';
+  static const String sabaMelodi = 'assets/audio/adhan/ezan_saba.wav';
+  static const String segahMelodi = 'assets/audio/adhan/ezan_segah.wav';
+  static const String tekbirMelodi = 'assets/audio/adhan/ezan_tekbir.wav';
   static const String tone1 = 'assets/audio/adhan/ezan_ton_1.wav';
   static const String tone2 = 'assets/audio/adhan/ezan_ton_2.wav';
   static const String tone3 = 'assets/audio/adhan/ezan_ton_3.wav';
+  static const String ilahiUssak = 'assets/audio/adhan/ilahi_ussak.wav';
+  static const String ilahiHuseyni = 'assets/audio/adhan/ilahi_huseyni.wav';
 
   static String? assetFor(AdhanSound sound) => switch (sound) {
+    AdhanSound.ezanMelodi => ezanMelodi,
+    AdhanSound.sabaMelodi => sabaMelodi,
+    AdhanSound.segahMelodi => segahMelodi,
+    AdhanSound.tekbirMelodi => tekbirMelodi,
     AdhanSound.tone1 => tone1,
     AdhanSound.tone2 => tone2,
     AdhanSound.tone3 => tone3,

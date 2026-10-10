@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/services.dart' show ByteData, rootBundle;
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -15,12 +16,13 @@ import '../models/ilahi_models.dart';
 /// İlahi/dini ses içerikleri deposu.
 ///
 /// İçerik kaynakları:
-/// 1. Yapılandırılmış uzak katalog (`ILAHI_CATALOG_URL`) — yalnızca lisans/izin
+/// 1. Dahili/varsayılan telifsiz makam ve açık lisanslı dini ses kataloğu.
+/// 2. Yapılandırılmış uzak katalog (`ILAHI_CATALOG_URL`) — yalnızca lisans/izin
 ///    bilgisi bulunan kayıtlar kabul edilir.
-/// 2. Kullanıcının cihazdan içe aktardığı kendi ses dosyaları.
+/// 3. Kullanıcının cihazdan içe aktardığı kendi ses dosyaları.
 ///
-/// İndirilen içerikler çevrimdışı dinlenebilir; favoriler, son dinlenenler ve
-/// çalma listeleri SQLite'ta saklanır.
+/// İndirilen/yüklenen içerikler çevrimdışı dinlenebilir; favoriler, son
+/// dinlenenler ve çalma listeleri SQLite'ta saklanır.
 class IlahiRepository {
   IlahiRepository(this._database, {http.Client? client, this.catalogUrl})
     : _client = client ?? http.Client();
@@ -28,12 +30,160 @@ class IlahiRepository {
   final AppDatabase _database;
   final http.Client _client;
 
-  /// Yapılandırma yoksa null: katalog yalnızca yerel içeriklerden oluşur.
+  /// Yapılandırma yoksa null: varsayılan telifsiz katalog + yerel dosyalar kullanılır.
   final String? catalogUrl;
 
   List<IlahiTrack>? _cachedCatalog;
 
-  /// Kataloğu getirir: SQLite önbelleği → uzak katalog → yerel dosyalar.
+  /// Telifsiz makam ezgileri ve açık lisanslı dini seslerden oluşan yerleşik katalog.
+  static const List<IlahiTrack> defaultCatalog = <IlahiTrack>[
+    IlahiTrack(
+      id: 'makam_hicaz_ezan',
+      title: 'Hicaz Ezan Makamı (Uzun Çağrı)',
+      artist: 'EzanAI Makam Topluluğu',
+      album: 'Telifsiz Ezan ve Vakit Makamları',
+      kind: IlahiKind.ezan,
+      categories: <String>['Ezan Makamları', 'Dini Sesler'],
+      audioUrl: 'asset:assets/audio/adhan/ezan_melodi.wav',
+      durationSeconds: 45,
+      license: 'Telifsiz (CC0 — EzanAI Özgün Makam Sentezi)',
+      description: 'Yatsı ve akşam vakitlerine uygun geleneksel Hicaz makamı.',
+    ),
+    IlahiTrack(
+      id: 'makam_saba_seher',
+      title: 'Saba Makamı — Seher ve İmsak Ezgisi',
+      artist: 'EzanAI Makam Topluluğu',
+      album: 'Telifsiz Ezan ve Vakit Makamları',
+      kind: IlahiKind.ezan,
+      categories: <String>['Ezan Makamları', 'İlahi Ezgileri'],
+      audioUrl: 'asset:assets/audio/adhan/ezan_saba.wav',
+      durationSeconds: 22,
+      license: 'Telifsiz (CC0 — EzanAI Özgün Makam Sentezi)',
+      description: 'Sabah ve imsak vaktine uygun huzurlu Saba makamı.',
+    ),
+    IlahiTrack(
+      id: 'makam_segah_salavat',
+      title: 'Segâh Makamı — Akşam ve Salâvat Ezgisi',
+      artist: 'EzanAI Makam Topluluğu',
+      album: 'Telifsiz Ezan ve Vakit Makamları',
+      kind: IlahiKind.salavat,
+      categories: <String>['Salavât ve Zikir', 'Ezan Makamları'],
+      audioUrl: 'asset:assets/audio/adhan/ezan_segah.wav',
+      durationSeconds: 22,
+      license: 'Telifsiz (CC0 — EzanAI Özgün Makam Sentezi)',
+      description: 'Segâh makamında salâvat ve akşam tefekkür ezgisi.',
+    ),
+    IlahiTrack(
+      id: 'ilahi_ussak_yunus',
+      title: 'Uşşak İlahi Ezgisi — Yunus Emre Makamı',
+      artist: 'EzanAI Tasavvuf Mûsikîsi',
+      album: 'Telifsiz Tasavvuf ve İlahi Seçkisi',
+      kind: IlahiKind.ilahi,
+      categories: <String>['İlahi Ezgileri', 'Dini Sesler'],
+      audioUrl: 'asset:assets/audio/adhan/ilahi_ussak.wav',
+      durationSeconds: 25,
+      license: 'Telifsiz (CC0 — EzanAI Özgün Makam Sentezi)',
+      description: 'Anadolu ilahi geleneğinde Uşşak makamı ney ezgisi.',
+    ),
+    IlahiTrack(
+      id: 'zikir_huseyni_halka',
+      title: 'Hüseynî Makamı — Zikir ve Tesbih Halkası',
+      artist: 'EzanAI Tasavvuf Mûsikîsi',
+      album: 'Telifsiz Tasavvuf ve İlahi Seçkisi',
+      kind: IlahiKind.salavat,
+      categories: <String>['Salavât ve Zikir', 'İlahi Ezgileri'],
+      audioUrl: 'asset:assets/audio/adhan/ilahi_huseyni.wav',
+      durationSeconds: 24,
+      license: 'Telifsiz (CC0 — EzanAI Özgün Makam Sentezi)',
+      description: 'Tesbih ve zikir esnasında dinlenebilecek Hüseynî ezgisi.',
+    ),
+    IlahiTrack(
+      id: 'makam_segah_tekbir',
+      title: 'Tekbir ve Bayram Salâsı Çağrısı',
+      artist: 'EzanAI Makam Topluluğu',
+      album: 'Telifsiz Ezan ve Vakit Makamları',
+      kind: IlahiKind.salavat,
+      categories: <String>['Salavât ve Zikir', 'Dini Sesler'],
+      audioUrl: 'asset:assets/audio/adhan/ezan_tekbir.wav',
+      durationSeconds: 14,
+      license: 'Telifsiz (CC0 — EzanAI Özgün Makam Sentezi)',
+      description: 'Itrî Segâh Tekbir geleneğinden esinlenen vakit çağrısı.',
+    ),
+    IlahiTrack(
+      id: 'tilavet_fatiha',
+      title: 'Fâtiha Suresi — Açılış ve Şifa Tilaveti',
+      artist: 'Mişârî Râşid el-Afâsî',
+      album: 'Açık Lisanslı Kur\'an ve Dua Sesleri',
+      kind: IlahiKind.sure,
+      categories: <String>['Kur\'an ve Dualar', 'Dini Sesler'],
+      audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/001001.mp3',
+      durationSeconds: 8,
+      license: 'Açık Arşiv (EveryAyah — Ticari Olmayan / Eğitim Kullanımı)',
+      description: 'İstenirse tek dokunuşla cihaza indirilip çevrimdışı dinlenebilir.',
+    ),
+    IlahiTrack(
+      id: 'tilavet_ayetel_kursi',
+      title: 'Âyetel Kürsî (Bakara 255) — Korunma Ayeti',
+      artist: 'Mişârî Râşid el-Afâsî',
+      album: 'Açık Lisanslı Kur\'an ve Dua Sesleri',
+      kind: IlahiKind.sure,
+      categories: <String>['Kur\'an ve Dualar', 'Dini Sesler'],
+      audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/002255.mp3',
+      durationSeconds: 52,
+      license: 'Açık Arşiv (EveryAyah — Ticari Olmayan / Eğitim Kullanımı)',
+      description: 'Namaz tesbihatı ve gece korunma duası olarak indirilebilir.',
+    ),
+    IlahiTrack(
+      id: 'tilavet_amenerrasulu',
+      title: 'Âmenerrasûlü (Bakara 285) — Yatsı Sonrası',
+      artist: 'Mişârî Râşid el-Afâsî',
+      album: 'Açık Lisanslı Kur\'an ve Dua Sesleri',
+      kind: IlahiKind.sure,
+      categories: <String>['Kur\'an ve Dualar', 'Dini Sesler'],
+      audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/002285.mp3',
+      durationSeconds: 36,
+      license: 'Açık Arşiv (EveryAyah — Ticari Olmayan / Eğitim Kullanımı)',
+      description: 'Yatsı namazı sonrasında okunan iman esasları ayeti.',
+    ),
+    IlahiTrack(
+      id: 'tilavet_huvallahullezi',
+      title: 'Hüvallahüllezi (Haşr 22) — Esmaül Hüsna Ayeti',
+      artist: 'Mişârî Râşid el-Afâsî',
+      album: 'Açık Lisanslı Kur\'an ve Dua Sesleri',
+      kind: IlahiKind.sure,
+      categories: <String>['Kur\'an ve Dualar', 'Salavât ve Zikir'],
+      audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/059022.mp3',
+      durationSeconds: 26,
+      license: 'Açık Arşiv (EveryAyah — Ticari Olmayan / Eğitim Kullanımı)',
+      description: 'Sabah ve akşam namazları sonrasında okunan Haşr suresi son bölümü.',
+    ),
+    IlahiTrack(
+      id: 'tilavet_ihlas',
+      title: 'İhlâs Suresi — Tevhid Tilaveti',
+      artist: 'Mişârî Râşid el-Afâsî',
+      album: 'Açık Lisanslı Kur\'an ve Dua Sesleri',
+      kind: IlahiKind.sure,
+      categories: <String>['Kur\'an ve Dualar'],
+      audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/112001.mp3',
+      durationSeconds: 5,
+      license: 'Açık Arşiv (EveryAyah — Ticari Olmayan / Eğitim Kullanımı)',
+      description: 'İstenirse cihaza indirilip çevrimdışı dinlenebilir.',
+    ),
+    IlahiTrack(
+      id: 'tilavet_felak',
+      title: 'Felak Suresi — Korunma Tilaveti',
+      artist: 'Mişârî Râşid el-Afâsî',
+      album: 'Açık Lisanslı Kur\'an ve Dua Sesleri',
+      kind: IlahiKind.sure,
+      categories: <String>['Kur\'an ve Dualar'],
+      audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/113001.mp3',
+      durationSeconds: 6,
+      license: 'Açık Arşiv (EveryAyah — Ticari Olmayan / Eğitim Kullanımı)',
+      description: 'İstenirse cihaza indirilip çevrimdışı dinlenebilir.',
+    ),
+  ];
+
+  /// Kataloğu getirir: yerleşik telifsiz katalog + uzak katalog + yerel dosyalar.
   Future<List<IlahiTrack>> catalog({bool forceRefresh = false}) async {
     if (!forceRefresh && _cachedCatalog != null) return _cachedCatalog!;
 
@@ -54,7 +204,31 @@ class IlahiRepository {
       remote = await _readCache();
     }
 
-    _cachedCatalog = <IlahiTrack>[...remote, ...local];
+    final List<Map<String, Object?>> downloadRows = await _database.raw.query(
+      'ilahi_downloads',
+    );
+    final Map<String, String> downloadedPaths = <String, String>{};
+    for (final Map<String, Object?> row in downloadRows) {
+      final String id = row['track_id'] as String? ?? '';
+      final String path = row['file_path'] as String? ?? '';
+      if (id.isNotEmpty && path.isNotEmpty && File(path).existsSync()) {
+        downloadedPaths[id] = path;
+      }
+    }
+
+    final Map<String, IlahiTrack> merged = <String, IlahiTrack>{};
+    for (final IlahiTrack item in <IlahiTrack>[
+      ...defaultCatalog,
+      ...remote,
+      ...local,
+    ]) {
+      final String? dlPath = downloadedPaths[item.id];
+      merged[item.id] = dlPath != null
+          ? item.copyWith(localPath: dlPath, isLocal: true)
+          : item;
+    }
+
+    _cachedCatalog = merged.values.toList(growable: false);
     return _cachedCatalog!;
   }
 
@@ -161,7 +335,7 @@ class IlahiRepository {
     return dir;
   }
 
-  /// İçeriği indirir ve yolunu döndürür.
+  /// İçeriği cihaza indirir/yükler ve yolunu döndürür.
   Future<String?> download(
     IlahiTrack track, {
     void Function(double progress)? onProgress,
@@ -175,33 +349,48 @@ class IlahiRepository {
         dir.path,
         '${track.id}.${track.fileExtension}',
       );
-      final HttpClientRequest request = await HttpClient().getUrl(
-        Uri.parse(track.audioUrl),
-      );
-      final HttpClientResponse response = await request.close();
-      if (response.statusCode != 200) {
-        AppLog.warning(
-          'İndirme başarısız (${response.statusCode}): ${track.id}',
-        );
-        return null;
-      }
-      final int total = response.contentLength;
       final File file = File(target);
-      final IOSink sink = file.openWrite();
       int received = 0;
-      await for (final List<int> chunk in response) {
-        sink.add(chunk);
-        received += chunk.length;
-        if (total > 0 && onProgress != null) onProgress(received / total);
+
+      if (track.audioUrl.startsWith('asset:')) {
+        final String assetPath = track.audioUrl.substring(6);
+        final ByteData data = await rootBundle.load(assetPath);
+        final List<int> bytes = data.buffer.asUint8List(
+          data.offsetInBytes,
+          data.lengthInBytes,
+        );
+        await file.writeAsBytes(bytes, flush: true);
+        received = bytes.length;
+        if (onProgress != null) onProgress(1.0);
+      } else {
+        final HttpClientRequest request = await HttpClient().getUrl(
+          Uri.parse(track.audioUrl),
+        );
+        final HttpClientResponse response = await request.close();
+        if (response.statusCode != 200) {
+          AppLog.warning(
+            'İndirme başarısız (${response.statusCode}): ${track.id}',
+          );
+          return null;
+        }
+        final int total = response.contentLength;
+        final IOSink sink = file.openWrite();
+        await for (final List<int> chunk in response) {
+          sink.add(chunk);
+          received += chunk.length;
+          if (total > 0 && onProgress != null) onProgress(received / total);
+        }
+        await sink.flush();
+        await sink.close();
       }
-      await sink.flush();
-      await sink.close();
+
       await _database.raw.insert('ilahi_downloads', <String, Object?>{
         'track_id': track.id,
         'file_path': target,
         'size_bytes': received,
         'downloaded_at': DateTime.now().millisecondsSinceEpoch,
       }, conflictAlgorithm: ConflictAlgorithm.replace);
+      _cachedCatalog = null;
       return target;
     } catch (error, stackTrace) {
       AppLog.error(
@@ -232,6 +421,7 @@ class IlahiRepository {
       where: 'track_id = ?',
       whereArgs: <Object?>[trackId],
     );
+    _cachedCatalog = null;
   }
 
   // --------------------------------------------------- Yerel (içe aktarılan)

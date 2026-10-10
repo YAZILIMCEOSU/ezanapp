@@ -10,12 +10,36 @@ import '../prayer/prayer_calculator.dart';
 
 /// Ezan bildirim sesi seçenekleri.
 enum AdhanSound {
-  silent('Sessiz', 'Bildirim sesi çalınmaz', null),
-  systemDefault('Sistem varsayılanı', 'Telefonun bildirim sesi', 'system'),
+  ezanMelodi(
+    'Hicaz Ezan Makamı (Uzun)',
+    'Geleneksel Hicaz makamı ezan ezgisi (~45 sn, telifsiz)',
+    'ezan_melodi',
+  ),
+  sabaMelodi(
+    'Saba Makamı (Sabah / İmsak)',
+    'Sabah ve imsak vaktine uygun Saba ezgisi (~22 sn, telifsiz)',
+    'ezan_saba',
+  ),
+  segahMelodi(
+    'Segâh Makamı (Akşam / Yatsı)',
+    'Akşam ve yatsı vaktine uygun Segâh ezgisi (~22 sn, telifsiz)',
+    'ezan_segah',
+  ),
+  tekbirMelodi(
+    'Tekbir ve Salâ Çağrısı',
+    'Segâh Tekbir esintili vakit çağrısı (~14 sn, telifsiz)',
+    'ezan_tekbir',
+  ),
   tone1('Bildirim tonu 1', 'Yumuşak çan dizesi (dahili)', 'ezan_ton_1'),
   tone2('Bildirim tonu 2', 'Derin çan (dahili)', 'ezan_ton_2'),
   tone3('Bildirim tonu 3', 'Kısa uyarı (dahili)', 'ezan_ton_3'),
-  downloaded('İndirilen ezan', 'Ezan sesi kataloğundan seçilir', 'downloaded');
+  systemDefault('Sistem varsayılanı', 'Telefonun bildirim sesi', 'system'),
+  downloaded(
+    'Telefondan özel ses / İndirilen ezan',
+    'Cihazdan seçilen ses dosyası (mp3, wav, m4a)',
+    'downloaded',
+  ),
+  silent('Sessiz', 'Bildirim sesi çalınmaz', null);
 
   const AdhanSound(this.label, this.description, this.resource);
 
@@ -29,7 +53,7 @@ enum AdhanSound {
 
   static AdhanSound fromName(String? name) => AdhanSound.values.firstWhere(
     (AdhanSound s) => s.name == name,
-    orElse: () => AdhanSound.tone1,
+    orElse: () => AdhanSound.ezanMelodi,
   );
 }
 
@@ -47,8 +71,12 @@ class NotificationSettings {
       Prayer.yatsi: true,
     },
     this.preReminderMinutes = 0,
-    this.adhanSound = AdhanSound.tone1,
-    this.adhanVolume = 0.8,
+    this.adhanSound = AdhanSound.ezanMelodi,
+    this.perPrayerSound = const <Prayer, AdhanSound>{},
+    this.customAdhanPath,
+    this.customAdhanTitle,
+    this.adhanVolume = 0.85,
+    this.adhanFadeIn = true,
     this.vibrationEnabled = true,
     this.quietHoursEnabled = false,
     this.quietHoursStartMinutes = 23 * 60,
@@ -77,7 +105,18 @@ class NotificationSettings {
   /// Vakitten kaç dakika önce hatırlatma (0 = kapalı).
   final int preReminderMinutes;
   final AdhanSound adhanSound;
+
+  /// İsteğe bağlı vakit bazlı ezan/bildirim sesi (boşsa [adhanSound] kullanılır).
+  final Map<Prayer, AdhanSound> perPrayerSound;
+
+  /// Kullanıcının telefondan seçtiği özel ezan/bildirim ses dosyasının yolu.
+  final String? customAdhanPath;
+  final String? customAdhanTitle;
+
   final double adhanVolume;
+
+  /// Ezan başlarken sesi yumuşakça yükselt (fade-in).
+  final bool adhanFadeIn;
   final bool vibrationEnabled;
 
   /// Sessiz mod: belirtilen aralıkta bildirim sesi çalınmaz (sessiz gösterim).
@@ -112,6 +151,9 @@ class NotificationSettings {
   bool isEnabledFor(Prayer prayer) =>
       enabled && (prayerEnabled[prayer] ?? false);
 
+  /// Belirtilen vakit için geçerli ses tercihi.
+  AdhanSound soundFor(Prayer prayer) => perPrayerSound[prayer] ?? adhanSound;
+
   /// Verilen dakika sessiz saat aralığında mı?
   bool isInQuietHours(int minutesOfDay) {
     if (!quietHoursEnabled && !sleepModeEnabled) return false;
@@ -127,7 +169,12 @@ class NotificationSettings {
     Map<Prayer, bool>? prayerEnabled,
     int? preReminderMinutes,
     AdhanSound? adhanSound,
+    Map<Prayer, AdhanSound>? perPrayerSound,
+    String? customAdhanPath,
+    String? customAdhanTitle,
+    bool clearCustomAdhan = false,
     double? adhanVolume,
+    bool? adhanFadeIn,
     bool? vibrationEnabled,
     bool? quietHoursEnabled,
     int? quietHoursStartMinutes,
@@ -153,7 +200,15 @@ class NotificationSettings {
     prayerEnabled: prayerEnabled ?? this.prayerEnabled,
     preReminderMinutes: preReminderMinutes ?? this.preReminderMinutes,
     adhanSound: adhanSound ?? this.adhanSound,
+    perPrayerSound: perPrayerSound ?? this.perPrayerSound,
+    customAdhanPath: clearCustomAdhan
+        ? null
+        : (customAdhanPath ?? this.customAdhanPath),
+    customAdhanTitle: clearCustomAdhan
+        ? null
+        : (customAdhanTitle ?? this.customAdhanTitle),
     adhanVolume: adhanVolume ?? this.adhanVolume,
+    adhanFadeIn: adhanFadeIn ?? this.adhanFadeIn,
     vibrationEnabled: vibrationEnabled ?? this.vibrationEnabled,
     quietHoursEnabled: quietHoursEnabled ?? this.quietHoursEnabled,
     quietHoursStartMinutes:
@@ -185,7 +240,14 @@ class NotificationSettings {
     },
     'preReminderMinutes': preReminderMinutes,
     'adhanSound': adhanSound.name,
+    'perPrayerSound': <String, String>{
+      for (final MapEntry<Prayer, AdhanSound> e in perPrayerSound.entries)
+        e.key.key: e.value.name,
+    },
+    'customAdhanPath': customAdhanPath,
+    'customAdhanTitle': customAdhanTitle,
     'adhanVolume': adhanVolume,
+    'adhanFadeIn': adhanFadeIn,
     'vibrationEnabled': vibrationEnabled,
     'quietHoursEnabled': quietHoursEnabled,
     'quietHoursStartMinutes': quietHoursStartMinutes,
@@ -213,6 +275,16 @@ class NotificationSettings {
     final Map<String, Object?> prayers =
         (json['prayerEnabled'] as Map?)?.cast<String, Object?>() ??
         <String, Object?>{};
+    final Map<String, Object?> rawPerPrayer =
+        (json['perPrayerSound'] as Map?)?.cast<String, Object?>() ??
+        <String, Object?>{};
+    final Map<Prayer, AdhanSound> parsedPerPrayer = <Prayer, AdhanSound>{};
+    for (final Prayer p in Prayer.values) {
+      final String? soundName = rawPerPrayer[p.key] as String?;
+      if (soundName != null && soundName.isNotEmpty) {
+        parsedPerPrayer[p] = AdhanSound.fromName(soundName);
+      }
+    }
     int intOr(String key, int fallback) =>
         (json[key] as num?)?.toInt() ?? fallback;
     bool boolOr(String key, bool fallback) => json[key] as bool? ?? fallback;
@@ -224,7 +296,11 @@ class NotificationSettings {
       },
       preReminderMinutes: intOr('preReminderMinutes', 0),
       adhanSound: AdhanSound.fromName(json['adhanSound'] as String?),
-      adhanVolume: (json['adhanVolume'] as num?)?.toDouble() ?? 0.8,
+      perPrayerSound: parsedPerPrayer,
+      customAdhanPath: json['customAdhanPath'] as String?,
+      customAdhanTitle: json['customAdhanTitle'] as String?,
+      adhanVolume: (json['adhanVolume'] as num?)?.toDouble() ?? 0.85,
+      adhanFadeIn: boolOr('adhanFadeIn', true),
       vibrationEnabled: boolOr('vibrationEnabled', true),
       quietHoursEnabled: boolOr('quietHoursEnabled', false),
       quietHoursStartMinutes: intOr('quietHoursStartMinutes', 23 * 60),

@@ -166,7 +166,9 @@ class PlayerController extends Notifier<PlayerUiState> {
       ducking: ref.read(settingsProvider).adhanPlaybackDucking,
     );
 
-    final bool started = source.startsWith('http')
+    final bool started = source.startsWith('asset:')
+        ? await audio.playAsset(source.substring(6), volume: state.volume)
+        : source.startsWith('http')
         ? await audio.playUrl(
             source,
             title: track.title,
@@ -175,7 +177,7 @@ class PlayerController extends Notifier<PlayerUiState> {
             artUri: track.artUri,
             id: track.id,
           )
-        : await audio.playFile(source);
+        : await audio.playFile(source, volume: state.volume);
 
     if (!started) {
       state = state.copyWith(
