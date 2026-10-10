@@ -32,7 +32,13 @@ class AppDatabase {
       options: OpenDatabaseOptions(
         version: schemaVersion,
         onConfigure: (Database db) async {
-          await db.execute('PRAGMA foreign_keys = ON');
+          try {
+            await db.execute('PRAGMA foreign_keys = ON');
+          } catch (_) {
+            try {
+              await db.rawQuery('PRAGMA foreign_keys = ON');
+            } catch (_) {}
+          }
         },
         onCreate: (Database db, int version) async {
           await _createSchema(db);
@@ -50,7 +56,13 @@ class AppDatabase {
           AppLog.info('Veritabanı yükseltildi: $oldVersion → $newVersion');
         },
         onOpen: (Database db) async {
-          await db.execute('PRAGMA journal_mode = WAL');
+          // Android SQLiteDatabase'de PRAGMA journal_mode sonuç satırı
+          // döndürdüğü için execute() değil rawQuery() kullanılmalıdır.
+          try {
+            await db.rawQuery('PRAGMA journal_mode = WAL');
+          } catch (_) {
+            // WAL desteklenmiyorsa varsayılan günlük kipinde devam edilir.
+          }
         },
       ),
     );
