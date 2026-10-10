@@ -373,7 +373,7 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
 
   Future<void> _refreshGpsAndFetch() async {
     setState(() => _loadingOnline = true);
-    await ref.read(locationControllerProvider.notifier).refreshGps();
+    await ref.read(locationControllerProvider.notifier).refreshFromGps();
     await _fetchNearbyOnline();
   }
 

@@ -197,7 +197,17 @@ class QuranRepository {
   }) async {
     final String dbKey = 'quran_meal_${translationId}_$surahNumber';
     try {
-      final String? cachedJson = await _database.readCache(dbKey);
+      final List<Map<String, Object?>> rows = await _database.raw.query(
+        'app_events',
+        columns: <String>['payload'],
+        where: 'name = ?',
+        whereArgs: <Object>[dbKey],
+        orderBy: 'id DESC',
+        limit: 1,
+      );
+      final String? cachedJson = rows.isEmpty
+          ? null
+          : rows.first['payload'] as String?;
       if (cachedJson != null && cachedJson.isNotEmpty) {
         final Object? decoded = jsonDecode(cachedJson);
         if (decoded is List && decoded.isNotEmpty) {
@@ -235,7 +245,16 @@ class QuranRepository {
             ];
             if (lines.isNotEmpty) {
               try {
-                await _database.writeCache(dbKey, jsonEncode(lines));
+                await _database.raw.delete(
+                  'app_events',
+                  where: 'name = ?',
+                  whereArgs: <Object>[dbKey],
+                );
+                await _database.raw.insert('app_events', <String, Object?>{
+                  'name': dbKey,
+                  'payload': jsonEncode(lines),
+                  'created_at': DateTime.now().millisecondsSinceEpoch,
+                });
               } catch (_) {}
               return lines;
             }
