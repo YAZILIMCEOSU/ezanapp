@@ -1,0 +1,189 @@
+name: analyze
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ arena/01a1057d-ezanapp ]
+    paths-ignore: [ 'tools/**', 'store/**', '.ci/**', '**.md' ]
+  pull_request:
+
+concurrency:
+  group: analyze-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: flutter pub get
+        id: pubget
+        continue-on-error: true
+        run: set -o pipefail; flutter pub get 2>&1 | tee /tmp/pubget.log
+
+      # Lint otomatik düzeltmeleri + biçimlendirme. Değişiklik varsa dala
+      # commit'lenir; böylece analiz adımı her zaman biçimli kod üzerinde çalışır.
+      - name: dart fix + format (otomatik)
+        id: fmt
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          {
+            echo "== dart fix --apply =="
+            dart fix --apply 2>&1 | tail -40
+            echo "== dart format =="
+            dart format lib test 2>&1 | tail -20
+          } | tee /tmp/fmt.log
+          git config user.name "ezanai-ci"
+          git config user.email "ci@ezanai.local"
+          if ! git diff --quiet; then
+            git add -A lib test
+            git commit -m "chore(ci): dart fix ve biçimlendirme [skip ci]" || true
+            git pull --rebase --autostash origin ${{ github.ref_name }} || true
+            git push origin HEAD:${{ github.ref_name }} || true
+          fi
+
+      - name: flutter analyze
+        id: analyze
+        continue-on-error: true
+        run: set -o pipefail; flutter analyze --no-pub 2>&1 | tail -200 | tee /tmp/analyze.log
+
+      # Vakit zinciri ve arayüz testleri SQLite (sqflite_common_ffi) kullanır;
+      # sistem kütüphanesini garanti altına al.
+      - name: SQLite sistem kütüphanesi
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libsqlite3-dev
+
+      - name: flutter test
+        id: test
+        continue-on-error: true
+        run: set -o pipefail; flutter test --no-pub --reporter expanded 2>&1 | tail -400 | tee /tmp/test.log
+
+      # Uzak AI sözleşmesi: backend adresi tanımlıyken kaynak zorunluluğu, hata
+      # durumunda zarif bozulma ve öneri üretimi doğrulanır.
+      # (Aynı dosya normal koşuda atlanır, bkz. test/data/ai_remote_test.dart.)
+      - name: flutter test (uzak AI sözleşmesi)
+        id: ai
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          flutter test --no-pub --reporter expanded \
+            --dart-define=EZANAI_API_BASE=https://backend.test \
+            test/data/ai_remote_test.dart 2>&1 | tail -120 | tee /tmp/ai.log
+
+      # Yayın derlemesi yolu: R8 küçültme, kaynak budama, ProGuard kuralları ve
+      # gerçek imzalama yapılandırması. Anahtar depoda tutulmaz; burada tek
+      # kullanımlık bir deneme anahtarı üretilip doğrulama sonrası atılır.
+      - name: flutter build apk (release)
+        id: build
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          {
+            keytool -genkeypair -v -keystore "$RUNNER_TEMP/ci-release.jks" \
+              -storepass ezanai-ci -keypass ezanai-ci \
+              -alias ezanai-ci -keyalg RSA -keysize 2048 -validity 30 \
+              -dname "CN=EzanAI CI, OU=QA, O=Yazilimceosu, L=Istanbul, C=TR"
+            printf 'storePassword=ezanai-ci\nkeyPassword=ezanai-ci\nkeyAlias=ezanai-ci\nstoreFile=%s\n' \
+              "$RUNNER_TEMP/ci-release.jks" > android/key.properties
+            flutter build apk --release --no-pub
+            cp build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/ezanai-kurulum.apk
+            cp build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/app-debug.apk
+          } 2>&1 | tail -60 | tee /tmp/build.log
+
+      - name: flutter build appbundle (release, deneme anahtarı)
+        id: release
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          flutter build appbundle --release --no-pub 2>&1 | tail -80 | tee /tmp/release.log
+          status=$?
+          rm -f android/key.properties
+          exit $status
+
+      # Derleme çıktılarını indirilebilir yap: cihazda denemek için release APK,
+      # Play yükleme dosyası biçimi için AAB.
+      - name: Derleme çıktılarını yükle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ezanai-derlemeleri
+          if-no-files-found: warn
+          retention-days: 14
+          path: |
+            build/app/outputs/flutter-apk/ezanai-kurulum.apk
+            build/app/outputs/flutter-apk/app-debug.apk
+            build/app/outputs/bundle/release/app-release.aab
+
+      # Telefonda denemek için tek tık indirme bağlantısı: imzalı release APK,
+      # "dene-apk" adlı GitHub sürümüne hem ezanai-kurulum.apk hem de eski
+      # bağlantının bozulmaması için app-debug.apk adıyla eklenir.
+      - name: Deneme APK'sını indirmeye aç (sürüm dosyası)
+        id: apk_release
+        if: always() && steps.build.outcome == 'success'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          TAG="dene-apk"
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+            gh release create "$TAG" \
+              --title "EzanAI — telefonda deneme sürümü (kurulabilir APK)" \
+              --notes "Bu dosya yalnızca telefonda denemek içindir; mağazaya yüklenmez. Kurulum: dosyayı indirin, telefonda açın, izin isteyince onaylayın ve kurun."
+          fi
+          gh release upload "$TAG" \
+            build/app/outputs/flutter-apk/ezanai-kurulum.apk \
+            build/app/outputs/flutter-apk/app-debug.apk \
+            --clobber
+          gh release view "$TAG" --json assets --jq '.assets[] | "indirmeye hazır: \(.name) (\(.size) bayt)"'
+
+      - name: Raporu yaz
+        if: always()
+        run: |
+          mkdir -p .ci
+          {
+            echo "# CI raporu ($(date -u '+%Y-%m-%d %H:%M UTC'))"
+            echo
+            echo "| adım | sonuç |"
+            echo "|---|---|"
+            echo "| pub get | ${{ steps.pubget.outcome }} |"
+            echo "| format | ${{ steps.fmt.outcome }} |"
+            echo "| analyze | ${{ steps.analyze.outcome }} |"
+            echo "| test | ${{ steps.test.outcome }} |"
+            echo "| test (uzak AI sözleşmesi) | ${{ steps.ai.outcome }} |"
+            echo "| build (debug apk) | ${{ steps.build.outcome }} |"
+            echo "| build (release appbundle) | ${{ steps.release.outcome }} |"
+            echo "| dene-apk indirmeye açıldı | ${{ steps.apk_release.outcome }} |"
+            for f in pubget fmt analyze test ai build release; do
+              if [ -f /tmp/$f.log ]; then
+                echo
+                echo "## $f"
+                echo '```'
+                tail -400 /tmp/$f.log
+                echo '```'
+              fi
+            done
+          } > .ci/report.md
+          cat .ci/report.md
+      - name: Raporu commit et
+        if: always()
+        run: |
+          git config user.name "ezanai-ci"
+          git config user.email "ci@ezanai.local"
+          git add -A .ci
+          git pull --rebase --autostash origin ${{ github.ref_name }} || true
+          git commit -m "ci(report): doğrulama sonuçları [skip ci]" || echo "değişiklik yok"
+          git push origin HEAD:${{ github.ref_name }} || true
+      - name: Adımlardan biri başarısızsa işi düşür
+        if: steps.pubget.outcome == 'failure' || steps.analyze.outcome == 'failure' || steps.test.outcome == 'failure' || steps.ai.outcome == 'failure' || steps.build.outcome == 'failure' || steps.release.outcome == 'failure'
+        run: exit 1

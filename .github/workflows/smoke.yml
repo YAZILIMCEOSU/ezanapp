@@ -1,0 +1,10 @@
+name: smoke
+on:
+  workflow_dispatch:
+  push:
+    branches: [ arena/01a1057d-ezanapp ]
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "actions-ok"

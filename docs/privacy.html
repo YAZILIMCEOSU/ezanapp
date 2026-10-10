@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EzanAI — Gizlilik Politikası</title>
+<meta name="description" content="EzanAI mobil uygulamasının gizlilik politikası: hangi veriler işlenir, nerede saklanır, nasıl silinir.">
+<style>
+  :root { color-scheme: light dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0 auto; padding: 32px 20px 64px; max-width: 820px;
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #1a1a1a; background: #fff;
+  }
+  @media (prefers-color-scheme: dark) { body { color: #e8eaed; background: #0b0f0e; } a { color: #6ee7b7; } th { background: #14201c; } td, th { border-color: #2a3b35; } code { background: #14201c; } .card { background: #101715; border-color: #223029; } }
+  header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+  .mark { width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(135deg, #046a4e, #064e3b); display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 18px; }
+  h1 { font-size: 26px; margin: 0; letter-spacing: -0.01em; }
+  h2 { font-size: 19px; margin: 34px 0 8px; }
+  .meta { color: #6b7280; font-size: 14px; margin: 4px 0 20px; }
+  @media (prefers-color-scheme: dark) { .meta { color: #9aa4a0; } }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 15px; }
+  th, td { border: 1px solid #e5e7eb; padding: 9px 11px; text-align: left; vertical-align: top; }
+  th { background: #f6f8f7; font-weight: 600; }
+  code { background: #f2f4f3; padding: 1px 5px; border-radius: 5px; font-size: 14px; }
+  .card { border: 1px solid #e5e7eb; border-radius: 14px; padding: 16px 18px; margin: 18px 0; background: #fafbfa; }
+  ul { padding-left: 22px; }
+  footer { margin-top: 40px; color: #6b7280; font-size: 14px; }
+  a { color: #046a4e; }
+</style>
+</head>
+<body>
+<header>
+  <div class="mark">EA</div>
+  <h1>EzanAI — Gizlilik Politikası</h1>
+</header>
+<p class="meta">
+  <strong>Son güncelleme:</strong> 7 Ekim 2026 ·
+  <strong>Veri sorumlusu:</strong> EzanAI (YazılımCeosu) ·
+  <strong>İletişim:</strong> <a href="mailto:destek@ezanai.app">destek@ezanai.app</a>
+</p>
+
+<p>Bu politika, <strong>EzanAI — Akıllı İslam Asistanı</strong> mobil uygulamasında
+(paket adı <code>com.yazilimceosu.ezanai</code>) hangi verilerin işlendiğini, neden
+işlendiğini, nerede saklandığını ve haklarınızı nasıl kullanabileceğinizi açıklar.</p>
+
+<div class="card">
+  <strong>Kısa özet:</strong> Uygulamanın temel özellikleri için hesap açmanız gerekmez.
+  Konum bilgisi vakit ve kıble hesabı için cihazınızda kullanılır, sunucuya gönderilmez.
+  Favoriler, okuma geçmişi, zikir kayıtları ve AI sohbetleri cihazınızdaki veritabanında
+  saklanır. Bulut yedekleme yalnızca siz açtığınızda ve yalnızca anonim bir kimlikle çalışır.
+</div>
+
+<h2>1. İşlenen veriler</h2>
+<table>
+  <thead><tr><th>Veri</th><th>Amaç</th><th>Konum</th><th>Paylaşım</th></tr></thead>
+  <tbody>
+    <tr><td>Konum (yaklaşık/hassas)</td><td>Namaz vakti hesabı, kıble yönü, imsakiye</td><td>Cihazda (ayarlarda saklanan son konum)</td><td>Gönderilmez. Yalnızca vakit sorgusu yaparken seçtiğiniz şehir/ilçe kimliği vakit servisine iletilir.</td></tr>
+    <tr><td>Şehir/ilçe seçimi</td><td>Vakit ve imsakiye verisi</td><td>Cihazda</td><td>Vakit servisine şehir kimliği olarak</td></tr>
+    <tr><td>Favoriler, okuma ilerlemesi, zikir kayıtları, hatim/kaza orucu, Ramazan günlüğü</td><td>Uygulama işlevleri</td><td>Cihazdaki SQLite veritabanı</td><td>Yalnızca bulut yedeklemeyi açtıysanız şifreli bağlantıyla yedeğe dahil edilir</td></tr>
+    <tr><td>AI sohbet metinleri</td><td>Sorunuza cevap üretmek</td><td>Cihazda saklanır; cevap üretimi için backend'e iletilir</td><td>Yalnızca cevap üretimi amacıyla, kimliğinizle ilişkilendirilmeden</td></tr>
+    <tr><td>Abonelik durumu</td><td>Premium özelliklerin açılması</td><td>Google Play üzerinden</td><td>Ödeme bilgileriniz bize hiçbir zaman ulaşmaz; doğrulama Google Play Billing ile yapılır</td></tr>
+    <tr><td>Reklam kimliği</td><td>Ücretsiz sürümde reklam gösterimi</td><td>Google AdMob</td><td>AdMob gizlilik politikasına tabidir; Premium'da reklam gösterilmez</td></tr>
+    <tr><td>Çökme ve kullanım verileri (isteğe bağlı)</td><td>Kararlılık ve hata giderme</td><td>Firebase Crashlytics / Analytics</td><td>Ayarlar'dan <strong>kapatılabilir</strong>; kapalıyken veri gönderilmez</td></tr>
+    <tr><td>Anonim yedekleme kimliği</td><td>Bulut yedeğini yalnızca sizin cihazlarınızla eşleştirmek</td><td>Supabase</td><td>E-posta, ad, telefon istenmez; anonim oturum kimliği kullanılır</td></tr>
+  </tbody>
+</table>
+<p><strong>İşlemediğimiz veriler:</strong> ad-soyad, e-posta, telefon numarası, kişi listesi,
+fotoğraf, takvim, mikrofon, kamera, sağlık verisi, ödeme kartı bilgisi, hassas kimlik verisi.</p>
+
+<h2>2. İzinler ve gerekçeleri</h2>
+<table>
+  <thead><tr><th>Android izni</th><th>Neden</th></tr></thead>
+  <tbody>
+    <tr><td><code>ACCESS_FINE_LOCATION</code> / <code>ACCESS_COARSE_LOCATION</code></td><td>Bulunduğunuz yere göre vakit ve kıble hesabı. İzin vermezseniz şehri elle seçebilirsiniz; uygulama çalışmaya devam eder.</td></tr>
+    <tr><td><code>POST_NOTIFICATIONS</code></td><td>Ezan, vakit, sahur/iftar ve hatırlatma bildirimleri.</td></tr>
+    <tr><td><code>SCHEDULE_EXACT_ALARM</code> / <code>USE_EXACT_ALARM</code>, <code>RECEIVE_BOOT_COMPLETED</code></td><td>Vakit bildirimlerinin tam zamanında ve cihaz yeniden başladıktan sonra da çalışması.</td></tr>
+    <tr><td><code>FOREGROUND_SERVICE_MEDIA_PLAYBACK</code></td><td>Ekran kapalıyken Kur'an/ilahi/ezan çalmaya devam etmesi.</td></tr>
+    <tr><td><code>INTERNET</code>, <code>ACCESS_NETWORK_STATE</code></td><td>Vakit servisi, AI, katalog, reklam ve yedekleme.</td></tr>
+    <tr><td><code>VIBRATE</code></td><td>Tesbih/zikir dokunsal geri bildirimi (kapatılabilir).</td></tr>
+    <tr><td><code>com.android.vending.BILLING</code></td><td>Premium abonelik.</td></tr>
+  </tbody>
+</table>
+<p>İzinler yalnızca ilgili özellik ilk kullanıldığında istenir; reddedilmesi durumunda
+uygulama kullanıcı dostu bir açıklama gösterir ve alternatif yol sunar.</p>
+
+<h2>3. Verilerin saklanması ve silinmesi</h2>
+<ul>
+  <li>Cihazdaki veriler siz silene kadar saklanır: <strong>Ayarlar → Verilerimi sil</strong>.</li>
+  <li>Bulut yedeği kullanıyorsanız oturumu kapatabilir; silme talebi için
+      <a href="mailto:destek@ezanai.app">destek@ezanai.app</a> adresine yazabilirsiniz.
+      Talebiniz en geç 30 gün içinde işlenir.</li>
+  <li>AI sohbet geçmişini uygulama içinden tek tek veya toplu olarak silebilirsiniz.</li>
+  <li>Yedekler aktarım sırasında TLS ile, sunucuda satır düzeyi güvenlik (RLS) ile korunur;
+      yalnızca kendi anonim kimliğiniz kendi satırınıza erişebilir.</li>
+</ul>
+
+<h2>4. Üçüncü taraf hizmetler</h2>
+<table>
+  <thead><tr><th>Hizmet</th><th>Amaç</th><th>Politika</th></tr></thead>
+  <tbody>
+    <tr><td>Google AdMob</td><td>Ücretsiz sürümde reklam</td><td><a href="https://policies.google.com/technologies/ads" rel="noopener">policies.google.com/technologies/ads</a></td></tr>
+    <tr><td>Firebase (Analytics, Crashlytics, FCM)</td><td>Kararlılık, isteğe bağlı istatistik, duyuru bildirimleri</td><td><a href="https://firebase.google.com/support/privacy" rel="noopener">firebase.google.com/support/privacy</a></td></tr>
+    <tr><td>Supabase</td><td>Bulut yedekleme (isteğe bağlı)</td><td><a href="https://supabase.com/privacy" rel="noopener">supabase.com/privacy</a></td></tr>
+    <tr><td>Aladhan API</td><td>Vakit karşılaştırma/alternatif kaynak</td><td><a href="https://aladhan.com/privacy" rel="noopener">aladhan.com/privacy</a></td></tr>
+    <tr><td>Google Play Billing</td><td>Abonelik işlemleri</td><td><a href="https://policies.google.com/privacy" rel="noopener">policies.google.com/privacy</a></td></tr>
+  </tbody>
+</table>
+
+<h2>5. Çocukların gizliliği</h2>
+<p>Uygulama genel kitleye yöneliktir ve 13 yaş altı çocuklardan bilerek veri toplamaz.
+Kişisel veri toplamadığı için çocukların kullanımında ek risk oluşmaz; reklamlar Google
+politikalarına uygun şekilde, hassas kategoriler hariç tutularak gösterilir.</p>
+
+<h2>6. Haklarınız (KVKK / GDPR)</h2>
+<ul>
+  <li>Verilerinize erişme, düzeltme, silme ve işlemeye itiraz etme hakkınız vardır.</li>
+  <li>Konum iznini sistem ayarlarından, analitik/çökme raporlarını uygulama ayarlarından,
+      reklam kişiselleştirmesini cihaz ayarlarından kapatabilirsiniz.</li>
+  <li>Talepleriniz için: <a href="mailto:destek@ezanai.app">destek@ezanai.app</a></li>
+</ul>
+
+<h2>7. Dinî içerik ve AI sınırları</h2>
+<p>AI asistanı <strong>kesin dinî hüküm vermez</strong>; cevapları Kur'an, sahih hadis ve
+güvenilir fıkıh kaynaklarına dayandırır, mezhep farklarını ayrıca belirtir ve tereddüt
+hâlinde ehil bir âlime veya resmî fetva kurumuna danışmanızı önerir. AI'ya yazdığınız
+metinler yalnızca cevap üretmek amacıyla işlenir.</p>
+
+<h2>8. Politika değişiklikleri</h2>
+<p>Bu politika güncellendiğinde "Son güncelleme" tarihi değişir; önemli değişiklikler
+uygulama içinde duyurulur. Güncel sürüm her zaman bu sayfada yayımlanır.</p>
+
+<h2>English summary</h2>
+<p>EzanAI does not require an account. Location is used <strong>on-device</strong> for
+prayer times and qibla; it is not uploaded. Favorites, reading progress, dhikr logs and
+AI chats are stored locally in SQLite and are only included in a backup if you explicitly
+enable cloud backup, which uses an <strong>anonymous</strong> identity (no email, no name).
+Crash/usage analytics are opt-in and can be disabled in Settings. Ads are served by Google
+AdMob in the free tier only; Premium is ad-free. Payments are handled by Google Play
+Billing — we never receive your payment details. The AI assistant never issues definitive
+religious rulings, cites sources, and notes differences of opinion between schools of
+jurisprudence. Contact: <a href="mailto:destek@ezanai.app">destek@ezanai.app</a></p>
+
+<footer>
+  <p>© 2026 EzanAI · <a href="index.html">Ana sayfa</a> · <a href="terms.html">Kullanım koşulları</a></p>
+</footer>
+</body>
+</html>
