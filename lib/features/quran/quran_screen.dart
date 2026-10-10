@@ -99,8 +99,9 @@ class QuranScreen extends ConsumerWidget {
                       style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
                   ),
-                  onTap: () =>
-                      context.push(AppRoutes.surah(resumeSurah, ayah: resumeAyah)),
+                  onTap: () => context.push(
+                    AppRoutes.surah(resumeSurah, ayah: resumeAyah),
+                  ),
                 ),
               ),
             ),
@@ -227,9 +228,8 @@ class QuranScreen extends ConsumerWidget {
             ),
             child: Text(
               'Meal dili ve çevrimdışı paketler',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+              style: Theme.of(context).textTheme.titleLarge
+                  ?.copyWith(fontWeight: FontWeight.w700),
             ),
           ),
           const Padding(

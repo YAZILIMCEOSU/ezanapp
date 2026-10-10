@@ -378,9 +378,8 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
             ),
             child: Text(
               'Meal dili ve çevrimdışı indirme',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+              style: Theme.of(context).textTheme.titleLarge
+                  ?.copyWith(fontWeight: FontWeight.w700),
             ),
           ),
           const Padding(

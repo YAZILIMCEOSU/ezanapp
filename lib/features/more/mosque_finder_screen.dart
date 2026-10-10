@@ -137,14 +137,13 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
             final Map<String, Object?> tags =
                 (item['tags'] as Map?)?.cast<String, Object?>() ??
                 <String, Object?>{};
-            final String? name =
-                (tags['name:tr'] ?? tags['name']) as String?;
+            final String? name = (tags['name:tr'] ?? tags['name']) as String?;
             if (name == null || name.trim().isEmpty) continue;
             double? lat = (item['lat'] as num?)?.toDouble();
             double? lon = (item['lon'] as num?)?.toDouble();
             if (lat == null || lon == null) {
-              final Map<String, Object?>? center =
-                  (item['center'] as Map?)?.cast<String, Object?>();
+              final Map<String, Object?>? center = (item['center'] as Map?)
+                  ?.cast<String, Object?>();
               lat = (center?['lat'] as num?)?.toDouble();
               lon = (center?['lon'] as num?)?.toDouble();
             }
@@ -153,9 +152,7 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
               MosquePlace(
                 name: name.trim(),
                 district:
-                    (tags['addr:district'] ??
-                            tags['addr:suburb'] ??
-                            loc.label)
+                    (tags['addr:district'] ?? tags['addr:suburb'] ?? loc.label)
                         as String,
                 latitude: lat,
                 longitude: lon,
@@ -422,8 +419,7 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
               ),
             ),
           ),
-          if (_loadingOnline)
-            const LinearProgressIndicator(minHeight: 2),
+          if (_loadingOnline) const LinearProgressIndicator(minHeight: 2),
           Expanded(
             child: ListView.separated(
               padding: const EdgeInsets.all(AppSpacing.lg),

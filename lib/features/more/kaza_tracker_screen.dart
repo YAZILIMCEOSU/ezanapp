@@ -19,44 +19,28 @@ class _KazaTrackerScreenState extends ConsumerState<KazaTrackerScreen>
     with SingleTickerProviderStateMixin {
   static const String _prefsKey = 'kaza_tracker_counts_v1';
 
-  static const List<({String key, String title, String subtitle})> _kazaItems =
-      <({String key, String title, String subtitle})>[
-        (
-          key: 'sabah',
-          title: 'Sabah Namazı',
-          subtitle: '2 rekât farz kaza namazı',
-        ),
-        (
-          key: 'ogle',
-          title: 'Öğle Namazı',
-          subtitle: '4 rekât farz kaza namazı',
-        ),
-        (
-          key: 'ikindi',
-          title: 'İkindi Namazı',
-          subtitle: '4 rekât farz kaza namazı',
-        ),
-        (
-          key: 'aksam',
-          title: 'Akşam Namazı',
-          subtitle: '3 rekât farz kaza namazı',
-        ),
-        (
-          key: 'yatsi',
-          title: 'Yatsı Namazı',
-          subtitle: '4 rekât farz kaza namazı',
-        ),
-        (
-          key: 'vitir',
-          title: 'Vitir Namazı',
-          subtitle: '3 rekât vâcip kaza namazı (Hanefî)',
-        ),
-        (
-          key: 'oruc',
-          title: 'Ramazan Kaza Orucu',
-          subtitle: 'Tutulamayan farz oruç gün sayısı',
-        ),
-      ];
+  static const List<({String key, String title, String subtitle})>
+  _kazaItems = <({String key, String title, String subtitle})>[
+    (key: 'sabah', title: 'Sabah Namazı', subtitle: '2 rekât farz kaza namazı'),
+    (key: 'ogle', title: 'Öğle Namazı', subtitle: '4 rekât farz kaza namazı'),
+    (
+      key: 'ikindi',
+      title: 'İkindi Namazı',
+      subtitle: '4 rekât farz kaza namazı',
+    ),
+    (key: 'aksam', title: 'Akşam Namazı', subtitle: '3 rekât farz kaza namazı'),
+    (key: 'yatsi', title: 'Yatsı Namazı', subtitle: '4 rekât farz kaza namazı'),
+    (
+      key: 'vitir',
+      title: 'Vitir Namazı',
+      subtitle: '3 rekât vâcip kaza namazı (Hanefî)',
+    ),
+    (
+      key: 'oruc',
+      title: 'Ramazan Kaza Orucu',
+      subtitle: 'Tutulamayan farz oruç gün sayısı',
+    ),
+  ];
 
   late final TabController _tabController = TabController(
     length: 2,
