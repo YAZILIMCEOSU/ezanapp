@@ -103,9 +103,18 @@ final FutureProvider<List<Surah>> surahListProvider =
       (Ref ref) => ref.watch(runtimeProvider).quran.surahs(),
     );
 
-final surahContentProvider = FutureProvider.family<SurahContent, int>(
-  (Ref ref, int number) => ref.watch(runtimeProvider).quran.loadSurah(number),
-);
+final surahContentProvider = FutureProvider.family<SurahContent, int>((
+  Ref ref,
+  int number,
+) {
+  final String translationId = ref.watch(
+    settingsProvider.select((AppSettings s) => s.quranTranslationId),
+  );
+  return ref
+      .watch(runtimeProvider)
+      .quran
+      .loadSurah(number, translationId: translationId);
+});
 
 final FutureProvider<List<QuranBookmark>> quranBookmarksProvider =
     FutureProvider<List<QuranBookmark>>(

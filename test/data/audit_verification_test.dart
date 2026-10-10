@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:ezanai/app/app_runtime.dart';
 import 'package:ezanai/core/audio/audio_service.dart';
 import 'package:ezanai/core/constants/app_constants.dart';
@@ -452,6 +454,47 @@ void main() {
       expect(rolledBack.currentPrayer, Prayer.ogle);
       expect(rolledBack.nextPrayer?.prayer, Prayer.ikindi);
       expect(rolledBack.remaining, const Duration(minutes: 35));
+    });
+
+    test('Kur\'an meal seçimleri (TR Diyanet, TR Vakıf, EN Saheeh, AR الميسر) sure içeriğini gerçekten değiştirir ve tüm ezan/ilahi ses varlıkları mevcuttur', () async {
+      if (skipWithoutDatabase(databaseProblem)) return;
+      final AppRuntime runtime = await createTestRuntime();
+      addTearDown(runtime.dispose);
+
+      final SurahContent diyanet = await runtime.quran.loadSurah(
+        1,
+        translationId: 'tr.diyanet',
+      );
+      final SurahContent vakfi = await runtime.quran.loadSurah(
+        1,
+        translationId: 'tr.vakfi',
+      );
+      final SurahContent english = await runtime.quran.loadSurah(
+        1,
+        translationId: 'en.sahih',
+      );
+      final SurahContent arabicTafsir = await runtime.quran.loadSurah(
+        1,
+        translationId: 'ar.muyassar',
+      );
+
+      expect(diyanet.ayahs, hasLength(7));
+      expect(vakfi.ayahs, hasLength(7));
+      expect(english.ayahs, hasLength(7));
+      expect(arabicTafsir.ayahs, hasLength(7));
+
+      expect(diyanet.ayahs.first.turkish, isNotEmpty);
+      expect(english.ayahs.first.turkish, isNot(equals(diyanet.ayahs.first.turkish)));
+      expect(arabicTafsir.ayahs.first.turkish, isNot(equals(diyanet.ayahs.first.turkish)));
+
+      for (final AdhanSound sound in AdhanSound.values) {
+        final String? asset = BundledSounds.assetFor(sound);
+        if (asset != null) {
+          final File f = File(asset);
+          expect(f.existsSync(), isTrue, reason: 'Eksik ses varlığı: $asset');
+          expect(f.lengthSync(), greaterThan(10000));
+        }
+      }
     });
   });
 }

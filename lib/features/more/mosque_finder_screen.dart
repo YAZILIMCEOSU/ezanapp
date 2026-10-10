@@ -114,21 +114,27 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
   Future<void> _fetchNearbyOnline() async {
     final UserLocation loc = ref.read(activeLocationProvider);
     setState(() => _loadingOnline = true);
+    final String overpassQuery =
+        '[out:json][timeout:8];('
+        'node["amenity"="place_of_worship"]["religion"="muslim"](around:4500,${loc.latitude},${loc.longitude});'
+        'way["amenity"="place_of_worship"]["religion"="muslim"](around:4500,${loc.latitude},${loc.longitude});'
+        ');out center 40;';
+    const List<String> endpoints = <String>[
+      'https://overpass-api.de/api/interpreter',
+      'https://overpass.kumi.systems/api/interpreter',
+    ];
     try {
-      final String overpassQuery =
-          '[out:json][timeout:6];('
-          'node["amenity"="place_of_worship"]["religion"="muslim"](around:3500,${loc.latitude},${loc.longitude});'
-          'way["amenity"="place_of_worship"]["religion"="muslim"](around:3500,${loc.latitude},${loc.longitude});'
-          ');out center 25;';
-      final http.Response response = await http
-          .post(
-            Uri.parse('https://overpass-api.de/api/interpreter'),
-            body: <String, String>{'data': overpassQuery},
-          )
-          .timeout(const Duration(seconds: 6));
-      if (response.statusCode == 200) {
-        final Object? decoded = jsonDecode(response.body);
-        if (decoded is Map<String, Object?>) {
+      for (final String endpoint in endpoints) {
+        try {
+          final http.Response response = await http
+              .post(
+                Uri.parse(endpoint),
+                body: <String, String>{'data': overpassQuery},
+              )
+              .timeout(const Duration(seconds: 8));
+          if (response.statusCode != 200) continue;
+          final Object? decoded = jsonDecode(utf8.decode(response.bodyBytes));
+          if (decoded is! Map<String, Object?>) continue;
           final List<Object?> elements =
               (decoded['elements'] as List<Object?>?) ?? const <Object?>[];
           final List<MosquePlace> parsed = <MosquePlace>[];
@@ -161,11 +167,12 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
           }
           if (mounted && parsed.isNotEmpty) {
             setState(() => _onlineMosques = parsed);
+            break;
           }
+        } catch (_) {
+          // Sonraki yansıyı dene.
         }
       }
-    } catch (_) {
-      // Çevrimdışı durumda yerleşik katalog kullanılır.
     } finally {
       if (mounted) {
         setState(() => _loadingOnline = false);
@@ -225,10 +232,16 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
         longitude: loc.longitude - 0.0048,
       ),
       MosquePlace(
-        name: '$cityLabel الميدان / Yeşil Camii',
+        name: '$cityLabel Yeşil Camii',
         district: cityLabel,
         latitude: loc.latitude - 0.0078,
         longitude: loc.longitude - 0.0062,
+      ),
+      MosquePlace(
+        name: '$cityLabel Mimar Sinan Camii',
+        district: cityLabel,
+        latitude: loc.latitude + 0.0095,
+        longitude: loc.longitude + 0.0080,
       ),
     ];
   }
@@ -321,13 +334,29 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
   ];
 
   Future<void> _openDirections(MosquePlace mosque) async {
-    final Uri uri = Uri.parse(
+    final Uri mapsDirUri = Uri.parse(
       'https://www.google.com/maps/dir/?api=1&destination=${mosque.latitude},${mosque.longitude}&travelmode=walking',
     );
-    final bool launched = await launchUrl(
-      uri,
-      mode: LaunchMode.externalApplication,
+    final Uri geoUri = Uri.parse(
+      'geo:${mosque.latitude},${mosque.longitude}?q=${mosque.latitude},${mosque.longitude}(${Uri.encodeComponent(mosque.name)})',
     );
+    bool launched = false;
+    try {
+      launched = await launchUrl(geoUri, mode: LaunchMode.externalApplication);
+    } catch (_) {}
+    if (!launched) {
+      try {
+        launched = await launchUrl(
+          mapsDirUri,
+          mode: LaunchMode.externalApplication,
+        );
+      } catch (_) {}
+    }
+    if (!launched) {
+      try {
+        launched = await launchUrl(mapsDirUri, mode: LaunchMode.platformDefault);
+      } catch (_) {}
+    }
     if (!launched && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -337,6 +366,12 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
         ),
       );
     }
+  }
+
+  Future<void> _refreshGpsAndFetch() async {
+    setState(() => _loadingOnline = true);
+    await ref.read(locationControllerProvider.notifier).refreshGps();
+    await _fetchNearbyOnline();
   }
 
   @override
@@ -350,9 +385,19 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
         title: const Text('Yakındaki Camiler'),
         actions: <Widget>[
           IconButton(
-            tooltip: 'Konumu değiştir',
-            onPressed: () => context.push(AppRoutes.cities),
+            tooltip: 'GPS ile konumumu bul',
+            onPressed: _loadingOnline ? null : _refreshGpsAndFetch,
             icon: const Icon(Icons.my_location_rounded, size: 20),
+          ),
+          IconButton(
+            tooltip: 'Şehir seç',
+            onPressed: () async {
+              await context.push(AppRoutes.cities);
+              if (mounted) {
+                await _fetchNearbyOnline();
+              }
+            },
+            icon: const Icon(Icons.location_city_rounded, size: 20),
           ),
           IconButton(
             tooltip: 'Yenile',

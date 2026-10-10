@@ -264,16 +264,24 @@ class QuranScreen extends ConsumerWidget {
                 await ref
                     .read(settingsControllerProvider.notifier)
                     .setQuranTranslation(item.id);
+                ref.invalidate(surahContentProvider);
                 if (sheetContext.mounted) {
                   Navigator.of(sheetContext).pop();
+                }
+                if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
-                        '${item.name} seçildi (${item.shortLabel}).',
+                        '${item.name} etkinleştirildi (${item.shortLabel}).',
                       ),
                     ),
                   );
                 }
+                await ref
+                    .read(runtimeProvider)
+                    .quran
+                    .downloadTranslation(item.id);
+                ref.invalidate(surahContentProvider);
               },
             ),
         ],

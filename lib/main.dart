@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:just_audio_background/just_audio_background.dart';
 
 import 'app/app.dart';
 import 'app/app_runtime.dart';
@@ -33,19 +32,6 @@ Future<void> main() async {
     DeviceOrientation.landscapeLeft,
     DeviceOrientation.landscapeRight,
   ]);
-
-  // Arka planda ses (Kur'an/ilahi) için kilit ekranı bildirimi.
-  // Başarısız olursa uygulama yine açılır, yalnızca arka plan çalma devre dışı kalır.
-  try {
-    await JustAudioBackground.init(
-      androidNotificationChannelId: 'com.yazilimceosu.ezanai.audio',
-      androidNotificationChannelName: 'Ses oynatma',
-      androidNotificationOngoing: true,
-      androidStopForegroundOnPause: true,
-    );
-  } catch (error) {
-    AppLog.warning('Arka plan ses servisi başlatılamadı: $error');
-  }
 
   try {
     final AppRuntime runtime = await AppRuntime.create();

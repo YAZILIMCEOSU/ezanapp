@@ -127,9 +127,20 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
       floatingActionButton: content.value?.ayahs.isEmpty ?? true
           ? null
           : FloatingActionButton.extended(
-              onPressed: () => _playSurah(content.value!, reciter),
-              icon: const Icon(Icons.play_arrow_rounded),
-              label: Text(_playingAyah == null ? 'Süreyi dinle' : 'Çalınıyor'),
+              onPressed: () {
+                if (_playingAyah != null) {
+                  ref.read(runtimeProvider).audio.stop();
+                  setState(() => _playingAyah = null);
+                } else {
+                  _playSurah(content.value!, reciter);
+                }
+              },
+              icon: Icon(
+                _playingAyah == null
+                    ? Icons.play_arrow_rounded
+                    : Icons.stop_rounded,
+              ),
+              label: Text(_playingAyah == null ? 'Süreyi dinle' : 'Durdur'),
             ),
       body: content.when(
         loading: () => const LoadingView(message: 'Sure yükleniyor…'),
@@ -214,6 +225,11 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
   }
 
   Future<void> _playAyah(Ayah ayah, Reciter reciter) async {
+    if (_playingAyah == ayah.number) {
+      await ref.read(runtimeProvider).audio.stop();
+      if (mounted) setState(() => _playingAyah = null);
+      return;
+    }
     final String url = Reciters.ayahUrl(reciter, ayah.surah, ayah.number);
     setState(() => _playingAyah = ayah.number);
     final bool ok = await ref
@@ -242,7 +258,6 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
   }
 
   Future<void> _playSurah(SurahContent content, Reciter reciter) async {
-    // Tüm sureyi, ayet ayet sıralı kaynak listesi olarak çalar.
     final List<String> urls = <String>[
       for (final Ayah ayah in content.ayahs)
         Reciters.ayahUrl(reciter, content.surah.number, ayah.number),
@@ -252,13 +267,7 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
     final bool ok = await ref
         .read(runtimeProvider)
         .audio
-        .playUrl(
-          urls.first,
-          title: '${content.surah.nameTurkish} Suresi',
-          artist: reciter.name,
-          album: 'Kur\'an-ı Kerim',
-          id: 'surah-${content.surah.number}',
-        );
+        .playUrlList(urls);
     if (!ok) {
       AppLog.warning('Sure sesi başlatılamadı');
       if (mounted) {
@@ -275,8 +284,7 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            '${content.surah.nameTurkish} dinleniyor. Ayet sırası için '
-            'ayetlerin yanındaki oynat düğmesini kullanabilirsiniz.',
+            '${content.surah.nameTurkish} Suresi sırayla dinleniyor (${reciter.name}).',
           ),
           duration: const Duration(seconds: 5),
         ),
@@ -414,9 +422,27 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
                 await ref
                     .read(settingsControllerProvider.notifier)
                     .setQuranTranslation(item.id);
+                ref.invalidate(surahContentProvider(widget.surahNumber));
                 if (sheetContext.mounted) {
                   Navigator.of(sheetContext).pop();
                 }
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        '${item.name} etkinleştirildi (${item.shortLabel}).',
+                      ),
+                    ),
+                  );
+                }
+                await ref
+                    .read(runtimeProvider)
+                    .quran
+                    .downloadTranslation(
+                      item.id,
+                      surahNumber: widget.surahNumber,
+                    );
+                ref.invalidate(surahContentProvider(widget.surahNumber));
               },
             ),
         ],

@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:audio_session/audio_session.dart';
+import 'package:flutter/services.dart' show ByteData, Uint8List, rootBundle;
 import 'package:just_audio/just_audio.dart';
-import 'package:just_audio_background/just_audio_background.dart';
 
 import '../../data/models/app_settings.dart';
 import '../utils/logger.dart';
@@ -139,6 +139,7 @@ class AppAudioService {
     double? volume,
     bool loop = false,
   }) async {
+    await initialize(ducking: _duckingEnabled);
     try {
       if (!File(path).existsSync()) {
         AppLog.warning('Ses dosyası bulunamadı: $path');
@@ -147,7 +148,9 @@ class AppAudioService {
       await _player.setAudioSource(AudioSource.file(path));
       await _player.setLoopMode(loop ? LoopMode.one : LoopMode.off);
       if (volume != null) await _player.setVolume(volume.clamp(0.0, 1.0));
-      await _player.play();
+      unawaited(_player.play());
+      _status = PlaybackStatus.playing;
+      if (!_statusController.isClosed) _statusController.add(_status);
       return true;
     } catch (error, stackTrace) {
       AppLog.error('Dosya çalınamadı', error: error, stackTrace: stackTrace);
@@ -155,32 +158,55 @@ class AppAudioService {
     }
   }
 
-  /// Varlık (asset) dosyası çalar — dahili ezan tonları.
+  /// Varlık (asset) dosyası çalar — dahili ezan ve ilahi sesleri.
+  ///
+  /// Tüm Android sürümlerinde sorunsuz çalışması için önce varlığı geçici
+  /// yerel dosyaya çıkarıp ExoPlayer üzerinden yerel dosya olarak çalar.
   Future<bool> playAsset(
     String assetPath, {
     double volume = 1.0,
     bool loop = false,
   }) async {
+    await initialize(ducking: _duckingEnabled);
     try {
-      await _player.setAudioSource(AudioSource.asset(assetPath));
+      final ByteData data = await rootBundle.load(assetPath);
+      final Uint8List bytes = data.buffer.asUint8List(
+        data.offsetInBytes,
+        data.lengthInBytes,
+      );
+      final String safeName = 'ezan_${assetPath.replaceAll('/', '_')}';
+      final File tempFile = File('${Directory.systemTemp.path}/$safeName');
+      if (!tempFile.existsSync() || tempFile.lengthSync() != bytes.length) {
+        await tempFile.writeAsBytes(bytes, flush: true);
+      }
+      await _player.setAudioSource(AudioSource.file(tempFile.path));
       await _player.setLoopMode(loop ? LoopMode.one : LoopMode.off);
       await _player.setVolume(volume.clamp(0.0, 1.0));
-      await _player.play();
+      unawaited(_player.play());
+      _status = PlaybackStatus.playing;
+      if (!_statusController.isClosed) _statusController.add(_status);
       return true;
-    } catch (error, stackTrace) {
-      AppLog.error(
-        'Varlık çalınamadı: $assetPath',
-        error: error,
-        stackTrace: stackTrace,
-      );
-      return false;
+    } catch (_) {
+      try {
+        await _player.setAudioSource(AudioSource.asset(assetPath));
+        await _player.setLoopMode(loop ? LoopMode.one : LoopMode.off);
+        await _player.setVolume(volume.clamp(0.0, 1.0));
+        unawaited(_player.play());
+        _status = PlaybackStatus.playing;
+        if (!_statusController.isClosed) _statusController.add(_status);
+        return true;
+      } catch (error, stackTrace) {
+        AppLog.error(
+          'Varlık çalınamadı: $assetPath',
+          error: error,
+          stackTrace: stackTrace,
+        );
+        return false;
+      }
     }
   }
 
   /// Ağ akışı (Kur'an/ilahi) çalar.
-  ///
-  /// [title], [artist] ve [album] bilgileri kilit ekranı bildirimi için
-  /// just_audio_background tarafından kullanılır.
   Future<bool> playUrl(
     String url, {
     String? title,
@@ -191,22 +217,14 @@ class AppAudioService {
     double? volume,
     bool loop = false,
   }) async {
+    await initialize(ducking: _duckingEnabled);
     try {
-      await _player.setAudioSource(
-        AudioSource.uri(
-          Uri.parse(url),
-          tag: MediaItem(
-            id: id ?? url,
-            title: title ?? 'EzanAI',
-            artist: artist,
-            album: album,
-            artUri: artUri == null ? null : Uri.tryParse(artUri),
-          ),
-        ),
-      );
+      await _player.setAudioSource(AudioSource.uri(Uri.parse(url)));
       await _player.setLoopMode(loop ? LoopMode.one : LoopMode.off);
       if (volume != null) await _player.setVolume(volume.clamp(0.0, 1.0));
-      await _player.play();
+      unawaited(_player.play());
+      _status = PlaybackStatus.playing;
+      if (!_statusController.isClosed) _statusController.add(_status);
       return true;
     } catch (error, stackTrace) {
       AppLog.error(
@@ -218,14 +236,42 @@ class AppAudioService {
     }
   }
 
+  /// Birden çok URL'yi sırayla çalar (sure dinleme).
+  Future<bool> playUrlList(
+    List<String> urls, {
+    int initialIndex = 0,
+    double? volume,
+  }) async {
+    if (urls.isEmpty) return false;
+    await initialize(ducking: _duckingEnabled);
+    try {
+      final List<AudioSource> sources = <AudioSource>[
+        for (final String u in urls) AudioSource.uri(Uri.parse(u)),
+      ];
+      await _player.setAudioSources(sources, initialIndex: initialIndex);
+      await _player.setLoopMode(LoopMode.off);
+      if (volume != null) await _player.setVolume(volume.clamp(0.0, 1.0));
+      unawaited(_player.play());
+      _status = PlaybackStatus.playing;
+      if (!_statusController.isClosed) _statusController.add(_status);
+      return true;
+    } catch (error, stackTrace) {
+      AppLog.error('URL listesi çalınamadı', error: error, stackTrace: stackTrace);
+      return false;
+    }
+  }
+
   /// Birden çok parçayı sırayla çalar (sure dinleme / albüm).
   Future<bool> playPlaylist(
     List<AudioSource> sources, {
     int initialIndex = 0,
   }) async {
+    await initialize(ducking: _duckingEnabled);
     try {
       await _player.setAudioSources(sources, initialIndex: initialIndex);
-      await _player.play();
+      unawaited(_player.play());
+      _status = PlaybackStatus.playing;
+      if (!_statusController.isClosed) _statusController.add(_status);
       return true;
     } catch (error, stackTrace) {
       AppLog.error('Liste çalınamadı', error: error, stackTrace: stackTrace);
@@ -237,7 +283,7 @@ class AppAudioService {
     if (_status == PlaybackStatus.completed) {
       await _player.seek(Duration.zero);
     }
-    await _player.play();
+    unawaited(_player.play());
   }
 
   Future<void> pause() => _player.pause();

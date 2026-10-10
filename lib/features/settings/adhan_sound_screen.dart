@@ -62,10 +62,11 @@ class _AdhanSoundScreenState extends ConsumerState<AdhanSoundScreen> {
             ),
             child: FilledButton.icon(
               onPressed: () {
-                ref
-                    .read(runtimeProvider)
-                    .notifications
-                    .emitAdhanNow(Prayer.yatsi);
+                final AdhanSound target =
+                    _canPreview(notifications.adhanSound, notifications)
+                    ? notifications.adhanSound
+                    : AdhanSound.ezanMelodi;
+                _preview(target, notifications, forcePlay: true);
               },
               icon: const Icon(Icons.volume_up_rounded, size: 20),
               label: const Text('Vakit Girmiş Gibi Şimdi Test Et'),
@@ -126,6 +127,12 @@ class _AdhanSoundScreenState extends ConsumerState<AdhanSoundScreen> {
                     .updateNotifications(
                       notifications.copyWith(adhanSound: sound),
                     );
+                if (_canPreview(sound, notifications)) {
+                  await _preview(sound, notifications, forcePlay: true);
+                } else {
+                  await ref.read(runtimeProvider).audio.stop();
+                  if (mounted) setState(() => _previewingSound = null);
+                }
               },
             ),
           Padding(
@@ -263,27 +270,53 @@ class _AdhanSoundScreenState extends ConsumerState<AdhanSoundScreen> {
 
   Future<void> _preview(
     AdhanSound sound,
-    NotificationSettings notifications,
-  ) async {
+    NotificationSettings notifications, {
+    bool forcePlay = false,
+  }) async {
     final AppAudioService audio = ref.read(runtimeProvider).audio;
-    if (_previewingSound == sound) {
+    if (!forcePlay && _previewingSound == sound) {
       await audio.stop();
       if (mounted) setState(() => _previewingSound = null);
       return;
     }
     setState(() => _previewingSound = sound);
+    bool ok = false;
     if (sound == AdhanSound.downloaded &&
         notifications.customAdhanPath != null &&
         notifications.customAdhanPath!.isNotEmpty) {
-      await audio.playFile(
+      ok = await audio.playFile(
         notifications.customAdhanPath!,
         volume: notifications.adhanVolume,
       );
+    } else {
+      final String? asset = BundledSounds.assetFor(sound);
+      if (asset != null) {
+        ok = await audio.playAsset(asset, volume: notifications.adhanVolume);
+      }
+    }
+    if (!mounted) return;
+    if (!ok) {
+      setState(() => _previewingSound = null);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Ses oynatılamadı.')),
+      );
       return;
     }
-    final String? asset = BundledSounds.assetFor(sound);
-    if (asset == null) return;
-    await audio.playAsset(asset, volume: notifications.adhanVolume);
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text('Dinleniyor: ${sound.label}'),
+          duration: const Duration(seconds: 6),
+          action: SnackBarAction(
+            label: 'Durdur',
+            onPressed: () {
+              audio.stop();
+              if (mounted) setState(() => _previewingSound = null);
+            },
+          ),
+        ),
+      );
   }
 
   Future<void> _pickCustomAdhanFile(BuildContext context) async {

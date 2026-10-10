@@ -5,19 +5,18 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import com.ryanheise.audioservice.AudioServiceActivity
+import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 
 /**
- * EzanAI ana aktivitesi.
+ * Ezan ana aktivitesi.
  *
- * - Arka planda ses oynatma için [AudioServiceActivity] tabanlıdır.
  * - Pusula (manyetometre + ivmeölçer) verisini platform kanalı üzerinden
  *   Flutter'a aktarır: kalibrasyon ve kıble hassasiyeti için gereklidir.
  */
-class MainActivity : AudioServiceActivity(), SensorEventListener {
+class MainActivity : FlutterActivity(), SensorEventListener {
     private val channelName = "ezanai/sensors"
     private var eventSink: EventChannel.EventSink? = null
     private var sensorManager: SensorManager? = null

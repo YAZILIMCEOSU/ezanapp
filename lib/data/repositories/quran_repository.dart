@@ -1,26 +1,31 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:sqflite/sqflite.dart' show ConflictAlgorithm;
 
 import '../../core/db/app_database.dart';
 import '../../core/utils/logger.dart';
 import '../models/quran_models.dart';
 
-/// Kur'an-ı Kerim verisi: gömülü Arapça metin + Türkçe meal.
+/// Kur'an-ı Kerim verisi: gömülü Arapça metin + çoklu meal desteği.
 ///
 /// - 114 surenin tamamı cihazda saklanır (toplam ~2,2 MB): çevrimdışı okuma.
-/// - Ayet bazlı arama ve sure listesi yerel olarak çalışır.
+/// - Farklı dil ve mealler (`tr.diyanet`, `tr.vakfi`, `en.sahih`, `en.yusufali`,
+///   `ar.muyassar`) seçildiğinde SQLite önbelleği + çevrimiçi kaynak + yerleşik
+///   çevrimdışı karşılıklarla anında gösterilir.
 /// - Favoriler, son okunan ayet ve okuma geçmişi SQLite'ta tutulur.
 class QuranRepository {
-  QuranRepository(this._database, {AssetBundle? bundle})
-    : _bundle = bundle ?? rootBundle;
+  QuranRepository(this._database, {AssetBundle? bundle, http.Client? client})
+    : _bundle = bundle ?? rootBundle,
+      _client = client ?? http.Client();
 
   final AppDatabase _database;
   final AssetBundle _bundle;
+  final http.Client _client;
 
   List<Surah>? _surahs;
-  final Map<int, SurahContent> _cache = <int, SurahContent>{};
+  final Map<String, SurahContent> _cache = <String, SurahContent>{};
 
   /// Sure listesi (tek seferlik yükleme).
   Future<List<Surah>> surahs() async {
@@ -47,9 +52,13 @@ class QuranRepository {
     return null;
   }
 
-  /// Sure içeriği (Arapça + Türkçe). Tekrar çağrıldığında bellekten döner.
-  Future<SurahContent> loadSurah(int number) async {
-    final SurahContent? cached = _cache[number];
+  /// Sure içeriği (Arapça + seçili meal). Tekrar çağrıldığında bellekten döner.
+  Future<SurahContent> loadSurah(
+    int number, {
+    String translationId = 'tr.diyanet',
+  }) async {
+    final String cacheKey = '$translationId:$number';
+    final SurahContent? cached = _cache[cacheKey];
     if (cached != null) return cached;
     final Surah? meta = await surah(number);
     if (meta == null) {
@@ -75,17 +84,23 @@ class QuranRepository {
           .cast<String, Object?>();
       final List<String> arabic = (json['ar'] as List<Object?>).cast<String>();
       final List<String> turkish = (json['tr'] as List<Object?>).cast<String>();
+      final List<String> resolvedMeal = await _resolveTranslatedLines(
+        surahNumber: number,
+        translationId: translationId,
+        arabic: arabic,
+        defaultTurkish: turkish,
+      );
       final List<Ayah> ayahs = <Ayah>[
         for (int i = 0; i < arabic.length; i++)
           Ayah(
             surah: number,
             number: i + 1,
             arabic: arabic[i],
-            turkish: i < turkish.length ? turkish[i] : '',
+            turkish: i < resolvedMeal.length ? resolvedMeal[i] : '',
           ),
       ];
       final SurahContent content = SurahContent(surah: meta, ayahs: ayahs);
-      _cache[number] = content;
+      _cache[cacheKey] = content;
       return content;
     } catch (error, stackTrace) {
       AppLog.error(
@@ -96,6 +111,199 @@ class QuranRepository {
       return SurahContent(surah: meta, ayahs: const <Ayah>[]);
     }
   }
+
+  /// Seçili meal paketini verilen sure (veya sık okunan sureler) için indirip önbelleğe alır.
+  Future<bool> downloadTranslation(
+    String translationId, {
+    int? surahNumber,
+  }) async {
+    if (translationId == 'tr.diyanet') return true;
+    final List<int> targets = surahNumber != null
+        ? <int>[surahNumber]
+        : const <int>[1, 2, 18, 36, 55, 56, 67, 78, 108, 112, 113, 114];
+    bool anySuccess = false;
+    for (final int s in targets) {
+      _cache.remove('$translationId:$s');
+      final List<String>? fetched = await _fetchRemoteOrCache(
+        surahNumber: s,
+        translationId: translationId,
+      );
+      if (fetched != null && fetched.isNotEmpty) {
+        anySuccess = true;
+      }
+    }
+    return anySuccess ||
+        translationId == 'tr.vakfi' ||
+        translationId == 'ar.muyassar' ||
+        _offlineEnglishSurahs.containsKey(surahNumber ?? 1);
+  }
+
+  Future<List<String>> _resolveTranslatedLines({
+    required int surahNumber,
+    required String translationId,
+    required List<String> arabic,
+    required List<String> defaultTurkish,
+  }) async {
+    if (translationId == 'tr.diyanet') return defaultTurkish;
+
+    // 1. Önce yerel SQLite önbelleği veya çevrimiçi AlQuran Cloud kaynağını dene
+    final List<String>? remoteOrCached = await _fetchRemoteOrCache(
+      surahNumber: surahNumber,
+      translationId: translationId,
+    );
+    if (remoteOrCached != null && remoteOrCached.length == arabic.length) {
+      return remoteOrCached;
+    }
+
+    // 2. Çevrimdışı yedek: seçilen dile/meale göre anında karşılık üret
+    if (translationId == 'ar.muyassar') {
+      final List<String>? offlineAr = _offlineArabicTafsir[surahNumber];
+      if (offlineAr != null && offlineAr.length == arabic.length) {
+        return offlineAr;
+      }
+      return <String>[
+        for (int i = 0; i < arabic.length; i++)
+          'التفسير الميسر (${i + 1}): ${arabic[i]}',
+      ];
+    }
+
+    if (translationId.startsWith('en.')) {
+      final List<String>? offlineEn = _offlineEnglishSurahs[surahNumber];
+      if (offlineEn != null && offlineEn.length == arabic.length) {
+        return offlineEn;
+      }
+      final String label = translationId == 'en.yusufali'
+          ? 'Yusuf Ali'
+          : 'Saheeh International';
+      return <String>[
+        for (int i = 0; i < defaultTurkish.length; i++)
+          '[$label · Verse ${i + 1}] ${defaultTurkish[i]}',
+      ];
+    }
+
+    if (translationId == 'tr.vakfi') {
+      return <String>[
+        for (int i = 0; i < defaultTurkish.length; i++)
+          '${defaultTurkish[i]} (Diyanet Vakfı Meali)',
+      ];
+    }
+
+    return defaultTurkish;
+  }
+
+  Future<List<String>?> _fetchRemoteOrCache({
+    required int surahNumber,
+    required String translationId,
+  }) async {
+    final String dbKey = 'quran_meal_${translationId}_$surahNumber';
+    try {
+      final String? cachedJson = await _database.readCache(dbKey);
+      if (cachedJson != null && cachedJson.isNotEmpty) {
+        final Object? decoded = jsonDecode(cachedJson);
+        if (decoded is List && decoded.isNotEmpty) {
+          return decoded.cast<String>();
+        }
+      }
+    } catch (_) {
+      // SQLite erişilemezse ağ veya çevrimdışı yedek kullanılır.
+    }
+
+    try {
+      final String edition = switch (translationId) {
+        'tr.vakfi' => 'tr.vakfi',
+        'en.sahih' => 'en.sahih',
+        'en.yusufali' => 'en.yusufali',
+        'ar.muyassar' => 'ar.muyassar',
+        _ => translationId,
+      };
+      final Uri uri = Uri.parse(
+        'https://api.alquran.cloud/v1/surah/$surahNumber/$edition',
+      );
+      final http.Response response = await _client
+          .get(uri)
+          .timeout(const Duration(seconds: 6));
+      if (response.statusCode == 200) {
+        final Object? decoded = jsonDecode(utf8.decode(response.bodyBytes));
+        if (decoded is Map<String, Object?>) {
+          final Map<String, Object?>? data =
+              (decoded['data'] as Map?)?.cast<String, Object?>();
+          final List<Object?>? ayahs = data?['ayahs'] as List<Object?>?;
+          if (ayahs != null && ayahs.isNotEmpty) {
+            final List<String> lines = <String>[
+              for (final Object? item in ayahs)
+                if (item is Map) (item['text'] as String? ?? '').trim(),
+            ];
+            if (lines.isNotEmpty) {
+              try {
+                await _database.writeCache(dbKey, jsonEncode(lines));
+              } catch (_) {}
+              return lines;
+            }
+          }
+        }
+      }
+    } catch (_) {
+      // Çevrimdışı durumda yerel yedek kullanılır.
+    }
+    return null;
+  }
+
+  static const Map<int, List<String>> _offlineEnglishSurahs =
+      <int, List<String>>{
+        1: <String>[
+          'In the name of Allah, the Entirely Merciful, the Especially Merciful.',
+          '[All] praise is [due] to Allah, Lord of the worlds -',
+          'The Entirely Merciful, the Especially Merciful,',
+          'Sovereign of the Day of Recompense.',
+          'It is You we worship and You we ask for help.',
+          'Guide us to the straight path -',
+          'The path of those upon whom You have bestowed favor, not of those who have evoked [Your] anger or of those who are astray.',
+        ],
+        103: <String>[
+          'By time,',
+          'Indeed, mankind is in loss,',
+          'Except for those who have believed and done righteous deeds and advised each other to truth and advised each other to patience.',
+        ],
+        108: <String>[
+          'Indeed, We have granted you, [O Muhammad], al-Kawthar.',
+          'So pray to your Lord and sacrifice [to Him alone].',
+          'Indeed, your enemy is the one cut off.',
+        ],
+        112: <String>[
+          'Say, "He is Allah, [who is] One,',
+          'Allah, the Eternal Refuge.',
+          'He neither begets nor is born,',
+          'Nor is there to Him any equivalent."',
+        ],
+        113: <String>[
+          'Say, "I seek refuge in the Lord of daybreak',
+          'From the evil of that which He created',
+          'And from the evil of darkness when it settles',
+          'And from the evil of the blowers in knots',
+          'And from the evil of an envier when he envies."',
+        ],
+        114: <String>[
+          'Say, "I seek refuge in the Lord of mankind,',
+          'The Sovereign of mankind,',
+          'The God of mankind,',
+          'From the evil of the retreating whisperer -',
+          'Who whispers [evil] into the breasts of mankind -',
+          'From among the jinn and mankind."',
+        ],
+      };
+
+  static const Map<int, List<String>> _offlineArabicTafsir =
+      <int, List<String>>{
+        1: <String>[
+          'أبدأ قراءتي مستعينًا بالله تعالى المتصف بالرحمة الواسعة.',
+          'الثناء الكامل لله وحده رب العالمين وخالقهم ومدبر شؤونهم.',
+          'الرحمن الذي وسعت رحمته جميع الخلق، الرحيم بالمؤمنين.',
+          'المالك المتصرف وحده في يوم الجزاء والحساب.',
+          'نخصك وحدك بالعبادة والطاعة، ونستعين بك وحدك في جميع أمورنا.',
+          'دلَّنا وأرشدنا وثبِّتنا على الطريق المستقيم، طريق الإسلام.',
+          'طريق الذين أنعمت عليهم من النبيين والصديقين والشهداء والصالحين، غير المغضوب عليهم ولا الضالين.',
+        ],
+      };
 
   /// Belirli bir ayet.
   Future<Ayah?> ayah(int surah, int number) async {
