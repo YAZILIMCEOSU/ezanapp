@@ -264,7 +264,8 @@ class PrayerTimesRepository {
     const CalculationMethod def = CalculationMethod.diyanet;
     if (method.id != def.id || method.asrFactor != def.asrFactor) return false;
     for (final Prayer p in Prayer.values) {
-      if ((method.adjustments[p] ?? 0) != (def.adjustments[p] ?? 0)) {
+      if ((method.manualOffsets[p.key] ?? 0) !=
+          (def.manualOffsets[p.key] ?? 0)) {
         return false;
       }
     }
@@ -273,7 +274,7 @@ class PrayerTimesRepository {
 
   static String _methodSignature(CalculationMethod method) {
     final String adj = Prayer.values
-        .map((Prayer p) => '${p.key}:${method.adjustments[p] ?? 0}')
+        .map((Prayer p) => '${p.key}:${method.manualOffsets[p.key] ?? 0}')
         .join(',');
     return '${method.id}|asr${method.asrFactor}|$adj';
   }
@@ -291,7 +292,8 @@ class PrayerTimesRepository {
       final DateTime? time = day.times[prayer];
       if (time == null) continue;
       final int extra =
-          (method.adjustments[prayer] ?? 0) - (base.adjustments[prayer] ?? 0);
+          (method.manualOffsets[prayer.key] ?? 0) -
+          (base.manualOffsets[prayer.key] ?? 0);
       if (extra != 0) hasExtra = true;
       adjusted[prayer] = extra == 0 ? time : time.add(Duration(minutes: extra));
     }

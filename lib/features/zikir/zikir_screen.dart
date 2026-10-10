@@ -189,9 +189,7 @@ class ZikirScreen extends ConsumerWidget {
                       child: OutlinedButton.icon(
                         onPressed: counter.count == 0
                             ? null
-                            : () => ref
-                                  .read(zikirCounterProvider.notifier)
-                                  .reset(),
+                            : () => _confirmReset(context, ref),
                         icon: const Icon(Icons.restart_alt_rounded, size: 18),
                         label: const Text('Sıfırla'),
                       ),
@@ -321,7 +319,32 @@ class ZikirScreen extends ConsumerWidget {
       }
     }
     await ref.read(zikirCounterProvider.notifier).increment();
-    if (settings.zikirAutoAdvance) {
+    ref.invalidate(zikirDailySummaryProvider);
+  }
+
+  Future<void> _confirmReset(BuildContext context, WidgetRef ref) async {
+    final bool? confirmed = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext dialogContext) => AlertDialog(
+        title: const Text('Oturum sayacını sıfırla'),
+        content: const Text(
+          'Anlık tur sayacı sıfırlanacak. Bugün çektiğiniz günlük toplam zikir '
+          'sayınız korunur.',
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Vazgeç'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('Sıfırla'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true) {
+      await ref.read(zikirCounterProvider.notifier).reset();
       ref.invalidate(zikirDailySummaryProvider);
     }
   }
