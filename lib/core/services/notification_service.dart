@@ -177,7 +177,7 @@ class NotificationService {
 
   static String _adhanChannelId(AdhanSound sound) {
     if (sound.isSilent) return NotificationChannels.prayer;
-    return '${NotificationChannels.adhan}_${sound.name}';
+    return '${NotificationChannels.adhan}_v3_${sound.name}';
   }
 
   static AndroidNotificationSound? _rawSoundFor(AdhanSound sound) {
@@ -197,6 +197,19 @@ class NotificationService {
         >();
     if (android == null) return;
 
+    // Eski kanalları temizle; böylece güncelleme yükleyen cihazlarda da
+    // yeni gerçek müezzin ezan MP3 sesleri anında devreye girer.
+    for (final AdhanSound sound in AdhanSound.values) {
+      try {
+        await android.deleteNotificationChannel(
+          '${NotificationChannels.adhan}_${sound.name}',
+        );
+        await android.deleteNotificationChannel(
+          '${NotificationChannels.adhan}_v2_${sound.name}',
+        );
+      } catch (_) {}
+    }
+
     Future<void> channel(
       String id,
       String name,
@@ -214,6 +227,9 @@ class NotificationService {
           playSound: !silent,
           sound: silent ? null : customSound,
           enableVibration: !silent,
+          audioAttributesUsage: silent
+              ? AudioAttributesUsage.notification
+              : AudioAttributesUsage.alarm,
         ),
       );
     }

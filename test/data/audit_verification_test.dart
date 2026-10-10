@@ -424,7 +424,7 @@ void main() {
       }
       expect(AdhanSound.tone1.label, contains('İlahi'));
       expect(AdhanSound.tone2.label, contains('İlahi'));
-      expect(AdhanSound.tone3.label, contains('İlahi'));
+      expect(AdhanSound.tone3.label, contains('Ezan'));
     });
 
     test('uygulama adı Ezan, dil desteği TR/EN/AR, meal seçimi, saat geri alma ve Esmaül Hüsna doğrulanır', () {
@@ -501,8 +501,37 @@ void main() {
         if (asset != null) {
           final File f = File(asset);
           expect(f.existsSync(), isTrue, reason: 'Eksik ses varlığı: $asset');
-          expect(f.lengthSync(), greaterThan(10000));
+          expect(f.lengthSync(), greaterThan(200000));
+          final List<int> header = f.openSync().readSync(4);
+          expect(header[0], 0xFF, reason: 'Geçerli MPEG/MP3 başlığı olmalı');
         }
+        if (sound.resource != null &&
+            sound.resource != 'system' &&
+            sound.resource != 'downloaded') {
+          final File rawFile = File(
+            'android/app/src/main/res/raw/${sound.resource}.mp3',
+          );
+          expect(
+            rawFile.existsSync(),
+            isTrue,
+            reason: 'Eksik Android raw MP3: ${rawFile.path}',
+          );
+          expect(rawFile.lengthSync(), greaterThan(200000));
+        }
+      }
+      for (final String ilahiAsset in <String>[
+        BundledSounds.ilahiUssak,
+        BundledSounds.ilahiHuseyni,
+        BundledSounds.ilahiHayir,
+        BundledSounds.ilahiHidayet,
+      ]) {
+        final File f = File(ilahiAsset);
+        expect(
+          f.existsSync(),
+          isTrue,
+          reason: 'Eksik ilahi varlığı: $ilahiAsset',
+        );
+        expect(f.lengthSync(), greaterThan(1000000));
       }
 
       // Tüm sure tilavetleri tam sure/bölüm URL listesiyle ve gerçek süreyle gelir (3 sn'lik tek ayet değil)

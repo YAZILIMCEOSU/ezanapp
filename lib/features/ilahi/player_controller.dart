@@ -23,6 +23,7 @@ class PlayerUiState {
     this.duration = Duration.zero,
     this.error,
     this.volume = 1,
+    this.speed = 1.0,
     this.repeatOne = false,
     this.offlineMode = false,
   });
@@ -35,9 +36,10 @@ class PlayerUiState {
   final Duration duration;
   final String? error;
   final double volume;
+  final double speed;
   final bool repeatOne;
 
-  /// Çevrimdışı kaynak (indirilen dosya) çalınıyor mu?
+  /// Çevrimdışı kaynak (dahili ses veya indirilen dosya) çalınıyor mu?
   final bool offlineMode;
 
   bool get playing => status == PlaybackStatus.playing;
@@ -61,6 +63,7 @@ class PlayerUiState {
     Duration? position,
     Duration? duration,
     double? volume,
+    double? speed,
     bool? repeatOne,
     bool? offlineMode,
     String? error,
@@ -75,6 +78,7 @@ class PlayerUiState {
       position: position ?? this.position,
       duration: duration ?? this.duration,
       volume: volume ?? this.volume,
+      speed: speed ?? this.speed,
       repeatOne: repeatOne ?? this.repeatOne,
       offlineMode: offlineMode ?? this.offlineMode,
       error: clearError ? null : (error ?? this.error),
@@ -82,13 +86,15 @@ class PlayerUiState {
   }
 }
 
-/// İlahi/Kur'an sesini yöneten denetleyici.
+/// İlahi/Kur'an/Ezan sesini yöneten denetleyici.
 ///
-/// Arka planda çalma, kilit ekranı kontrolleri ve indirilen dosyalardan
+/// Arka planda çalma, kilit ekranı kontrolleri ve indirilen/dahili dosyalardan
 /// çevrimdışı oynatma bu sınıf üzerinden yürür.
 class PlayerController extends Notifier<PlayerUiState> {
   StreamSubscription<PlaybackStatus>? _statusSub;
   StreamSubscription<Duration>? _positionSub;
+  StreamSubscription<Duration>? _durationSub;
+  StreamSubscription<int>? _queueIdxSub;
   Timer? _ticker;
 
   @override
@@ -97,7 +103,10 @@ class PlayerController extends Notifier<PlayerUiState> {
 
     _statusSub = audio.statusStream.listen((PlaybackStatus status) {
       if (!ref.mounted) return;
-      state = state.copyWith(status: status);
+      state = state.copyWith(
+        status: status,
+        clearError: status == PlaybackStatus.playing,
+      );
       if (status == PlaybackStatus.completed) {
         _onCompleted();
       }
@@ -105,29 +114,81 @@ class PlayerController extends Notifier<PlayerUiState> {
 
     _positionSub = audio.positionStream.listen((Duration position) {
       if (!ref.mounted) return;
-      state = state.copyWith(
-        position: position,
-        duration: audio.duration ?? state.duration,
-      );
+      _syncPositionAndDuration(audio, position);
+    });
+
+    _durationSub = audio.durationStream.listen((Duration d) {
+      if (!ref.mounted) return;
+      if (audio.queueLength <= 1 && d > Duration.zero) {
+        state = state.copyWith(duration: d);
+      }
+    });
+
+    _queueIdxSub = audio.queueIndexStream.listen((int idx) {
+      if (!ref.mounted) return;
+      _syncPositionAndDuration(audio, audio.position ?? Duration.zero);
     });
 
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
       if (!ref.mounted) return;
       final AppAudioService service = ref.read(runtimeProvider).audio;
-      final Duration? duration = service.duration;
-      state = state.copyWith(
-        position: service.position ?? state.position,
-        duration: duration ?? state.duration,
-      );
+      if (state.track == null) return;
+      _syncPositionAndDuration(service, service.position ?? state.position);
     });
 
     ref.onDispose(() {
       _statusSub?.cancel();
       _positionSub?.cancel();
+      _durationSub?.cancel();
+      _queueIdxSub?.cancel();
       _ticker?.cancel();
     });
 
     return const PlayerUiState();
+  }
+
+  void _syncPositionAndDuration(AppAudioService audio, Duration rawPosition) {
+    final IlahiTrack? currentTrack = state.track;
+    if (currentTrack == null) return;
+
+    if (audio.queueLength > 1) {
+      // Çok parçalı sure kuyruğu: toplam süreyi koru, kuyruk ilerlemesini hesapla.
+      final Duration totalDuration = state.duration.inSeconds > 0
+          ? state.duration
+          : Duration(
+              seconds: currentTrack.durationSeconds > 0
+                  ? currentTrack.durationSeconds
+                  : audio.queueLength * 8,
+            );
+      final Duration? itemDur = audio.duration;
+      final double itemFrac = (itemDur != null && itemDur.inMilliseconds > 0)
+          ? (rawPosition.inMilliseconds / itemDur.inMilliseconds).clamp(
+              0.0,
+              1.0,
+            )
+          : 0.0;
+      final double overallFrac =
+          ((audio.currentQueueIndex + itemFrac) / audio.queueLength).clamp(
+            0.0,
+            1.0,
+          );
+      final Duration effectivePos = Duration(
+        milliseconds: (totalDuration.inMilliseconds * overallFrac).round(),
+      );
+      state = state.copyWith(position: effectivePos, duration: totalDuration);
+      return;
+    }
+
+    final Duration? actualDuration = audio.duration;
+    final Duration resolvedDuration =
+        (actualDuration != null && actualDuration > Duration.zero)
+        ? actualDuration
+        : state.duration;
+    final Duration clampedPos =
+        resolvedDuration > Duration.zero && rawPosition > resolvedDuration
+        ? resolvedDuration
+        : rawPosition;
+    state = state.copyWith(position: clampedPos, duration: resolvedDuration);
   }
 
   /// Tek bir parçayı (isteğe bağlı kuyrukla) çalar.
@@ -141,6 +202,10 @@ class PlayerController extends Notifier<PlayerUiState> {
     final int index = effectiveQueue.indexWhere(
       (IlahiTrack item) => item.id == track.id,
     );
+    final bool isOffline =
+        track.isLocal ||
+        _isDownloaded(track) ||
+        track.audioUrl.startsWith('asset:');
     state = state.copyWith(
       track: track,
       queue: effectiveQueue,
@@ -149,7 +214,7 @@ class PlayerController extends Notifier<PlayerUiState> {
       duration: Duration(seconds: track.durationSeconds),
       status: PlaybackStatus.loading,
       clearError: true,
-      offlineMode: track.isLocal || _isDownloaded(track),
+      offlineMode: isOffline,
     );
 
     final String? source = _sourceFor(track);
@@ -171,6 +236,7 @@ class PlayerController extends Notifier<PlayerUiState> {
       started = await audio.playAsset(
         source.substring(6),
         volume: state.volume,
+        loop: state.repeatOne,
       );
     } else if (source.startsWith('everyayah:') || source.contains('|')) {
       final List<String> urls = track.resolvedAudioUrls;
@@ -184,9 +250,14 @@ class PlayerController extends Notifier<PlayerUiState> {
         artUri: track.artUri,
         id: track.id,
         volume: state.volume,
+        loop: state.repeatOne,
       );
     } else {
-      started = await audio.playFile(source, volume: state.volume);
+      started = await audio.playFile(
+        source,
+        volume: state.volume,
+        loop: state.repeatOne,
+      );
     }
 
     if (!started) {
@@ -197,15 +268,32 @@ class PlayerController extends Notifier<PlayerUiState> {
       return;
     }
     await audio.setVolume(state.volume);
+    if (state.speed != 1.0) {
+      await audio.setSpeed(state.speed);
+    }
     if (!source.startsWith('everyayah:') && !source.contains('|')) {
       await audio.setLoop(state.repeatOne);
     }
-    state = state.copyWith(status: PlaybackStatus.playing);
+    final Duration? loadedDuration = audio.duration;
+    state = state.copyWith(
+      status: PlaybackStatus.playing,
+      duration:
+          (audio.queueLength <= 1 &&
+              loadedDuration != null &&
+              loadedDuration > Duration.zero)
+          ? loadedDuration
+          : state.duration,
+      clearError: true,
+    );
   }
 
   Future<void> togglePlayPause() async {
     final AppAudioService audio = ref.read(runtimeProvider).audio;
     if (state.track == null) return;
+    if (state.status == PlaybackStatus.error) {
+      await playTrack(state.track!, queue: state.queue);
+      return;
+    }
     await audio.togglePlayPause();
   }
 
@@ -242,8 +330,44 @@ class PlayerController extends Notifier<PlayerUiState> {
     await ref.read(runtimeProvider).ilahi.markPlayed(track.id);
   }
 
-  Future<void> seek(Duration position) =>
-      ref.read(runtimeProvider).audio.seek(position);
+  Future<void> seek(Duration position) async {
+    final AppAudioService audio = ref.read(runtimeProvider).audio;
+    if (audio.queueLength > 1 && state.duration.inMilliseconds > 0) {
+      final double frac =
+          (position.inMilliseconds / state.duration.inMilliseconds).clamp(
+            0.0,
+            1.0,
+          );
+      final int targetIdx = (frac * audio.queueLength).floor().clamp(
+        0,
+        audio.queueLength - 1,
+      );
+      state = state.copyWith(position: position);
+      await audio.jumpToQueueIndex(targetIdx);
+      return;
+    }
+    final Duration clamped = state.duration > Duration.zero
+        ? Duration(
+            milliseconds: position.inMilliseconds.clamp(
+              0,
+              state.duration.inMilliseconds,
+            ),
+          )
+        : position;
+    state = state.copyWith(position: clamped);
+    await audio.seek(clamped);
+  }
+
+  Future<void> seekRelative(Duration offset) async {
+    final Duration target = state.position + offset;
+    if (target < Duration.zero) {
+      await seek(Duration.zero);
+    } else if (state.duration > Duration.zero && target > state.duration) {
+      await seek(state.duration);
+    } else {
+      await seek(target);
+    }
+  }
 
   Future<void> seekToFraction(double fraction) {
     final Duration target = Duration(
@@ -254,8 +378,9 @@ class PlayerController extends Notifier<PlayerUiState> {
   }
 
   Future<void> setVolume(double volume) async {
-    state = state.copyWith(volume: volume);
-    await ref.read(runtimeProvider).audio.setVolume(volume);
+    final double clamped = volume.clamp(0.0, 1.0);
+    state = state.copyWith(volume: clamped);
+    await ref.read(runtimeProvider).audio.setVolume(clamped);
   }
 
   Future<void> toggleRepeat() async {
@@ -264,13 +389,24 @@ class PlayerController extends Notifier<PlayerUiState> {
     await ref.read(runtimeProvider).audio.setLoop(repeat);
   }
 
-  Future<void> setSpeed(double speed) =>
-      ref.read(runtimeProvider).audio.setSpeed(speed);
+  Future<void> setSpeed(double speed) async {
+    final double clamped = speed.clamp(0.5, 2.0);
+    state = state.copyWith(speed: clamped);
+    await ref.read(runtimeProvider).audio.setSpeed(clamped);
+  }
+
+  Future<void> cycleSpeed() async {
+    const List<double> speeds = <double>[0.75, 1.0, 1.25, 1.5];
+    final int idx = speeds.indexOf(state.speed);
+    final double nextSpeed = speeds[(idx + 1) % speeds.length];
+    await setSpeed(nextSpeed);
+  }
 
   /// Çalma listesini kuyruğa alıp ilk parçadan başlar.
   Future<void> playQueue(List<IlahiTrack> tracks, {int startIndex = 0}) async {
     if (tracks.isEmpty) return;
-    await playTrack(tracks[startIndex], queue: tracks);
+    final int safeIndex = startIndex.clamp(0, tracks.length - 1);
+    await playTrack(tracks[safeIndex], queue: tracks);
   }
 
   /// Kuyruğa parça ekler.
@@ -289,8 +425,8 @@ class PlayerController extends Notifier<PlayerUiState> {
   void clearError() => state = state.copyWith(clearError: true);
 
   void _onCompleted() {
-    if (state.repeatOne) {
-      unawaited(ref.read(runtimeProvider).audio.play());
+    if (state.repeatOne && state.track != null) {
+      unawaited(playTrack(state.track!, queue: state.queue));
       return;
     }
     if (state.hasNext) {
@@ -344,7 +480,7 @@ class PlayerBar extends ConsumerWidget {
           children: <Widget>[
             LinearProgressIndicator(
               value: player.progress,
-              minHeight: 2,
+              minHeight: 3,
               backgroundColor: theme.colorScheme.outlineVariant.withValues(
                 alpha: 0.4,
               ),
@@ -383,15 +519,21 @@ class PlayerBar extends ConsumerWidget {
                           ),
                         ),
                         Text(
-                          player.offlineMode
-                              ? 'Çevrimdışı · ${player.track!.artist}'
-                              : player.track!.artist,
+                          '${AppTimeLabel.short(player.position)} / ${AppTimeLabel.short(player.duration)} · ${player.offlineMode ? "Çevrimdışı · ${player.track!.artist}" : player.track!.artist}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.labelSmall,
                         ),
                       ],
                     ),
+                  ),
+                  IconButton(
+                    visualDensity: VisualDensity.compact,
+                    tooltip: '10 sn geri',
+                    onPressed: () => ref
+                        .read(playerControllerProvider.notifier)
+                        .seekRelative(const Duration(seconds: -10)),
+                    icon: const Icon(Icons.replay_10_rounded, size: 20),
                   ),
                   IconButton(
                     visualDensity: VisualDensity.compact,
@@ -442,6 +584,15 @@ class PlayerBar extends ConsumerWidget {
         ),
       ),
     );
+  }
+}
+
+abstract final class AppTimeLabel {
+  static String short(Duration d) {
+    final int totalSeconds = d.inSeconds < 0 ? 0 : d.inSeconds;
+    final String mins = (totalSeconds ~/ 60).toString().padLeft(2, '0');
+    final String secs = (totalSeconds % 60).toString().padLeft(2, '0');
+    return '$mins:$secs';
   }
 }
 

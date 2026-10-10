@@ -11,38 +11,38 @@ import '../prayer/prayer_calculator.dart';
 /// Ezan bildirim sesi seçenekleri.
 enum AdhanSound {
   ezanMelodi(
-    'Hicaz Ezan Makamı (Uzun)',
-    'Geleneksel Hicaz makamı ezan tilaveti (~45 sn, telifsiz)',
+    'Mekke-i Mükerreme (Harem-i Şerîf) Ezanı',
+    'Kâbe-i Muazzama Hicaz makamı gerçek müezzin ezan tilaveti (3 dk 22 sn, telifsiz)',
     'ezan_melodi',
   ),
   sabaMelodi(
-    'Saba Makamı (Sabah / İmsak)',
-    'Sabah ve imsak vaktine uygun Saba makamı ezan (~24 sn, telifsiz)',
+    'Türkiye Makamı Gerçek Ezan (Diyanet Usulü)',
+    'Geleneksel Türkiye usulü gerçek müezzin ezan tilaveti (1 dk 10 sn, telifsiz)',
     'ezan_saba',
   ),
   segahMelodi(
-    'Segâh Makamı (Akşam / Yatsı)',
-    'Akşam ve yatsı vaktine uygun Segâh makamı ezan (~24 sn, telifsiz)',
+    'Mısır / Segâh Makamı Ezan (Abdülbâsıt)',
+    'Abdülbâsıt Abdüssamed gerçek ezan tilaveti (3 dk 20 sn, telifsiz)',
     'ezan_segah',
   ),
   tekbirMelodi(
-    'Tekbir ve Salâ Çağrısı',
-    'Segâh Tekbir ve salâvat esintili vakit çağrısı (~16 sn, telifsiz)',
+    'Klasik Makam Ezanı (Muhammed Rıfat)',
+    'Muhammed Rıfat klasik makam gerçek ezan tilaveti (3 dk 23 sn, telifsiz)',
     'ezan_tekbir',
   ),
   tone1(
-    'Uşşak İlahi & Ney Bildirimi',
-    'Yunus Emre geleneği Uşşak makamı ilahi ve ney bildirimi (telifsiz)',
+    'Ya Rabbî Vokal İlahi Bildirimi (Kısa)',
+    'Enstrümansız gerçek vokal ilahi vakit bildirimi (~20 sn, telifsiz)',
     'ezan_ton_1',
   ),
   tone2(
-    'Rast İlahi & Tefekkür Bildirimi',
-    'Huzurlu Rast makamı İslami ilahi bildirimi (telifsiz)',
+    'Huzur Vokal İlahi Bildirimi (Kısa)',
+    'Enstrümansız gerçek vokal neşid/ilahi bildirimi (~20 sn, telifsiz)',
     'ezan_ton_2',
   ),
   tone3(
-    'Hüseynî Kısa İlahi Bildirimi',
-    'Kısa Hüseynî makamı vakit hatırlatma ilahisi (telifsiz)',
+    'Kısa Ezan Tekbiri (Allâhu Ekber)',
+    'Mişârî el-Afâsî gerçek ezan tekbiri vakit bildirimi (~20 sn, telifsiz)',
     'ezan_ton_3',
   ),
   systemDefault('Sistem varsayılanı', 'Telefonun bildirim sesi', 'system'),

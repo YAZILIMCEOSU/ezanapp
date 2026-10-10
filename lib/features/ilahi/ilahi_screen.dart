@@ -281,7 +281,16 @@ class _IlahiScreenState extends ConsumerState<IlahiScreen> {
                           ),
                         ],
                       ),
-                      onTap: () => context.push(AppRoutes.player),
+                      onTap: () async {
+                        if (ref.read(playerControllerProvider).currentTrackId ==
+                            track.id) {
+                          if (context.mounted) {
+                            context.push(AppRoutes.player);
+                          }
+                          return;
+                        }
+                        await _play(track, filtered);
+                      },
                     );
                   },
                 );
@@ -344,10 +353,16 @@ class _IlahiScreenState extends ConsumerState<IlahiScreen> {
 
   Future<void> _play(IlahiTrack track, List<IlahiTrack> queue) async {
     final controller = ref.read(playerControllerProvider.notifier);
-    if (ref.read(playerControllerProvider).currentTrackId == track.id &&
-        ref.read(playerControllerProvider).playing) {
-      await controller.pause();
-      return;
+    final PlayerUiState currentState = ref.read(playerControllerProvider);
+    if (currentState.currentTrackId == track.id) {
+      if (currentState.playing) {
+        await controller.pause();
+        return;
+      }
+      if (currentState.status == PlaybackStatus.paused) {
+        await controller.resume();
+        return;
+      }
     }
     await controller.playTrack(track, queue: queue);
     await ref.read(runtimeProvider).ilahi.markPlayed(track.id);

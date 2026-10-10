@@ -7,7 +7,7 @@ import '../../design/app_colors.dart';
 import '../../design/app_spacing.dart';
 import 'player_controller.dart';
 
-/// Tam ekran oynatıcı: kuyruk, konum, ses ve hız kontrolleri.
+/// Tam ekran oynatıcı: kuyruk, konum, ±10 sn sarma, ses ve hız kontrolleri.
 class PlayerScreen extends ConsumerWidget {
   const PlayerScreen({super.key});
 
@@ -40,8 +40,19 @@ class PlayerScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Şimdi çalıyor'),
         actions: <Widget>[
+          TextButton(
+            tooltip: 'Oynatma hızı',
+            onPressed: controller.cycleSpeed,
+            child: Text(
+              '${player.speed}x',
+              style: theme.textTheme.labelLarge?.copyWith(
+                fontWeight: FontWeight.w800,
+                color: AppColors.emerald500,
+              ),
+            ),
+          ),
           IconButton(
-            tooltip: player.offlineMode ? 'Çevrimdışı' : 'Akış',
+            tooltip: player.offlineMode ? 'Çevrimdışı hazır' : 'Çevrimiçi akış',
             onPressed: null,
             icon: Icon(
               player.offlineMode
@@ -61,8 +72,8 @@ class PlayerScreen extends ConsumerWidget {
                 child: Column(
                   children: <Widget>[
                     Container(
-                      width: 200,
-                      height: 200,
+                      width: 180,
+                      height: 180,
                       decoration: const BoxDecoration(
                         gradient: LinearGradient(
                           colors: AppColors.emeraldGradient,
@@ -73,11 +84,11 @@ class PlayerScreen extends ConsumerWidget {
                         player.playing
                             ? Icons.graphic_eq_rounded
                             : Icons.music_note_rounded,
-                        size: 72,
+                        size: 68,
                         color: Colors.white.withValues(alpha: 0.9),
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.xl),
+                    const SizedBox(height: AppSpacing.lg),
                     Text(
                       track.title,
                       textAlign: TextAlign.center,
@@ -99,7 +110,7 @@ class PlayerScreen extends ConsumerWidget {
                           color: theme.colorScheme.onSurfaceVariant,
                         ),
                       ),
-                    const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.md),
                     if (track.license.isNotEmpty)
                       Chip(
                         visualDensity: VisualDensity.compact,
@@ -109,7 +120,7 @@ class PlayerScreen extends ConsumerWidget {
                           style: theme.textTheme.labelSmall,
                         ),
                       ),
-                    const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.md),
                     Slider(
                       value: player.progress.clamp(0.0, 1.0),
                       onChanged: (double value) =>
@@ -150,12 +161,20 @@ class PlayerScreen extends ConsumerWidget {
                           ),
                         ),
                         IconButton(
-                          iconSize: 36,
-                          tooltip: 'Önceki',
+                          iconSize: 32,
+                          tooltip: 'Önceki parça',
                           onPressed: controller.previous,
                           icon: const Icon(Icons.skip_previous_rounded),
                         ),
-                        const SizedBox(width: AppSpacing.sm),
+                        IconButton(
+                          iconSize: 28,
+                          tooltip: '10 saniye geri',
+                          onPressed: () => controller.seekRelative(
+                            const Duration(seconds: -10),
+                          ),
+                          icon: const Icon(Icons.replay_10_rounded),
+                        ),
+                        const SizedBox(width: AppSpacing.xs),
                         Container(
                           decoration: const BoxDecoration(
                             color: AppColors.emerald500,
@@ -175,15 +194,23 @@ class PlayerScreen extends ConsumerWidget {
                             ),
                           ),
                         ),
-                        const SizedBox(width: AppSpacing.sm),
+                        const SizedBox(width: AppSpacing.xs),
                         IconButton(
-                          iconSize: 36,
-                          tooltip: 'Sonraki',
+                          iconSize: 28,
+                          tooltip: '10 saniye ileri',
+                          onPressed: () => controller.seekRelative(
+                            const Duration(seconds: 10),
+                          ),
+                          icon: const Icon(Icons.forward_10_rounded),
+                        ),
+                        IconButton(
+                          iconSize: 32,
+                          tooltip: 'Sonraki parça',
                           onPressed: player.hasNext ? controller.next : null,
                           icon: const Icon(Icons.skip_next_rounded),
                         ),
                         IconButton(
-                          tooltip: 'Listeyi kapat',
+                          tooltip: 'Oynatıcıyı kapat',
                           onPressed: controller.stop,
                           icon: const Icon(Icons.stop_circle_outlined),
                         ),
@@ -196,7 +223,7 @@ class PlayerScreen extends ConsumerWidget {
                         Expanded(
                           child: Slider(
                             value: player.volume.clamp(0.0, 1.0),
-                            divisions: 10,
+                            divisions: 20,
                             onChanged: controller.setVolume,
                           ),
                         ),

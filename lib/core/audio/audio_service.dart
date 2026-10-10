@@ -29,6 +29,8 @@ class AppAudioService {
   AudioPlayer get _player => _playerInstance ??= AudioPlayer();
   StreamSubscription<PlayerState>? _stateSub;
   StreamSubscription<PlayerException>? _errorSub;
+  StreamSubscription<Duration>? _positionSub;
+  StreamSubscription<Duration?>? _durationSub;
 
   final StreamController<PlaybackStatus> _statusController =
       StreamController<PlaybackStatus>.broadcast();
@@ -38,6 +40,10 @@ class AppAudioService {
       StreamController<Duration>.broadcast();
   Stream<Duration> get positionStream => _positionController.stream;
 
+  final StreamController<Duration> _durationController =
+      StreamController<Duration>.broadcast();
+  Stream<Duration> get durationStream => _durationController.stream;
+
   final StreamController<int> _queueIndexController =
       StreamController<int>.broadcast();
   Stream<int> get queueIndexStream => _queueIndexController.stream;
@@ -45,6 +51,8 @@ class AppAudioService {
   List<String> _queueUrls = const <String>[];
   int _queueIndex = 0;
   bool _advancingQueue = false;
+  bool _switchingSource = false;
+  int _operationId = 0;
   int get currentQueueIndex => _queueIndex;
   int get queueLength => _queueUrls.length;
 
@@ -55,8 +63,9 @@ class AppAudioService {
   bool _duckingEnabled = true;
 
   Duration _lastPosition = Duration.zero;
+  Duration? _lastDuration;
   Duration? get position => _lastPosition;
-  Duration? get duration => _player.duration;
+  Duration? get duration => _playerInstance?.duration ?? _lastDuration;
 
   double _speed = 1.0;
   double get speed => _speed;
@@ -90,6 +99,10 @@ class AppAudioService {
     }
 
     _stateSub = _player.playerStateStream.listen((PlayerState state) {
+      if (_switchingSource) {
+        return;
+      }
+
       if (state.processingState == ProcessingState.completed) {
         if (_queueUrls.isNotEmpty && _queueIndex + 1 < _queueUrls.length) {
           if (!_advancingQueue) {
@@ -123,15 +136,32 @@ class AppAudioService {
       };
       if (!_statusController.isClosed) _statusController.add(_status);
     });
+
     _errorSub = _player.errorStream.listen((PlayerException error) {
+      if (_switchingSource || _advancingQueue) {
+        return;
+      }
+      final String msg = (error.message ?? '').toLowerCase();
+      if (msg.contains('interrupted') || msg.contains('abort')) {
+        return;
+      }
       AppLog.warning('Oynatma hatası: ${error.message}');
+      _status = PlaybackStatus.error;
       if (!_statusController.isClosed) {
         _statusController.add(PlaybackStatus.error);
       }
     });
-    _player.positionStream.listen((Duration position) {
+
+    _positionSub = _player.positionStream.listen((Duration position) {
       _lastPosition = position;
       if (!_positionController.isClosed) _positionController.add(position);
+    });
+
+    _durationSub = _player.durationStream.listen((Duration? d) {
+      if (d != null && d > Duration.zero) {
+        _lastDuration = d;
+        if (!_durationController.isClosed) _durationController.add(d);
+      }
     });
   }
 
@@ -159,6 +189,34 @@ class AppAudioService {
       _queueUrls = const <String>[];
       _status = PlaybackStatus.completed;
       if (!_statusController.isClosed) _statusController.add(_status);
+    } finally {
+      _advancingQueue = false;
+    }
+  }
+
+  /// Çok parçalı kuyrukta belirli bir indekse (ayete/bölüme) atlar.
+  Future<bool> jumpToQueueIndex(int targetIndex) async {
+    if (_queueUrls.isEmpty) return false;
+    final int clamped = targetIndex.clamp(0, _queueUrls.length - 1);
+    final int op = ++_operationId;
+    _advancingQueue = true;
+    try {
+      _queueIndex = clamped;
+      if (!_queueIndexController.isClosed) {
+        _queueIndexController.add(_queueIndex);
+      }
+      await _player.setAudioSource(
+        AudioSource.uri(Uri.parse(_queueUrls[_queueIndex])),
+      );
+      if (op != _operationId) return false;
+      await _player.setLoopMode(LoopMode.off);
+      unawaited(_player.play());
+      _status = PlaybackStatus.playing;
+      if (!_statusController.isClosed) _statusController.add(_status);
+      return true;
+    } catch (error) {
+      AppLog.warning('Kuyruk indeksine atlanamadı ($clamped): $error');
+      return false;
     } finally {
       _advancingQueue = false;
     }
@@ -198,13 +256,22 @@ class AppAudioService {
     bool loop = false,
   }) async {
     await initialize(ducking: _duckingEnabled);
+    final int op = ++_operationId;
+    _switchingSource = true;
     _queueUrls = const <String>[];
+    _lastPosition = Duration.zero;
+    _lastDuration = null;
     try {
       if (!File(path).existsSync()) {
         AppLog.warning('Ses dosyası bulunamadı: $path');
         return false;
       }
+      try {
+        await _player.stop();
+      } catch (_) {}
+      if (op != _operationId) return false;
       await _player.setAudioSource(AudioSource.file(path));
+      if (op != _operationId) return false;
       await _player.setLoopMode(loop ? LoopMode.one : LoopMode.off);
       if (volume != null) await _player.setVolume(volume.clamp(0.0, 1.0));
       unawaited(_player.play());
@@ -214,10 +281,22 @@ class AppAudioService {
     } catch (error, stackTrace) {
       AppLog.error('Dosya çalınamadı', error: error, stackTrace: stackTrace);
       return false;
+    } finally {
+      if (op == _operationId) {
+        _switchingSource = false;
+      }
     }
   }
 
-  /// Varlık (asset) dosyası çalar — dahili ezan ve ilahi sesleri.
+  static String _normalizeAssetPath(String assetPath) {
+    if (assetPath.endsWith('.wav') &&
+        assetPath.startsWith('assets/audio/adhan/')) {
+      return '${assetPath.substring(0, assetPath.length - 4)}.mp3';
+    }
+    return assetPath;
+  }
+
+  /// Varlık (asset) dosyası çalar — dahili gerçek ezan ve ilahi sesleri.
   ///
   /// Tüm Android sürümlerinde sorunsuz çalışması için önce varlığı geçici
   /// yerel dosyaya çıkarıp ExoPlayer üzerinden yerel dosya olarak çalar.
@@ -227,19 +306,30 @@ class AppAudioService {
     bool loop = false,
   }) async {
     await initialize(ducking: _duckingEnabled);
+    final int op = ++_operationId;
+    _switchingSource = true;
     _queueUrls = const <String>[];
+    _lastPosition = Duration.zero;
+    _lastDuration = null;
+    final String resolvedAsset = _normalizeAssetPath(assetPath);
     try {
-      final ByteData data = await rootBundle.load(assetPath);
+      try {
+        await _player.stop();
+      } catch (_) {}
+      if (op != _operationId) return false;
+      final ByteData data = await rootBundle.load(resolvedAsset);
       final Uint8List bytes = data.buffer.asUint8List(
         data.offsetInBytes,
         data.lengthInBytes,
       );
-      final String safeName = 'ezan_${assetPath.replaceAll('/', '_')}';
+      final String safeName = 'ezan_v3_${resolvedAsset.replaceAll('/', '_')}';
       final File tempFile = File('${Directory.systemTemp.path}/$safeName');
       if (!tempFile.existsSync() || tempFile.lengthSync() != bytes.length) {
         await tempFile.writeAsBytes(bytes, flush: true);
       }
+      if (op != _operationId) return false;
       await _player.setAudioSource(AudioSource.file(tempFile.path));
+      if (op != _operationId) return false;
       await _player.setLoopMode(loop ? LoopMode.one : LoopMode.off);
       await _player.setVolume(volume.clamp(0.0, 1.0));
       unawaited(_player.play());
@@ -248,7 +338,9 @@ class AppAudioService {
       return true;
     } catch (_) {
       try {
-        await _player.setAudioSource(AudioSource.asset(assetPath));
+        if (op != _operationId) return false;
+        await _player.setAudioSource(AudioSource.asset(resolvedAsset));
+        if (op != _operationId) return false;
         await _player.setLoopMode(loop ? LoopMode.one : LoopMode.off);
         await _player.setVolume(volume.clamp(0.0, 1.0));
         unawaited(_player.play());
@@ -257,11 +349,15 @@ class AppAudioService {
         return true;
       } catch (error, stackTrace) {
         AppLog.error(
-          'Varlık çalınamadı: $assetPath',
+          'Varlık çalınamadı: $resolvedAsset',
           error: error,
           stackTrace: stackTrace,
         );
         return false;
+      }
+    } finally {
+      if (op == _operationId) {
+        _switchingSource = false;
       }
     }
   }
@@ -278,9 +374,18 @@ class AppAudioService {
     bool loop = false,
   }) async {
     await initialize(ducking: _duckingEnabled);
+    final int op = ++_operationId;
+    _switchingSource = true;
     _queueUrls = const <String>[];
+    _lastPosition = Duration.zero;
+    _lastDuration = null;
     try {
+      try {
+        await _player.stop();
+      } catch (_) {}
+      if (op != _operationId) return false;
       await _player.setAudioSource(AudioSource.uri(Uri.parse(url)));
+      if (op != _operationId) return false;
       await _player.setLoopMode(loop ? LoopMode.one : LoopMode.off);
       if (volume != null) await _player.setVolume(volume.clamp(0.0, 1.0));
       unawaited(_player.play());
@@ -294,6 +399,10 @@ class AppAudioService {
         stackTrace: stackTrace,
       );
       return false;
+    } finally {
+      if (op == _operationId) {
+        _switchingSource = false;
+      }
     }
   }
 
@@ -309,7 +418,15 @@ class AppAudioService {
   }) async {
     if (urls.isEmpty) return false;
     await initialize(ducking: _duckingEnabled);
+    final int op = ++_operationId;
+    _switchingSource = true;
+    _lastPosition = Duration.zero;
+    _lastDuration = null;
     try {
+      try {
+        await _player.stop();
+      } catch (_) {}
+      if (op != _operationId) return false;
       final int startIdx = initialIndex.clamp(0, urls.length - 1);
       _queueUrls = List<String>.unmodifiable(urls);
       _queueIndex = startIdx;
@@ -319,6 +436,7 @@ class AppAudioService {
       await _player.setAudioSource(
         AudioSource.uri(Uri.parse(_queueUrls[_queueIndex])),
       );
+      if (op != _operationId) return false;
       await _player.setLoopMode(LoopMode.off);
       if (volume != null) await _player.setVolume(volume.clamp(0.0, 1.0));
       unawaited(_player.play());
@@ -333,6 +451,10 @@ class AppAudioService {
         stackTrace: stackTrace,
       );
       return false;
+    } finally {
+      if (op == _operationId) {
+        _switchingSource = false;
+      }
     }
   }
 
@@ -342,9 +464,16 @@ class AppAudioService {
     int initialIndex = 0,
   }) async {
     await initialize(ducking: _duckingEnabled);
+    final int op = ++_operationId;
+    _switchingSource = true;
     _queueUrls = const <String>[];
     try {
+      try {
+        await _player.stop();
+      } catch (_) {}
+      if (op != _operationId) return false;
       await _player.setAudioSources(sources, initialIndex: initialIndex);
+      if (op != _operationId) return false;
       unawaited(_player.play());
       _status = PlaybackStatus.playing;
       if (!_statusController.isClosed) _statusController.add(_status);
@@ -352,6 +481,10 @@ class AppAudioService {
     } catch (error, stackTrace) {
       AppLog.error('Liste çalınamadı', error: error, stackTrace: stackTrace);
       return false;
+    } finally {
+      if (op == _operationId) {
+        _switchingSource = false;
+      }
     }
   }
 
@@ -360,21 +493,35 @@ class AppAudioService {
       await _player.seek(Duration.zero);
     }
     unawaited(_player.play());
+    _status = PlaybackStatus.playing;
+    if (!_statusController.isClosed) _statusController.add(_status);
   }
 
-  Future<void> pause() => _player.pause();
+  Future<void> pause() async {
+    await _player.pause();
+    _status = PlaybackStatus.paused;
+    if (!_statusController.isClosed) _statusController.add(_status);
+  }
 
   Future<void> togglePlayPause() =>
-      _status == PlaybackStatus.playing ? _player.pause() : play();
+      _status == PlaybackStatus.playing ? pause() : play();
 
   Future<void> stop() async {
+    ++_operationId;
+    _switchingSource = false;
+    _advancingQueue = false;
     _queueUrls = const <String>[];
+    _lastPosition = Duration.zero;
     await _player.stop();
     _status = PlaybackStatus.idle;
     if (!_statusController.isClosed) _statusController.add(_status);
   }
 
-  Future<void> seek(Duration position) => _player.seek(position);
+  Future<void> seek(Duration position) async {
+    _lastPosition = position;
+    if (!_positionController.isClosed) _positionController.add(position);
+    await _player.seek(position);
+  }
 
   Future<void> seekToIndex(int index) =>
       _player.seek(Duration.zero, index: index);
@@ -422,24 +569,29 @@ class AppAudioService {
   Future<void> dispose() async {
     await _stateSub?.cancel();
     await _errorSub?.cancel();
+    await _positionSub?.cancel();
+    await _durationSub?.cancel();
     await _statusController.close();
     await _positionController.close();
+    await _durationController.close();
     await _queueIndexController.close();
     await _playerInstance?.dispose();
   }
 }
 
-/// Dahili ezan makamları, bildirim tonları ve dini ezgilerin varlık yolları.
+/// Dahili gerçek müezzin ezan makamları, bildirim sesleri ve vokal ilahilerin varlık yolları.
 abstract final class BundledSounds {
-  static const String ezanMelodi = 'assets/audio/adhan/ezan_melodi.wav';
-  static const String sabaMelodi = 'assets/audio/adhan/ezan_saba.wav';
-  static const String segahMelodi = 'assets/audio/adhan/ezan_segah.wav';
-  static const String tekbirMelodi = 'assets/audio/adhan/ezan_tekbir.wav';
-  static const String tone1 = 'assets/audio/adhan/ezan_ton_1.wav';
-  static const String tone2 = 'assets/audio/adhan/ezan_ton_2.wav';
-  static const String tone3 = 'assets/audio/adhan/ezan_ton_3.wav';
-  static const String ilahiUssak = 'assets/audio/adhan/ilahi_ussak.wav';
-  static const String ilahiHuseyni = 'assets/audio/adhan/ilahi_huseyni.wav';
+  static const String ezanMelodi = 'assets/audio/adhan/ezan_melodi.mp3';
+  static const String sabaMelodi = 'assets/audio/adhan/ezan_saba.mp3';
+  static const String segahMelodi = 'assets/audio/adhan/ezan_segah.mp3';
+  static const String tekbirMelodi = 'assets/audio/adhan/ezan_tekbir.mp3';
+  static const String tone1 = 'assets/audio/adhan/ezan_ton_1.mp3';
+  static const String tone2 = 'assets/audio/adhan/ezan_ton_2.mp3';
+  static const String tone3 = 'assets/audio/adhan/ezan_ton_3.mp3';
+  static const String ilahiUssak = 'assets/audio/adhan/ilahi_ussak.mp3';
+  static const String ilahiHuseyni = 'assets/audio/adhan/ilahi_huseyni.mp3';
+  static const String ilahiHayir = 'assets/audio/adhan/ilahi_hayir.mp3';
+  static const String ilahiHidayet = 'assets/audio/adhan/ilahi_hidayet.mp3';
 
   static String? assetFor(AdhanSound sound) => switch (sound) {
     AdhanSound.ezanMelodi => ezanMelodi,

@@ -35,80 +35,152 @@ class IlahiRepository {
 
   List<IlahiTrack>? _cachedCatalog;
 
-  /// Telifsiz makam ezgileri ve açık lisanslı dini seslerden oluşan yerleşik katalog.
+  /// Gerçek müezzin ezan kayıtları, enstrümansız vokal ilahiler ve açık lisanslı surelerden oluşan yerleşik katalog.
   static const List<IlahiTrack> defaultCatalog = <IlahiTrack>[
     IlahiTrack(
-      id: 'makam_hicaz_ezan',
-      title: 'Hicaz Ezan Makamı (Tam Vakit Çağrısı)',
-      artist: 'Ezan Makam Topluluğu',
-      album: 'Telifsiz Ezan ve Vakit Makamları',
-      kind: IlahiKind.ezan,
-      categories: <String>['Ezan Makamları', 'Dini Sesler'],
-      audioUrl: 'asset:assets/audio/adhan/ezan_melodi.wav',
-      durationSeconds: 60,
-      license: 'Telifsiz (CC0 — Özgün Makam Kaydı)',
-      description: 'Yatsı ve akşam vakitlerine uygun geleneksel Hicaz makamı.',
-    ),
-    IlahiTrack(
-      id: 'makam_saba_seher',
-      title: 'Saba Makamı — Seher ve İmsak Ezanı',
-      artist: 'Ezan Makam Topluluğu',
-      album: 'Telifsiz Ezan ve Vakit Makamları',
-      kind: IlahiKind.ezan,
-      categories: <String>['Ezan Makamları', 'İlahi Ezgileri'],
-      audioUrl: 'asset:assets/audio/adhan/ezan_saba.wav',
-      durationSeconds: 45,
-      license: 'Telifsiz (CC0 — Özgün Makam Kaydı)',
-      description: 'Sabah ve imsak vaktine uygun huzurlu Saba makamı.',
-    ),
-    IlahiTrack(
-      id: 'makam_segah_salavat',
-      title: 'Segâh Makamı — Akşam Ezanı ve Salâvat',
-      artist: 'Ezan Makam Topluluğu',
-      album: 'Telifsiz Ezan ve Vakit Makamları',
-      kind: IlahiKind.salavat,
-      categories: <String>['Salavât ve Zikir', 'Ezan Makamları'],
-      audioUrl: 'asset:assets/audio/adhan/ezan_segah.wav',
-      durationSeconds: 45,
-      license: 'Telifsiz (CC0 — Özgün Makam Kaydı)',
-      description: 'Segâh makamında salâvat ve akşam tefekkür ezgisi.',
-    ),
-    IlahiTrack(
       id: 'ilahi_ussak_yunus',
-      title: 'Uşşak İlahi Ezgisi — Yunus Emre Makamı',
-      artist: 'Tasavvuf Mûsikîsi Topluluğu',
-      album: 'Telifsiz Tasavvuf ve İlahi Seçkisi',
+      title: 'Ya Rabbî (My Lord) — Saf Vokal İlahi',
+      artist: 'Muhammed el-Mukît',
+      album: 'Enstrümansız Vokal İlahi Seçkisi',
       kind: IlahiKind.ilahi,
       categories: <String>['İlahi Ezgileri', 'Dini Sesler'],
-      audioUrl: 'asset:assets/audio/adhan/ilahi_ussak.wav',
-      durationSeconds: 48,
-      license: 'Telifsiz (CC0 — Özgün Makam Kaydı)',
+      audioUrl: 'asset:assets/audio/adhan/ilahi_ussak.mp3',
+      durationSeconds: 78,
+      license: 'Açık Vokal Arşiv (Enstrümansız / Telifsiz Vokal Kayıt)',
       description:
-          'Anadolu ilahi geleneğinde Uşşak makamı ney ve vokal ezgisi.',
+          'Müzik aleti içermeyen, tamamen insan sesiyle icra edilen huzurlu vokal ilahi (çevrimdışı hazır).',
     ),
     IlahiTrack(
       id: 'zikir_huseyni_halka',
-      title: 'Hüseynî Makamı — Zikir ve Tesbih İlahisi',
-      artist: 'Tasavvuf Mûsikîsi Topluluğu',
-      album: 'Telifsiz Tasavvuf ve İlahi Seçkisi',
-      kind: IlahiKind.salavat,
-      categories: <String>['Salavât ve Zikir', 'İlahi Ezgileri'],
-      audioUrl: 'asset:assets/audio/adhan/ilahi_huseyni.wav',
-      durationSeconds: 44,
-      license: 'Telifsiz (CC0 — Özgün Makam Kaydı)',
-      description: 'Tesbih ve zikir esnasında dinlenebilecek Hüseynî ilahisi.',
+      title: 'Tefekkür ve Dua (My Dream) — Vokal İlahi',
+      artist: 'Muhammed el-Mukît',
+      album: 'Enstrümansız Vokal İlahi Seçkisi',
+      kind: IlahiKind.ilahi,
+      categories: <String>['İlahi Ezgileri', 'Salavât ve Zikir'],
+      audioUrl: 'asset:assets/audio/adhan/ilahi_huseyni.mp3',
+      durationSeconds: 76,
+      license: 'Açık Vokal Arşiv (Enstrümansız / Telifsiz Vokal Kayıt)',
+      description:
+          'Tesbih ve tefekkür vakitlerinde dinlenebilecek enstrümansız saf vokal ilahi (çevrimdışı hazır).',
+    ),
+    IlahiTrack(
+      id: 'ilahi_hayir_iyilik',
+      title: 'Hayır ve İyilik (Al-Khair) — Vokal İlahi',
+      artist: 'Vokal İlahi Topluluğu',
+      album: 'Enstrümansız Vokal İlahi Seçkisi',
+      kind: IlahiKind.ilahi,
+      categories: <String>['İlahi Ezgileri', 'Dini Sesler'],
+      audioUrl: 'asset:assets/audio/adhan/ilahi_hayir.mp3',
+      durationSeconds: 98,
+      license: 'Açık Vokal Arşiv (Enstrümansız / Telifsiz Vokal Kayıt)',
+      description:
+          'İyilik ve merhamet temalı, müzik aletsiz gerçek vokal ilahi (çevrimdışı hazır).',
+    ),
+    IlahiTrack(
+      id: 'ilahi_hidayet_nuru',
+      title: 'Hidayet Nuru (Light of Guidance) — Vokal İlahi',
+      artist: 'Vokal İlahi Topluluğu',
+      album: 'Enstrümansız Vokal İlahi Seçkisi',
+      kind: IlahiKind.ilahi,
+      categories: <String>['İlahi Ezgileri', 'Salavât ve Zikir'],
+      audioUrl: 'asset:assets/audio/adhan/ilahi_hidayet.mp3',
+      durationSeconds: 124,
+      license: 'Açık Vokal Arşiv (Enstrümansız / Telifsiz Vokal Kayıt)',
+      description:
+          'Hidayet ve dua temalı, enstrümansız tam vokal ilahi (çevrimdışı hazır).',
+    ),
+    IlahiTrack(
+      id: 'ilahi_siginirim',
+      title: 'Rabbime Sığınırım (I Seek Protection) — Vokal İlahi',
+      artist: 'Vokal İlahi Topluluğu',
+      album: 'Enstrümansız Vokal İlahi Seçkisi',
+      kind: IlahiKind.ilahi,
+      categories: <String>['İlahi Ezgileri', 'Dini Sesler'],
+      audioUrl:
+          'https://cdn.jsdelivr.net/gh/iamaanahmad/NasheedCollection@master/I%20Seek%20Protection.mp3',
+      durationSeconds: 132,
+      license: 'Açık Vokal Arşiv (Enstrümansız / Telifsiz Vokal Kayıt)',
+      description: 'Dua ve sığınma temalı, enstrümansız gerçek vokal ilahi.',
+    ),
+    IlahiTrack(
+      id: 'ilahi_tebessum',
+      title: 'Tebessüm Sadakadır (Smile) — Vokal İlahi',
+      artist: 'Vokal İlahi Topluluğu',
+      album: 'Enstrümansız Vokal İlahi Seçkisi',
+      kind: IlahiKind.ilahi,
+      categories: <String>['İlahi Ezgileri', 'Dini Sesler'],
+      audioUrl:
+          'https://cdn.jsdelivr.net/gh/iamaanahmad/NasheedCollection@master/Smile.mp3',
+      durationSeconds: 185,
+      license: 'Açık Vokal Arşiv (Enstrümansız / Telifsiz Vokal Kayıt)',
+      description:
+          'Sünnet-i seniyye ve tebessüm temalı enstrümansız vokal ilahi.',
+    ),
+    IlahiTrack(
+      id: 'makam_hicaz_ezan',
+      title: 'Mekke-i Mükerreme (Harem-i Şerîf) Gerçek Ezanı',
+      artist: 'Harem-i Şerîf Müezzini',
+      album: 'Gerçek Müezzin Ezan Makamları',
+      kind: IlahiKind.ezan,
+      categories: <String>['Ezan Makamları', 'Dini Sesler'],
+      audioUrl: 'asset:assets/audio/adhan/ezan_melodi.mp3',
+      durationSeconds: 202,
+      license: 'Açık Kamu Arşivi (Harem-i Şerîf Müezzin Tilaveti)',
+      description:
+          'Kâbe-i Muazzama Hicaz makamı gerçek müezzin ezan tilaveti (çevrimdışı hazır).',
+    ),
+    IlahiTrack(
+      id: 'makam_saba_seher',
+      title: 'Türkiye Makamı Gerçek Ezan (Diyanet Usulü)',
+      artist: 'Türkiye Müezzin Tilaveti',
+      album: 'Gerçek Müezzin Ezan Makamları',
+      kind: IlahiKind.ezan,
+      categories: <String>['Ezan Makamları', 'Dini Sesler'],
+      audioUrl: 'asset:assets/audio/adhan/ezan_saba.mp3',
+      durationSeconds: 70,
+      license: 'Açık Kamu Arşivi (Türkiye Usulü Müezzin Tilaveti)',
+      description:
+          'Geleneksel Türkiye makamı gerçek müezzin ezan kaydı (çevrimdışı hazır).',
+    ),
+    IlahiTrack(
+      id: 'makam_segah_salavat',
+      title: 'Mısır / Segâh Makamı Gerçek Ezan',
+      artist: 'Abdülbâsıt Abdüssamed',
+      album: 'Gerçek Müezzin Ezan Makamları',
+      kind: IlahiKind.ezan,
+      categories: <String>['Ezan Makamları', 'Salavât ve Zikir'],
+      audioUrl: 'asset:assets/audio/adhan/ezan_segah.mp3',
+      durationSeconds: 200,
+      license: 'Açık Kamu Arşivi (Klasik Mısır Ezan Tilaveti)',
+      description:
+          'Abdülbâsıt Abdüssamed tarafından okunan gerçek makam ezanı (çevrimdışı hazır).',
     ),
     IlahiTrack(
       id: 'makam_segah_tekbir',
-      title: 'Tekbir ve Bayram Salâsı Çağrısı',
-      artist: 'Ezan Makam Topluluğu',
-      album: 'Telifsiz Ezan ve Vakit Makamları',
-      kind: IlahiKind.salavat,
-      categories: <String>['Salavât ve Zikir', 'Dini Sesler'],
-      audioUrl: 'asset:assets/audio/adhan/ezan_tekbir.wav',
-      durationSeconds: 32,
-      license: 'Telifsiz (CC0 — Özgün Makam Kaydı)',
-      description: 'Itrî Segâh Tekbir geleneğinden esinlenen vakit çağrısı.',
+      title: 'Klasik Makam Gerçek Ezanı (Muhammed Rıfat)',
+      artist: 'Muhammed Rıfat',
+      album: 'Gerçek Müezzin Ezan Makamları',
+      kind: IlahiKind.ezan,
+      categories: <String>['Ezan Makamları', 'Salavât ve Zikir'],
+      audioUrl: 'asset:assets/audio/adhan/ezan_tekbir.mp3',
+      durationSeconds: 203,
+      license: 'Açık Kamu Arşivi (Tarihî Klasik Ezan Kaydı)',
+      description:
+          'Muhammed Rıfat tarafından okunan tarihî klasik makam ezanı (çevrimdışı hazır).',
+    ),
+    IlahiTrack(
+      id: 'ezan_minshawi_hicaz',
+      title: 'Sıddîk el-Minşâvî — Hicaz Makamı Gerçek Ezan',
+      artist: 'Muhammed Sıddîk el-Minşâvî',
+      album: 'Gerçek Müezzin Ezan Makamları',
+      kind: IlahiKind.ezan,
+      categories: <String>['Ezan Makamları', 'Dini Sesler'],
+      audioUrl:
+          'https://cdn.jsdelivr.net/gh/abodehq/Athan-MP3@master/Sounds/Athan%20Mohammad%20Almenshawy.mp3',
+      durationSeconds: 251,
+      license: 'Açık Kamu Arşivi (Klasik Ezan Tilaveti)',
+      description:
+          'Muhammed Sıddîk el-Minşâvî tarafından okunan tam ezan-ı Muhammedi.',
     ),
     IlahiTrack(
       id: 'tilavet_fatiha',
@@ -269,12 +341,16 @@ class IlahiRepository {
 
     final Map<String, IlahiTrack> merged = <String, IlahiTrack>{};
     for (final IlahiTrack item in <IlahiTrack>[
-      ...defaultCatalog,
       ...remote,
+      ...defaultCatalog,
       ...local,
     ]) {
       final String? dlPath = downloadedPaths[item.id];
-      merged[item.id] = dlPath != null
+      final bool isStaleWav =
+          dlPath != null &&
+          dlPath.endsWith('.wav') &&
+          item.audioUrl.endsWith('.mp3');
+      merged[item.id] = (dlPath != null && !isStaleWav)
           ? item.copyWith(localPath: dlPath, isLocal: true)
           : item;
     }

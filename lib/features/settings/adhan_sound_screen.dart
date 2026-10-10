@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:file_selector/file_selector.dart';
@@ -24,9 +25,30 @@ class AdhanSoundScreen extends ConsumerStatefulWidget {
 
 class _AdhanSoundScreenState extends ConsumerState<AdhanSoundScreen> {
   AdhanSound? _previewingSound;
+  StreamSubscription<PlaybackStatus>? _statusSub;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final AppAudioService audio = ref.read(runtimeProvider).audio;
+      _statusSub = audio.statusStream.listen((PlaybackStatus status) {
+        if (!mounted) return;
+        if (status == PlaybackStatus.completed ||
+            status == PlaybackStatus.idle ||
+            status == PlaybackStatus.error) {
+          if (_previewingSound != null) {
+            setState(() => _previewingSound = null);
+          }
+        }
+      });
+    });
+  }
 
   @override
   void dispose() {
+    _statusSub?.cancel();
     super.dispose();
   }
 
@@ -185,11 +207,14 @@ class _AdhanSoundScreenState extends ConsumerState<AdhanSoundScreen> {
                     value: notifications.adhanVolume.clamp(0.0, 1.0),
                     divisions: 10,
                     label: '${(notifications.adhanVolume * 100).round()}%',
-                    onChanged: (double value) => ref
-                        .read(settingsControllerProvider.notifier)
-                        .updateNotifications(
-                          notifications.copyWith(adhanVolume: value),
-                        ),
+                    onChanged: (double value) {
+                      ref
+                          .read(settingsControllerProvider.notifier)
+                          .updateNotifications(
+                            notifications.copyWith(adhanVolume: value),
+                          );
+                      ref.read(runtimeProvider).audio.setVolume(value);
+                    },
                   ),
                 ),
                 const Icon(Icons.volume_up_rounded, size: 18),
@@ -202,8 +227,8 @@ class _AdhanSoundScreenState extends ConsumerState<AdhanSoundScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             child: Text(
-              'İsterseniz sabah/imsak için Saba makamı, iş saatlerindeki vakitler için '
-              'kısa ton veya sessiz, akşam ve yatsı için uzun Hicaz ezan makamı seçebilirsiniz.',
+              'İsterseniz sabah/imsak için Türkiye veya Mısır makamı, iş saatlerindeki vakitler için '
+              'kısa vokal ilahi bildirimi veya sessiz, akşam ve yatsı için Mekke Harem-i Şerîf ezanı seçebilirsiniz.',
               style: theme.textTheme.labelSmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
                 height: 1.4,
@@ -236,17 +261,17 @@ class _AdhanSoundScreenState extends ConsumerState<AdhanSoundScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    'Telifsiz makamlar ve özel ses desteği',
+                    'Gerçek müezzin ezan kayıtları ve özel ses desteği',
                     style: theme.textTheme.labelLarge?.copyWith(
                       fontWeight: FontWeight.w800,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
-                    'Uygulama içindeki Hicaz, Saba, Segâh ve Tekbir ezgileri telifsiz olarak '
-                    'üretilmiştir; yüksek öncelikli bildirim kanalında ekran kilitliyken de '
-                    'duyulur. Kendi lisanslı müezzin/ezan MP3 dosyanızı da yukarıdan seçip '
-                    'kullanabilirsiniz.',
+                    'Uygulama içindeki Mekke Harem-i Şerîf, Türkiye Makamı, Abdülbâsıt Abdüssamed ve '
+                    'Muhammed Rıfat ezan kayıtları ile enstrümansız vokal ilahi bildirimleri gerçek '
+                    'insan sesi kayıtlarıdır; yüksek öncelikli alarm kanalında ekran kilitliyken de '
+                    'duyulur. Dilerseniz kendi MP3/WAV/M4A dosyanızı da yukarıdan seçip kullanabilirsiniz.',
                     style: theme.textTheme.bodySmall?.copyWith(height: 1.5),
                   ),
                 ],
