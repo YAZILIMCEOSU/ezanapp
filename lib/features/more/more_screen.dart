@@ -44,7 +44,7 @@ class _MoreScreenState extends ConsumerState<MoreScreen> {
     return Scaffold(
       appBar: AppBarHeader(
         title: 'Daha Fazla',
-        subtitle: _version.isEmpty ? 'EzanAI' : 'Sürüm $_version',
+        subtitle: _version.isEmpty ? 'Ezan' : 'Sürüm $_version',
       ),
       body: ListView(
         padding: const EdgeInsets.only(bottom: AppSpacing.xl),
@@ -58,10 +58,28 @@ class _MoreScreenState extends ConsumerState<MoreScreen> {
             route: AppRoutes.qibla,
           ),
           const _Tile(
+            icon: Icons.mosque_outlined,
+            title: 'Yakındaki Camiler',
+            subtitle: 'En yakın camiler, mesafe, yön ve haritada yol tarifi',
+            route: AppRoutes.mosques,
+          ),
+          const _Tile(
             icon: Icons.fingerprint_rounded,
             title: 'Tesbih ve Zikir',
             subtitle: 'Sayaç, günlük hedef, istatistik',
             route: AppRoutes.zikir,
+          ),
+          const _Tile(
+            icon: Icons.stars_outlined,
+            title: 'Esmaül Hüsna (99 İsim)',
+            subtitle: 'Allah\'ın 99 güzel ismi, anlamları ve zikir adetleri',
+            route: AppRoutes.esmaulHusna,
+          ),
+          const _Tile(
+            icon: Icons.fact_check_outlined,
+            title: 'Kaza Takibi ve Cuma Hutbeleri',
+            subtitle: 'Kaza namazı/orucu borç sayacı ve Cuma mesajları',
+            route: AppRoutes.kazaTracker,
           ),
           if (features.dua)
             const _Tile(
@@ -196,7 +214,7 @@ class _PremiumCard extends StatelessWidget {
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(
-                    premium ? 'Premium etkin' : 'EzanAI Premium',
+                    premium ? 'Premium etkin' : 'Ezan Premium',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.titleMedium?.copyWith(

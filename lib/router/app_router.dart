@@ -12,8 +12,11 @@ import '../features/ilahi/downloads_screen.dart';
 import '../features/ilahi/ilahi_screen.dart';
 import '../features/ilahi/player_screen.dart';
 import '../features/ilahi/playlist_screen.dart';
+import '../features/more/esmaul_husna_screen.dart';
 import '../features/more/islamic_days_screen.dart';
+import '../features/more/kaza_tracker_screen.dart';
 import '../features/more/more_screen.dart';
+import '../features/more/mosque_finder_screen.dart';
 import '../features/more/onboarding_screen.dart';
 import '../features/more/premium_screen.dart';
 import '../features/prayers/prayers_screen.dart';
@@ -68,6 +71,9 @@ abstract final class AppRoutes {
   static const String ilahiDownloads = '/ilahi/indirilenler';
   static const String adhanSounds = '/ayarlar/ezan-sesi';
   static const String backup = '/ayarlar/yedekleme';
+  static const String mosques = '/camiler';
+  static const String esmaulHusna = '/esmaul-husna';
+  static const String kazaTracker = '/kaza-takibi';
 
   static String surah(int number, {int? ayah}) =>
       ayah == null ? '/kuran/sure/$number' : '/kuran/sure/$number?ayet=$ayah';
@@ -282,6 +288,21 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.adhanSounds,
       builder: (BuildContext context, GoRouterState state) =>
           const AdhanSoundScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.mosques,
+      builder: (BuildContext context, GoRouterState state) =>
+          const MosqueFinderScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.esmaulHusna,
+      builder: (BuildContext context, GoRouterState state) =>
+          const EsmaulHusnaScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.kazaTracker,
+      builder: (BuildContext context, GoRouterState state) =>
+          const KazaTrackerScreen(),
     ),
     GoRoute(
       path: AppRoutes.ilahiPlaylists,

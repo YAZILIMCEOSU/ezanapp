@@ -52,6 +52,9 @@ class _HadithScreenState extends ConsumerState<HadithScreen> {
         : ref.watch(hadithQueryProvider(_query));
     final Set<int> favorites =
         ref.watch(hadithFavoriteIdsProvider).value ?? const <int>{};
+    final String localeCode = ref.watch(
+      settingsProvider.select((s) => s.localeCode),
+    );
     final ThemeData theme = Theme.of(context);
 
     return Scaffold(
@@ -119,7 +122,7 @@ class _HadithScreenState extends ConsumerState<HadithScreen> {
                       Padding(
                         padding: const EdgeInsets.only(right: AppSpacing.sm),
                         child: FilterChip(
-                          label: Text(topic),
+                          label: Text(Hadith.localizedTopic(topic, localeCode)),
                           selected: _query.topic == topic,
                           onSelected: (bool selected) => setState(
                             () => _query = _query.copyWith(

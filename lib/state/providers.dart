@@ -98,6 +98,11 @@ class SettingsController extends Notifier<AppSettings> {
   Future<void> setThemeMode(AppThemeMode mode) =>
       update(state.copyWith(themeMode: mode));
 
+  Future<void> setLocaleCode(String localeCode) => update(
+    state.copyWith(localeCode: localeCode),
+    rescheduleNotifications: false,
+  );
+
   Future<void> setMethod(String methodId) =>
       update(state.copyWith(calculationMethodId: methodId));
 
@@ -132,6 +137,11 @@ class SettingsController extends Notifier<AppSettings> {
 
   Future<void> setQuranReciter(String reciterId) => update(
     state.copyWith(quranReciterId: reciterId),
+    rescheduleNotifications: false,
+  );
+
+  Future<void> setQuranTranslation(String translationId) => update(
+    state.copyWith(quranTranslationId: translationId),
     rescheduleNotifications: false,
   );
 
@@ -555,13 +565,25 @@ final Provider<HijriDate> hijriTodayProvider = Provider<HijriDate>((Ref ref) {
 // ---------------------------------------------------- Bildirim koordinatörü
 
 /// Konum/ayar değiştiğinde bildirimleri yeniden zamanlar.
+///
+/// Arka planda GPS/konum yenilenirken eski şehrin ağ isteği geç tamamlanırsa
+/// yeni şehrin alarmlarını ezmemesi için [_rescheduleGeneration] ve aktif konum
+/// doğrulaması kullanılır.
 class NotificationCoordinator {
   NotificationCoordinator(this._runtime, this._ref);
 
   final AppRuntime _runtime;
   final Ref _ref;
+  int _rescheduleGeneration = 0;
+
+  static bool _sameLocation(UserLocation a, UserLocation b) {
+    if (a.city?.id != b.city?.id) return false;
+    return (a.latitude - b.latitude).abs() < 1e-4 &&
+        (a.longitude - b.longitude).abs() < 1e-4;
+  }
 
   Future<int> reschedule({AppSettings? settings, int days = 8}) async {
+    final int generation = ++_rescheduleGeneration;
     final AppSettings current =
         settings ?? _ref.read(settingsControllerProvider);
     final UserLocation location = _ref.read(activeLocationProvider);
@@ -583,10 +605,30 @@ class NotificationCoordinator {
         method: method,
       );
 
+      // Arka planda konum yenilendiyse veya daha yeni bir zamanlama başladıysa
+      // eski şehre ait bu sonucu iptal et.
+      final UserLocation latestLocation = _ref.read(activeLocationProvider);
+      if (generation != _rescheduleGeneration ||
+          !_sameLocation(location, latestLocation)) {
+        return 0;
+      }
+
+      final String resolvedLabel =
+          location.city?.displayName ??
+          await _runtime.cities.describePoint(
+            location.latitude,
+            location.longitude,
+          );
+
+      if (generation != _rescheduleGeneration ||
+          !_sameLocation(location, _ref.read(activeLocationProvider))) {
+        return 0;
+      }
+
       final int scheduled = await _runtime.notifications.scheduleForDays(
         days: range,
         settings: current.notifications,
-        locationLabel: location.city?.displayName ?? 'Konumunuz',
+        locationLabel: resolvedLabel,
         hijriOffsetDays: current.hijriOffsetDays,
       );
 
@@ -595,7 +637,7 @@ class NotificationCoordinator {
           today: range.first,
           tomorrow: range[1],
           settings: current.notifications,
-          locationLabel: location.city?.displayName ?? 'Konumunuz',
+          locationLabel: resolvedLabel,
         );
       }
 

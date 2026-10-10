@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/config/app_features.dart';
+import '../../core/l10n/app_strings.dart';
 import '../../design/app_colors.dart';
 import '../../state/providers.dart';
 import 'prayer_countdown_chip.dart';
@@ -19,40 +20,43 @@ typedef ShellTab = ({
 ///
 /// [branch] değeri `StatefulShellRoute` içindeki sekme sırasıdır ve sabittir;
 /// kapatılan modülün sekmesi listeden çıkar, kalanların sırası korunur.
-List<ShellTab> shellTabs(AppFeatures features) => <ShellTab>[
-  (
-    branch: 0,
-    label: 'Ana Sayfa',
-    icon: Icons.home_outlined,
-    activeIcon: Icons.home_rounded,
-  ),
-  (
-    branch: 1,
-    label: 'Vakitler',
-    icon: Icons.schedule_outlined,
-    activeIcon: Icons.schedule_rounded,
-  ),
-  if (features.quran)
+List<ShellTab> shellTabs(AppFeatures features, {String localeCode = 'tr'}) {
+  final AppStrings s = AppStrings(localeCode);
+  return <ShellTab>[
     (
-      branch: 2,
-      label: 'Kur\'an',
-      icon: Icons.menu_book_outlined,
-      activeIcon: Icons.menu_book_rounded,
+      branch: 0,
+      label: s.tabHome,
+      icon: Icons.home_outlined,
+      activeIcon: Icons.home_rounded,
     ),
-  if (features.ilahi)
     (
-      branch: 3,
-      label: 'İlahi',
-      icon: Icons.library_music_outlined,
-      activeIcon: Icons.library_music_rounded,
+      branch: 1,
+      label: s.tabPrayers,
+      icon: Icons.schedule_outlined,
+      activeIcon: Icons.schedule_rounded,
     ),
-  (
-    branch: 4,
-    label: 'Daha Fazla',
-    icon: Icons.grid_view_outlined,
-    activeIcon: Icons.grid_view_rounded,
-  ),
-];
+    if (features.quran)
+      (
+        branch: 2,
+        label: s.tabQuran,
+        icon: Icons.menu_book_outlined,
+        activeIcon: Icons.menu_book_rounded,
+      ),
+    if (features.ilahi)
+      (
+        branch: 3,
+        label: s.tabIlahi,
+        icon: Icons.library_music_outlined,
+        activeIcon: Icons.library_music_rounded,
+      ),
+    (
+      branch: 4,
+      label: s.tabMore,
+      icon: Icons.grid_view_outlined,
+      activeIcon: Icons.grid_view_rounded,
+    ),
+  ];
+}
 
 /// Sekmeli uygulama kabuğu: alt gezinme çubuğu ve sekmelerin korunması.
 class AppShell extends ConsumerWidget {
@@ -62,7 +66,13 @@ class AppShell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final List<ShellTab> tabs = shellTabs(ref.watch(appFeaturesProvider));
+    final String localeCode = ref.watch(
+      settingsProvider.select((s) => s.localeCode),
+    );
+    final List<ShellTab> tabs = shellTabs(
+      ref.watch(appFeaturesProvider),
+      localeCode: localeCode,
+    );
     final int selected = tabs.indexWhere(
       (ShellTab tab) => tab.branch == navigationShell.currentIndex,
     );

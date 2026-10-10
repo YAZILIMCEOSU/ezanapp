@@ -22,13 +22,24 @@ class QuranScreen extends ConsumerWidget {
     final ReadingProgress? progress = ref.watch(quranProgressProvider).value;
     final int completedJuz = ref.watch(quranCompletedJuzProvider).value ?? 0;
     final Reciter reciter = ref.watch(selectedReciterProvider);
+    final QuranTranslation translation = QuranTranslations.byId(
+      ref.watch(settingsProvider.select((s) => s.quranTranslationId)),
+    );
     final ThemeData theme = Theme.of(context);
+
+    final int resumeSurah = progress?.surah ?? 1;
+    final int resumeAyah = progress?.lastAyah ?? 1;
 
     return Scaffold(
       appBar: AppBarHeader(
         title: 'Kur\'an-ı Kerim',
-        subtitle: 'Meal ve tilavet · ${reciter.name}',
+        subtitle: '${translation.shortLabel} · ${reciter.name}',
         actions: <Widget>[
+          IconButton(
+            tooltip: 'Meal dili ve çevrimdışı indirme',
+            onPressed: () => _showTranslationSheet(context, ref, translation),
+            icon: const Icon(Icons.translate_rounded, size: 20),
+          ),
           IconButton(
             tooltip: 'Ara',
             onPressed: () => context.push(AppRoutes.quranSearch),
@@ -43,40 +54,57 @@ class QuranScreen extends ConsumerWidget {
       ),
       body: CustomScrollView(
         slivers: <Widget>[
-          if (progress != null)
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.lg,
-                  AppSpacing.md,
-                  AppSpacing.lg,
-                  0,
-                ),
-                child: Material(
-                  color: AppColors.emerald600.withValues(alpha: 0.12),
-                  borderRadius: AppRadius.allLg,
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg,
-                      vertical: AppSpacing.sm,
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.lg,
+                AppSpacing.md,
+                AppSpacing.lg,
+                0,
+              ),
+              child: Material(
+                color: AppColors.emerald600.withValues(alpha: 0.12),
+                borderRadius: AppRadius.allLg,
+                child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                    vertical: AppSpacing.xs,
+                  ),
+                  leading: const Icon(
+                    Icons.play_circle_outline_rounded,
+                    color: AppColors.emerald500,
+                  ),
+                  title: const Text('Okumaya devam et'),
+                  subtitle: Text(
+                    progress == null
+                        ? '$resumeSurah. sure, $resumeAyah. ayet · ${translation.shortLabel}'
+                        : '$resumeSurah. sure, $resumeAyah. ayet · '
+                              '${progress.readAt.day}.${progress.readAt.month}.${progress.readAt.year}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  trailing: TextButton.icon(
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.sm,
+                        vertical: AppSpacing.xxs,
+                      ),
+                      visualDensity: VisualDensity.compact,
                     ),
-                    leading: const Icon(
-                      Icons.play_circle_outline_rounded,
-                      color: AppColors.emerald500,
-                    ),
-                    title: const Text('Okumaya devam et'),
-                    subtitle: Text(
-                      '${progress.surah}. sure, ${progress.lastAyah}. ayet · '
-                      '${progress.readAt.day}.${progress.readAt.month}.${progress.readAt.year}',
-                    ),
-                    trailing: const Icon(Icons.chevron_right_rounded),
-                    onTap: () => context.push(
-                      AppRoutes.surah(progress.surah, ayah: progress.lastAyah),
+                    onPressed: () =>
+                        _showTranslationSheet(context, ref, translation),
+                    icon: const Icon(Icons.translate_rounded, size: 16),
+                    label: Text(
+                      translation.languageCode.toUpperCase(),
+                      style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
                   ),
+                  onTap: () =>
+                      context.push(AppRoutes.surah(resumeSurah, ayah: resumeAyah)),
                 ),
               ),
             ),
+          ),
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(
@@ -174,6 +202,80 @@ class QuranScreen extends ConsumerWidget {
           const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.lg)),
           const SliverToBoxAdapter(child: AdBanner()),
           const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.lg)),
+        ],
+      ),
+    );
+  }
+
+  void _showTranslationSheet(
+    BuildContext context,
+    WidgetRef ref,
+    QuranTranslation current,
+  ) {
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (BuildContext sheetContext) => ListView(
+        shrinkWrap: true,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.xl,
+              0,
+              AppSpacing.xl,
+              AppSpacing.xs,
+            ),
+            child: Text(
+              'Meal dili ve çevrimdışı paketler',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+            child: Text(
+              'Kur\'an mealini kendi dilinizde okuyabilir veya çevrimdışı kullanım için indirebilirsiniz.',
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          for (final QuranTranslation item in QuranTranslations.all)
+            ListTile(
+              leading: Icon(
+                item.id == current.id
+                    ? Icons.radio_button_checked_rounded
+                    : Icons.radio_button_unchecked_rounded,
+                color: item.id == current.id
+                    ? Theme.of(context).colorScheme.primary
+                    : null,
+              ),
+              title: Text(item.name),
+              subtitle: Text(
+                '${item.languageName} · ${item.bundledOffline ? 'Çevrimdışı hazır' : 'İndirilebilir meal'}',
+              ),
+              trailing: Icon(
+                item.bundledOffline
+                    ? Icons.offline_pin_rounded
+                    : Icons.cloud_download_outlined,
+                color: item.bundledOffline ? AppColors.emerald500 : null,
+                size: 20,
+              ),
+              onTap: () async {
+                await ref
+                    .read(settingsControllerProvider.notifier)
+                    .setQuranTranslation(item.id);
+                if (sheetContext.mounted) {
+                  Navigator.of(sheetContext).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        '${item.name} seçildi (${item.shortLabel}).',
+                      ),
+                    ),
+                  );
+                }
+              },
+            ),
         ],
       ),
     );

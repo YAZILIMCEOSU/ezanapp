@@ -24,6 +24,9 @@ class HadithDetailScreen extends ConsumerWidget {
     );
     final Set<int> favorites =
         ref.watch(hadithFavoriteIdsProvider).value ?? const <int>{};
+    final String localeCode = ref.watch(
+      settingsProvider.select((s) => s.localeCode),
+    );
     final ThemeData theme = Theme.of(context);
 
     return Scaffold(
@@ -87,7 +90,7 @@ class HadithDetailScreen extends ConsumerWidget {
                   children: <Widget>[
                     for (final String topic in item.topics)
                       Chip(
-                        label: Text(topic),
+                        label: Text(Hadith.localizedTopic(topic, localeCode)),
                         visualDensity: VisualDensity.compact,
                       ),
                   ],

@@ -77,7 +77,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 Text(
-                  'EzanAI',
+                  'Ezan',
                   style: theme.textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.w800,
                     letterSpacing: -0.4,
@@ -172,18 +172,18 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
             subtitle: const Text('Kullanılan paketlerin lisans metinleri'),
             onTap: () => showLicensePage(
               context: context,
-              applicationName: 'EzanAI',
+              applicationName: 'Ezan',
               applicationVersion: _version,
               applicationIcon: const Icon(Icons.mosque_rounded, size: 40),
               applicationLegalese:
-                  '© ${DateTime.now().year} EzanAI · Tüm hakları saklıdır.',
+                  '© ${DateTime.now().year} Ezan · Tüm hakları saklıdır.',
             ),
           ),
           ListTile(
             leading: const Icon(Icons.mail_outline_rounded),
             title: const Text('İletişim ve destek'),
             subtitle: const Text('destek@ezanai.app'),
-            onTap: () => _openMail(subject: 'EzanAI $_version'),
+            onTap: () => _openMail(subject: 'Ezan $_version'),
           ),
           if (AppConfig.apiBaseUrl.isNotEmpty)
             const ListTile(

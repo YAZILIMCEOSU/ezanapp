@@ -70,6 +70,9 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
     final Set<int> bookmarks =
         ref.watch(quranBookmarkIdsProvider).value ?? const <int>{};
     final Reciter reciter = ref.watch(selectedReciterProvider);
+    final QuranTranslation translation = QuranTranslations.byId(
+      settings.quranTranslationId,
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -82,7 +85,7 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
                 style: const TextStyle(fontWeight: FontWeight.w700),
               ),
               Text(
-                '${value.surah.meaning} · ${value.surah.verseCount} ayet',
+                '${value.surah.meaning} · ${value.surah.verseCount} ayet · ${translation.shortLabel}',
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ],
@@ -90,6 +93,11 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
           orElse: () => const Text('Kur\'an'),
         ),
         actions: <Widget>[
+          IconButton(
+            tooltip: 'Meal dili ve indirme (${translation.shortLabel})',
+            onPressed: () => _showTranslationSheet(context, ref, translation),
+            icon: const Icon(Icons.language_rounded, size: 20),
+          ),
           IconButton(
             tooltip: 'Yazı boyutu',
             onPressed: () => _showFontSheet(context, ref, settings),
@@ -346,6 +354,73 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  void _showTranslationSheet(
+    BuildContext context,
+    WidgetRef ref,
+    QuranTranslation current,
+  ) {
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (BuildContext sheetContext) => ListView(
+        shrinkWrap: true,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.xl,
+              0,
+              AppSpacing.xl,
+              AppSpacing.xs,
+            ),
+            child: Text(
+              'Meal dili ve çevrimdışı indirme',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+            child: Text(
+              'Kur\'an mealini kendi dilinizde seçin veya çevrimdışı okumak için indirin.',
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          for (final QuranTranslation item in QuranTranslations.all)
+            ListTile(
+              leading: Icon(
+                item.id == current.id
+                    ? Icons.radio_button_checked_rounded
+                    : Icons.radio_button_unchecked_rounded,
+                color: item.id == current.id
+                    ? Theme.of(context).colorScheme.primary
+                    : null,
+              ),
+              title: Text(item.name),
+              subtitle: Text(
+                '${item.languageName} · ${item.bundledOffline ? 'Çevrimdışı hazır' : 'İndirilebilir meal'}',
+              ),
+              trailing: Icon(
+                item.bundledOffline
+                    ? Icons.offline_pin_rounded
+                    : Icons.cloud_download_outlined,
+                color: item.bundledOffline ? AppColors.emerald500 : null,
+                size: 20,
+              ),
+              onTap: () async {
+                await ref
+                    .read(settingsControllerProvider.notifier)
+                    .setQuranTranslation(item.id);
+                if (sheetContext.mounted) {
+                  Navigator.of(sheetContext).pop();
+                }
+              },
+            ),
+        ],
       ),
     );
   }

@@ -30,7 +30,7 @@
     <uses-feature android:name="android.hardware.sensor.compass" android:required="false" />
 
     <application
-        android:label="EzanAI"
+        android:label="Ezan"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"

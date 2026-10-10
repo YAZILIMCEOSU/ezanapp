@@ -27,16 +27,62 @@ class Hadith {
 
   final List<String> topics;
 
-  factory Hadith.fromJson(Map<String, Object?> json) => Hadith(
-    id: json['id'] as int,
-    arabic: json['ar'] as String? ?? '',
-    turkish: json['tr'] as String? ?? '',
-    reference: json['ref'] as String? ?? '',
-    primarySource: json['src'] as String? ?? '',
-    topics:
-        (json['topics'] as List<Object?>?)?.cast<String>() ??
-        const <String>['Genel'],
-  );
+  factory Hadith.fromJson(Map<String, Object?> json) {
+    final String rawSrc = (json['src'] as String? ?? '').trim();
+    return Hadith(
+      id: json['id'] as int,
+      arabic: json['ar'] as String? ?? '',
+      turkish: json['tr'] as String? ?? '',
+      reference: json['ref'] as String? ?? '',
+      primarySource: rawSrc.isEmpty ? 'Riyâzü\'s-sâlihîn' : rawSrc,
+      topics:
+          (json['topics'] as List<Object?>?)?.cast<String>() ??
+          const <String>['Genel'],
+    );
+  }
+
+  /// Konu/bölüm başlığını seçili arayüz dilinde temiz olarak döner.
+  static String localizedTopic(String topic, String localeCode) {
+    if (localeCode == 'en') {
+      return switch (topic) {
+        'Tümü' => 'All',
+        'Ahiret ve Hesap' => 'Hereafter & Accountability',
+        'Ahlak ve Edep' => 'Character & Etiquette',
+        'Aile ve Akrabalık' => 'Family & Kinship',
+        'Fazilet ve İbadet' => 'Virtues & Worship',
+        'Genel' => 'General',
+        'Helal Kazanç ve Ticaret' => 'Halal Livelihood & Trade',
+        'Komşuluk ve Muamelat' => 'Neighborliness & Social Conduct',
+        'Namaz' => 'Prayer (Salah)',
+        'Oruç ve Ramazan' => 'Fasting & Ramadan',
+        'Temizlik ve Sağlık' => 'Purification & Health',
+        'Zikir ve Dua' => 'Dhikr & Supplication',
+        'İhlas ve Kalp' => 'Sincerity & Heart',
+        'İlim ve Öğrenme' => 'Knowledge & Learning',
+        _ => topic,
+      };
+    }
+    if (localeCode == 'ar') {
+      return switch (topic) {
+        'Tümü' => 'الكل',
+        'Ahiret ve Hesap' => 'الآخرة والحساب',
+        'Ahlak ve Edep' => 'الأخلاق والآداب',
+        'Aile ve Akrabalık' => 'الأسرة وصلة الرحم',
+        'Fazilet ve İbadet' => 'الفضائل والعبادات',
+        'Genel' => 'عام',
+        'Helal Kazanç ve Ticaret' => 'الكسب الحلال والتجارة',
+        'Komşuluk ve Muamelat' => 'الجوار والمعاملات',
+        'Namaz' => 'الصلاة',
+        'Oruç ve Ramazan' => 'الصوم ورمضان',
+        'Temizlik ve Sağlık' => 'الطهارة والصحة',
+        'Zikir ve Dua' => 'الذكر والدعاء',
+        'İhlas ve Kalp' => 'الإخلاص وأعمال القلوب',
+        'İlim ve Öğrenme' => 'العلم والتعلم',
+        _ => topic,
+      };
+    }
+    return topic;
+  }
 
   /// Meali kısaltılmış özet (ana ekran kartları için).
   String get shortTurkish {

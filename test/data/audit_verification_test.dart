@@ -1,5 +1,7 @@
 import 'package:ezanai/app/app_runtime.dart';
 import 'package:ezanai/core/audio/audio_service.dart';
+import 'package:ezanai/core/constants/app_constants.dart';
+import 'package:ezanai/core/l10n/app_strings.dart';
 import 'package:ezanai/core/services/compass_service.dart';
 import 'package:ezanai/core/utils/geo.dart';
 import 'package:ezanai/core/utils/logger.dart';
@@ -7,12 +9,15 @@ import 'package:ezanai/data/ai/ai_service.dart';
 import 'package:ezanai/data/models/ai_models.dart';
 import 'package:ezanai/data/models/app_settings.dart';
 import 'package:ezanai/data/models/city.dart';
+import 'package:ezanai/data/models/hadith_models.dart';
 import 'package:ezanai/data/models/ilahi_models.dart';
 import 'package:ezanai/data/models/prayer.dart';
 import 'package:ezanai/data/models/prayer_times_day.dart';
+import 'package:ezanai/data/models/quran_models.dart';
 import 'package:ezanai/data/models/zikir_models.dart';
 import 'package:ezanai/data/prayer/prayer_calculator.dart';
 import 'package:ezanai/data/repositories/ai_repository.dart';
+import 'package:ezanai/features/more/esmaul_husna_screen.dart';
 import 'package:ezanai/state/content_providers.dart';
 import 'package:ezanai/state/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -405,6 +410,48 @@ void main() {
         expect(track.hasLicenseInfo, isTrue);
         expect(track.audioUrl, isNotEmpty);
       }
+    });
+
+    test('bildirim seslerinde çan ifadesi yer almaz; telifsiz ilahi ve ezan makamları kullanılır', () {
+      for (final AdhanSound sound in AdhanSound.values) {
+        expect(sound.label.toLowerCase(), isNot(contains('çan')));
+        expect(sound.description.toLowerCase(), isNot(contains('çan')));
+      }
+      expect(AdhanSound.tone1.label, contains('İlahi'));
+      expect(AdhanSound.tone2.label, contains('İlahi'));
+      expect(AdhanSound.tone3.label, contains('İlahi'));
+    });
+
+    test('uygulama adı Ezan, dil desteği TR/EN/AR, meal seçimi, saat geri alma ve Esmaül Hüsna doğrulanır', () {
+      expect(AppConstants.appName, 'Ezan');
+      expect(AppStrings.supportedLanguages.length, 3);
+      expect(const AppStrings('en').tabPrayers, 'Prayer Times');
+      expect(const AppStrings('ar').tabPrayers, 'أوقات الصلاة');
+      expect(Hadith.localizedTopic('Namaz', 'en'), 'Prayer (Salah)');
+      expect(Hadith.localizedTopic('Namaz', 'ar'), 'الصلاة');
+      expect(QuranTranslations.all.length, greaterThanOrEqualTo(5));
+      expect(EsmaulHusnaScreen.names.length, 99);
+
+      // Saat geri alındığında (ör. batıya seyahat) sıradaki vakit doğru hesaplanır
+      final PrayerTimesDay loadedOnNextDay = PrayerTimesDay(
+        date: DateTime(2026, 10, 11),
+        source: 'diyanet',
+        times: <Prayer, DateTime>{
+          Prayer.imsak: DateTime(2026, 10, 11, 5, 35),
+          Prayer.gunes: DateTime(2026, 10, 11, 7, 0),
+          Prayer.ogle: DateTime(2026, 10, 11, 12, 57),
+          Prayer.ikindi: DateTime(2026, 10, 11, 16, 5),
+          Prayer.aksam: DateTime(2026, 10, 11, 18, 40),
+          Prayer.yatsi: DateTime(2026, 10, 11, 19, 59),
+        },
+      );
+      final PrayerScheduleSnapshot rolledBack = PrayerScheduleSnapshot.resolve(
+        day: loadedOnNextDay,
+        now: DateTime(2026, 10, 10, 15, 30),
+      );
+      expect(rolledBack.currentPrayer, Prayer.ogle);
+      expect(rolledBack.nextPrayer?.prayer, Prayer.ikindi);
+      expect(rolledBack.remaining, const Duration(minutes: 35));
     });
   });
 }

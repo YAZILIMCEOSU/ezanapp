@@ -206,16 +206,42 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp>
   @override
   Widget build(BuildContext context) {
     final AppThemeMode mode = ref.watch(themeModeProvider);
+    final String localeCode = ref.watch(
+      settingsProvider.select((AppSettings s) => s.localeCode),
+    );
     ref.listen<AsyncValue<DateTime>>(clockProvider, (
       AsyncValue<DateTime>? previous,
       AsyncValue<DateTime> next,
     ) {
       final DateTime? now = next.value;
-      if (now != null) _checkPrayerTimeEntered(now);
+      if (now == null) return;
+      final DateTime? prev = previous?.value;
+      final bool jumpedBackward =
+          prev != null && now.difference(prev).inSeconds < -30;
+      final bool dayChanged =
+          now.year != _lastDayCheck.year ||
+          now.month != _lastDayCheck.month ||
+          now.day != _lastDayCheck.day;
+      final bool tzChanged = now.timeZoneOffset != _lastTimeZoneOffset;
+      if (jumpedBackward || dayChanged || tzChanged) {
+        _lastDayCheck = now;
+        _lastTimeZoneOffset = now.timeZoneOffset;
+        ref.read(runtimeProvider).prayerTimes.clearMemoryCache();
+        ref.invalidate(prayerTimesProvider);
+        ref.invalidate(prayerRangeProvider);
+        ref.invalidate(hijriTodayProvider);
+        unawaited(ref.read(notificationCoordinatorProvider).reschedule());
+      }
+      _checkPrayerTimeEntered(now);
     });
 
+    final String effectiveLocale = switch (localeCode) {
+      'en' || 'ar' => localeCode,
+      _ => 'tr',
+    };
+
     return MaterialApp.router(
-      title: 'EzanAI',
+      title: 'Ezan',
       scaffoldMessengerKey: _messengerKey,
       debugShowCheckedModeBanner: false,
       routerConfig: appRouter,
@@ -224,8 +250,12 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp>
           ? AppTheme.amoled()
           : AppTheme.dark(),
       themeMode: ThemeModeController.toMaterial(mode),
-      locale: const Locale('tr'),
-      supportedLocales: const <Locale>[Locale('tr'), Locale('en')],
+      locale: Locale(effectiveLocale),
+      supportedLocales: const <Locale>[
+        Locale('tr'),
+        Locale('en'),
+        Locale('ar'),
+      ],
       localizationsDelegates: const <LocalizationsDelegate<Object?>>[
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,

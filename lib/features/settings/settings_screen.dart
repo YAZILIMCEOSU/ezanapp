@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../core/config/app_config.dart';
+import '../../core/l10n/app_strings.dart';
 import '../../core/utils/app_time.dart';
 import '../../data/models/app_settings.dart';
 import '../../data/prayer/prayer_calculator.dart';
@@ -45,6 +46,13 @@ class SettingsScreen extends ConsumerWidget {
               '${settings.themeMode.label} · AMOLED koyu modda siyah arka plan kullanılır',
             ),
             onTap: () => _showThemeSheet(context, ref, settings.themeMode),
+          ),
+          ListTile(
+            leading: const Icon(Icons.language_rounded),
+            title: const Text('Uygulama dili'),
+            subtitle: Text(AppStrings.languageLabel(settings.localeCode)),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () => _showLanguageSheet(context, ref, settings.localeCode),
           ),
           SwitchListTile(
             secondary: const Icon(Icons.schedule_outlined),
@@ -257,7 +265,7 @@ class SettingsScreen extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.all(AppSpacing.xl),
             child: Text(
-              'EzanAI verilerinizi cihazınızda tutar. Konum yalnızca vakit hesabı için '
+              'Ezan verilerinizi cihazınızda tutar. Konum yalnızca vakit hesabı için '
               'kullanılır, sunucuya gönderilmez.',
               style: theme.textTheme.labelSmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
@@ -265,6 +273,38 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  void _showLanguageSheet(
+    BuildContext context,
+    WidgetRef ref,
+    String currentCode,
+  ) {
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (BuildContext sheetContext) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          for (final lang in AppStrings.supportedLanguages)
+            ListTile(
+              leading: Icon(
+                lang.code == currentCode
+                    ? Icons.radio_button_checked_rounded
+                    : Icons.radio_button_unchecked_rounded,
+              ),
+              title: Text(lang.nativeName),
+              subtitle: Text(lang.name),
+              onTap: () {
+                ref
+                    .read(settingsControllerProvider.notifier)
+                    .setLocaleCode(lang.code);
+                Navigator.of(sheetContext).pop();
+              },
+            ),
         ],
       ),
     );

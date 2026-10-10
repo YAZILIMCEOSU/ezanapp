@@ -53,18 +53,32 @@ class PrayerScheduleSnapshot {
         now.month == tomorrow.date.month &&
         now.day == tomorrow.date.day;
 
-    final PrayerTimesDay activeDay = sameAsTomorrow ? tomorrow : day;
+    final DateTime nowDate = DateTime(now.year, now.month, now.day);
+    final DateTime dayDate = DateTime(
+      day.date.year,
+      day.date.month,
+      day.date.day,
+    );
+    final bool clockMovedBackward = nowDate.isBefore(dayDate);
+
+    final PrayerTimesDay activeDay = sameAsTomorrow
+        ? tomorrow
+        : (clockMovedBackward ? _shiftToDate(day, nowDate) : day);
+    final PrayerTimesDay? effectiveTomorrow = clockMovedBackward
+        ? day
+        : tomorrow;
+
     final Prayer current = activeDay.currentPrayer(now);
     PrayerTime? next = activeDay.nextPrayer(now);
     bool afterIsha = false;
 
-    if (next == null && !sameAsTomorrow && tomorrow != null) {
-      final DateTime? tomorrowImsak = tomorrow.timeOf(Prayer.imsak);
+    if (next == null && !sameAsTomorrow && effectiveTomorrow != null) {
+      final DateTime? tomorrowImsak = effectiveTomorrow.timeOf(Prayer.imsak);
       if (tomorrowImsak != null && tomorrowImsak.isAfter(now)) {
         next = PrayerTime(
           prayer: Prayer.imsak,
           time: tomorrowImsak,
-          source: tomorrow.source,
+          source: effectiveTomorrow.source,
         );
         afterIsha = true;
       }
@@ -94,6 +108,24 @@ class PrayerScheduleSnapshot {
       isAfterIsha: afterIsha,
       rolledOverToTomorrow: sameAsTomorrow,
     );
+  }
+
+  /// Saat geri alındığında (ör. batıya seyahat veya manuel saat değişimi)
+  /// vakit saatlerini yeni tarihe izdüşürür.
+  static PrayerTimesDay _shiftToDate(PrayerTimesDay source, DateTime target) {
+    final Map<Prayer, DateTime> shifted = <Prayer, DateTime>{};
+    for (final MapEntry<Prayer, DateTime> entry in source.times.entries) {
+      final DateTime t = entry.value;
+      shifted[entry.key] = DateTime(
+        target.year,
+        target.month,
+        target.day,
+        t.hour,
+        t.minute,
+        t.second,
+      );
+    }
+    return source.copyWith(date: target, times: shifted);
   }
 
   static double _computeProgress({

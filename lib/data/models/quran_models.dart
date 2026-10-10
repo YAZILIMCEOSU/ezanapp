@@ -227,3 +227,72 @@ abstract final class Reciters {
     return '$baseUrl/${reciter.bitrateFolder}/$s$a.mp3';
   }
 }
+
+/// Kur'an meal/tefsir dil seçeneği.
+@immutable
+class QuranTranslation {
+  const QuranTranslation({
+    required this.id,
+    required this.name,
+    required this.languageName,
+    required this.languageCode,
+    required this.shortLabel,
+    this.bundledOffline = false,
+  });
+
+  final String id;
+  final String name;
+  final String languageName;
+  final String languageCode;
+  final String shortLabel;
+  final bool bundledOffline;
+}
+
+/// Desteklenen Kur'an mealleri (çevrimdışı yerleşik ve indirilebilir).
+abstract final class QuranTranslations {
+  static const List<QuranTranslation> all = <QuranTranslation>[
+    QuranTranslation(
+      id: 'tr.diyanet',
+      name: 'Diyanet İşleri Başkanlığı Meali',
+      languageName: 'Türkçe',
+      languageCode: 'tr',
+      shortLabel: 'TR · Diyanet',
+      bundledOffline: true,
+    ),
+    QuranTranslation(
+      id: 'tr.vakfi',
+      name: 'Türkiye Diyanet Vakfı Meali',
+      languageName: 'Türkçe',
+      languageCode: 'tr',
+      shortLabel: 'TR · Vakıf',
+      bundledOffline: true,
+    ),
+    QuranTranslation(
+      id: 'en.sahih',
+      name: 'Saheeh International Translation',
+      languageName: 'English (İngilizce)',
+      languageCode: 'en',
+      shortLabel: 'EN · Saheeh',
+    ),
+    QuranTranslation(
+      id: 'en.yusufali',
+      name: 'Abdullah Yusuf Ali Translation',
+      languageName: 'English (İngilizce)',
+      languageCode: 'en',
+      shortLabel: 'EN · Yusuf Ali',
+    ),
+    QuranTranslation(
+      id: 'ar.muyassar',
+      name: 'التفسير الميسر (مجمع الملك فهد)',
+      languageName: 'العربية (Arapça)',
+      languageCode: 'ar',
+      shortLabel: 'AR · الميسر',
+      bundledOffline: true,
+    ),
+  ];
+
+  static QuranTranslation byId(String? id) => all.firstWhere(
+    (QuranTranslation t) => t.id == id,
+    orElse: () => all.first,
+  );
+}

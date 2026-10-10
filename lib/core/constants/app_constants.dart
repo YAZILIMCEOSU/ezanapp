@@ -1,6 +1,6 @@
 /// Uygulama geneli sabitler.
 abstract final class AppConstants {
-  static const String appName = 'EzanAI';
+  static const String appName = 'Ezan';
   static const String tagline = 'Akıllı İslam Asistanı';
 
   /// Destek adresi ve yasal sayfa adresleri.

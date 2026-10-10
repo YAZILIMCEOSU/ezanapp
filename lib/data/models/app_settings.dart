@@ -12,27 +12,39 @@ import '../prayer/prayer_calculator.dart';
 enum AdhanSound {
   ezanMelodi(
     'Hicaz Ezan Makamı (Uzun)',
-    'Geleneksel Hicaz makamı ezan ezgisi (~45 sn, telifsiz)',
+    'Geleneksel Hicaz makamı ezan tilaveti (~45 sn, telifsiz)',
     'ezan_melodi',
   ),
   sabaMelodi(
     'Saba Makamı (Sabah / İmsak)',
-    'Sabah ve imsak vaktine uygun Saba ezgisi (~22 sn, telifsiz)',
+    'Sabah ve imsak vaktine uygun Saba makamı ezan (~24 sn, telifsiz)',
     'ezan_saba',
   ),
   segahMelodi(
     'Segâh Makamı (Akşam / Yatsı)',
-    'Akşam ve yatsı vaktine uygun Segâh ezgisi (~22 sn, telifsiz)',
+    'Akşam ve yatsı vaktine uygun Segâh makamı ezan (~24 sn, telifsiz)',
     'ezan_segah',
   ),
   tekbirMelodi(
     'Tekbir ve Salâ Çağrısı',
-    'Segâh Tekbir esintili vakit çağrısı (~14 sn, telifsiz)',
+    'Segâh Tekbir ve salâvat esintili vakit çağrısı (~16 sn, telifsiz)',
     'ezan_tekbir',
   ),
-  tone1('Bildirim tonu 1', 'Yumuşak çan dizesi (dahili)', 'ezan_ton_1'),
-  tone2('Bildirim tonu 2', 'Derin çan (dahili)', 'ezan_ton_2'),
-  tone3('Bildirim tonu 3', 'Kısa uyarı (dahili)', 'ezan_ton_3'),
+  tone1(
+    'Uşşak İlahi & Ney Bildirimi',
+    'Yunus Emre geleneği Uşşak makamı ilahi ve ney bildirimi (telifsiz)',
+    'ezan_ton_1',
+  ),
+  tone2(
+    'Rast İlahi & Tefekkür Bildirimi',
+    'Huzurlu Rast makamı İslami ilahi bildirimi (telifsiz)',
+    'ezan_ton_2',
+  ),
+  tone3(
+    'Hüseynî Kısa İlahi Bildirimi',
+    'Kısa Hüseynî makamı vakit hatırlatma ilahisi (telifsiz)',
+    'ezan_ton_3',
+  ),
   systemDefault('Sistem varsayılanı', 'Telefonun bildirim sesi', 'system'),
   downloaded(
     'Telefondan özel ses / İndirilen ezan',
@@ -340,6 +352,7 @@ class AppSettings {
     this.quranShowTranslation = true,
     this.quranShowTransliteration = false,
     this.quranReciterId = 'ar.alafasy',
+    this.quranTranslationId = 'tr.diyanet',
     this.quranAutoScroll = true,
     this.keepScreenOnWhileReading = false,
     this.zikirVibrationEnabled = true,
@@ -377,6 +390,7 @@ class AppSettings {
   final bool quranShowTranslation;
   final bool quranShowTransliteration;
   final String quranReciterId;
+  final String quranTranslationId;
   final bool quranAutoScroll;
   final bool keepScreenOnWhileReading;
 
@@ -429,6 +443,8 @@ class AppSettings {
       quranShowTranslation: boolOr('quranShowTranslation', true),
       quranShowTransliteration: boolOr('quranShowTransliteration', false),
       quranReciterId: prefs['quranReciterId'] as String? ?? 'ar.alafasy',
+      quranTranslationId:
+          prefs['quranTranslationId'] as String? ?? 'tr.diyanet',
       quranAutoScroll: boolOr('quranAutoScroll', true),
       keepScreenOnWhileReading: boolOr('keepScreenOnWhileReading', false),
       zikirVibrationEnabled: boolOr('zikirVibrationEnabled', true),
@@ -457,6 +473,7 @@ class AppSettings {
     'quranShowTranslation': quranShowTranslation,
     'quranShowTransliteration': quranShowTransliteration,
     'quranReciterId': quranReciterId,
+    'quranTranslationId': quranTranslationId,
     'quranAutoScroll': quranAutoScroll,
     'keepScreenOnWhileReading': keepScreenOnWhileReading,
     'zikirVibrationEnabled': zikirVibrationEnabled,
@@ -484,6 +501,7 @@ class AppSettings {
     bool? quranShowTranslation,
     bool? quranShowTransliteration,
     String? quranReciterId,
+    String? quranTranslationId,
     bool? quranAutoScroll,
     bool? keepScreenOnWhileReading,
     bool? zikirVibrationEnabled,
@@ -510,6 +528,7 @@ class AppSettings {
     quranShowTransliteration:
         quranShowTransliteration ?? this.quranShowTransliteration,
     quranReciterId: quranReciterId ?? this.quranReciterId,
+    quranTranslationId: quranTranslationId ?? this.quranTranslationId,
     quranAutoScroll: quranAutoScroll ?? this.quranAutoScroll,
     keepScreenOnWhileReading:
         keepScreenOnWhileReading ?? this.keepScreenOnWhileReading,
