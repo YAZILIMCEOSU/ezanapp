@@ -2,9 +2,12 @@ import 'dart:io';
 
 import 'package:ezanai/app/app_runtime.dart';
 import 'package:ezanai/core/audio/audio_service.dart';
+import 'package:ezanai/core/config/app_config.dart';
 import 'package:ezanai/core/constants/app_constants.dart';
 import 'package:ezanai/core/l10n/app_strings.dart';
+import 'package:ezanai/core/services/billing_service.dart';
 import 'package:ezanai/core/services/compass_service.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:ezanai/core/utils/geo.dart';
 import 'package:ezanai/core/utils/logger.dart';
 import 'package:ezanai/data/ai/ai_service.dart';
@@ -501,6 +504,68 @@ void main() {
           expect(f.lengthSync(), greaterThan(10000));
         }
       }
+
+      // Tüm sure tilavetleri tam sure/bölüm URL listesiyle ve gerçek süreyle gelir (3 sn'lik tek ayet değil)
+      final List<IlahiTrack> catalog = await runtime.ilahi.catalog();
+      final List<IlahiTrack> surahTracks = catalog
+          .where((IlahiTrack t) => t.kind == IlahiKind.sure)
+          .toList();
+      expect(surahTracks, isNotEmpty);
+      for (final IlahiTrack t in surahTracks) {
+        expect(
+          t.durationSeconds,
+          greaterThanOrEqualTo(20),
+          reason: '${t.id} süresi çok kısa: ${t.durationSeconds}',
+        );
+        expect(
+          t.resolvedAudioUrls.length,
+          greaterThanOrEqualTo(2),
+          reason: '${t.id} tam ayet dizisi içermeli',
+        );
+      }
+
+      // Klonlama ve sahte makbuz (premium serial/patcher) koruması doğrulanır
+      final BillingService billing = BillingService();
+      final PurchaseDetails validPurchase = PurchaseDetails(
+        purchaseID: 'GPA.3312-4455-6677-88990',
+        productID: AppConfig.premiumMonthlyId,
+        verificationData: PurchaseVerificationData(
+          localVerificationData:
+              '{"orderId":"GPA.3312","packageName":"com.yazilimceosu.ezanai","productId":"${AppConfig.premiumMonthlyId}","purchaseState":0}',
+          serverVerificationData: 'valid_google_play_purchase_token_987654321',
+          source: 'google_play',
+        ),
+        transactionDate: '1700000000000',
+        status: PurchaseStatus.purchased,
+      );
+      expect(
+        billing.verifyReceiptIntegrity(
+          validPurchase,
+          activePackageName: 'com.yazilimceosu.ezanai',
+        ),
+        isTrue,
+      );
+      // Klonlanmış paket adı reddedilir
+      expect(
+        billing.verifyReceiptIntegrity(
+          validPurchase,
+          activePackageName: 'com.klon.sahte.ezan',
+        ),
+        isFalse,
+      );
+      // Sahte/patcher makbuzu reddedilir
+      final PurchaseDetails fakePurchase = PurchaseDetails(
+        purchaseID: 'fake',
+        productID: AppConfig.premiumMonthlyId,
+        verificationData: PurchaseVerificationData(
+          localVerificationData: '{"packageName":"com.klon.app"}',
+          serverVerificationData: 'patcher_token',
+          source: 'google_play',
+        ),
+        transactionDate: '0',
+        status: PurchaseStatus.purchased,
+      );
+      expect(billing.verifyReceiptIntegrity(fakePurchase), isFalse);
     });
   });
 }

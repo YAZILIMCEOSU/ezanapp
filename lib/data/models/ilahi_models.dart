@@ -65,9 +65,49 @@ class IlahiTrack {
 
   /// Dosya adı tabanlı kimlik (indirme/önbellek için).
   String get fileExtension {
-    final int dot = audioUrl.lastIndexOf('.');
-    if (dot == -1 || dot == audioUrl.length - 1) return 'mp3';
-    return audioUrl.substring(dot + 1).split('?').first;
+    if (audioUrl.startsWith('everyayah:')) return 'mp3';
+    final String firstUrl = audioUrl.split('|').first;
+    final int dot = firstUrl.lastIndexOf('.');
+    if (dot == -1 || dot == firstUrl.length - 1) return 'mp3';
+    return firstUrl.substring(dot + 1).split('?').first;
+  }
+
+  /// Çok ayetli veya tam sure tilavetleri için sıralı ses URL listesini çözer.
+  ///
+  /// Desteklenen biçimler:
+  /// - `everyayah:<klasör>:<sure>:<başlangıç>-<bitiş>[:bismillah]`
+  /// - `url1|url2|url3`
+  /// - Tekil URL veya `asset:...`
+  List<String> get resolvedAudioUrls {
+    if (audioUrl.startsWith('everyayah:')) {
+      final List<String> parts = audioUrl.split(':');
+      if (parts.length >= 4) {
+        final String folder = parts[1];
+        final int surah = int.tryParse(parts[2]) ?? 1;
+        final List<String> range = parts[3].split('-');
+        final int start = int.tryParse(range.first) ?? 1;
+        final int end = range.length > 1
+            ? (int.tryParse(range[1]) ?? start)
+            : start;
+        final bool withBismillah = parts.length > 4 && parts[4] == 'bismillah';
+        final String s = surah.toString().padLeft(3, '0');
+        final List<String> urls = <String>[
+          if (withBismillah && !(surah == 1 && start == 1) && surah != 9)
+            'https://everyayah.com/data/$folder/001001.mp3',
+          for (int a = start; a <= end; a++)
+            'https://everyayah.com/data/$folder/$s${a.toString().padLeft(3, '0')}.mp3',
+        ];
+        if (urls.isNotEmpty) return urls;
+      }
+    }
+    if (audioUrl.contains('|')) {
+      return audioUrl
+          .split('|')
+          .map((String s) => s.trim())
+          .where((String s) => s.isNotEmpty)
+          .toList(growable: false);
+    }
+    return <String>[audioUrl];
   }
 
   factory IlahiTrack.fromJson(Map<String, Object?> json) => IlahiTrack(

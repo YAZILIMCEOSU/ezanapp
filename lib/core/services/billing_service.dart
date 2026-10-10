@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:in_app_purchase/in_app_purchase.dart';
 
 import '../config/app_config.dart';
+import '../constants/app_constants.dart';
 import '../utils/logger.dart';
 
 /// Premium abonelik durumu.
@@ -286,9 +288,94 @@ class BillingService {
     }
   }
 
-  /// Backend varsa makbuzu orada doğrular; yoksa Play'in yerel doğrulamasına
-  /// güvenir (test/sideload ortamları için gereklidir).
+  static const MethodChannel _integrityChannel = MethodChannel(
+    'ezanai/sensors/methods',
+  );
+
+  /// Sahte satın alma yamalarına (Lucky Patcher vb.) ve paket adı değiştirilerek
+  /// klonlanmış APK'lara karşı makbuz bütünlüğünü doğrular.
+  bool verifyReceiptIntegrity(
+    PurchaseDetails purchase, {
+    String? activePackageName,
+  }) {
+    if (!isKnownProductId(purchase.productID)) {
+      return false;
+    }
+    if (activePackageName != null &&
+        activePackageName.isNotEmpty &&
+        activePackageName != AppConstants.packageName &&
+        activePackageName != '${AppConstants.packageName}.debug') {
+      return false;
+    }
+
+    final String serverToken = purchase.verificationData.serverVerificationData
+        .trim();
+    final String localData = purchase.verificationData.localVerificationData
+        .trim();
+
+    if (serverToken.isEmpty || serverToken.length < 8) {
+      return false;
+    }
+    final String lowerToken = serverToken.toLowerCase();
+    if (lowerToken == 'fake' ||
+        lowerToken == 'null' ||
+        lowerToken == 'true' ||
+        lowerToken.contains('patcher')) {
+      return false;
+    }
+
+    if (localData.startsWith('{') && localData.endsWith('}')) {
+      try {
+        final Object? decoded = jsonDecode(localData);
+        if (decoded is Map) {
+          final String? pkg = decoded['packageName'] as String?;
+          if (pkg != null &&
+              pkg != AppConstants.packageName &&
+              pkg != '${AppConstants.packageName}.debug') {
+            return false;
+          }
+          final String? prod = decoded['productId'] as String?;
+          if (prod != null && prod != purchase.productID) {
+            return false;
+          }
+          final Object? state = decoded['purchaseState'];
+          if (state is num && state.toInt() != 0) {
+            return false;
+          }
+        }
+      } catch (_) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  Future<Map<String, Object?>?> _readNativeIntegrityInfo() async {
+    try {
+      final Map<Object?, Object?>? raw = await _integrityChannel
+          .invokeMethod<Map<Object?, Object?>>('getIntegrityInfo');
+      if (raw == null) return null;
+      return raw.cast<String, Object?>();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Backend varsa makbuzu orada doğrular; yoksa uygulama paket bütünlüğünü
+  /// ve Google Play makbuz yapısını doğrular.
   Future<bool> _verify(PurchaseDetails purchase) async {
+    final Map<String, Object?>? integrity = await _readNativeIntegrityInfo();
+    final String? activePkg = integrity?['packageName'] as String?;
+    final bool? isOfficial = integrity?['isOfficialPackage'] as bool?;
+    if (isOfficial == false) {
+      AppLog.warning('Resmi olmayan / klonlanmış paket tespit edildi: $activePkg');
+      return false;
+    }
+    if (!verifyReceiptIntegrity(purchase, activePackageName: activePkg)) {
+      AppLog.warning('Makbuz bütünlük doğrulaması reddedildi: ${purchase.productID}');
+      return false;
+    }
+
     final Uri? uri = AppConfig.endpoint('/billing/verify');
     if (uri == null) return true;
 
@@ -300,9 +387,13 @@ class BillingService {
               'Content-Type': 'application/json; charset=utf-8',
             },
             body: jsonEncode(<String, Object?>{
+              'package_name': activePkg ?? AppConstants.packageName,
+              'signing_sha256': integrity?['signingSha256'],
+              'installer_package': integrity?['installerPackage'],
               'product_id': purchase.productID,
               'purchase_id': purchase.purchaseID,
               'receipt': purchase.verificationData.serverVerificationData,
+              'local_receipt': purchase.verificationData.localVerificationData,
               'source': purchase.verificationData.source,
               'is_subscription': _subscriptionIds.contains(purchase.productID),
             }),

@@ -1,14 +1,17 @@
 package com.yazilimceosu.ezanai
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.os.Build
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
+import java.security.MessageDigest
 
 /**
  * Ezan ana aktivitesi.
@@ -55,9 +58,56 @@ class MainActivity : FlutterActivity(), SensorEventListener {
                 when (call.method) {
                     "hasCompass" -> result.success(rotationSensor != null || magnetometer != null)
                     "hasAccelerometer" -> result.success(accelerometer != null)
+                    "getIntegrityInfo" -> result.success(buildIntegrityInfo())
                     else -> result.notImplemented()
                 }
             }
+    }
+
+    private fun buildIntegrityInfo(): Map<String, Any?> {
+        val pkg = applicationContext.packageName
+        val isOfficial = pkg == "com.yazilimceosu.ezanai" || pkg == "com.yazilimceosu.ezanai.debug"
+        val installer = try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                packageManager.getInstallSourceInfo(pkg).installingPackageName
+            } else {
+                @Suppress("DEPRECATION")
+                packageManager.getInstallerPackageName(pkg)
+            }
+        } catch (_: Throwable) {
+            null
+        }
+        val sha256 = try {
+            val bytes = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                val info = packageManager.getPackageInfo(
+                    pkg,
+                    PackageManager.GET_SIGNING_CERTIFICATES,
+                )
+                val signers = info.signingInfo?.apkContentsSigners
+                if (signers != null && signers.isNotEmpty()) signers[0].toByteArray() else null
+            } else {
+                @Suppress("DEPRECATION")
+                val info = packageManager.getPackageInfo(pkg, PackageManager.GET_SIGNATURES)
+                @Suppress("DEPRECATION")
+                val sigs = info.signatures
+                if (sigs != null && sigs.isNotEmpty()) sigs[0].toByteArray() else null
+            }
+            if (bytes != null) {
+                MessageDigest.getInstance("SHA-256")
+                    .digest(bytes)
+                    .joinToString("") { "%02x".format(it) }
+            } else {
+                null
+            }
+        } catch (_: Throwable) {
+            null
+        }
+        return mapOf(
+            "packageName" to pkg,
+            "isOfficialPackage" to isOfficial,
+            "installerPackage" to installer,
+            "signingSha256" to sha256,
+        )
     }
 
     private fun startListening() {

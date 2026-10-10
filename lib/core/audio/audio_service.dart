@@ -38,6 +38,16 @@ class AppAudioService {
       StreamController<Duration>.broadcast();
   Stream<Duration> get positionStream => _positionController.stream;
 
+  final StreamController<int> _queueIndexController =
+      StreamController<int>.broadcast();
+  Stream<int> get queueIndexStream => _queueIndexController.stream;
+
+  List<String> _queueUrls = const <String>[];
+  int _queueIndex = 0;
+  bool _advancingQueue = false;
+  int get currentQueueIndex => _queueIndex;
+  int get queueLength => _queueUrls.length;
+
   PlaybackStatus _status = PlaybackStatus.idle;
   PlaybackStatus get status => _status;
 
@@ -80,6 +90,29 @@ class AppAudioService {
     }
 
     _stateSub = _player.playerStateStream.listen((PlayerState state) {
+      if (state.processingState == ProcessingState.completed) {
+        if (_queueUrls.isNotEmpty && _queueIndex + 1 < _queueUrls.length) {
+          if (!_advancingQueue) {
+            unawaited(_advanceQueue());
+          }
+          return;
+        }
+        _queueUrls = const <String>[];
+        _status = PlaybackStatus.completed;
+        if (!_statusController.isClosed) _statusController.add(_status);
+        unawaited(_player.seek(Duration.zero));
+        unawaited(_player.pause());
+        return;
+      }
+
+      if (_advancingQueue &&
+          (state.processingState == ProcessingState.idle ||
+              state.processingState == ProcessingState.loading ||
+              state.processingState == ProcessingState.buffering)) {
+        // Sıradaki ayete geçerken sahte "idle" veya "paused" durumu yayma.
+        return;
+      }
+
       _status = switch (state.processingState) {
         ProcessingState.idle => PlaybackStatus.idle,
         ProcessingState.loading ||
@@ -89,10 +122,6 @@ class AppAudioService {
         ProcessingState.completed => PlaybackStatus.completed,
       };
       if (!_statusController.isClosed) _statusController.add(_status);
-      if (state.processingState == ProcessingState.completed) {
-        unawaited(_player.seek(Duration.zero));
-        unawaited(_player.pause());
-      }
     });
     _errorSub = _player.errorStream.listen((PlayerException error) {
       AppLog.warning('Oynatma hatası: ${error.message}');
@@ -104,6 +133,35 @@ class AppAudioService {
       _lastPosition = position;
       if (!_positionController.isClosed) _positionController.add(position);
     });
+  }
+
+  Future<void> _advanceQueue() async {
+    if (_advancingQueue) return;
+    _advancingQueue = true;
+    try {
+      while (_queueUrls.isNotEmpty && _queueIndex + 1 < _queueUrls.length) {
+        _queueIndex += 1;
+        if (!_queueIndexController.isClosed) {
+          _queueIndexController.add(_queueIndex);
+        }
+        final String nextUrl = _queueUrls[_queueIndex];
+        try {
+          await _player.setAudioSource(AudioSource.uri(Uri.parse(nextUrl)));
+          await _player.setLoopMode(LoopMode.off);
+          unawaited(_player.play());
+          _status = PlaybackStatus.playing;
+          if (!_statusController.isClosed) _statusController.add(_status);
+          return;
+        } catch (error) {
+          AppLog.warning('Sıradaki parça atlandı ($nextUrl): $error');
+        }
+      }
+      _queueUrls = const <String>[];
+      _status = PlaybackStatus.completed;
+      if (!_statusController.isClosed) _statusController.add(_status);
+    } finally {
+      _advancingQueue = false;
+    }
   }
 
   Future<void> _applyDucking() async {
@@ -140,6 +198,7 @@ class AppAudioService {
     bool loop = false,
   }) async {
     await initialize(ducking: _duckingEnabled);
+    _queueUrls = const <String>[];
     try {
       if (!File(path).existsSync()) {
         AppLog.warning('Ses dosyası bulunamadı: $path');
@@ -168,6 +227,7 @@ class AppAudioService {
     bool loop = false,
   }) async {
     await initialize(ducking: _duckingEnabled);
+    _queueUrls = const <String>[];
     try {
       final ByteData data = await rootBundle.load(assetPath);
       final Uint8List bytes = data.buffer.asUint8List(
@@ -218,6 +278,7 @@ class AppAudioService {
     bool loop = false,
   }) async {
     await initialize(ducking: _duckingEnabled);
+    _queueUrls = const <String>[];
     try {
       await _player.setAudioSource(AudioSource.uri(Uri.parse(url)));
       await _player.setLoopMode(loop ? LoopMode.one : LoopMode.off);
@@ -236,7 +297,11 @@ class AppAudioService {
     }
   }
 
-  /// Birden çok URL'yi sırayla çalar (sure dinleme).
+  /// Birden çok URL'yi sırayla ve kesintisiz çalar (sure / ayet dizisi).
+  ///
+  /// 286 ayetlik Bakara Suresi gibi uzun surelerde bile ExoPlayer'a aynı anda
+  /// yüzlerce HTTP bağlantısı yüklemek yerine aktif ayeti anında başlatır ve
+  /// her ayet bittiğinde bir sonrakine otomatik geçer.
   Future<bool> playUrlList(
     List<String> urls, {
     int initialIndex = 0,
@@ -245,10 +310,15 @@ class AppAudioService {
     if (urls.isEmpty) return false;
     await initialize(ducking: _duckingEnabled);
     try {
-      final List<AudioSource> sources = <AudioSource>[
-        for (final String u in urls) AudioSource.uri(Uri.parse(u)),
-      ];
-      await _player.setAudioSources(sources, initialIndex: initialIndex);
+      final int startIdx = initialIndex.clamp(0, urls.length - 1);
+      _queueUrls = List<String>.unmodifiable(urls);
+      _queueIndex = startIdx;
+      if (!_queueIndexController.isClosed) {
+        _queueIndexController.add(_queueIndex);
+      }
+      await _player.setAudioSource(
+        AudioSource.uri(Uri.parse(_queueUrls[_queueIndex])),
+      );
       await _player.setLoopMode(LoopMode.off);
       if (volume != null) await _player.setVolume(volume.clamp(0.0, 1.0));
       unawaited(_player.play());
@@ -256,6 +326,7 @@ class AppAudioService {
       if (!_statusController.isClosed) _statusController.add(_status);
       return true;
     } catch (error, stackTrace) {
+      _queueUrls = const <String>[];
       AppLog.error(
         'URL listesi çalınamadı',
         error: error,
@@ -271,6 +342,7 @@ class AppAudioService {
     int initialIndex = 0,
   }) async {
     await initialize(ducking: _duckingEnabled);
+    _queueUrls = const <String>[];
     try {
       await _player.setAudioSources(sources, initialIndex: initialIndex);
       unawaited(_player.play());
@@ -296,6 +368,7 @@ class AppAudioService {
       _status == PlaybackStatus.playing ? _player.pause() : play();
 
   Future<void> stop() async {
+    _queueUrls = const <String>[];
     await _player.stop();
     _status = PlaybackStatus.idle;
     if (!_statusController.isClosed) _statusController.add(_status);
@@ -351,6 +424,7 @@ class AppAudioService {
     await _errorSub?.cancel();
     await _statusController.close();
     await _positionController.close();
+    await _queueIndexController.close();
     await _playerInstance?.dispose();
   }
 }

@@ -39,150 +39,202 @@ class IlahiRepository {
   static const List<IlahiTrack> defaultCatalog = <IlahiTrack>[
     IlahiTrack(
       id: 'makam_hicaz_ezan',
-      title: 'Hicaz Ezan Makamı (Uzun Çağrı)',
-      artist: 'EzanAI Makam Topluluğu',
+      title: 'Hicaz Ezan Makamı (Tam Vakit Çağrısı)',
+      artist: 'Ezan Makam Topluluğu',
       album: 'Telifsiz Ezan ve Vakit Makamları',
       kind: IlahiKind.ezan,
       categories: <String>['Ezan Makamları', 'Dini Sesler'],
       audioUrl: 'asset:assets/audio/adhan/ezan_melodi.wav',
-      durationSeconds: 45,
-      license: 'Telifsiz (CC0 — EzanAI Özgün Makam Sentezi)',
+      durationSeconds: 60,
+      license: 'Telifsiz (CC0 — Özgün Makam Kaydı)',
       description: 'Yatsı ve akşam vakitlerine uygun geleneksel Hicaz makamı.',
     ),
     IlahiTrack(
       id: 'makam_saba_seher',
-      title: 'Saba Makamı — Seher ve İmsak Ezgisi',
-      artist: 'EzanAI Makam Topluluğu',
+      title: 'Saba Makamı — Seher ve İmsak Ezanı',
+      artist: 'Ezan Makam Topluluğu',
       album: 'Telifsiz Ezan ve Vakit Makamları',
       kind: IlahiKind.ezan,
       categories: <String>['Ezan Makamları', 'İlahi Ezgileri'],
       audioUrl: 'asset:assets/audio/adhan/ezan_saba.wav',
-      durationSeconds: 22,
-      license: 'Telifsiz (CC0 — EzanAI Özgün Makam Sentezi)',
+      durationSeconds: 45,
+      license: 'Telifsiz (CC0 — Özgün Makam Kaydı)',
       description: 'Sabah ve imsak vaktine uygun huzurlu Saba makamı.',
     ),
     IlahiTrack(
       id: 'makam_segah_salavat',
-      title: 'Segâh Makamı — Akşam ve Salâvat Ezgisi',
-      artist: 'EzanAI Makam Topluluğu',
+      title: 'Segâh Makamı — Akşam Ezanı ve Salâvat',
+      artist: 'Ezan Makam Topluluğu',
       album: 'Telifsiz Ezan ve Vakit Makamları',
       kind: IlahiKind.salavat,
       categories: <String>['Salavât ve Zikir', 'Ezan Makamları'],
       audioUrl: 'asset:assets/audio/adhan/ezan_segah.wav',
-      durationSeconds: 22,
-      license: 'Telifsiz (CC0 — EzanAI Özgün Makam Sentezi)',
+      durationSeconds: 45,
+      license: 'Telifsiz (CC0 — Özgün Makam Kaydı)',
       description: 'Segâh makamında salâvat ve akşam tefekkür ezgisi.',
     ),
     IlahiTrack(
       id: 'ilahi_ussak_yunus',
       title: 'Uşşak İlahi Ezgisi — Yunus Emre Makamı',
-      artist: 'EzanAI Tasavvuf Mûsikîsi',
+      artist: 'Tasavvuf Mûsikîsi Topluluğu',
       album: 'Telifsiz Tasavvuf ve İlahi Seçkisi',
       kind: IlahiKind.ilahi,
       categories: <String>['İlahi Ezgileri', 'Dini Sesler'],
       audioUrl: 'asset:assets/audio/adhan/ilahi_ussak.wav',
-      durationSeconds: 25,
-      license: 'Telifsiz (CC0 — EzanAI Özgün Makam Sentezi)',
-      description: 'Anadolu ilahi geleneğinde Uşşak makamı ney ezgisi.',
+      durationSeconds: 48,
+      license: 'Telifsiz (CC0 — Özgün Makam Kaydı)',
+      description: 'Anadolu ilahi geleneğinde Uşşak makamı ney ve vokal ezgisi.',
     ),
     IlahiTrack(
       id: 'zikir_huseyni_halka',
-      title: 'Hüseynî Makamı — Zikir ve Tesbih Halkası',
-      artist: 'EzanAI Tasavvuf Mûsikîsi',
+      title: 'Hüseynî Makamı — Zikir ve Tesbih İlahisi',
+      artist: 'Tasavvuf Mûsikîsi Topluluğu',
       album: 'Telifsiz Tasavvuf ve İlahi Seçkisi',
       kind: IlahiKind.salavat,
       categories: <String>['Salavât ve Zikir', 'İlahi Ezgileri'],
       audioUrl: 'asset:assets/audio/adhan/ilahi_huseyni.wav',
-      durationSeconds: 24,
-      license: 'Telifsiz (CC0 — EzanAI Özgün Makam Sentezi)',
-      description: 'Tesbih ve zikir esnasında dinlenebilecek Hüseynî ezgisi.',
+      durationSeconds: 44,
+      license: 'Telifsiz (CC0 — Özgün Makam Kaydı)',
+      description: 'Tesbih ve zikir esnasında dinlenebilecek Hüseynî ilahisi.',
     ),
     IlahiTrack(
       id: 'makam_segah_tekbir',
       title: 'Tekbir ve Bayram Salâsı Çağrısı',
-      artist: 'EzanAI Makam Topluluğu',
+      artist: 'Ezan Makam Topluluğu',
       album: 'Telifsiz Ezan ve Vakit Makamları',
       kind: IlahiKind.salavat,
       categories: <String>['Salavât ve Zikir', 'Dini Sesler'],
       audioUrl: 'asset:assets/audio/adhan/ezan_tekbir.wav',
-      durationSeconds: 14,
-      license: 'Telifsiz (CC0 — EzanAI Özgün Makam Sentezi)',
+      durationSeconds: 32,
+      license: 'Telifsiz (CC0 — Özgün Makam Kaydı)',
       description: 'Itrî Segâh Tekbir geleneğinden esinlenen vakit çağrısı.',
     ),
     IlahiTrack(
       id: 'tilavet_fatiha',
-      title: 'Fâtiha Suresi — Açılış ve Şifa Tilaveti',
+      title: 'Fâtiha Suresi (Tamamı — 7 Ayet)',
       artist: 'Mişârî Râşid el-Afâsî',
       album: 'Açık Lisanslı Kur\'an ve Dua Sesleri',
       kind: IlahiKind.sure,
       categories: <String>['Kur\'an ve Dualar', 'Dini Sesler'],
-      audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/001001.mp3',
-      durationSeconds: 8,
+      audioUrl: 'everyayah:Alafasy_128kbps:1:1-7',
+      durationSeconds: 46,
       license: 'Açık Arşiv (EveryAyah — Ticari Olmayan / Eğitim Kullanımı)',
       description:
-          'İstenirse tek dokunuşla cihaza indirilip çevrimdışı dinlenebilir.',
+          'Fâtiha Suresinin 1–7. ayetlerinin eksiksiz tam tilaveti.',
+    ),
+    IlahiTrack(
+      id: 'tilavet_bakara_eliflammim',
+      title: 'Bakara Suresi 1–5. Ayetler (Elif Lâm Mîm)',
+      artist: 'Mişârî Râşid el-Afâsî',
+      album: 'Açık Lisanslı Kur\'an ve Dua Sesleri',
+      kind: IlahiKind.sure,
+      categories: <String>['Kur\'an ve Dualar', 'Dini Sesler'],
+      audioUrl: 'everyayah:Alafasy_128kbps:2:1-5:bismillah',
+      durationSeconds: 58,
+      license: 'Açık Arşiv (EveryAyah — Ticari Olmayan / Eğitim Kullanımı)',
+      description:
+          'Bakara Suresinin ilk 5 ayetinin (Elif-Lâm-Mîm) tam tilaveti.',
     ),
     IlahiTrack(
       id: 'tilavet_ayetel_kursi',
-      title: 'Âyetel Kürsî (Bakara 255) — Korunma Ayeti',
+      title: 'Âyetel Kürsî (Bakara 255 — Tam Tilavet)',
       artist: 'Mişârî Râşid el-Afâsî',
       album: 'Açık Lisanslı Kur\'an ve Dua Sesleri',
       kind: IlahiKind.sure,
       categories: <String>['Kur\'an ve Dualar', 'Dini Sesler'],
-      audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/002255.mp3',
-      durationSeconds: 52,
+      audioUrl: 'everyayah:Alafasy_128kbps:2:255-255:bismillah',
+      durationSeconds: 56,
       license: 'Açık Arşiv (EveryAyah — Ticari Olmayan / Eğitim Kullanımı)',
       description:
-          'Namaz tesbihatı ve gece korunma duası olarak indirilebilir.',
+          'Namaz tesbihatı ve korunma duası olarak Âyetel Kürsî tam tilaveti.',
     ),
     IlahiTrack(
       id: 'tilavet_amenerrasulu',
-      title: 'Âmenerrasûlü (Bakara 285) — Yatsı Sonrası',
+      title: 'Âmenerrasûlü (Bakara 285–286 — Tamamı)',
       artist: 'Mişârî Râşid el-Afâsî',
       album: 'Açık Lisanslı Kur\'an ve Dua Sesleri',
       kind: IlahiKind.sure,
       categories: <String>['Kur\'an ve Dualar', 'Dini Sesler'],
-      audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/002285.mp3',
-      durationSeconds: 36,
+      audioUrl: 'everyayah:Alafasy_128kbps:2:285-286:bismillah',
+      durationSeconds: 92,
       license: 'Açık Arşiv (EveryAyah — Ticari Olmayan / Eğitim Kullanımı)',
-      description: 'Yatsı namazı sonrasında okunan iman esasları ayeti.',
+      description:
+          'Bakara Suresi 285 ve 286. ayetlerin (Âmenerrasûlü) eksiksiz tilaveti.',
+    ),
+    IlahiTrack(
+      id: 'tilavet_yasin',
+      title: 'Yâsîn Suresi (Tamamı — 83 Ayet)',
+      artist: 'Mişârî Râşid el-Afâsî',
+      album: 'Açık Lisanslı Kur\'an ve Dua Sesleri',
+      kind: IlahiKind.sure,
+      categories: <String>['Kur\'an ve Dualar', 'Dini Sesler'],
+      audioUrl: 'everyayah:Alafasy_128kbps:36:1-83:bismillah',
+      durationSeconds: 1110,
+      license: 'Açık Arşiv (EveryAyah — Ticari Olmayan / Eğitim Kullanımı)',
+      description:
+          'Yâsîn-i Şerîf Suresinin 83 ayetinin tamamı (kesintisiz sıralı tilavet).',
+    ),
+    IlahiTrack(
+      id: 'tilavet_mulk',
+      title: 'Mülk (Tebâreke) Suresi (Tamamı — 30 Ayet)',
+      artist: 'Mişârî Râşid el-Afâsî',
+      album: 'Açık Lisanslı Kur\'an ve Dua Sesleri',
+      kind: IlahiKind.sure,
+      categories: <String>['Kur\'an ve Dualar', 'Dini Sesler'],
+      audioUrl: 'everyayah:Alafasy_128kbps:67:1-30:bismillah',
+      durationSeconds: 495,
+      license: 'Açık Arşiv (EveryAyah — Ticari Olmayan / Eğitim Kullanımı)',
+      description:
+          'Mülk (Tebâreke) Suresinin 30 ayetinin tamamı.',
     ),
     IlahiTrack(
       id: 'tilavet_huvallahullezi',
-      title: 'Hüvallahüllezi (Haşr 22) — Esmaül Hüsna Ayeti',
+      title: 'Hüvallahüllezi (Haşr 22–24 — Tamamı)',
       artist: 'Mişârî Râşid el-Afâsî',
       album: 'Açık Lisanslı Kur\'an ve Dua Sesleri',
       kind: IlahiKind.sure,
       categories: <String>['Kur\'an ve Dualar', 'Salavât ve Zikir'],
-      audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/059022.mp3',
-      durationSeconds: 26,
+      audioUrl: 'everyayah:Alafasy_128kbps:59:22-24:bismillah',
+      durationSeconds: 72,
       license: 'Açık Arşiv (EveryAyah — Ticari Olmayan / Eğitim Kullanımı)',
       description:
-          'Sabah ve akşam namazları sonrasında okunan Haşr suresi son bölümü.',
+          'Sabah ve akşam namazları sonrasında okunan Haşr Suresi 22–24. ayetler.',
     ),
     IlahiTrack(
       id: 'tilavet_ihlas',
-      title: 'İhlâs Suresi — Tevhid Tilaveti',
+      title: 'İhlâs Suresi (Tamamı — 4 Ayet)',
       artist: 'Mişârî Râşid el-Afâsî',
       album: 'Açık Lisanslı Kur\'an ve Dua Sesleri',
       kind: IlahiKind.sure,
       categories: <String>['Kur\'an ve Dualar'],
-      audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/112001.mp3',
-      durationSeconds: 5,
+      audioUrl: 'everyayah:Alafasy_128kbps:112:1-4:bismillah',
+      durationSeconds: 22,
       license: 'Açık Arşiv (EveryAyah — Ticari Olmayan / Eğitim Kullanımı)',
-      description: 'İstenirse cihaza indirilip çevrimdışı dinlenebilir.',
+      description: 'İhlâs Suresinin 1–4. ayetlerinin eksiksiz tam tilaveti.',
     ),
     IlahiTrack(
       id: 'tilavet_felak',
-      title: 'Felak Suresi — Korunma Tilaveti',
+      title: 'Felak Suresi (Tamamı — 5 Ayet)',
       artist: 'Mişârî Râşid el-Afâsî',
       album: 'Açık Lisanslı Kur\'an ve Dua Sesleri',
       kind: IlahiKind.sure,
       categories: <String>['Kur\'an ve Dualar'],
-      audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/113001.mp3',
-      durationSeconds: 6,
+      audioUrl: 'everyayah:Alafasy_128kbps:113:1-5:bismillah',
+      durationSeconds: 28,
       license: 'Açık Arşiv (EveryAyah — Ticari Olmayan / Eğitim Kullanımı)',
-      description: 'İstenirse cihaza indirilip çevrimdışı dinlenebilir.',
+      description: 'Felak Suresinin 1–5. ayetlerinin eksiksiz tam tilaveti.',
+    ),
+    IlahiTrack(
+      id: 'tilavet_nas',
+      title: 'Nâs Suresi (Tamamı — 6 Ayet)',
+      artist: 'Mişârî Râşid el-Afâsî',
+      album: 'Açık Lisanslı Kur\'an ve Dua Sesleri',
+      kind: IlahiKind.sure,
+      categories: <String>['Kur\'an ve Dualar'],
+      audioUrl: 'everyayah:Alafasy_128kbps:114:1-6:bismillah',
+      durationSeconds: 32,
+      license: 'Açık Arşiv (EveryAyah — Ticari Olmayan / Eğitim Kullanımı)',
+      description: 'Nâs Suresinin 1–6. ayetlerinin eksiksiz tam tilaveti.',
     ),
   ];
 
@@ -366,25 +418,35 @@ class IlahiRepository {
         received = bytes.length;
         if (onProgress != null) onProgress(1.0);
       } else {
-        final HttpClientRequest request = await HttpClient().getUrl(
-          Uri.parse(track.audioUrl),
-        );
-        final HttpClientResponse response = await request.close();
-        if (response.statusCode != 200) {
-          AppLog.warning(
-            'İndirme başarısız (${response.statusCode}): ${track.id}',
-          );
-          return null;
-        }
-        final int total = response.contentLength;
+        final List<String> urls = track.resolvedAudioUrls;
         final IOSink sink = file.openWrite();
-        await for (final List<int> chunk in response) {
-          sink.add(chunk);
-          received += chunk.length;
-          if (total > 0 && onProgress != null) onProgress(received / total);
+        final HttpClient httpClient = HttpClient();
+        try {
+          for (int i = 0; i < urls.length; i++) {
+            final HttpClientRequest request = await httpClient.getUrl(
+              Uri.parse(urls[i]),
+            );
+            final HttpClientResponse response = await request.close();
+            if (response.statusCode != 200) {
+              AppLog.warning(
+                'İndirme başarısız (${response.statusCode}): ${track.id}',
+              );
+              await sink.close();
+              return null;
+            }
+            await for (final List<int> chunk in response) {
+              sink.add(chunk);
+              received += chunk.length;
+            }
+            if (onProgress != null) {
+              onProgress((i + 1) / urls.length);
+            }
+          }
+          await sink.flush();
+        } finally {
+          await sink.close();
+          httpClient.close(force: false);
         }
-        await sink.flush();
-        await sink.close();
       }
 
       await _database.raw.insert('ilahi_downloads', <String, Object?>{

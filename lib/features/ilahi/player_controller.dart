@@ -166,18 +166,25 @@ class PlayerController extends Notifier<PlayerUiState> {
       ducking: ref.read(settingsProvider).adhanPlaybackDucking,
     );
 
-    final bool started = source.startsWith('asset:')
-        ? await audio.playAsset(source.substring(6), volume: state.volume)
-        : source.startsWith('http')
-        ? await audio.playUrl(
-            source,
-            title: track.title,
-            artist: track.artist,
-            album: track.album ?? 'EzanAI İlahi',
-            artUri: track.artUri,
-            id: track.id,
-          )
-        : await audio.playFile(source, volume: state.volume);
+    final bool started;
+    if (source.startsWith('asset:')) {
+      started = await audio.playAsset(source.substring(6), volume: state.volume);
+    } else if (source.startsWith('everyayah:') || source.contains('|')) {
+      final List<String> urls = track.resolvedAudioUrls;
+      started = await audio.playUrlList(urls, volume: state.volume);
+    } else if (source.startsWith('http')) {
+      started = await audio.playUrl(
+        source,
+        title: track.title,
+        artist: track.artist,
+        album: track.album ?? 'Ezan İlahi',
+        artUri: track.artUri,
+        id: track.id,
+        volume: state.volume,
+      );
+    } else {
+      started = await audio.playFile(source, volume: state.volume);
+    }
 
     if (!started) {
       state = state.copyWith(
@@ -187,7 +194,9 @@ class PlayerController extends Notifier<PlayerUiState> {
       return;
     }
     await audio.setVolume(state.volume);
-    await audio.setLoop(state.repeatOne);
+    if (!source.startsWith('everyayah:') && !source.contains('|')) {
+      await audio.setLoop(state.repeatOne);
+    }
     state = state.copyWith(status: PlaybackStatus.playing);
   }
 

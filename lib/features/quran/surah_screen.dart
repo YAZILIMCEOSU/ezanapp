@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../core/audio/audio_service.dart';
 import '../../core/utils/logger.dart';
 import '../../data/models/app_settings.dart';
 import '../../data/models/quran_models.dart';
@@ -30,6 +33,8 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
   final ItemScrollController _scrollController = ItemScrollController();
   final ItemPositionsListener _positions = ItemPositionsListener.create();
 
+  StreamSubscription<int>? _queueSub;
+  StreamSubscription<PlaybackStatus>? _statusSub;
   int _lastSavedAyah = 0;
   int? _playingAyah;
 
@@ -37,10 +42,30 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
   void initState() {
     super.initState();
     _positions.itemPositions.addListener(_rememberPosition);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final AppAudioService audio = ref.read(runtimeProvider).audio;
+      _queueSub = audio.queueIndexStream.listen((int idx) {
+        if (!mounted || _playingAyah == null) return;
+        setState(() => _playingAyah = idx + 1);
+      });
+      _statusSub = audio.statusStream.listen((PlaybackStatus status) {
+        if (!mounted) return;
+        if (status == PlaybackStatus.completed ||
+            status == PlaybackStatus.idle ||
+            status == PlaybackStatus.error) {
+          if (_playingAyah != null) {
+            setState(() => _playingAyah = null);
+          }
+        }
+      });
+    });
   }
 
   @override
   void dispose() {
+    _queueSub?.cancel();
+    _statusSub?.cancel();
     _positions.itemPositions.removeListener(_rememberPosition);
     super.dispose();
   }
@@ -140,7 +165,11 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
                     ? Icons.play_arrow_rounded
                     : Icons.stop_rounded,
               ),
-              label: Text(_playingAyah == null ? 'Süreyi dinle' : 'Durdur'),
+              label: Text(
+                _playingAyah == null
+                    ? 'Süreyi dinle'
+                    : 'Durdur ($_playingAyah. ayet)',
+              ),
             ),
       body: content.when(
         loading: () => const LoadingView(message: 'Sure yükleniyor…'),
@@ -206,7 +235,7 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
                     );
                   }
                 },
-                onPlay: () => _playAyah(ayah, reciter),
+                onPlay: () => _playAyah(value, ayah, reciter),
               );
             },
           );
@@ -224,24 +253,26 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
     return index <= 0 ? 0 : index + 1;
   }
 
-  Future<void> _playAyah(Ayah ayah, Reciter reciter) async {
+  Future<void> _playAyah(
+    SurahContent content,
+    Ayah ayah,
+    Reciter reciter,
+  ) async {
     if (_playingAyah == ayah.number) {
       await ref.read(runtimeProvider).audio.stop();
       if (mounted) setState(() => _playingAyah = null);
       return;
     }
-    final String url = Reciters.ayahUrl(reciter, ayah.surah, ayah.number);
+    final List<String> urls = <String>[
+      for (final Ayah a in content.ayahs)
+        Reciters.ayahUrl(reciter, content.surah.number, a.number),
+    ];
+    final int startIndex = (ayah.number - 1).clamp(0, urls.length - 1);
     setState(() => _playingAyah = ayah.number);
     final bool ok = await ref
         .read(runtimeProvider)
         .audio
-        .playUrl(
-          url,
-          title: '${ayah.surah}. sure ${ayah.number}. ayet',
-          artist: reciter.name,
-          album: 'Kur\'an-ı Kerim',
-          id: 'ayah-${ayah.surah}-${ayah.number}',
-        );
+        .playUrlList(urls, initialIndex: startIndex);
     if (!ok && mounted) {
       setState(() => _playingAyah = null);
       final AppSettings settings = ref.read(settingsProvider);
