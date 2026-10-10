@@ -80,16 +80,11 @@ jobs:
             --dart-define=EZANAI_API_BASE=https://backend.test \
             test/data/ai_remote_test.dart 2>&1 | tail -120 | tee /tmp/ai.log
 
-      - name: flutter build apk (debug)
-        id: build
-        continue-on-error: true
-        run: set -o pipefail; flutter build apk --debug --no-pub 2>&1 | tail -60 | tee /tmp/build.log
-
       # Yayın derlemesi yolu: R8 küçültme, kaynak budama, ProGuard kuralları ve
       # gerçek imzalama yapılandırması. Anahtar depoda tutulmaz; burada tek
       # kullanımlık bir deneme anahtarı üretilip doğrulama sonrası atılır.
-      - name: flutter build appbundle (release, deneme anahtarı)
-        id: release
+      - name: flutter build apk (release)
+        id: build
         continue-on-error: true
         run: |
           set -o pipefail
@@ -100,15 +95,23 @@ jobs:
               -dname "CN=EzanAI CI, OU=QA, O=Yazilimceosu, L=Istanbul, C=TR"
             printf 'storePassword=ezanai-ci\nkeyPassword=ezanai-ci\nkeyAlias=ezanai-ci\nstoreFile=%s\n' \
               "$RUNNER_TEMP/ci-release.jks" > android/key.properties
-            flutter build appbundle --release --no-pub
-          } 2>&1 | tail -80 | tee /tmp/release.log
+            flutter build apk --release --no-pub
+            cp build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/ezanai-kurulum.apk
+            cp build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/app-debug.apk
+          } 2>&1 | tail -60 | tee /tmp/build.log
+
+      - name: flutter build appbundle (release, deneme anahtarı)
+        id: release
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          flutter build appbundle --release --no-pub 2>&1 | tail -80 | tee /tmp/release.log
           status=$?
           rm -f android/key.properties
           exit $status
 
-      # Derleme çıktılarını indirilebilir yap: cihazda denemek için debug APK,
-      # Play yükleme dosyası biçimi için AAB. (AAB tek kullanımlık CI
-      # anahtarıyla imzalanır; Play'e değil, cihaza kurmak için APK kullanılır.)
+      # Derleme çıktılarını indirilebilir yap: cihazda denemek için release APK,
+      # Play yükleme dosyası biçimi için AAB.
       - name: Derleme çıktılarını yükle
         if: always()
         uses: actions/upload-artifact@v4
@@ -117,13 +120,13 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
           path: |
+            build/app/outputs/flutter-apk/ezanai-kurulum.apk
             build/app/outputs/flutter-apk/app-debug.apk
             build/app/outputs/bundle/release/app-release.aab
 
-      # Telefonda denemek için tek tık indirme bağlantısı: debug APK, "dene-apk"
-      # adlı GitHub sürümüne eklenir. Play'e yüklenen dosya (AAB) ayrıdır ve
-      # yukarıdaki artefaktta kalır. Böylece teknik bilgisi olmayan kullanıcı
-      # zip açmak zorunda kalmadan APK'yı indirip kurabilir.
+      # Telefonda denemek için tek tık indirme bağlantısı: imzalı release APK,
+      # "dene-apk" adlı GitHub sürümüne hem ezanai-kurulum.apk hem de eski
+      # bağlantının bozulmaması için app-debug.apk adıyla eklenir.
       - name: Deneme APK'sını indirmeye aç (sürüm dosyası)
         id: apk_release
         if: always() && steps.build.outcome == 'success'
@@ -138,7 +141,10 @@ jobs:
               --title "EzanAI — telefonda deneme sürümü (kurulabilir APK)" \
               --notes "Bu dosya yalnızca telefonda denemek içindir; mağazaya yüklenmez. Kurulum: dosyayı indirin, telefonda açın, izin isteyince onaylayın ve kurun."
           fi
-          gh release upload "$TAG" build/app/outputs/flutter-apk/app-debug.apk --clobber
+          gh release upload "$TAG" \
+            build/app/outputs/flutter-apk/ezanai-kurulum.apk \
+            build/app/outputs/flutter-apk/app-debug.apk \
+            --clobber
           gh release view "$TAG" --json assets --jq '.assets[] | "indirmeye hazır: \(.name) (\(.size) bayt)"'
 
       - name: Raporu yaz

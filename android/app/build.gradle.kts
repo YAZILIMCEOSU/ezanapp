@@ -44,6 +44,10 @@ android {
         versionName = flutter.versionName
         multiDexEnabled = true
         resourceConfigurations += listOf("tr", "en")
+        manifestPlaceholders["admobAppId"] =
+            (project.findProperty("ADMOB_ANDROID_APP_ID") as String?)
+                ?: System.getenv("ADMOB_ANDROID_APP_ID")
+                ?: "ca-app-pub-3940256099942544~3347511713"
     }
 
     signingConfigs {

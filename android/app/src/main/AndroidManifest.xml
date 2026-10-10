@@ -44,7 +44,7 @@
         tools:targetApi="34">
 
         <activity
-            android:name="com.ryanheise.audioservice.AudioServiceActivity"
+            android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:taskAffinity=""
@@ -104,6 +104,17 @@
                 <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
+
+        <!-- Google Mobile Ads SDK: gerçek kimlik tanımlanmadığında Google'ın resmî
+             örnek uygulama kimliği kullanılır; böylece MobileAdsInitProvider açılışta
+             IllegalStateException ile çökmez (reklam gösterimi yine
+             AppConfig.adsConfigured ile kapalıdır). -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="${admobAppId}" />
+        <meta-data
+            android:name="com.google.android.gms.ads.DELAY_APP_MEASUREMENT_INIT"
+            android:value="true" />
 
         <meta-data
             android:name="flutterEmbedding"

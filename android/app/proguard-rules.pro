@@ -31,3 +31,12 @@
 
 # Vakit verisi JSON modelleri (reflection ile çözülürse)
 -keep class com.yazilimceosu.ezanai.** { *; }
+
+# flutter_secure_storage / Tink şifreleme
+-keep class com.google.crypto.tink.** { *; }
+-dontwarn com.google.crypto.tink.**
+
+# Google Mobile Ads
+-keep class com.google.android.gms.ads.** { *; }
+-dontwarn com.google.android.gms.ads.**
+
