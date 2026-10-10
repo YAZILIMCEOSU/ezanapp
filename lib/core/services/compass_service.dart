@@ -7,33 +7,65 @@ import '../utils/geo.dart';
 import '../utils/logger.dart';
 
 /// Pusula ölçümü.
+///
+/// [magneticHeading] sensörden gelen ham manyetik kuzey açısıdır (0-360°).
+/// [declination] bulunulan konumdaki manyetik sapma açısıdır (Doğu +).
+/// [heading] ise gerçek coğrafi kuzeye göre düzeltilmiş cihaz yönüdür ve
+/// [qiblaDirection] (gerçek kuzeye göre Kâbe açısı) ile birebir aynı referans
+/// sistemindedir.
 class CompassReading {
   const CompassReading({
     required this.heading,
     required this.accuracy,
+    this.magneticHeading,
+    this.declination = 0,
     this.tilt = 0,
     this.roll = 0,
+    this.fieldStrengthMicroTesla,
+    this.stabilityDegrees = 0,
     this.qiblaDirection,
     this.differenceToQibla,
   });
 
-  /// Manyetik kuzeye göre yön (0-360).
+  /// Gerçek kuzeye (veya sapma 0 ise manyetik kuzeye) göre yön (0-360°).
   final double heading;
+
+  /// Sensörün ölçtüğü ham manyetik kuzey yönü (0-360°).
+  final double? magneticHeading;
+
+  /// Uygulanan manyetik sapma açısı (derece, Doğu +).
+  final double declination;
 
   /// Tahmini hata payı (derece).
   final double accuracy;
 
-  /// Telefonun öne/arkaya eğimi.
+  /// Telefonun öne/arkaya eğimi (derece).
   final double tilt;
 
-  /// Telefonun yana yatması.
+  /// Telefonun yana yatması (derece).
   final double roll;
 
-  /// Kıble yönü (kuzeyden saat yönünde).
+  /// Manyetik alan şiddeti (µT). Dünya'nın normal alanı ~25–65 µT aralığındadır.
+  final double? fieldStrengthMicroTesla;
+
+  /// Son ölçümlerin açısal kararsızlığı (standart sapma, derece).
+  final double stabilityDegrees;
+
+  /// Kıble yönü (gerçek kuzeyden saat yönünde, 0-360°).
   final double? qiblaDirection;
 
-  /// Kıbleye göre sapma (-180..180).
+  /// Kıbleye göre sapma (-180..180°).
   final double? differenceToQibla;
+
+  /// Sensör değerleri sayısal olarak geçerli mi?
+  bool get isValid =>
+      heading.isFinite &&
+      heading >= 0 &&
+      heading <= 360 &&
+      accuracy.isFinite &&
+      accuracy >= 0 &&
+      tilt.isFinite &&
+      roll.isFinite;
 
   bool get isAligned =>
       differenceToQibla != null && differenceToQibla!.abs() <= 5;
@@ -41,18 +73,57 @@ class CompassReading {
   bool get isClose =>
       differenceToQibla != null && differenceToQibla!.abs() <= 12;
 
-  /// Kalibrasyon gerekiyor mu? (düşük doğruluk veya aşırı eğim)
-  bool get needsCalibration => accuracy > 20 || tilt.abs() > 45;
+  /// Manyetik parazit var mı? (normal dışı µT alanı veya yüksek açısal sıçrama)
+  bool get hasMagneticInterference =>
+      (fieldStrengthMicroTesla != null &&
+          fieldStrengthMicroTesla!.isFinite &&
+          (fieldStrengthMicroTesla! < 22.0 ||
+              fieldStrengthMicroTesla! > 68.0)) ||
+      stabilityDegrees > 22.0;
 
-  CompassReading withQibla(double qiblaDirection) {
+  /// Telefon aşırı eğik mi tutuluyor?
+  bool get isTilted => tilt.abs() > 45 || roll.abs() > 45;
+
+  /// Kalibrasyon veya tutuş düzeltmesi gerekiyor mu?
+  bool get needsCalibration =>
+      accuracy > 20 || hasMagneticInterference || isTilted;
+
+  /// Kullanıcıya gösterilecek anlaşılır kalibrasyon/parazit yönlendirmesi.
+  String get calibrationMessage {
+    if (hasMagneticInterference) {
+      return 'Manyetik parazit algılandı: metal masa, mıknatıslı kılıf veya '
+          'elektronik cihazlardan uzaklaşın ve telefonu havada 8 çizer gibi hareket ettirin.';
+    }
+    if (isTilted) {
+      return 'Telefon eğik tutuluyor: doğru pusula ölçümü için telefonu '
+          'yere paralel (düz) konuma getirin.';
+    }
+    return 'Pusula kalibrasyonu gerekiyor: telefonu havada birkaç kez 8 çizer '
+        'gibi hareket ettirin ve metal eşyalardan uzaklaşın.';
+  }
+
+  /// Kıble yönü ve isteğe bağlı manyetik sapma ile güncellenmiş ölçüm döner.
+  CompassReading withQibla(
+    double qiblaDirection, {
+    double? declination,
+  }) {
+    final double rawMagnetic = magneticHeading ?? heading;
+    final double appliedDeclination = declination ?? this.declination;
+    final double trueHeading = GeoUtils.normalizeDegrees(
+      rawMagnetic + appliedDeclination,
+    );
     final double difference = GeoUtils.normalizeSigned(
-      qiblaDirection - heading,
+      qiblaDirection - trueHeading,
     );
     return CompassReading(
-      heading: heading,
+      heading: trueHeading,
+      magneticHeading: rawMagnetic,
+      declination: appliedDeclination,
       accuracy: accuracy,
       tilt: tilt,
       roll: roll,
+      fieldStrengthMicroTesla: fieldStrengthMicroTesla,
+      stabilityDegrees: stabilityDegrees,
       qiblaDirection: qiblaDirection,
       differenceToQibla: difference,
     );
@@ -63,7 +134,7 @@ class CompassReading {
 ///
 /// Android tarafında yerel kanal (`ezanai/sensors`) üzerinden çalışır;
 /// sensör yoksa `isSupported` false döner ve arayüz manyetik olmayan
-/// (kullanıcı döndürmeli) kıble moduna geçer.
+/// (derece/harita tabanlı) kıble moduna geçer.
 class CompassService {
   CompassService({EventChannel? channel, MethodChannel? methodChannel})
     : _channel = channel ?? const EventChannel('ezanai/sensors'),
@@ -75,6 +146,7 @@ class CompassService {
   StreamSubscription<Object?>? _subscription;
   final StreamController<CompassReading?> _controller =
       StreamController<CompassReading?>.broadcast();
+  final List<double> _recentHeadings = <double>[];
 
   Stream<CompassReading?> get readings => _controller.stream;
 
@@ -82,6 +154,23 @@ class CompassService {
   bool get isSupported => _isSupported;
 
   bool _started = false;
+  double? _qiblaDirection;
+  double _declination = 0;
+
+  /// Ham sensör paketinin geçerli sayısal değerler içerdiğini doğrular.
+  static bool isValidSensorPayload(Map<Object?, Object?> map) {
+    final Object? rawHeading = map['heading'];
+    final Object? rawAccuracy = map['accuracy'];
+    if (rawHeading is! num || rawAccuracy is! num) return false;
+    final double heading = rawHeading.toDouble();
+    final double accuracy = rawAccuracy.toDouble();
+    if (!heading.isFinite || !accuracy.isFinite || accuracy < 0) return false;
+    final Object? rawTilt = map['tilt'];
+    final Object? rawRoll = map['roll'];
+    if (rawTilt is num && !rawTilt.toDouble().isFinite) return false;
+    if (rawRoll is num && !rawRoll.toDouble().isFinite) return false;
+    return true;
+  }
 
   /// Sensör var mı kontrolü (izin gerekmez).
   Future<bool> checkSupport() async {
@@ -98,7 +187,9 @@ class CompassService {
     return _isSupported;
   }
 
-  void start({double? qiblaDirection}) {
+  void start({double? qiblaDirection, double declination = 0}) {
+    _qiblaDirection = qiblaDirection ?? _qiblaDirection;
+    _declination = declination;
     if (_started) return;
     _started = true;
     try {
@@ -106,18 +197,49 @@ class CompassService {
         (Object? event) {
           if (event is Map) {
             final Map<Object?, Object?> map = event;
-            final double heading = (map['heading'] as num?)?.toDouble() ?? 0;
-            final double accuracy = (map['accuracy'] as num?)?.toDouble() ?? 0;
+            if (!isValidSensorPayload(map)) {
+              if (!_controller.isClosed) _controller.add(null);
+              return;
+            }
+            final double rawHeading = GeoUtils.normalizeDegrees(
+              (map['heading'] as num).toDouble(),
+            );
+            final double accuracy = (map['accuracy'] as num).toDouble();
             final double tilt = (map['tilt'] as num?)?.toDouble() ?? 0;
             final double roll = (map['roll'] as num?)?.toDouble() ?? 0;
+            final double? fieldStrength =
+                (map['fieldStrength'] as num?)?.toDouble();
+
+            _recentHeadings.add(rawHeading);
+            if (_recentHeadings.length > 8) {
+              _recentHeadings.removeAt(0);
+            }
+            final double stability = _recentHeadings.length >= 4
+                ? headingStability(_recentHeadings)
+                : 0;
+
+            final double trueHeading = GeoUtils.normalizeDegrees(
+              rawHeading + _declination,
+            );
+
             CompassReading reading = CompassReading(
-              heading: GeoUtils.normalizeDegrees(heading),
+              heading: trueHeading,
+              magneticHeading: rawHeading,
+              declination: _declination,
               accuracy: accuracy,
               tilt: tilt,
               roll: roll,
+              fieldStrengthMicroTesla:
+                  fieldStrength != null && fieldStrength.isFinite
+                  ? fieldStrength
+                  : null,
+              stabilityDegrees: stability,
             );
-            if (qiblaDirection != null) {
-              reading = reading.withQibla(qiblaDirection);
+            if (_qiblaDirection != null) {
+              reading = reading.withQibla(
+                _qiblaDirection!,
+                declination: _declination,
+              );
             }
             if (!_controller.isClosed) _controller.add(reading);
           }
@@ -138,6 +260,7 @@ class CompassService {
 
   Future<void> stop() async {
     _started = false;
+    _recentHeadings.clear();
     await _subscription?.cancel();
     _subscription = null;
   }
@@ -148,12 +271,21 @@ class CompassService {
   }
 
   /// Kalibrasyon yardımı: telefonu 8 çizer gibi hareket ettirme önerisi için
-  /// ölçüm kararlılığını değerlendirir.
+  /// ölçüm kararlılığını (dairesel standart sapma, derece) değerlendirir.
   static double headingStability(List<double> recentHeadings) {
     if (recentHeadings.length < 3) return 180;
-    final double mean =
-        recentHeadings.reduce((double a, double b) => a + b) /
-        recentHeadings.length;
+    double sumSin = 0;
+    double sumCos = 0;
+    for (final double h in recentHeadings) {
+      final double rad = h * math.pi / 180.0;
+      sumSin += math.sin(rad);
+      sumCos += math.cos(rad);
+    }
+    final double mean = GeoUtils.normalizeDegrees(
+      math.atan2(sumSin / recentHeadings.length, sumCos / recentHeadings.length) *
+          180.0 /
+          math.pi,
+    );
     final double variance =
         recentHeadings
             .map(

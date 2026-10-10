@@ -193,21 +193,48 @@ class ZikirRepository {
 
   // --------------------------------------------------------------- Sayımlar
 
-  /// Bir zikir sayımını kaydeder (tur tamamlandığında veya uygulama kapanırken).
-  Future<int> recordCount(String zikirKey, int count, {int target = 0}) async {
+  /// Yalnızca günlük zikir toplamını artırır (her tesbih dokunuşunda çağrılır).
+  Future<void> incrementDailyCount(
+    String zikirKey,
+    int count, {
+    DateTime? now,
+  }) async {
+    if (count <= 0) return;
+    await _incrementDaily(zikirKey, count, now ?? DateTime.now());
+  }
+
+  /// Tamamlanan bir zikir turunu (oturumunu) kaydeder.
+  Future<int> recordSession(
+    String zikirKey,
+    int count, {
+    int target = 0,
+    DateTime? now,
+  }) async {
     if (count <= 0) return 0;
-    final DateTime now = DateTime.now();
-    final int id = await _database.raw.insert(
+    final DateTime timestamp = now ?? DateTime.now();
+    return _database.raw.insert(
       'zikir_sessions',
       <String, Object?>{
         'zikir_key': zikirKey,
         'target': target,
         'count': count,
-        'started_at': now
+        'started_at': timestamp
             .subtract(const Duration(minutes: 1))
             .millisecondsSinceEpoch,
-        'finished_at': now.millisecondsSinceEpoch,
+        'finished_at': timestamp.millisecondsSinceEpoch,
       },
+    );
+  }
+
+  /// Bir zikir sayımını hem oturum hem günlük özet olarak kaydeder.
+  Future<int> recordCount(String zikirKey, int count, {int target = 0}) async {
+    if (count <= 0) return 0;
+    final DateTime now = DateTime.now();
+    final int id = await recordSession(
+      zikirKey,
+      count,
+      target: target,
+      now: now,
     );
     await _incrementDaily(zikirKey, count, now);
     return id;
@@ -302,10 +329,15 @@ class ZikirRepository {
 
   /// Tüm zamanların toplamı.
   Future<int> totalCount() async {
-    final List<Map<String, Object?>> rows = await _database.raw.rawQuery(
+    final List<Map<String, Object?>> dailyRows = await _database.raw.rawQuery(
+      'SELECT COALESCE(SUM(count), 0) AS total FROM zikir_daily',
+    );
+    final List<Map<String, Object?>> sessionRows = await _database.raw.rawQuery(
       'SELECT COALESCE(SUM(count), 0) AS total FROM zikir_sessions',
     );
-    return (rows.first['total'] as num?)?.toInt() ?? 0;
+    final int dailyTotal = (dailyRows.first['total'] as num?)?.toInt() ?? 0;
+    final int sessionTotal = (sessionRows.first['total'] as num?)?.toInt() ?? 0;
+    return dailyTotal >= sessionTotal ? dailyTotal : sessionTotal;
   }
 
   static String _dateKey(DateTime date) =>

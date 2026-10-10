@@ -23,10 +23,11 @@ class _AiScreenState extends ConsumerState<AiScreen> {
   final ScrollController _scroll = ScrollController();
 
   static const List<String> _suggestions = <String>[
+    'İslam\'ın şartları nelerdir?',
+    'İmanın şartları nelerdir?',
     'Sabah namazının vakti ne zaman biter?',
     'Zekât kimlere verilir?',
     'Hanefî ve Şâfiî\'ye göre ikindi vakti farkı nedir?',
-    'Kur\'an okumanın fazileti hakkında hadis var mı?',
   ];
 
   @override

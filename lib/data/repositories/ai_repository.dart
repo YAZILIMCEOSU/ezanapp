@@ -200,6 +200,37 @@ class AiRepository {
 
   // ------------------------------------------------------------- Soru-cevap
 
+  /// Yalnızca önceden onaylanmış yerel bilgi tabanını sorgular.
+  /// Kota dolsa bile bu cevaplar engellenmez.
+  AiAnswer? answerVerifiedLocal(String question) =>
+      _service.answerVerifiedLocal(question);
+
+  /// Kota bilinciyle soru sorar:
+  /// 1) Önceden onaylanmış yerel bilgi tabanında karşılığı varsa kota dolsa bile
+  ///    yanıtlanır ve günlük kotadan düşülmez.
+  /// 2) Yerel tabanda yoksa kota kontrol edilir; kota dolmuşsa açık uyarı döner.
+  Future<AiAnswer> askWithQuota(
+    String question, {
+    required bool premium,
+    List<AiMessage> history = const <AiMessage>[],
+  }) async {
+    final AiAnswer? verified = _service.answerVerifiedLocal(question);
+    if (verified != null) {
+      return verified;
+    }
+
+    final bool allowed = await canAsk(premium: premium);
+    if (!allowed) {
+      return AiService.quotaExceededAnswer(question: question);
+    }
+
+    final AiAnswer answer = await _service.ask(question, history: history);
+    if (answer.failureKind != AiFailureKind.quotaExceeded) {
+      await incrementUsage();
+    }
+    return answer;
+  }
+
   /// Soru sorar; cevabı üretir. Kayıt işlemi çağıran katmana aittir.
   Future<AiAnswer> ask(
     String question, {

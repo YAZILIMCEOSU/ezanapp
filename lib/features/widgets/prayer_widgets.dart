@@ -125,12 +125,16 @@ class NextPrayerCountdownCard extends StatelessWidget {
     required this.now,
     required this.use24Hour,
     required this.locationLabel,
+    this.tomorrow,
+    this.snapshot,
     this.onRefresh,
     this.sourceLabel,
     super.key,
   });
 
   final PrayerTimesDay day;
+  final PrayerTimesDay? tomorrow;
+  final PrayerScheduleSnapshot? snapshot;
   final DateTime now;
   final bool use24Hour;
   final String locationLabel;
@@ -139,15 +143,18 @@ class NextPrayerCountdownCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Prayer current = day.currentPrayer(now);
-    final PrayerTime? next = day.nextPrayer(now);
-    final Duration remaining = next == null
-        ? Duration.zero
-        : next.time.difference(now);
+    final PrayerScheduleSnapshot snap =
+        snapshot ??
+        PrayerScheduleSnapshot.resolve(
+          day: day,
+          tomorrow: tomorrow,
+          now: now,
+        );
+    final Prayer current = snap.currentPrayer;
+    final PrayerTime? next = snap.nextPrayer;
+    final Duration remaining = snap.remaining;
     final Color accent = next?.prayer.color ?? current.color;
-    final double progress = next == null
-        ? 1
-        : _progress(current: current, next: next, now: now, day: day);
+    final double progress = snap.progress;
 
     return Container(
       margin: AppSpacing.page,
@@ -206,7 +213,11 @@ class NextPrayerCountdownCard extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.lg),
             Text(
-              next == null ? 'Yatsı sonrası' : next.prayer.label,
+              next == null
+                  ? 'Yatsı sonrası'
+                  : snap.isAfterIsha
+                  ? '${next.prayer.label} (Yarın)'
+                  : next.prayer.label,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.w700,
@@ -284,28 +295,6 @@ class NextPrayerCountdownCard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  /// Vakit ilerleme oranı (0 → 1): önceki vakitten sonraki vakte kadar.
-  double _progress({
-    required Prayer current,
-    required PrayerTime next,
-    required DateTime now,
-    required PrayerTimesDay day,
-  }) {
-    final int currentIndex = current.index;
-    DateTime? previous;
-    for (int i = currentIndex; i >= 0; i--) {
-      final DateTime? candidate = day.times[Prayer.values[i]];
-      if (candidate != null && !candidate.isAfter(now)) {
-        previous = candidate;
-        break;
-      }
-    }
-    if (previous == null) return 0;
-    final int total = next.time.difference(previous).inSeconds;
-    if (total <= 0) return 1;
-    return now.difference(previous).inSeconds / total;
   }
 }
 

@@ -88,19 +88,27 @@ class PrayerTimesRepository {
       }
     }
 
+    final bool useDiyanetOfficial =
+        (method.id == 'diyanet' || method.id == 'diyanet_high_lat') &&
+        method.asrFactor == CalculationMethod.diyanet.asrFactor;
     final List<PrayerTimesSource> chain =
         _connectivity.isOnline && location.city != null
-        ? <PrayerTimesSource>[_diyanet, _aladhan, _local]
+        ? <PrayerTimesSource>[
+            if (useDiyanetOfficial) _diyanet,
+            _aladhan,
+            _local,
+          ]
         : <PrayerTimesSource>[_local];
 
     final List<String> failures = <String>[];
     for (final PrayerTimesSource source in chain) {
       try {
-        final PrayerTimesDay result = await source.fetchDay(
+        final PrayerTimesDay rawResult = await source.fetchDay(
           location: location,
           date: date,
           method: method,
         );
+        final PrayerTimesDay result = _applyExtraOffsets(rawResult, method);
         if (!result.isSane) {
           failures.add('${source.id}: vakitler tutarsız');
           continue;
@@ -244,10 +252,53 @@ class PrayerTimesRepository {
   }
 
   String _locationKey(UserLocation location, [CalculationMethod? method]) {
-    if (location.city != null) return 'district:${location.city!.id}';
-    final double lat = double.parse(location.latitude.toStringAsFixed(2));
-    final double lon = double.parse(location.longitude.toStringAsFixed(2));
-    return 'gps:${lat}_$lon';
+    final String base = location.city != null
+        ? 'district:${location.city!.id}'
+        : 'gps:${double.parse(location.latitude.toStringAsFixed(2))}_${double.parse(location.longitude.toStringAsFixed(2))}';
+    if (_isDefaultDiyanet(method)) return base;
+    return '$base|${_methodSignature(method!)}';
+  }
+
+  static bool _isDefaultDiyanet(CalculationMethod? method) {
+    if (method == null) return true;
+    const CalculationMethod def = CalculationMethod.diyanet;
+    if (method.id != def.id || method.asrFactor != def.asrFactor) return false;
+    for (final Prayer p in Prayer.values) {
+      if ((method.adjustments[p] ?? 0) != (def.adjustments[p] ?? 0)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  static String _methodSignature(CalculationMethod method) {
+    final String adj = Prayer.values
+        .map((Prayer p) => '${p.key}:${method.adjustments[p] ?? 0}')
+        .join(',');
+    return '${method.id}|asr${method.asrFactor}|$adj';
+  }
+
+  /// Uzak servislerden gelen vakitlere kullanıcının manuel dakika düzeltmelerini uygular.
+  static PrayerTimesDay _applyExtraOffsets(
+    PrayerTimesDay day,
+    CalculationMethod method,
+  ) {
+    if (day.source == 'calculation') return day;
+    final CalculationMethod base = CalculationMethod.fromId(method.id);
+    bool hasExtra = false;
+    final Map<Prayer, DateTime> adjusted = <Prayer, DateTime>{};
+    for (final Prayer prayer in Prayer.values) {
+      final DateTime? time = day.times[prayer];
+      if (time == null) continue;
+      final int extra =
+          (method.adjustments[prayer] ?? 0) - (base.adjustments[prayer] ?? 0);
+      if (extra != 0) hasExtra = true;
+      adjusted[prayer] = extra == 0
+          ? time
+          : time.add(Duration(minutes: extra));
+    }
+    if (!hasExtra) return day;
+    return day.copyWith(times: adjusted);
   }
 
   String _cacheKey(
@@ -255,7 +306,7 @@ class PrayerTimesRepository {
     CalculationMethod method,
     DateTime date,
   ) =>
-      '${_locationKey(location, method)}|${method.id}|${date.year}-${date.month}-${date.day}';
+      '${_locationKey(location, method)}|${_methodSignature(method)}|${date.year}-${date.month}-${date.day}';
 
   String _rangeKey(
     UserLocation location,
@@ -263,7 +314,7 @@ class PrayerTimesRepository {
     DateTime start,
     DateTime end,
   ) =>
-      '${_locationKey(location, method)}|${method.id}|range|${start.year}${start.month}${start.day}-${end.year}${end.month}${end.day}';
+      '${_locationKey(location, method)}|${_methodSignature(method)}|range|${start.year}${start.month}${start.day}-${end.year}${end.month}${end.day}';
 
   String _relative(DateTime time) {
     final Duration diff = DateTime.now().difference(time);

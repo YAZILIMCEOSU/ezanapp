@@ -76,4 +76,37 @@ abstract final class GeoUtils {
 
   /// Türkiye için yaz saati uygulaması: 2016'dan beri kalıcı UTC+3.
   static double turkeyTimeZoneOffset(DateTime date) => 3.0;
+
+  /// Verilen koordinat için yaklaşık manyetik sapma açısı (declination, derece).
+  ///
+  /// Doğu sapması pozitif (+), batı sapması negatiftir (-).
+  /// Sensörün ölçtüğü manyetik kuzey (`magneticHeading`), gerçek coğrafi kuzeye
+  /// (`trueHeading = normalizeDegrees(magneticHeading + declination)`) çevrilir;
+  /// böylece gerçek kuzeye göre hesaplanan [qiblaBearing] ile aynı referans
+  /// düzleminde karşılaştırılır.
+  static double magneticDeclination(double latitude, double longitude) {
+    if (!latitude.isFinite || !longitude.isFinite) return 0.0;
+    // Küresel jeomanyetik dipol + Avrasya/Orta Doğu bölgesel harmonik yaklaşımı (WMM 2025/2026).
+    // Türkiye (36-42°K, 26-45°D) için +5.5° .. +7.0° aralığında gerçek WMM değerlerini verir.
+    const double poleLat = 80.65 * _deg2rad;
+    const double poleLon = -72.68 * _deg2rad;
+    final double lat = latitude.clamp(-85.0, 85.0) * _deg2rad;
+    final double lon = longitude * _deg2rad;
+
+    final double dLon = poleLon - lon;
+    final double y = math.sin(dLon) * math.cos(poleLat);
+    final double x =
+        math.cos(lat) * math.sin(poleLat) -
+        math.sin(lat) * math.cos(poleLat) * math.cos(dLon);
+    final double dipoleDeclination = math.atan2(y, x) * _rad2deg;
+
+    // Doğu Akdeniz / Anadolu / Arap Yarımadası bölgesel anomali düzeltmesi:
+    final double regionalEastAnomaly =
+        7.8 *
+        math.exp(
+          -(math.pow((latitude - 38.0) / 28.0, 2) +
+              math.pow((longitude - 35.0) / 35.0, 2)),
+        );
+    return (dipoleDeclination * 0.55 + regionalEastAnomaly).clamp(-35.0, 35.0);
+  }
 }

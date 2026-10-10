@@ -409,35 +409,16 @@ class ChatController extends AsyncNotifier<AiConversation?> {
     );
 
     final bool premium = ref.read(isPremiumProvider);
-    final bool allowed = await runtime.ai.canAsk(premium: premium);
-    if (!allowed) {
-      state = AsyncValue<AiConversation?>.data(
-        conversation.copyWith(
-          messages: <AiMessage>[
-            ...conversation.messages,
-            userMessage,
-            AiMessage(
-              id: 'limit${DateTime.now().microsecondsSinceEpoch}',
-              text:
-                  'Bugünkü ücretsiz soru hakkınız doldu. Premium ile sınırsız '
-                  'soru sorabilir veya yarın tekrar deneyebilirsiniz.',
-              fromUser: false,
-              createdAt: DateTime.now(),
-              failed: true,
-            ),
-          ],
-        ),
-      );
-      _sending = false;
-      return;
-    }
 
     try {
       final List<AiMessage> history = conversation.messages.reversed
           .take(6)
           .toList();
-      final AiAnswer answer = await runtime.ai.ask(text, history: history);
-      await runtime.ai.incrementUsage();
+      final AiAnswer answer = await runtime.ai.askWithQuota(
+        text,
+        premium: premium,
+        history: history,
+      );
 
       final AiMessage reply = AiMessage(
         id: 'a${DateTime.now().microsecondsSinceEpoch}',
@@ -449,6 +430,10 @@ class ChatController extends AsyncNotifier<AiConversation?> {
         mode: answer.mode,
         disclaimer: answer.disclaimer,
         relatedQuestions: answer.relatedQuestions,
+        failed: answer.failureKind == AiFailureKind.quotaExceeded ||
+            answer.failureKind == AiFailureKind.networkError ||
+            answer.failureKind == AiFailureKind.apiError,
+        failureKind: answer.failureKind,
       );
       await runtime.ai.appendMessage(conversation.id, reply);
       ref.invalidate(aiUsageProvider);
@@ -475,6 +460,7 @@ class ChatController extends AsyncNotifier<AiConversation?> {
               fromUser: false,
               createdAt: DateTime.now(),
               failed: true,
+              failureKind: AiFailureKind.networkError,
             ),
           ],
         ),
@@ -579,56 +565,232 @@ class ZikirCounterState {
   );
 }
 
-/// Zikir sayacı — her dokunuşta kaydeder, hedef dolunca oturumu kapatır.
+/// Zikir sayacı — anlık oturum sayacı, zikir türüne göre günlük toplam ve
+/// günlük hedefi ayrı tutar; uygulama yeniden açıldığında kaldığı yerden devam eder.
 class ZikirCounterController extends Notifier<ZikirCounterState> {
+  static const String _sessionPrefKey = 'zikir_active_session_v1';
+
+  final Map<String, int> _countsByZikir = <String, int>{};
+  final Map<String, int> _targetsByZikir = <String, int>{};
+  final Map<String, int> _completedByZikir = <String, int>{};
+  Future<void> _writeChain = Future<void>.value();
+
+  static String _todayKey([DateTime? now]) {
+    final DateTime d = now ?? DateTime.now();
+    return '${d.year.toString().padLeft(4, '0')}-'
+        '${d.month.toString().padLeft(2, '0')}-'
+        '${d.day.toString().padLeft(2, '0')}';
+  }
+
   @override
   ZikirCounterState build() {
-    final AppSettings settings = ref.watch(settingsProvider);
+    final runtime = ref.read(runtimeProvider);
+    final AppSettings settings = ref.read(settingsProvider);
+    final String defaultKey = ref.read(selectedZikirKeyProvider);
+    final int defaultTarget = settings.zikirDefaultTarget.clamp(1, 10000);
+
+    final Map<String, Object?>? saved = runtime.preferences.getJson(
+      _sessionPrefKey,
+    );
+    if (saved != null) {
+      final String? savedDate = saved['date'] as String?;
+      final bool isSameDay = savedDate == _todayKey();
+
+      final Object? rawTargets = saved['targets'];
+      if (rawTargets is Map) {
+        rawTargets.forEach((Object? k, Object? v) {
+          if (k is String && v is num && v.toInt() > 0) {
+            _targetsByZikir[k] = v.toInt().clamp(1, 10000);
+          }
+        });
+      }
+
+      if (isSameDay) {
+        final Object? rawCounts = saved['counts'];
+        if (rawCounts is Map) {
+          rawCounts.forEach((Object? k, Object? v) {
+            if (k is String && v is num && v.toInt() >= 0) {
+              _countsByZikir[k] = v.toInt();
+            }
+          });
+        }
+        final Object? rawCompleted = saved['completed'];
+        if (rawCompleted is Map) {
+          rawCompleted.forEach((Object? k, Object? v) {
+            if (k is String && v is num && v.toInt() >= 0) {
+              _completedByZikir[k] = v.toInt();
+            }
+          });
+        }
+      }
+
+      final String activeKey =
+          (saved['zikirKey'] as String?)?.trim().isNotEmpty == true
+          ? saved['zikirKey']! as String
+          : defaultKey;
+      final int activeTarget = _targetsByZikir[activeKey] ??
+          ((saved['target'] as num?)?.toInt().clamp(1, 10000) ?? defaultTarget);
+      final int activeCount = isSameDay
+          ? (_countsByZikir[activeKey] ??
+                ((saved['count'] as num?)?.toInt() ?? 0))
+          : 0;
+      final int activeCompleted = isSameDay
+          ? (_completedByZikir[activeKey] ??
+                ((saved['completedSessions'] as num?)?.toInt() ?? 0))
+          : 0;
+
+      _targetsByZikir[activeKey] = activeTarget;
+      _countsByZikir[activeKey] = activeCount;
+      _completedByZikir[activeKey] = activeCompleted;
+
+      return ZikirCounterState(
+        zikirKey: activeKey,
+        count: activeCount,
+        target: activeTarget,
+        completedSessions: activeCompleted,
+      );
+    }
+
+    _targetsByZikir[defaultKey] = defaultTarget;
     return ZikirCounterState(
-      zikirKey: ref.watch(selectedZikirKeyProvider),
-      target: settings.zikirDefaultTarget,
+      zikirKey: defaultKey,
+      target: defaultTarget,
     );
   }
 
-  Future<void> increment() async {
-    final ZikirCounterState next = state.copyWith(count: state.count + 1);
-    state = next;
-    await ref
-        .read(runtimeProvider)
-        .zikir
-        .recordCount(state.zikirKey, 1, target: state.target);
-    if (next.reached) {
-      state = next.copyWith(
-        completedSessions: next.completedSessions + 1,
-        count: 0,
+  Future<void> _persistSession(ZikirCounterState current) async {
+    _countsByZikir[current.zikirKey] = current.count;
+    _targetsByZikir[current.zikirKey] = current.target;
+    _completedByZikir[current.zikirKey] = current.completedSessions;
+    try {
+      await ref.read(runtimeProvider).preferences.setJson(
+        _sessionPrefKey,
+        <String, Object?>{
+          'date': _todayKey(),
+          'zikirKey': current.zikirKey,
+          'count': current.count,
+          'target': current.target,
+          'completedSessions': current.completedSessions,
+          'counts': Map<String, int>.from(_countsByZikir),
+          'targets': Map<String, int>.from(_targetsByZikir),
+          'completed': Map<String, int>.from(_completedByZikir),
+        },
       );
+    } catch (error) {
+      AppLog.warning('Zikir oturumu kaydedilemedi: $error');
+    }
+  }
+
+  Future<void> increment() async {
+    final String key = state.zikirKey;
+    final int target = state.target;
+    final ZikirCounterState incremented = state.copyWith(
+      count: state.count + 1,
+    );
+    final bool roundReached = incremented.reached;
+    final ZikirCounterState next = roundReached
+        ? incremented.copyWith(
+            completedSessions: incremented.completedSessions + 1,
+            count: 0,
+          )
+        : incremented;
+    state = next;
+
+    // Yazmaları sıraya dizerek hızlı dokunuşlarda çift sayım veya kayıp olmasını önle.
+    final Future<void> op = _writeChain.then((_) async {
+      final runtime = ref.read(runtimeProvider);
+      await runtime.zikir.incrementDailyCount(key, 1);
+      if (roundReached) {
+        await runtime.zikir.recordSession(key, target, target: target);
+      }
+      await _persistSession(state);
       ref.invalidate(zikirDailySummaryProvider);
       ref.invalidate(zikirTotalCountProvider);
-    }
+    });
+    _writeChain = op.catchError((Object error) {
+      AppLog.warning('Zikir sayımı kaydedilemedi: $error');
+    });
+    await op;
   }
 
   Future<void> decrement() async {
     if (state.count == 0) return;
     state = state.copyWith(count: state.count - 1);
+    await _persistSession(state);
   }
 
+  /// Anlık oturum sayacını sıfırlar; günlük toplam ve geçmiş silinmez.
   Future<void> reset() async {
     state = state.copyWith(count: 0);
+    await _persistSession(state);
   }
 
   void selectZikir(String key, int target) {
+    _countsByZikir[state.zikirKey] = state.count;
+    _targetsByZikir[state.zikirKey] = state.target;
+    _completedByZikir[state.zikirKey] = state.completedSessions;
+
     ref.read(selectedZikirKeyProvider.notifier).select(key);
-    state = ZikirCounterState(zikirKey: key, target: target);
+    final int resolvedTarget =
+        (_targetsByZikir[key] ?? target).clamp(1, 10000);
+    final int restoredCount = _countsByZikir[key] ?? 0;
+    final int restoredCompleted = _completedByZikir[key] ?? 0;
+
+    state = ZikirCounterState(
+      zikirKey: key,
+      count: restoredCount,
+      target: resolvedTarget,
+      completedSessions: restoredCompleted,
+    );
+    unawaited(_persistSession(state));
   }
 
-  void setTarget(int target) =>
-      state = state.copyWith(target: target.clamp(1, 10000));
+  /// Hedefi değiştirir; mevcut oturum sayacı korunur (sıfırlanmaz).
+  void setTarget(int target) {
+    final int clamped = target.clamp(1, 10000);
+    _targetsByZikir[state.zikirKey] = clamped;
+    if (state.count >= clamped && state.count > 0) {
+      final int completedRoundCount = state.count;
+      final String key = state.zikirKey;
+      state = state.copyWith(
+        target: clamped,
+        count: 0,
+        completedSessions: state.completedSessions + 1,
+      );
+      unawaited(
+        _writeChain.then((_) async {
+          await ref
+              .read(runtimeProvider)
+              .zikir
+              .recordSession(key, completedRoundCount, target: clamped);
+          await _persistSession(state);
+          ref.invalidate(zikirDailySummaryProvider);
+        }),
+      );
+    } else {
+      state = state.copyWith(target: clamped);
+      unawaited(_persistSession(state));
+    }
+  }
 
   Future<void> completeSession() async {
     if (state.count == 0) return;
+    final int finishedCount = state.count;
+    final String key = state.zikirKey;
+    final int target = state.target;
     state = state.copyWith(
-      completedSessions: state.completedSessions,
+      completedSessions: state.completedSessions + 1,
       count: 0,
     );
+    await runtimeRecordSession(key, finishedCount, target);
+    await _persistSession(state);
+    ref.invalidate(zikirDailySummaryProvider);
+  }
+
+  Future<void> runtimeRecordSession(String key, int count, int target) async {
+    await ref
+        .read(runtimeProvider)
+        .zikir
+        .recordSession(key, count, target: target);
   }
 }

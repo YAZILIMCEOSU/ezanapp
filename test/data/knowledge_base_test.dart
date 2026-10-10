@@ -260,5 +260,94 @@ void main() {
       expect(share, contains('Kaynak'));
       expect(TextNormalizer.normalize(share), contains('kaynak'));
     });
+
+    test(
+      'İslam\'ın şartları sorusuna beş şartı doğru sırayla ve kaynaklı cevaplar',
+      () {
+        for (final String variant in <String>[
+          'İslam\'ın şartları nelerdir?',
+          'ISLAMIN SARTLARI NELERDIR',
+          'ıslamın 5 şartı nedir',
+          'islamn sartlari neler',
+          'İslam şartları kaç tanedir?',
+        ]) {
+          final AiAnswer? answer = source.answer(variant);
+          expect(answer, isNotNull, reason: variant);
+          expect(answer!.isVerifiedLocal, isTrue, reason: variant);
+          expect(answer.hasSources, isTrue, reason: variant);
+
+          final String text = TextNormalizer.normalize(answer.text);
+          final int i1 = text.indexOf('sehadet');
+          final int i2 = text.indexOf('namaz kilmak');
+          final int i3 = text.indexOf('zekat vermek');
+          final int i4 = text.indexOf('ramazan orucu');
+          final int i5 = text.indexOf('hacca gitmek');
+
+          expect(i1, greaterThanOrEqualTo(0), reason: variant);
+          expect(i2, greaterThan(i1), reason: '2. sırada namaz olmalı: $variant');
+          expect(i3, greaterThan(i2), reason: '3. sırada zekât olmalı: $variant');
+          expect(i4, greaterThan(i3), reason: '4. sırada oruç olmalı: $variant');
+          expect(i5, greaterThan(i4), reason: '5. sırada hac olmalı: $variant');
+          expect(
+            answer.sources.any((AiSource s) => s.detail != null),
+            isTrue,
+            reason: 'Kaynak bölüm bilgisi içermeli',
+          );
+        }
+      },
+    );
+
+    test(
+      'İmanın şartları sorusuna altı iman esasını doğru sırayla ve kaynaklı cevaplar',
+      () {
+        for (final String variant in <String>[
+          'İmanın şartları nelerdir?',
+          'İMANIN ŞARTLARI NELERDİR',
+          'imanin 6 sarti nedir',
+          'imann sartlari nelerdir',
+          'iman esaslari nelerdir',
+          'Âmentü esasları nelerdir?',
+        ]) {
+          final AiAnswer? answer = source.answer(variant);
+          expect(answer, isNotNull, reason: variant);
+          expect(answer!.isVerifiedLocal, isTrue, reason: variant);
+          expect(answer.hasSources, isTrue, reason: variant);
+
+          final String text = TextNormalizer.normalize(answer.text);
+          final int i1 = text.indexOf('allaha iman');
+          final int i2 = text.indexOf('meleklere iman');
+          final int i3 = text.indexOf('kitaplara iman');
+          final int i4 = text.indexOf('peygamberlere iman');
+          final int i5 = text.indexOf('ahiret gunune iman');
+          final int i6 = text.indexOf('kader ve kazaya');
+
+          expect(i1, greaterThanOrEqualTo(0), reason: variant);
+          expect(i2, greaterThan(i1), reason: '2. sırada melekler olmalı: $variant');
+          expect(i3, greaterThan(i2), reason: '3. sırada kitaplar olmalı: $variant');
+          expect(
+            i4,
+            greaterThan(i3),
+            reason: '4. sırada peygamberler olmalı: $variant',
+          );
+          expect(i5, greaterThan(i4), reason: '5. sırada âhiret olmalı: $variant');
+          expect(
+            i6,
+            greaterThan(i5),
+            reason: '6. sırada kader ve kazâ olmalı: $variant',
+          );
+        }
+      },
+    );
+
+    test('birleşik sorularda RAG yaklaşımıyla her iki doğrulanmış kayıt birleştirilir', () {
+      final AiAnswer? combined = source.answer(
+        'İslam\'ın şartları ve imanın şartları nelerdir?',
+      );
+      expect(combined, isNotNull);
+      final String text = TextNormalizer.normalize(combined!.text);
+      expect(text, contains('sehadet'));
+      expect(text, contains('meleklere iman'));
+      expect(combined.sources.length, greaterThanOrEqualTo(4));
+    });
   });
 }

@@ -56,6 +56,152 @@ abstract final class KnowledgeBase {
 
   static const List<KnowledgeEntry> entries = <KnowledgeEntry>[
     KnowledgeEntry(
+      id: 'islam_sartlari',
+      title: 'İslam\'ın şartları nelerdir?',
+      keywords: <String>[
+        'islamin sartlari',
+        'islam sartlari',
+        'islamin sarti',
+        'islamin 5 sarti',
+        'islamin bes sarti',
+        'islamin esaslari',
+        'islamin temel sartlari',
+        'kelimei sehadet',
+        'islamin sartlari nelerdir',
+        'islamin sartlari kac tanedir',
+      ],
+      answer:
+          'İslam\'ın şartları beştir ve Cibrîl hadisinde bildirilen sırasıyla şunlardır:\n'
+          '1. Kelime-i şehâdet getirmek\n'
+          '2. Namaz kılmak\n'
+          '3. Zekât vermek\n'
+          '4. Ramazan orucu tutmak\n'
+          '5. Hacca gitmek',
+      details: <String>[
+        '1. Kelime-i şehâdet getirmek: "Eşhedü en lâ ilâhe illallah ve eşhedü enne Muhammeden abdühû ve resûlüh" diyerek Allah\'ın birliğini ve Hz. Muhammed\'in (s.a.v.) O\'nun kulu ve elçisi olduğunu kalben tasdik edip dil ile ikrar etmek.',
+        '2. Namaz kılmak: Akıl-bâliğ olan her Müslümanın günde beş vakit (sabah, öğle, ikindi, akşam, yatsı) namazı vaktinde kılması.',
+        '3. Zekât vermek: Nisab miktarı mala sahip olanların, üzerinden bir kamerî yıl geçtiğinde mallarının belli bir oranını (genelde %2,5) ihtiyaç sahiplerine vermesi.',
+        '4. Ramazan orucu tutmak: Ramazan ayı boyunca imsak vaktinden akşam ezanına kadar yeme, içme ve orucu bozan hâllerden uzak durarak oruç tutmak.',
+        '5. Hacca gitmek: Sağlık ve maddi imkânı elverenlerin ömründe bir kez Zilhicce ayında Kâbe\'yi ve kutsal mekânları ziyaret ederek hac ibadetini yerine getirmesi.',
+      ],
+      citations: <String>[
+        'Buhârî, Îmân 1-2 (İbn Ömer ve Cibrîl hadisleri — İslam\'ın beş esas üzerine bina edilmesi)',
+        'Müslim, Îmân 1, 19-22; Tirmizî, Îmân 3',
+        'Kur\'an-ı Kerim, Bakara 2/43, 2/183; Âl-i İmrân 3/97',
+        'Diyanet İşleri Başkanlığı, İlmihal I (İman ve İbadetler), İslam\'ın Şartları bölümü',
+      ],
+      madhabNotes: <String>[
+        'Dört Sünnî mezhepte (Hanefî, Şâfiî, Mâlikî, Hanbelî) İslam\'ın beş temel şartı ve sıralaması üzerinde tam ittifak vardır.',
+      ],
+      related: <String>['iman_sartlari', 'namaz_rekat', 'zekat', 'imsak_orucu', 'hac_umre'],
+      category: 'İman ve İslam',
+    ),
+    KnowledgeEntry(
+      id: 'iman_sartlari',
+      title: 'İmanın şartları nelerdir?',
+      keywords: <String>[
+        'imanin sartlari',
+        'iman sartlari',
+        'imanin sarti',
+        'imanin 6 sarti',
+        'imanin alti sarti',
+        'iman esaslari',
+        'amentu',
+        'amentu esaslari',
+        'imanin sartlari nelerdir',
+        'imanin sartlari kac tanedir',
+      ],
+      answer:
+          'İmanın şartları (Âmentü esasları) altıdır ve sırasıyla şunlardır:\n'
+          '1. Allah\'a iman\n'
+          '2. Meleklere iman\n'
+          '3. Kitaplara iman\n'
+          '4. Peygamberlere iman\n'
+          '5. Âhiret gününe iman\n'
+          '6. Kader ve kazâya (hayır ve şerrin Allah\'tan olduğuna) iman',
+      details: <String>[
+        '1. Allah\'a iman: Allah\'ın varlığına, birliğine (tevhid), eşi ve benzeri olmadığına, tüm kemal sıfatlarla muttasıf olduğuna inanmak.',
+        '2. Meleklere iman: Allah\'ın nurdan yarattığı, günah işlemeyen ve emirlerini yerine getiren Cebrâil, Mîkâil, İsrâfil, Azrâil ve diğer meleklerine inanmak.',
+        '3. Kitaplara iman: Allah\'ın peygamberlerine vahyettiği sahifelere ve dört büyük kitaba (Tevrat, Zebur, İncil ve son ilâhî kitap Kur\'an-ı Kerim) inanmak.',
+        '4. Peygamberlere iman: İlk peygamber Hz. Âdem\'den son peygamber Hz. Muhammed\'e (s.a.v.) kadar gönderilen bütün peygamberlere ayrım yapmaksızın inanmak.',
+        '5. Âhiret gününe iman: Kıyamete, ölümden sonra dirilişe (ba\'s), amellerin tartılmasına, cennet ve cehennem hayatına inanmak.',
+        '6. Kader ve kazâya iman: Hayır ve şerrin, iyi ve kötünün Allah\'ın ilmi, iradesi, kudreti ve yaratmasıyla gerçekleştiğine; insanın cüz\'î iradesiyle yaptığı tercihlerden sorumlu olduğuna inanmak.',
+      ],
+      citations: <String>[
+        'Müslim, Îmân 1 (Cibrîl hadisi — İmanın altı esası); Buhârî, Îmân 37',
+        'Kur\'an-ı Kerim, Bakara 2/177, 2/285; Nisâ 4/136; Kamer 54/49',
+        'Diyanet İşleri Başkanlığı, İlmihal I (İman ve İbadetler), İman Esasları bölümü',
+      ],
+      madhabNotes: <String>[
+        'Ehl-i sünnet kelâm ekolleri (Mâtürîdiyye ve Eş\'ariyye) bu altı iman esasında müttefiktir; iman esasları bir bütündür, birini inkâr etmek imanı geçersiz kılar.',
+      ],
+      related: <String>['islam_sartlari', 'kuran_okuma', 'dua_adab'],
+      category: 'İman ve İslam',
+    ),
+    KnowledgeEntry(
+      id: 'namazin_sartlari',
+      title: 'Namazın şartları (farzları) nelerdir?',
+      keywords: <String>[
+        'namazin sartlari',
+        'namazin farzlari',
+        'namazin rukunleri',
+        'namazin 12 farzi',
+        'hadesten taharet',
+        'necasetten taharet',
+        'setri avret',
+        'istikbali kible',
+        'iftitah tekbiri',
+      ],
+      answer:
+          'Namazın farzları 12\'dir: 6\'sı namazın dışında (hazırlık şartları), '
+          '6\'sı ise namazın içinde (rükünler) yer alır.',
+      details: <String>[
+        'Dışındaki 6 şart: 1) Hadesten tahâret (abdest/gusül), 2) Necâsetten tahâret (beden, elbise ve yerin temizliği), 3) Setr-i avret (örtünme), 4) İstikbâl-i kıble (Kâbe\'ye yönelme), 5) Vakit, 6) Niyet.',
+        'İçindeki 6 rükün: 1) İftitah (başlama) tekbiri, 2) Kıyam (ayakta durmak), 3) Kıraat (Kur\'an okumak), 4) Rükû, 5) Sücûd (secde), 6) Ka\'de-i âhire (son oturuş).',
+      ],
+      citations: <String>[
+        'Kur\'an-ı Kerim, Bakara 2/43, 2/144, 2/238; Mâide 5/6; Müddessir 74/4',
+        'Buhârî, Ezân 95; Müslim, Salât 45',
+        'Diyanet İşleri Başkanlığı, İlmihal I, Namazın Farzları bölümü',
+      ],
+      madhabNotes: <String>[
+        'Şâfiî mezhebinde niyet namazın içindeki rükünlerden sayılır ve Fâtiha okumak her rekâtta farzdır; Hanefî\'de ise mutlak kıraat farz, Fâtiha okumak vaciptir.',
+      ],
+      related: <String>['namaz_rekat', 'abdest', 'kible', 'islam_sartlari'],
+      category: 'Namaz',
+    ),
+    KnowledgeEntry(
+      id: 'gusul',
+      title: 'Gusül (boy abdesti) nasıl alınır ve farzları nelerdir?',
+      keywords: <String>[
+        'gusul',
+        'gusul abdesti',
+        'boy abdesti',
+        'guslun farzlari',
+        'gusul nasil alinir',
+        'cunupluk',
+      ],
+      answer:
+          'Guslün (boy abdestinin) Hanefî mezhebine göre 3 farzı vardır: '
+          '1) Ağza su alıp çalkalamak (mazmaza), 2) Burna su çekmek (istinşak), '
+          '3) Bütün bedeni kuru yer kalmayacak şekilde yıkamak.',
+      details: <String>[
+        'Sünnete uygun gusül: Önce niyet ve besmele ile eller ve avret mahalli yıkanır, ardından namaz abdesti alınır.',
+        'Sonra sırasıyla başa, sağ omuza ve sol omuza üçer defa su dökülüp bütün vücut ovularak yıkanır.',
+        'Su geçirmeyen oje, boya veya yapışkan maddeler varsa gusülden önce çıkarılmalıdır.',
+      ],
+      citations: <String>[
+        'Kur\'an-ı Kerim, Mâide 5/6; Nisâ 4/43',
+        'Buhârî, Gusül 1; Müslim, Hayz 35',
+        'Diyanet İşleri Başkanlığı, İlmihal I, Gusül bölümü',
+      ],
+      madhabNotes: <String>[
+        'Hanefî\'de ağız ve burnun içini yıkamak farzdır; Şâfiî ve Mâlikî\'de ise niyet etmek farz, ağız ve burnu yıkamak sünnettir.',
+      ],
+      related: <String>['abdest', 'teyemmum', 'kadin_ozel_haller'],
+      category: 'Temizlik',
+    ),
+    KnowledgeEntry(
       id: 'namaz_rekat',
       title: 'Vakit namazları kaç rekâttır?',
       keywords: <String>[
@@ -96,9 +242,9 @@ abstract final class KnowledgeBase {
       keywords: <String>[
         'abdest',
         'nasil abdest',
-        'gustul',
-        'gusul',
-        'teyemmum',
+        'abdest nasil alinir',
+        'abdestin farzlari',
+        'abdesti bozan',
       ],
       answer:
           'Abdest sırasıyla: elleri yıkamak, ağza ve burna su vermek, yüzü yıkamak, '
@@ -682,6 +828,8 @@ abstract final class KnowledgeBase {
 
   /// Kullanıcıya önerilen örnek sorular.
   static const List<String> suggestedQuestions = <String>[
+    'İslam\'ın şartları nelerdir?',
+    'İmanın şartları nelerdir?',
     'Akşam namazı kaç rekât?',
     'Abdest nasıl alınır?',
     'Sabah namazını kaçırdım ne yapmalıyım?',

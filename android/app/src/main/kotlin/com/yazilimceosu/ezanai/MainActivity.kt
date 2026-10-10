@@ -29,6 +29,7 @@ class MainActivity : AudioServiceActivity(), SensorEventListener {
     private val geomagnetic = FloatArray(3)
     private var hasGravity = false
     private var hasGeomagnetic = false
+    private var lastFieldStrengthMicroTesla: Double? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -63,6 +64,9 @@ class MainActivity : AudioServiceActivity(), SensorEventListener {
     private fun startListening() {
         rotationSensor?.let {
             sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_GAME)
+            magnetometer?.let { mag ->
+                sensorManager?.registerListener(this, mag, SensorManager.SENSOR_DELAY_UI)
+            }
         } ?: run {
             accelerometer?.let { sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_GAME) }
             magnetometer?.let { sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_GAME) }
@@ -88,7 +92,16 @@ class MainActivity : AudioServiceActivity(), SensorEventListener {
             Sensor.TYPE_MAGNETIC_FIELD -> {
                 System.arraycopy(event.values, 0, geomagnetic, 0, 3)
                 hasGeomagnetic = true
-                emitFromGravityMagnetic()
+                val bx = event.values[0].toDouble()
+                val by = event.values[1].toDouble()
+                val bz = event.values[2].toDouble()
+                val magnitude = kotlin.math.sqrt(bx * bx + by * by + bz * bz)
+                if (magnitude.isFinite()) {
+                    lastFieldStrengthMicroTesla = magnitude
+                }
+                if (rotationSensor == null) {
+                    emitFromGravityMagnetic()
+                }
             }
         }
     }
@@ -108,21 +121,26 @@ class MainActivity : AudioServiceActivity(), SensorEventListener {
         lastEmit = now
         val orientation = FloatArray(3)
         SensorManager.getOrientation(rotationMatrix, orientation)
-        val azimuthDegrees = ((Math.toDegrees(orientation[0].toDouble()) + 360.0) % 360.0).toFloat()
+        val rawAzimuth = Math.toDegrees(orientation[0].toDouble())
+        val tiltDeg = Math.toDegrees(orientation[1].toDouble())
+        val rollDeg = Math.toDegrees(orientation[2].toDouble())
+        if (!rawAzimuth.isFinite() || !tiltDeg.isFinite() || !rollDeg.isFinite()) return
+
+        val azimuthDegrees = ((rawAzimuth + 360.0) % 360.0).toFloat()
         val accuracyDegrees = when (accuracy) {
             SensorManager.SENSOR_STATUS_ACCURACY_HIGH -> 3.0
             SensorManager.SENSOR_STATUS_ACCURACY_MEDIUM -> 8.0
             SensorManager.SENSOR_STATUS_ACCURACY_LOW -> 15.0
             else -> 25.0
         }
-        eventSink?.success(
-            mapOf(
-                "heading" to azimuthDegrees.toDouble(),
-                "accuracy" to accuracyDegrees,
-                "tilt" to Math.toDegrees(orientation[1].toDouble()),
-                "roll" to Math.toDegrees(orientation[2].toDouble()),
-            ),
+        val payload = mutableMapOf<String, Any>(
+            "heading" to azimuthDegrees.toDouble(),
+            "accuracy" to accuracyDegrees,
+            "tilt" to tiltDeg,
+            "roll" to rollDeg,
         )
+        lastFieldStrengthMicroTesla?.let { payload["fieldStrength"] = it }
+        eventSink?.success(payload)
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) = Unit

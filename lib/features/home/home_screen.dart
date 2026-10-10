@@ -125,10 +125,12 @@ class HomeScreen extends ConsumerWidget {
                         ),
                       NextPrayerCountdownCard(
                         day: value.day,
+                        tomorrow: value.tomorrow,
+                        snapshot: value.snapshot(now),
                         now: now,
                         use24Hour: settings.use24Hour,
                         locationLabel: value.locationLabel,
-                        sourceLabel: value.day.sourceLabel,
+                        sourceLabel: value.snapshot(now).activeDay.sourceLabel,
                         onRefresh: () =>
                             ref.read(prayerTimesProvider.notifier).refresh(),
                       ),
@@ -172,9 +174,10 @@ class _TodayTimesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final PrayerTimesDay day = times_.day;
-    final Prayer current = day.currentPrayer(now);
-    final PrayerTime? next = day.nextPrayer(now);
+    final PrayerScheduleSnapshot snap = times_.snapshot(now);
+    final PrayerTimesDay day = snap.activeDay;
+    final Prayer current = snap.currentPrayer;
+    final PrayerTime? next = snap.nextPrayer;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -199,7 +202,7 @@ class _TodayTimesCard extends StatelessWidget {
             time: day.timeOf(prayer),
             use24Hour: use24Hour,
             isCurrent: current == prayer,
-            isNext: next?.prayer == prayer,
+            isNext: !snap.isAfterIsha && next?.prayer == prayer,
             onTap: () => context.go(AppRoutes.prayers),
             trailing: Icon(
               Icons.notifications_active_outlined,

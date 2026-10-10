@@ -59,9 +59,19 @@ class SettingsController extends Notifier<AppSettings> {
     } catch (error) {
       AppLog.warning('Ayarlar kaydedilemedi: $error');
     }
+    final bool methodChanged =
+        previous.calculationMethodId != next.calculationMethodId ||
+        previous.asrHanafi != next.asrHanafi ||
+        !_sameOffsets(previous.manualOffsets, next.manualOffsets);
+    if (methodChanged) {
+      ref.read(runtimeProvider).prayerTimes.clearMemoryCache();
+      ref.invalidate(prayerTimesProvider);
+      ref.invalidate(prayerRangeProvider);
+    }
     // Bildirim nesnesi `copyWith` içinde korunur; kimlik karşılaştırması
     // gereksiz zamanlamayı önler.
-    if (!identical(previous.notifications, next.notifications) &&
+    if ((!identical(previous.notifications, next.notifications) ||
+            methodChanged) &&
         rescheduleNotifications) {
       unawaited(
         ref.read(notificationCoordinatorProvider).reschedule(settings: next),
@@ -70,6 +80,15 @@ class SettingsController extends Notifier<AppSettings> {
     if (previous.themeMode != next.themeMode) {
       ref.read(themeModeProvider.notifier).syncFromSettings(next.themeMode);
     }
+  }
+
+  static bool _sameOffsets(Map<String, int> a, Map<String, int> b) {
+    if (identical(a, b)) return true;
+    if (a.length != b.length) return false;
+    for (final MapEntry<String, int> entry in a.entries) {
+      if (b[entry.key] != entry.value) return false;
+    }
+    return true;
   }
 
   /// Yedekten geri yükleme.
@@ -364,16 +383,19 @@ class TodayTimes {
   final String? warning;
   final String locationLabel;
 
+  /// Aktif vakit, sıradaki vakit, geri sayım ve gün devri için tek model.
+  PrayerScheduleSnapshot snapshot(DateTime now) =>
+      PrayerScheduleSnapshot.resolve(day: day, tomorrow: tomorrow, now: now);
+
   /// O anki vakit + sonraki vakit + kalan süre.
   ({Prayer current, PrayerTime? next, Duration? remaining}) countdown(
     DateTime now,
   ) {
-    final Prayer current = day.currentPrayer(now);
-    final PrayerTime? next = day.nextPrayer(now);
+    final PrayerScheduleSnapshot snap = snapshot(now);
     return (
-      current: current,
-      next: next,
-      remaining: next?.time.difference(now),
+      current: snap.currentPrayer,
+      next: snap.nextPrayer,
+      remaining: snap.nextPrayer == null ? null : snap.remaining,
     );
   }
 }

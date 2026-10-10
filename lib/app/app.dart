@@ -23,15 +23,42 @@ class EzanAiApp extends ConsumerStatefulWidget {
   ConsumerState<EzanAiApp> createState() => _EzanAiAppState();
 }
 
-class _EzanAiAppState extends ConsumerState<EzanAiApp> {
+class _EzanAiAppState extends ConsumerState<EzanAiApp>
+    with WidgetsBindingObserver {
   StreamSubscription<NotificationRoute>? _routeSub;
   StreamSubscription<Prayer>? _adhanSub;
   StreamSubscription<PushMessage>? _pushSub;
+  DateTime _lastDayCheck = DateTime.now();
+  Duration _lastTimeZoneOffset = DateTime.now().timeZoneOffset;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) => _bindNotifications());
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      final DateTime now = DateTime.now();
+      final bool dayChanged =
+          now.year != _lastDayCheck.year ||
+          now.month != _lastDayCheck.month ||
+          now.day != _lastDayCheck.day;
+      final bool tzChanged = now.timeZoneOffset != _lastTimeZoneOffset;
+      _lastDayCheck = now;
+      _lastTimeZoneOffset = now.timeZoneOffset;
+
+      ref.invalidate(clockProvider);
+      if (dayChanged || tzChanged) {
+        ref.read(runtimeProvider).prayerTimes.clearMemoryCache();
+        ref.invalidate(prayerTimesProvider);
+        ref.invalidate(prayerRangeProvider);
+        ref.invalidate(hijriTodayProvider);
+        unawaited(ref.read(notificationCoordinatorProvider).reschedule());
+      }
+    }
   }
 
   void _bindNotifications() {
@@ -115,6 +142,7 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _routeSub?.cancel();
     _adhanSub?.cancel();
     _pushSub?.cancel();

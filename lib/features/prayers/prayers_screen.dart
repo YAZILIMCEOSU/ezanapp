@@ -111,16 +111,19 @@ class _TodayView extends ConsumerWidget {
         onRetry: () => ref.invalidate(prayerTimesProvider),
       ),
       data: (TodayTimes value) {
-        final PrayerTimesDay day = value.day;
-        final Prayer current = day.currentPrayer(now);
-        final PrayerTime? next = day.nextPrayer(now);
+        final PrayerScheduleSnapshot snap = value.snapshot(now);
+        final PrayerTimesDay day = snap.activeDay;
+        final Prayer current = snap.currentPrayer;
+        final PrayerTime? next = snap.nextPrayer;
 
         return ListView(
           padding: const EdgeInsets.only(bottom: AppSpacing.lg),
           children: <Widget>[
             if (value.warning != null) StatusBanner(message: value.warning!),
             NextPrayerCountdownCard(
-              day: day,
+              day: value.day,
+              tomorrow: value.tomorrow,
+              snapshot: snap,
               now: now,
               use24Hour: settings.use24Hour,
               locationLabel: value.locationLabel,
@@ -164,7 +167,7 @@ class _TodayView extends ConsumerWidget {
                 time: day.timeOf(prayer),
                 use24Hour: settings.use24Hour,
                 isCurrent: current == prayer,
-                isNext: next?.prayer == prayer,
+                isNext: !snap.isAfterIsha && next?.prayer == prayer,
                 onTap: () => _showActions(context, ref, prayer, day),
                 trailing: _OffsetBadge(
                   offset: settings.manualOffsets[prayer.key] ?? 0,

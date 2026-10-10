@@ -37,6 +37,24 @@ enum AiSourceKind {
   };
 }
 
+/// Hata veya yedek yanıt durumu (ayrı ele alınması gereken durumlar).
+enum AiFailureKind {
+  /// Başarılı, doğrulanmış yanıt.
+  none,
+
+  /// Soruya karşılık gelen doğrulanmış kaynak bulunamadı (uydurma engellendi).
+  noVerifiedSource,
+
+  /// İnternet bağlantısı yok veya zaman aşımı.
+  networkError,
+
+  /// Günlük ücretsiz AI soru kotası doldu.
+  quotaExceeded,
+
+  /// Uzak sunucu (5xx/4xx) veya biçim hatası.
+  apiError,
+}
+
 /// Cevapta gösterilen tekil kaynak.
 @immutable
 class AiSource {
@@ -51,6 +69,8 @@ class AiSource {
 
   /// Görünen künye, ör. "Buhârî, Savm 26".
   final String label;
+
+  /// Kaynak adı / ilgili bölüm / referans açıklaması.
   final String? detail;
   final String? url;
 
@@ -97,6 +117,7 @@ class AiMessage {
     this.disclaimer,
     this.relatedQuestions = const <String>[],
     this.failed = false,
+    this.failureKind = AiFailureKind.none,
   });
 
   final String id;
@@ -109,6 +130,7 @@ class AiMessage {
   final String? disclaimer;
   final List<String> relatedQuestions;
   final bool failed;
+  final AiFailureKind failureKind;
 
   Map<String, Object?> toJson() => <String, Object?>{
     'role': fromUser ? 'user' : 'assistant',
@@ -130,6 +152,8 @@ class AiAnswer {
     this.madhabNotes = const <String>[],
     this.relatedQuestions = const <String>[],
     this.topic,
+    this.failureKind = AiFailureKind.none,
+    this.isVerifiedLocal = false,
   });
 
   final String text;
@@ -140,6 +164,11 @@ class AiAnswer {
   final List<String> madhabNotes;
   final List<String> relatedQuestions;
   final String? topic;
+  final AiFailureKind failureKind;
+
+  /// Önceden onaylanmış yerel bilgi tabanı kaydından mı üretildi?
+  /// (Kota dolsa bile bu cevaplar engellenmez.)
+  final bool isVerifiedLocal;
 
   bool get hasSources => sources.isNotEmpty;
 
@@ -154,7 +183,11 @@ class AiAnswer {
     }
     buffer.write('\n\nKaynaklar:');
     for (final AiSource source in sources) {
-      buffer.write('\n• ${source.label}');
+      final String detailSuffix =
+          source.detail == null || source.detail!.isEmpty
+          ? ''
+          : ' (${source.detail})';
+      buffer.write('\n• ${source.label}$detailSuffix');
     }
     if (disclaimer.isNotEmpty) {
       buffer.write('\n\n$disclaimer');

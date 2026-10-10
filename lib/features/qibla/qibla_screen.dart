@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../core/services/compass_service.dart';
+import '../../core/utils/geo.dart';
 import '../../core/utils/logger.dart';
 import '../../data/models/city.dart';
 import '../../design/app_colors.dart';
@@ -40,6 +41,11 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
   Future<void> _start() async {
     final CompassService service = ref.read(compassServiceProvider);
     final double qibla = ref.read(qiblaDirectionProvider);
+    final UserLocation location = ref.read(activeLocationProvider);
+    final double declination = GeoUtils.magneticDeclination(
+      location.latitude,
+      location.longitude,
+    );
 
     final bool supported = await service.checkSupport();
     if (!mounted) return;
@@ -51,8 +57,17 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
     _subscription = service.readings.listen(
       (CompassReading? reading) {
         if (!mounted) return;
+        final double currentQibla = ref.read(qiblaDirectionProvider);
+        final UserLocation currentLocation = ref.read(activeLocationProvider);
+        final double currentDeclination = GeoUtils.magneticDeclination(
+          currentLocation.latitude,
+          currentLocation.longitude,
+        );
         setState(() {
-          _reading = reading?.withQibla(qibla);
+          _reading = reading?.withQibla(
+            currentQibla,
+            declination: currentDeclination,
+          );
           _error = reading == null
               ? 'Pusula verisi okunamadı. Telefonu 8 çizer gibi hareket ettirip tekrar deneyin.'
               : null;
@@ -63,7 +78,7 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
         if (mounted) setState(() => _error = 'Pusula okunamadı.');
       },
     );
-    service.start(qiblaDirection: qibla);
+    service.start(qiblaDirection: qibla, declination: declination);
   }
 
   @override
@@ -77,6 +92,14 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
     final double qibla = ref.watch(qiblaDirectionProvider);
     final double distance = ref.watch(qiblaDistanceProvider);
     final UserLocation location = ref.watch(activeLocationProvider);
+    final double declination = GeoUtils.magneticDeclination(
+      location.latitude,
+      location.longitude,
+    );
+    final CompassReading? activeReading = _reading?.withQibla(
+      qibla,
+      declination: declination,
+    );
     final ThemeData theme = Theme.of(context);
 
     return Scaffold(
@@ -117,12 +140,10 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
           ),
           if (_error != null)
             StatusBanner(icon: Icons.warning_amber_rounded, message: _error!),
-          if (_reading?.needsCalibration ?? false)
-            const StatusBanner(
+          if (activeReading?.needsCalibration ?? false)
+            StatusBanner(
               icon: Icons.screen_rotation_alt_rounded,
-              message:
-                  'Pusula kalibrasyonu gerekiyor: telefonu havada 8 çizer gibi '
-                  'hareket ettirin ve metal eşyalardan uzaklaşın.',
+              message: activeReading!.calibrationMessage,
             ),
           if (!_supported)
             const StatusBanner(
@@ -132,13 +153,13 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
                   'kullanarak yönünüzü ayarlayabilirsiniz.',
             ),
           Center(
-            child: _CompassDial(reading: _reading, qibla: qibla),
+            child: _CompassDial(reading: activeReading, qibla: qibla),
           ),
           const SizedBox(height: AppSpacing.lg),
           _InfoRow(
             icon: Icons.explore_rounded,
             label: 'Kâbe yönü',
-            value: '${qibla.toStringAsFixed(1)}° (kuzeyden saat yönünde)',
+            value: '${qibla.toStringAsFixed(1)}° (gerçek kuzeyden)',
           ),
           _InfoRow(
             icon: Icons.straighten_rounded,
@@ -150,13 +171,19 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
             label: 'Bulunduğunuz koordinat',
             value: location.coordinates,
           ),
-          if (_reading != null)
+          _InfoRow(
+            icon: Icons.compass_calibration_outlined,
+            label: 'Manyetik sapma',
+            value:
+                '${declination >= 0 ? '+' : ''}${declination.toStringAsFixed(1)}°',
+          ),
+          if (activeReading != null)
             _InfoRow(
               icon: Icons.screen_lock_rotation_rounded,
               label: 'Cihaz yönü',
               value:
-                  '${_reading!.heading.toStringAsFixed(0)}° · '
-                  'sapma ${_reading!.differenceToQibla!.toStringAsFixed(0)}°',
+                  '${activeReading.heading.toStringAsFixed(0)}° · '
+                  'sapma ${activeReading.differenceToQibla!.toStringAsFixed(0)}°',
             ),
           const SectionHeader(title: 'Kıble nasıl bulunur?'),
           const Padding(

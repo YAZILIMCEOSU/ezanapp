@@ -18,14 +18,10 @@ class PrayerCountdownChip extends ConsumerWidget {
 
     return times.maybeWhen(
       data: (TodayTimes value) {
-        final PrayerTimesDay day =
-            now.isBefore(value.tomorrow.date) &&
-                now.isAfter(value.day.times[Prayer.yatsi] ?? value.day.date)
-            ? value.tomorrow
-            : value.day;
-        final PrayerTime? next = day.nextPrayer(now);
+        final PrayerScheduleSnapshot snap = value.snapshot(now);
+        final PrayerTime? next = snap.nextPrayer;
         if (next == null) return const SizedBox.shrink();
-        final Duration remaining = next.time.difference(now);
+        final Duration remaining = snap.remaining;
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: Container(
