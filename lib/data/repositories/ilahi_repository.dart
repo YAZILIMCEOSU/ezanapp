@@ -430,28 +430,32 @@ class IlahiRepository {
   // --------------------------------------------------- Yerel (içe aktarılan)
 
   Future<List<IlahiTrack>> localTracks() async {
-    final Directory dir = await _audioDirectory();
-    final Directory localDir = Directory(p.join(dir.path, 'local'));
-    if (!localDir.existsSync()) return <IlahiTrack>[];
-    final List<IlahiTrack> tracks = <IlahiTrack>[];
-    for (final FileSystemEntity entity in localDir.listSync()) {
-      if (entity is! File) continue;
-      final String name = p.basenameWithoutExtension(entity.path);
-      tracks.add(
-        IlahiTrack(
-          id: 'local_${p.basename(entity.path)}',
-          title: name,
-          artist: 'Cihazdan eklendi',
-          kind: IlahiKind.diger,
-          categories: const <String>['Yerel'],
-          audioUrl: entity.path,
-          license: 'Kullanıcı tarafından cihazdan eklendi',
-          isLocal: true,
-          localPath: entity.path,
-        ),
-      );
+    try {
+      final Directory dir = await _audioDirectory();
+      final Directory localDir = Directory(p.join(dir.path, 'local'));
+      if (!localDir.existsSync()) return <IlahiTrack>[];
+      final List<IlahiTrack> tracks = <IlahiTrack>[];
+      for (final FileSystemEntity entity in localDir.listSync()) {
+        if (entity is! File) continue;
+        final String name = p.basenameWithoutExtension(entity.path);
+        tracks.add(
+          IlahiTrack(
+            id: 'local_${p.basename(entity.path)}',
+            title: name,
+            artist: 'Cihazdan eklendi',
+            kind: IlahiKind.diger,
+            categories: const <String>['Yerel'],
+            audioUrl: entity.path,
+            license: 'Kullanıcı tarafından cihazdan eklendi',
+            isLocal: true,
+            localPath: entity.path,
+          ),
+        );
+      }
+      return tracks;
+    } catch (_) {
+      return <IlahiTrack>[];
     }
-    return tracks;
   }
 
   /// Cihazdan seçilen bir dosyayı uygulama kitaplığına kopyalar.
