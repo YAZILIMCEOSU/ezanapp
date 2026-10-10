@@ -119,7 +119,8 @@ class IlahiRepository {
       audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/001001.mp3',
       durationSeconds: 8,
       license: 'Açık Arşiv (EveryAyah — Ticari Olmayan / Eğitim Kullanımı)',
-      description: 'İstenirse tek dokunuşla cihaza indirilip çevrimdışı dinlenebilir.',
+      description:
+          'İstenirse tek dokunuşla cihaza indirilip çevrimdışı dinlenebilir.',
     ),
     IlahiTrack(
       id: 'tilavet_ayetel_kursi',
@@ -131,7 +132,8 @@ class IlahiRepository {
       audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/002255.mp3',
       durationSeconds: 52,
       license: 'Açık Arşiv (EveryAyah — Ticari Olmayan / Eğitim Kullanımı)',
-      description: 'Namaz tesbihatı ve gece korunma duası olarak indirilebilir.',
+      description:
+          'Namaz tesbihatı ve gece korunma duası olarak indirilebilir.',
     ),
     IlahiTrack(
       id: 'tilavet_amenerrasulu',
@@ -155,7 +157,8 @@ class IlahiRepository {
       audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/059022.mp3',
       durationSeconds: 26,
       license: 'Açık Arşiv (EveryAyah — Ticari Olmayan / Eğitim Kullanımı)',
-      description: 'Sabah ve akşam namazları sonrasında okunan Haşr suresi son bölümü.',
+      description:
+          'Sabah ve akşam namazları sonrasında okunan Haşr suresi son bölümü.',
     ),
     IlahiTrack(
       id: 'tilavet_ihlas',

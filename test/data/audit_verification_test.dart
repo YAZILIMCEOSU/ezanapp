@@ -395,14 +395,8 @@ void main() {
 
       final List<IlahiTrack> tracks = await runtime.ilahi.catalog();
       expect(tracks.length, greaterThanOrEqualTo(10));
-      expect(
-        tracks.any((IlahiTrack t) => t.id == 'makam_hicaz_ezan'),
-        isTrue,
-      );
-      expect(
-        tracks.any((IlahiTrack t) => t.id == 'ilahi_ussak_yunus'),
-        isTrue,
-      );
+      expect(tracks.any((IlahiTrack t) => t.id == 'makam_hicaz_ezan'), isTrue);
+      expect(tracks.any((IlahiTrack t) => t.id == 'ilahi_ussak_yunus'), isTrue);
       expect(
         tracks.any((IlahiTrack t) => t.id == 'tilavet_ayetel_kursi'),
         isTrue,

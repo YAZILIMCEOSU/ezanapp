@@ -214,7 +214,8 @@ class _AdhanSoundScreenState extends ConsumerState<AdhanSoundScreen> {
                     : 'Varsayılan (${notifications.adhanSound.label})',
               ),
               trailing: const Icon(Icons.chevron_right_rounded),
-              onTap: () => _pickPrayerSoundSheet(context, prayer, notifications),
+              onTap: () =>
+                  _pickPrayerSoundSheet(context, prayer, notifications),
             ),
           Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
@@ -297,7 +298,9 @@ class _AdhanSoundScreenState extends ConsumerState<AdhanSoundScreen> {
 
     try {
       final Directory support = await getApplicationSupportDirectory();
-      final Directory adhanDir = Directory(p.join(support.path, 'adhan_custom'));
+      final Directory adhanDir = Directory(
+        p.join(support.path, 'adhan_custom'),
+      );
       if (!adhanDir.existsSync()) {
         await adhanDir.create(recursive: true);
       }
@@ -356,9 +359,8 @@ class _AdhanSoundScreenState extends ConsumerState<AdhanSoundScreen> {
                 ),
                 child: Text(
                   '${prayer.label} vakti sesi',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: Theme.of(context).textTheme.titleMedium
+                      ?.copyWith(fontWeight: FontWeight.w700),
                 ),
               ),
               ListTile(

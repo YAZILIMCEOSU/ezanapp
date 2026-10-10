@@ -119,9 +119,7 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp>
         _lastTriggeredPrayerKey = key;
 
         if (!settings.notifications.isEnabledFor(prayer)) continue;
-        if (settings.notifications.isInQuietHours(
-          now.hour * 60 + now.minute,
-        )) {
+        if (settings.notifications.isInQuietHours(now.hour * 60 + now.minute)) {
           continue;
         }
         ref.read(runtimeProvider).notifications.emitAdhanNow(prayer);
