@@ -1,15 +1,15 @@
-# CI raporu (2026-10-10 22:29 UTC)
+# CI raporu (2026-10-10 23:38 UTC)
 
 | adım | sonuç |
 |---|---|
 | pub get | success |
 | format | success |
-| analyze | success |
-| test | success |
+| analyze | failure |
+| test | failure |
 | test (uzak AI sözleşmesi) | success |
-| build (debug apk) | success |
-| build (release appbundle) | success |
-| dene-apk indirmeye açıldı | success |
+| build (debug apk) | failure |
+| build (release appbundle) | failure |
+| dene-apk indirmeye açıldı | skipped |
 
 ## pubget
 ```
@@ -217,233 +217,427 @@ Upgrading analysis_options.yaml to exclude build and platform directories.
 Computing fixes in ezanapp...
 Nothing to fix!
 == dart format ==
-Formatted 111 files (0 changed) in 0.70 seconds.
+Formatted lib/data/repositories/ilahi_repository.dart
+Formatted 111 files (1 changed) in 0.91 seconds.
 ```
 
 ## analyze
 ```
 Analyzing ezanapp...                                            
-No issues found! (ran in 14.9s)
+
+  error • The named parameter 'channelId' is required, but there's no corresponding argument. Try adding the required argument • lib/core/services/notification_service.dart:204:23 • missing_required_argument
+  error • Too many positional arguments: 0 expected, but 1 found. Try removing the extra positional arguments, or specifying the name for named arguments • lib/core/services/notification_service.dart:205:11 • extra_positional_arguments_could_be_named
+  error • The named parameter 'channelId' is required, but there's no corresponding argument. Try adding the required argument • lib/core/services/notification_service.dart:207:23 • missing_required_argument
+  error • Too many positional arguments: 0 expected, but 1 found. Try removing the extra positional arguments, or specifying the name for named arguments • lib/core/services/notification_service.dart:208:11 • extra_positional_arguments_could_be_named
+   info • Missing an 'await' for the 'Future' computed by this expression. Try adding an 'await' or wrapping the expression with 'unawaited' • lib/features/ilahi/ilahi_screen.dart:288:37 • unawaited_futures
+  error • Undefined name 'PlaybackStatus'. Try correcting the name to one that is defined, or defining the name • lib/features/ilahi/ilahi_screen.dart:362:34 • undefined_identifier
+  error • The named parameter 'tooltip' isn't defined. Try correcting the name to an existing named parameter's name, or defining a named parameter with the name 'tooltip' • lib/features/ilahi/player_screen.dart:44:13 • undefined_named_parameter
+
+7 issues found. (ran in 18.1s)
 ```
 
 ## test
 ```
-00:00 +0: loading /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart
-00:00 +0: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: sekme yolları beş ana sekme de çözümlenir
-00:00 +1: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: tüm sabit yollar çözümlenir sabit yol sabitleri
-00:00 +2: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: tüm sabit yollar çözümlenir parametreli yollar çözümlenir
-00:00 +3: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: tüm sabit yollar çözümlenir son sekmedeki alt sayfalar da çözümlenir
-00:00 +4: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: bildirim yönlendirmesi her bildirim hedefi geçerli bir yola gider
-00:00 +5: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: bildirim yönlendirmesi eski bildirim yükleri doğru ekrana yönlendirir
-00:00 +6: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: kaynak taraması app_router.dart içindeki her yol sabiti çözümlenir
-00:00 +7: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: bilinmeyen yol tanımsız yol hata ekranına düşer (çökme yok)
-00:00 +8: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: yol sabitleri tutarlı yol sabitleri Türkçe ve küçük harfli
-00:00 +9: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: yol sabitleri tutarlı sure/ayet yolu sorgu parametresiyle kurulur
-00:00 +10: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli JSON ayrıştırma tüm alanları okur
-00:00 +11: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli eksik alanlar çökmez, kategori varsayılana düşer
-00:00 +12: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli kaynak künyesi paylaşım metninde yer alır
-00:00 +13: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli paylaşım metni Arapça, okunuş ve meali içerir
-00:00 +14: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli Arapçası olmayan dua bile okunabilir paylaşılır
-00:00 +15: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli arama diakritik ve büyük harf duyarsız
-00:00 +16: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli künye metni de aranabilir
-00:00 +17: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: DuaCatalog kategoriye göre süzer
-00:00 +18: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: DuaCatalog boş sorgu tüm listeyi döner
-00:00 +19: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: DuaCatalog sorguya göre süzer
-00:00 +20: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: DuaCatalog kimliğe göre bulur
-00:00 +21: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: DuaCatalog boş katalog güvenli
-00:01 +22: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında soru yerel bilgi tabanından kaynaklı yanıtlanır
-00:01 +23: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında bilinmeyen soruda dürüst "bilmiyorum" cevabı döner
-00:01 +24: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında kaynaklı uzak yanıt kabul edilir
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 810:35                      _CustomZone.run
+  dart:async/zone.dart 702:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 743:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+00:00 +0 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli JSON ayrıştırma tüm alanları okur
+00:00 +1 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli eksik alanlar çökmez, kategori varsayılana düşer
+00:00 +2 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli kaynak künyesi paylaşım metninde yer alır
+00:00 +3 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli paylaşım metni Arapça, okunuş ve meali içerir
+00:00 +4 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli Arapçası olmayan dua bile okunabilir paylaşılır
+00:00 +5 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli arama diakritik ve büyük harf duyarsız
+00:00 +6 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli künye metni de aranabilir
+00:00 +7 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: DuaCatalog kategoriye göre süzer
+00:00 +8 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: DuaCatalog boş sorgu tüm listeyi döner
+00:00 +9 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: DuaCatalog sorguya göre süzer
+00:00 +10 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: DuaCatalog kimliğe göre bulur
+00:00 +11 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: DuaCatalog boş katalog güvenli
+00:00 +12 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında soru yerel bilgi tabanından kaynaklı yanıtlanır
+00:00 +13 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında bilinmeyen soruda dürüst "bilmiyorum" cevabı döner
+00:00 +14 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında kaynaklı uzak yanıt kabul edilir
   Skip: EZANAI_API_BASE tanımlı değil
-00:01 +24 ~1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında kaynaksız uzak yanıt reddedilir, yerel tabana düşülür
+00:00 +14 ~1 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında kaynaksız uzak yanıt reddedilir, yerel tabana düşülür
   Skip: EZANAI_API_BASE tanımlı değil
-00:01 +24 ~2: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında sunucu hatasında (500) uygulama çökmez
+00:00 +14 ~2 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında sunucu hatasında (500) uygulama çökmez
   Skip: EZANAI_API_BASE tanımlı değil
-00:01 +24 ~3: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında bozuk JSON yanıtında uygulama çökmez
+00:00 +14 ~3 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında bozuk JSON yanıtında uygulama çökmez
   Skip: EZANAI_API_BASE tanımlı değil
-00:01 +24 ~4: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında bilinmeyen soruda uzaktan kaynaksız yanıt gelirse dürüst cevap
+00:00 +14 ~4 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında bilinmeyen soruda uzaktan kaynaksız yanıt gelirse dürüst cevap
   Skip: EZANAI_API_BASE tanımlı değil
-00:01 +24 ~5: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında uzak yanıtlara da öneri soruları eklenir
+00:00 +14 ~5 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında uzak yanıtlara da öneri soruları eklenir
   Skip: EZANAI_API_BASE tanımlı değil
-00:03 +24 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings varsayılan ayarlar Diyanet yöntemini kullanır
-00:03 +25 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings JSON gidiş-dönüşü değerleri korur
-00:03 +26 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings bozuk yedek varsayılanlara döner
-00:03 +27 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings Hanefî ikindi yalnızca desteklenen yöntemlerde uygulanır
-00:03 +28 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings manuel düzeltmeler her yöntemde aktarılır
-00:03 +29 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: CalculationMethod bilinmeyen kimlik Diyanet'e döner
-00:03 +30 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: CalculationMethod tüm yöntemler geçerli açılara sahip
-00:03 +31 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils Kâbe yönü Türkiye için güneydoğuyu gösterir
-00:03 +32 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils Kâbe koordinatında mesafe sıfıra yakındır
-00:03 +33 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils İstanbul-Kâbe mesafesi ~2400 km
-00:03 +34 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar (setUpAll)
-00:03 +34 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar bugünü hicri tarihe çevirir
-00:03 +35 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar gün farkı hesabı ve geri dönüş tutarlı
-00:03 +36 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar ay uzunluğu 29 veya 30 gündür
-00:03 +37 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar Ramazan başlangıcı hicri 9. ayın 1. günüdür
-00:03 +38 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar (tearDownAll)
-00:03 +38 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay sıralı veri sağlıklı kabul edilir
-00:03 +39 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay sonraki vakit ve içinde bulunulan vakit doğru bulunur
-00:03 +40 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay bozuk veri sağlıksız kabul edilir
-00:03 +41 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay JSON gidiş-dönüşü vakitleri korur
-00:04 +42 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: (setUpAll)
-00:04 +42 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: zincir sırası Diyanet resmî verisi ilk sırada kullanılır ve önbelleğe yazılır
-00:04 +43 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: zincir sırası Diyanet başarısızsa AlAdhan devreye girer
-00:04 +44 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: zincir sırası her iki servis de çökerse yerel hesap devreye girer
-00:04 +45 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: zincir sırası tutarsız (bozuk) servis verisi reddedilir ve zincir devam eder
-00:04 +46 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış çevrimdışıyken son başarılı veri önbellekten okunur
-00:04 +47 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış süresi geçmiş (6 saatten eski) önbellek kullanılmaz
-00:04 +48 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış çevrimdışı ve önbellek boşsa yerel hesap sonuç üretir
-00:04 +49 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış ilçe seçilmemişse (GPS) resmî servis çağrılmaz, hesap kullanılır
-00:04 +50 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış bellek önbelleği aynı gün için tekrar sorguda ağa çıkmaz
-00:04 +51 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış zorla yenileme önbelleği atlar
-00:04 +52 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: aralık (haftalık/aylık tablo) önbellek aralığı kapsıyorsa ağa çıkılmaz
-00:04 +53 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: aralık (haftalık/aylık tablo) önbellek yoksa çevrimdışı aralık yerel hesapla doldurulur
-00:04 +54 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) resmî yanıt çözümlenir (zarf + hicri tarih)
-00:04 +55 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) 5xx yanıtı geçici hata olarak bildirilir
-00:04 +56 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) bozuk JSON çökme yerine kaynak hatası üretir
-00:04 +57 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) ilçe kimliği yoksa servis çağrılmadan hata verir
-00:04 +58 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) AlAdhan yanıtı çözümlenir ve hicri etiket üretilir
-00:04 +59 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) AlAdhan boş vakit verisinde hata üretir
-00:04 +60 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: kaynak bilgisi (kullanıcı mesajları) resmî veri varken son güncelleme bilgisi gösterilir
-00:04 +61 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: kaynak bilgisi (kullanıcı mesajları) konum seçilmemişse hesap bilgisi gösterilir
-00:04 +62 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: yerel hesap kalibrasyonu Diyanet yöntemiyle İstanbul için tutarlı vakitler üretir
-00:04 +63 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: (tearDownAll)
-00:05 +63 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: (setUpAll)
-00:05 +63 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: AI kota, kaynak doğrulama ve fetva güvenliği günlük kota dolsa bile İslam'ın ve imanın şartları gibi onaylı cevaplar engellenmez
-00:05 +64 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: AI kota, kaynak doğrulama ve fetva güvenliği fetva soruları tespit edilir ve uydurma kaynaklar elenir
-00:05 +65 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Namaz vakitleri tekil anlık görüntü (PrayerScheduleSnapshot) gün içinde aktif vakit, sıradaki vakit ve geri sayım tutarlıdır
-00:05 +66 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Namaz vakitleri tekil anlık görüntü (PrayerScheduleSnapshot) yatsı sonrasında sıradaki vakit yarının imsakıdır
-00:05 +67 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Namaz vakitleri tekil anlık görüntü (PrayerScheduleSnapshot) gece yarısı geçildiğinde aktif gün otomatik olarak yarına devreder
-00:05 +68 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Namaz vakitleri tekil anlık görüntü (PrayerScheduleSnapshot) hesaplama yöntemi ve Hanefî ikindi değişimi vakitleri yeniler
-00:05 +69 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Dijital tesbih tutarlılığı ve kalıcılığı oturum sayacı, günlük toplam, hedef değişimi, sıfırlama ve yeniden açılış tutarlıdır
-00:05 +70 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Kıble pusulası doğrulama, manyetik sapma ve kalibrasyon geçersiz sensör verisi reddedilir
-00:05 +71 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Kıble pusulası doğrulama, manyetik sapma ve kalibrasyon manyetik kuzey sapması gerçek kuzeye doğru eklenir
-00:05 +72 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Kıble pusulası doğrulama, manyetik sapma ve kalibrasyon manyetik parazit ve telefon eğimi ayrı uyarılarla bildirilir
-00:05 +73 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Gizlilik ve log temizliği AppLog.sanitize koordinat, e-posta ve anahtarları maskeler
-00:05 +74 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu varsayılan ezan sesi Hicaz makamıdır ve vakit bazlı ses özelleştirmesi korunur
-00:05 +75 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu ilahi ve dini sesler kataloğu telifsiz ve indirilebilir içeriklerle dolu gelir
-00:05 +76 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu bildirim seslerinde çan ifadesi yer almaz; telifsiz ilahi ve ezan makamları kullanılır
-00:05 +77 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu uygulama adı Ezan, dil desteği TR/EN/AR, meal seçimi, saat geri alma ve Esmaül Hüsna doğrulanır
-00:05 +78 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu Kur'an meal seçimleri (TR Diyanet, TR Vakıf, EN Saheeh, AR الميسر) sure içeriğini gerçekten değiştirir ve tüm ezan/ilahi ses varlıkları mevcuttur
-00:06 +79 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: (tearDownAll)
-00:06 +79 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: (setUpAll)
-00:06 +79 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: kategoriler tanımlı ve benzersiz
-00:06 +80 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: en az 30 dua var ve kimlikler benzersiz
-00:06 +81 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duada ad, okunuş, meal ve kategori dolu
-00:06 +82 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duada kaynak künyesi var
-00:06 +83 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: kaynak künyeleri ya Kur'an ya muteber hadis kaynağına dayanır
-00:06 +84 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duanın kategorisi kategori listesinde tanımlı
-00:06 +85 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her kategoride en az bir dua var (boş sekme olmasın)
-00:06 +86 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: Kur'an kaynaklı duaların künyesi sure/ayet içerir
-00:06 +87 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: Arapça metin içeren dualar Arapça alfabede
-00:06 +88 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: katalogda arama ve kategori süzme çalışıyor
-00:06 +89 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: (tearDownAll)
-00:07 +89 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı en az 20 kayıt ve benzersiz kimlikler
-00:07 +90 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı her kayıtta başlık, cevap, anahtar kelime ve kaynak var
-00:07 +91 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı anahtar kelimeler küçük harf ve ASCII (arama uyumu)
-00:07 +92 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı anahtar kelimeler yeterince ayırt edici
-00:07 +93 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı ilişkili kayıt kimlikleri geçerli
-00:07 +94 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı mezhep farkı notları en az birkaç kayıtta bulunur
-00:07 +95 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı kaynak künyeleri kaynak türüne ayrılabiliyor
-00:07 +96 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi namaz rekatı sorusu doğru kayda gider
-00:07 +97 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi abdest sorusu doğru kayda gider
-00:07 +98 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi zekât sorusu doğru kayda gider
-00:07 +99 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi kıble sorusu doğru kayda gider
-00:07 +100 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi Türkçe karakter ve büyük harf farkı eşleşmeyi bozmaz
-00:07 +101 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi her yerel cevap kaynak, uyarı ve mezhep bilgisi taşır
-00:07 +102 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi konu kelimesi genel kelimelere üstün gelir (vitir/teravih)
-00:07 +103 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi ayırt edici kelime puanı, genel kelimelerden yüksektir
-00:07 +104 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi harf düşmesi olan sorular da eşleşir (hatim → hatmi)
-00:07 +105 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi Kâbe yönü sorusu kıble kaydına gider
-00:07 +106 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi önerilen sorular kimlik değil, okunabilir başlık olarak döner
-00:07 +107 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi kayda uymayan soru için uydurma cevap üretilmez
-00:07 +108 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi soru boşsa eşleşme yapılmaz
-00:07 +109 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi paylaşım metni kaynakları ve mezhep notlarını içerir
-00:07 +110 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi İslam'ın şartları sorusuna beş şartı doğru sırayla ve kaynaklı cevaplar
-00:07 +111 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi İmanın şartları sorusuna altı iman esasını doğru sırayla ve kaynaklı cevaplar
-00:07 +112 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi birleşik sorularda RAG yaklaşımıyla her iki doğrulanmış kayıt birleştirilir
-00:07 +113 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri yedi gün × altı vakit için kimlikler benzersiz
-00:07 +114 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri kimlikler ilgili aralıkta kalır
-00:07 +115 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri vakit kimlikleri tekil bildirim kimlikleriyle çakışmaz
-00:07 +116 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim yönlendirme yükü her hedef kendi yüküyle ayrışır
-00:07 +117 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim yönlendirme yükü ayrıntılı yükler ve tanımsız yükler güvenli
-00:07 +118 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları varsayılan olarak güneş vakti bildirilmez
-00:07 +119 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları kullanıcı bir vakti kapatabilir
-00:07 +120 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları bildirimler tümden kapatılınca hiçbir vakit bildirilmez
-00:07 +121 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları eksik ayar güvenli tarafta kalır (kapalı sayılır)
-00:07 +122 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu varsayılan sessiz saat kapalı
-00:07 +123 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu sessiz saat aralığı gece yarısını aşabilir
-00:07 +124 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu uyku modu 22:00–07:00 arasını kapsar
-00:07 +125 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu öğle vakti sessiz saate girmez
-00:07 +126 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı ön hatırlatma varsayılan olarak kapalı
-00:07 +127 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı ön hatırlatma dakikası ayarlanabilir
-00:07 +128 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı zamanlanan gün sayısı makul aralıkta
-00:08 +129 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Türkçe karakterleri sadeleştirir
-00:08 +130 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer kelimelere ayırır ve kısa kelimeleri atar
-00:08 +131 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer ekleri kaba biçimde kırpar
-00:08 +132 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer eşleştirme aksan ve ek farklarını tolere eder
-00:08 +133 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Arapça harekeleri kaldırır
-00:08 +134 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer yüzde biçimi
-00:08 +135 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime geri sayım ve dijital sayaç biçimi
-00:08 +136 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime 24 saat ve 12 saat biçimi
-00:08 +137 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime gün karşılaştırması
-00:08 +138 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: (setUpAll)
-00:09 +138 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
-00:09 +139 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
-00:09 +140 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
-00:09 +141 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
-00:09 +142 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
-00:09 +143 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
-00:09 +144 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
-00:10 +145 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
-00:10 +146 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
-00:10 +147 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
-00:10 +148 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Kur'an — küçük telefon 320×568
-00:10 +149 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları Daha Fazla ekranı yalnızca açık modülleri listeler
-00:10 +150 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Kur'an — telefon 411×914
-00:10 +151 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Kur'an — tablet 1024×1366
-00:10 +152 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — küçük telefon 320×568
-00:10 +153 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — telefon 411×914
-00:10 +154 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — tablet 1024×1366
-00:10 +155 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — küçük telefon 320×568
-00:11 +156 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — telefon 411×914
-00:11 +157 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — tablet 1024×1366
-00:11 +158 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — küçük telefon 320×568
-00:11 +159 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — telefon 411×914
-00:11 +160 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — tablet 1024×1366
-00:11 +161 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — küçük telefon 320×568
-00:11 +162 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — telefon 411×914
-00:11 +163 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — tablet 1024×1366
-00:11 +164 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — küçük telefon 320×568
-00:11 +165 ~6: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: (setUpAll)
-00:11 +165 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — telefon 411×914
-00:11 +166 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — telefon 411×914
-00:11 +167 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — telefon 411×914
-00:11 +168 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — telefon 411×914
-00:11 +169 ~6: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: Hanefî ikindi vakti Şâfiî'den sonra olur
-00:11 +170 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — tablet 1024×1366
-00:11 +171 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — tablet 1024×1366
-00:11 +172 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — küçük telefon 320×568
-00:11 +173 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — telefon 411×914
-00:11 +174 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — tablet 1024×1366
-00:11 +175 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — küçük telefon 320×568
-00:11 +176 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — telefon 411×914
-00:12 +177 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — tablet 1024×1366
-00:12 +178 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — küçük telefon 320×568
-00:12 +179 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — telefon 411×914
-00:12 +180 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — tablet 1024×1366
-00:12 +181 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Dualar: künye özeti ve kategori çipleri görünür
-00:12 +182 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Hadis: başlık ve konu çipleri görünür
-[hadis tanısı] çipler: false · yükleniyor: true · metinler: Hadis metni veya konu ara | Hadisler yükleniyor… | Hadis | Sahih kaynaklardan seçkiler
-00:12 +183 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Zikir: tesbih ekranı sayaç ile çizilir
-00:12 +184 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Vakitler: liste başlığı ve ayar ipucu birlikte görünür
-00:12 +185 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Kur'an: sure listesi yüklenir
-00:12 +186 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Daha Fazla: tüm bölüm girişleri listelenir
-00:12 +187 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir hata görünümü anlaşılır mesaj ve "Tekrar dene" sunar
-00:12 +188 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir izni olmayan hatalarda "Tekrar dene" gösterilmez
-00:12 +189 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir vakitler cihazda hesaplandıysa uyarı şeridi görünür
-00:12 +190 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: (tearDownAll)
-00:12 +190 ~6: All tests passed!
+00:00 +14 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings varsayılan ayarlar Diyanet yöntemini kullanır
+00:00 +15 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings JSON gidiş-dönüşü değerleri korur
+00:00 +16 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings bozuk yedek varsayılanlara döner
+00:00 +17 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings Hanefî ikindi yalnızca desteklenen yöntemlerde uygulanır
+00:00 +18 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings manuel düzeltmeler her yöntemde aktarılır
+00:00 +19 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: CalculationMethod bilinmeyen kimlik Diyanet'e döner
+00:00 +20 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: CalculationMethod tüm yöntemler geçerli açılara sahip
+00:00 +21 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils Kâbe yönü Türkiye için güneydoğuyu gösterir
+00:00 +22 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils Kâbe koordinatında mesafe sıfıra yakındır
+00:00 +23 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils İstanbul-Kâbe mesafesi ~2400 km
+00:00 +24 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar (setUpAll)
+00:00 +24 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar bugünü hicri tarihe çevirir
+00:00 +25 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar gün farkı hesabı ve geri dönüş tutarlı
+00:00 +26 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar ay uzunluğu 29 veya 30 gündür
+00:00 +27 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar Ramazan başlangıcı hicri 9. ayın 1. günüdür
+00:00 +28 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar (tearDownAll)
+00:00 +28 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay sıralı veri sağlıklı kabul edilir
+00:00 +29 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay sonraki vakit ve içinde bulunulan vakit doğru bulunur
+00:00 +30 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay bozuk veri sağlıksız kabul edilir
+00:00 +31 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay JSON gidiş-dönüşü vakitleri korur
+lib/core/services/notification_service.dart:204:48: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+        await android.deleteNotificationChannel(
+                                               ^
+lib/core/services/notification_service.dart:207:48: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+        await android.deleteNotificationChannel(
+                                               ^
+lib/features/ilahi/ilahi_screen.dart:362:34: Error: The getter 'PlaybackStatus' isn't defined for the type '_IlahiScreenState'.
+ - '_IlahiScreenState' is from 'package:ezanai/features/ilahi/ilahi_screen.dart' ('lib/features/ilahi/ilahi_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'PlaybackStatus'.
+      if (currentState.status == PlaybackStatus.paused) {
+                                 ^^^^^^^^^^^^^^
+lib/features/ilahi/player_screen.dart:44:13: Error: No named parameter with the name 'tooltip'.
+            tooltip: 'Oynatma hızı',
+            ^^^^^^^
+/opt/hostedtoolcache/flutter/stable-3.47.7-x64/flutter/packages/flutter/lib/src/material/text_button.dart:83:9: Context: Found this candidate, but the arguments don't match.
+  const TextButton({
+        ^^^^^^^^^^
+00:10 +32 ~6 -2: loading /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart [E]
+  Failed to load "/home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart":
+  Compilation failed for testPath=/home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: lib/core/services/notification_service.dart:204:48: Error: Too many positional arguments: 0 allowed, but 1 found.
+  Try removing the extra positional arguments.
+          await android.deleteNotificationChannel(
+                                                 ^
+  lib/core/services/notification_service.dart:207:48: Error: Too many positional arguments: 0 allowed, but 1 found.
+  Try removing the extra positional arguments.
+          await android.deleteNotificationChannel(
+                                                 ^
+  lib/features/ilahi/ilahi_screen.dart:362:34: Error: The getter 'PlaybackStatus' isn't defined for the type '_IlahiScreenState'.
+   - '_IlahiScreenState' is from 'package:ezanai/features/ilahi/ilahi_screen.dart' ('lib/features/ilahi/ilahi_screen.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'PlaybackStatus'.
+        if (currentState.status == PlaybackStatus.paused) {
+                                   ^^^^^^^^^^^^^^
+  lib/features/ilahi/player_screen.dart:44:13: Error: No named parameter with the name 'tooltip'.
+              tooltip: 'Oynatma hızı',
+              ^^^^^^^
+  /opt/hostedtoolcache/flutter/stable-3.47.7-x64/flutter/packages/flutter/lib/src/material/text_button.dart:83:9: Context: Found this candidate, but the arguments don't match.
+    const TextButton({
+          ^^^^^^^^^^
+  .
+00:11 +32 ~6 -2: loading /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart [E]
+  Error: The Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 1024:11   DefaultResidentCompiler._compile.<fn>
+  dart:async/zone_root.dart 48:47                  _rootRunUnary
+  dart:async/zone.dart 816:35                      _CustomZone.runUnary
+  dart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 977:13               Future._propagateToListeners
+  dart:async/future_impl.dart 862:9                Future._propagateToListeners
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 810:35                      _CustomZone.run
+  dart:async/zone.dart 702:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 743:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+lib/core/services/notification_service.dart:204:48: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+        await android.deleteNotificationChannel(
+                                               ^
+lib/core/services/notification_service.dart:207:48: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+        await android.deleteNotificationChannel(
+                                               ^
+lib/features/ilahi/ilahi_screen.dart:362:34: Error: The getter 'PlaybackStatus' isn't defined for the type '_IlahiScreenState'.
+ - '_IlahiScreenState' is from 'package:ezanai/features/ilahi/ilahi_screen.dart' ('lib/features/ilahi/ilahi_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'PlaybackStatus'.
+      if (currentState.status == PlaybackStatus.paused) {
+                                 ^^^^^^^^^^^^^^
+lib/features/ilahi/player_screen.dart:44:13: Error: No named parameter with the name 'tooltip'.
+            tooltip: 'Oynatma hızı',
+            ^^^^^^^
+/opt/hostedtoolcache/flutter/stable-3.47.7-x64/flutter/packages/flutter/lib/src/material/text_button.dart:83:9: Context: Found this candidate, but the arguments don't match.
+  const TextButton({
+        ^^^^^^^^^^
+00:21 +32 ~6 -3: loading /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart [E]
+  Failed to load "/home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart":
+  Compilation failed for testPath=/home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: lib/core/services/notification_service.dart:204:48: Error: Too many positional arguments: 0 allowed, but 1 found.
+  Try removing the extra positional arguments.
+          await android.deleteNotificationChannel(
+                                                 ^
+  lib/core/services/notification_service.dart:207:48: Error: Too many positional arguments: 0 allowed, but 1 found.
+  Try removing the extra positional arguments.
+          await android.deleteNotificationChannel(
+                                                 ^
+  lib/features/ilahi/ilahi_screen.dart:362:34: Error: The getter 'PlaybackStatus' isn't defined for the type '_IlahiScreenState'.
+   - '_IlahiScreenState' is from 'package:ezanai/features/ilahi/ilahi_screen.dart' ('lib/features/ilahi/ilahi_screen.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'PlaybackStatus'.
+        if (currentState.status == PlaybackStatus.paused) {
+                                   ^^^^^^^^^^^^^^
+  lib/features/ilahi/player_screen.dart:44:13: Error: No named parameter with the name 'tooltip'.
+              tooltip: 'Oynatma hızı',
+              ^^^^^^^
+  /opt/hostedtoolcache/flutter/stable-3.47.7-x64/flutter/packages/flutter/lib/src/material/text_button.dart:83:9: Context: Found this candidate, but the arguments don't match.
+    const TextButton({
+          ^^^^^^^^^^
+  .
+00:21 +32 ~6 -3: loading /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart [E]
+  Error: The Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 1024:11   DefaultResidentCompiler._compile.<fn>
+  dart:async/zone_root.dart 48:47                  _rootRunUnary
+  dart:async/zone.dart 816:35                      _CustomZone.runUnary
+  dart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 977:13               Future._propagateToListeners
+  dart:async/future_impl.dart 862:9                Future._propagateToListeners
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 810:35                      _CustomZone.run
+  dart:async/zone.dart 702:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 743:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+00:22 +32 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: (setUpAll)
+00:23 +32 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: kategoriler tanımlı ve benzersiz
+00:23 +33 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: en az 30 dua var ve kimlikler benzersiz
+00:23 +34 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duada ad, okunuş, meal ve kategori dolu
+00:23 +35 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duada kaynak künyesi var
+00:23 +36 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: kaynak künyeleri ya Kur'an ya muteber hadis kaynağına dayanır
+00:23 +37 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duanın kategorisi kategori listesinde tanımlı
+00:23 +38 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her kategoride en az bir dua var (boş sekme olmasın)
+00:23 +39 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: Kur'an kaynaklı duaların künyesi sure/ayet içerir
+00:23 +40 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: Arapça metin içeren dualar Arapça alfabede
+00:23 +41 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: katalogda arama ve kategori süzme çalışıyor
+00:23 +42 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: (tearDownAll)
+lib/core/services/notification_service.dart:204:48: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+        await android.deleteNotificationChannel(
+                                               ^
+lib/core/services/notification_service.dart:207:48: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+        await android.deleteNotificationChannel(
+                                               ^
+00:23 +42 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı en az 20 kayıt ve benzersiz kimlikler
+00:23 +43 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı her kayıtta başlık, cevap, anahtar kelime ve kaynak var
+00:23 +44 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı anahtar kelimeler küçük harf ve ASCII (arama uyumu)
+00:23 +45 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı anahtar kelimeler yeterince ayırt edici
+00:23 +46 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı ilişkili kayıt kimlikleri geçerli
+00:23 +47 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı mezhep farkı notları en az birkaç kayıtta bulunur
+00:23 +48 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı kaynak künyeleri kaynak türüne ayrılabiliyor
+00:23 +49 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi namaz rekatı sorusu doğru kayda gider
+00:23 +50 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi abdest sorusu doğru kayda gider
+00:23 +51 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi zekât sorusu doğru kayda gider
+00:23 +52 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi kıble sorusu doğru kayda gider
+00:23 +53 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi Türkçe karakter ve büyük harf farkı eşleşmeyi bozmaz
+00:23 +54 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi her yerel cevap kaynak, uyarı ve mezhep bilgisi taşır
+00:23 +55 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi konu kelimesi genel kelimelere üstün gelir (vitir/teravih)
+00:23 +56 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi ayırt edici kelime puanı, genel kelimelerden yüksektir
+00:23 +57 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi harf düşmesi olan sorular da eşleşir (hatim → hatmi)
+00:23 +58 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi Kâbe yönü sorusu kıble kaydına gider
+00:23 +59 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi önerilen sorular kimlik değil, okunabilir başlık olarak döner
+00:23 +60 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi kayda uymayan soru için uydurma cevap üretilmez
+00:23 +61 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi soru boşsa eşleşme yapılmaz
+00:23 +62 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi paylaşım metni kaynakları ve mezhep notlarını içerir
+00:23 +63 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi İslam'ın şartları sorusuna beş şartı doğru sırayla ve kaynaklı cevaplar
+00:23 +64 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi İmanın şartları sorusuna altı iman esasını doğru sırayla ve kaynaklı cevaplar
+00:23 +65 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi birleşik sorularda RAG yaklaşımıyla her iki doğrulanmış kayıt birleştirilir
+00:23 +66 ~6 -4: loading /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart [E]
+  Failed to load "/home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart":
+  Compilation failed for testPath=/home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: lib/core/services/notification_service.dart:204:48: Error: Too many positional arguments: 0 allowed, but 1 found.
+  Try removing the extra positional arguments.
+          await android.deleteNotificationChannel(
+                                                 ^
+  lib/core/services/notification_service.dart:207:48: Error: Too many positional arguments: 0 allowed, but 1 found.
+  Try removing the extra positional arguments.
+          await android.deleteNotificationChannel(
+                                                 ^
+  .
+00:23 +66 ~6 -4: loading /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart [E]
+  Error: The Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 1024:11   DefaultResidentCompiler._compile.<fn>
+  dart:async/zone_root.dart 48:47                  _rootRunUnary
+  dart:async/zone.dart 816:35                      _CustomZone.runUnary
+  dart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 977:13               Future._propagateToListeners
+  dart:async/future_impl.dart 862:9                Future._propagateToListeners
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 810:35                      _CustomZone.run
+  dart:async/zone.dart 702:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 743:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+00:25 +66 ~6 -4: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Türkçe karakterleri sadeleştirir
+00:25 +67 ~6 -4: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer kelimelere ayırır ve kısa kelimeleri atar
+00:25 +68 ~6 -4: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer ekleri kaba biçimde kırpar
+00:25 +69 ~6 -4: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer eşleştirme aksan ve ek farklarını tolere eder
+00:25 +70 ~6 -4: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Arapça harekeleri kaldırır
+00:25 +71 ~6 -4: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer yüzde biçimi
+00:25 +72 ~6 -4: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime geri sayım ve dijital sayaç biçimi
+00:25 +73 ~6 -4: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime 24 saat ve 12 saat biçimi
+00:25 +74 ~6 -4: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime gün karşılaştırması
+lib/core/services/notification_service.dart:204:48: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+        await android.deleteNotificationChannel(
+                                               ^
+lib/core/services/notification_service.dart:207:48: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+        await android.deleteNotificationChannel(
+                                               ^
+lib/features/ilahi/ilahi_screen.dart:362:34: Error: The getter 'PlaybackStatus' isn't defined for the type '_IlahiScreenState'.
+ - '_IlahiScreenState' is from 'package:ezanai/features/ilahi/ilahi_screen.dart' ('lib/features/ilahi/ilahi_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'PlaybackStatus'.
+      if (currentState.status == PlaybackStatus.paused) {
+                                 ^^^^^^^^^^^^^^
+lib/features/ilahi/player_screen.dart:44:13: Error: No named parameter with the name 'tooltip'.
+            tooltip: 'Oynatma hızı',
+            ^^^^^^^
+/opt/hostedtoolcache/flutter/stable-3.47.7-x64/flutter/packages/flutter/lib/src/material/text_button.dart:83:9: Context: Found this candidate, but the arguments don't match.
+  const TextButton({
+        ^^^^^^^^^^
+00:35 +75 ~6 -5: loading /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart [E]
+  Failed to load "/home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart":
+  Compilation failed for testPath=/home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: lib/core/services/notification_service.dart:204:48: Error: Too many positional arguments: 0 allowed, but 1 found.
+  Try removing the extra positional arguments.
+          await android.deleteNotificationChannel(
+                                                 ^
+  lib/core/services/notification_service.dart:207:48: Error: Too many positional arguments: 0 allowed, but 1 found.
+  Try removing the extra positional arguments.
+          await android.deleteNotificationChannel(
+                                                 ^
+  lib/features/ilahi/ilahi_screen.dart:362:34: Error: The getter 'PlaybackStatus' isn't defined for the type '_IlahiScreenState'.
+   - '_IlahiScreenState' is from 'package:ezanai/features/ilahi/ilahi_screen.dart' ('lib/features/ilahi/ilahi_screen.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'PlaybackStatus'.
+        if (currentState.status == PlaybackStatus.paused) {
+                                   ^^^^^^^^^^^^^^
+  lib/features/ilahi/player_screen.dart:44:13: Error: No named parameter with the name 'tooltip'.
+              tooltip: 'Oynatma hızı',
+              ^^^^^^^
+  /opt/hostedtoolcache/flutter/stable-3.47.7-x64/flutter/packages/flutter/lib/src/material/text_button.dart:83:9: Context: Found this candidate, but the arguments don't match.
+    const TextButton({
+          ^^^^^^^^^^
+  .
+00:35 +75 ~6 -5: loading /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart [E]
+  Error: The Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 1024:11   DefaultResidentCompiler._compile.<fn>
+  dart:async/zone_root.dart 48:47                  _rootRunUnary
+  dart:async/zone.dart 816:35                      _CustomZone.runUnary
+  dart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 977:13               Future._propagateToListeners
+  dart:async/future_impl.dart 862:9                Future._propagateToListeners
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 810:35                      _CustomZone.run
+  dart:async/zone.dart 702:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 743:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+lib/core/services/notification_service.dart:204:48: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+        await android.deleteNotificationChannel(
+                                               ^
+lib/core/services/notification_service.dart:207:48: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+        await android.deleteNotificationChannel(
+                                               ^
+lib/features/ilahi/ilahi_screen.dart:362:34: Error: The getter 'PlaybackStatus' isn't defined for the type '_IlahiScreenState'.
+ - '_IlahiScreenState' is from 'package:ezanai/features/ilahi/ilahi_screen.dart' ('lib/features/ilahi/ilahi_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'PlaybackStatus'.
+      if (currentState.status == PlaybackStatus.paused) {
+                                 ^^^^^^^^^^^^^^
+lib/features/ilahi/player_screen.dart:44:13: Error: No named parameter with the name 'tooltip'.
+            tooltip: 'Oynatma hızı',
+            ^^^^^^^
+/opt/hostedtoolcache/flutter/stable-3.47.7-x64/flutter/packages/flutter/lib/src/material/text_button.dart:83:9: Context: Found this candidate, but the arguments don't match.
+  const TextButton({
+        ^^^^^^^^^^
+00:46 +75 ~6 -6: loading /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart [E]
+  Failed to load "/home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart":
+  Compilation failed for testPath=/home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: lib/core/services/notification_service.dart:204:48: Error: Too many positional arguments: 0 allowed, but 1 found.
+  Try removing the extra positional arguments.
+          await android.deleteNotificationChannel(
+                                                 ^
+  lib/core/services/notification_service.dart:207:48: Error: Too many positional arguments: 0 allowed, but 1 found.
+  Try removing the extra positional arguments.
+          await android.deleteNotificationChannel(
+                                                 ^
+  lib/features/ilahi/ilahi_screen.dart:362:34: Error: The getter 'PlaybackStatus' isn't defined for the type '_IlahiScreenState'.
+   - '_IlahiScreenState' is from 'package:ezanai/features/ilahi/ilahi_screen.dart' ('lib/features/ilahi/ilahi_screen.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'PlaybackStatus'.
+        if (currentState.status == PlaybackStatus.paused) {
+                                   ^^^^^^^^^^^^^^
+  lib/features/ilahi/player_screen.dart:44:13: Error: No named parameter with the name 'tooltip'.
+              tooltip: 'Oynatma hızı',
+              ^^^^^^^
+  /opt/hostedtoolcache/flutter/stable-3.47.7-x64/flutter/packages/flutter/lib/src/material/text_button.dart:83:9: Context: Found this candidate, but the arguments don't match.
+    const TextButton({
+          ^^^^^^^^^^
+  .
+00:46 +75 ~6 -6: loading /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart [E]
+  Error: The Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 1024:11   DefaultResidentCompiler._compile.<fn>
+  dart:async/zone_root.dart 48:47                  _rootRunUnary
+  dart:async/zone.dart 816:35                      _CustomZone.runUnary
+  dart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 977:13               Future._propagateToListeners
+  dart:async/future_impl.dart 862:9                Future._propagateToListeners
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 810:35                      _CustomZone.run
+  dart:async/zone.dart 702:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 743:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+00:47 +75 ~6 -6: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: (setUpAll)
+00:47 +75 ~6 -6: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: doğrulama verisi yüklendi
+00:47 +76 ~6 -6: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: yerel hesap, Diyanet vakitlerine ±3 dakika içinde kalır
+00:47 +77 ~6 -6: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: vakitler gün içinde artan sırada
+00:47 +78 ~6 -6: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: Hanefî ikindi vakti Şâfiî'den sonra olur
+00:47 +79 ~6 -6: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: yüksek enlemlerde gece ortası kuralı vakit üretir
+00:47 +80 ~6 -6: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: (tearDownAll)
+00:47 +80 ~6 -6: Some tests failed.
+
+Failing tests:
+  /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: loading /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart
+  /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: loading /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart
+  /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: loading /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart
+  /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: loading /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart
+  ... and 2 more
 ```
 
 ## ai
@@ -464,28 +658,6 @@ No issues found! (ran in 14.9s)
 
 ## build
 ```
-[==============                         ] 36% Unzipping... android-ndk-r28c/tool
-[==============                         ] 37% Unzipping... android-ndk-r28c/tool
-[===============                        ] 38% Unzipping... android-ndk-r28c/tool
-[===============                        ] 39% Unzipping... android-ndk-r28c/tool
-[===============                        ] 40% Unzipping... android-ndk-r28c/tool
-[================                       ] 40% Unzipping... android-ndk-r28c/tool
-[================                       ] 41% Unzipping... android-ndk-r28c/tool
-[================                       ] 42% Unzipping... android-ndk-r28c/tool
-[=================                      ] 43% Unzipping... android-ndk-r28c/tool
-[=================                      ] 44% Unzipping... android-ndk-r28c/tool
-[=================                      ] 45% Unzipping... android-ndk-r28c/tool
-[==================                     ] 45% Unzipping... android-ndk-r28c/tool
-[==================                     ] 46% Unzipping... android-ndk-r28c/tool
-[==================                     ] 47% Unzipping... android-ndk-r28c/tool
-[===================                    ] 48% Unzipping... android-ndk-r28c/tool
-[===================                    ] 49% Unzipping... android-ndk-r28c/tool
-[===================                    ] 50% Unzipping... android-ndk-r28c/tool
-[====================                   ] 50% Unzipping... android-ndk-r28c/tool
-[====================                   ] 51% Unzipping... android-ndk-r28c/tool
-[====================                   ] 52% Unzipping... android-ndk-r28c/tool
-[=====================                  ] 53% Unzipping... android-ndk-r28c/tool
-[=====================                  ] 54% Unzipping... android-ndk-r28c/tool
 [=====================                  ] 54% Unzipping... android-ndk-r28c/buil
 [=====================                  ] 54% Unzipping... android-ndk-r28c/sour
 [=====================                  ] 54% Unzipping... android-ndk-r28c/NOTI
@@ -507,23 +679,45 @@ Preparing "Install CMake 3.22.1 v.3.22.1".
 Installing CMake 3.22.1 in /usr/local/lib/android/sdk/cmake/3.22.1
 "Install CMake 3.22.1 v.3.22.1" complete.
 "Install CMake 3.22.1 v.3.22.1" finished.
+lib/core/services/notification_service.dart:204:48: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+        await android.deleteNotificationChannel(
+                                               ^
+lib/core/services/notification_service.dart:207:48: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+        await android.deleteNotificationChannel(
+                                               ^
+lib/features/ilahi/ilahi_screen.dart:362:34: Error: The getter 'PlaybackStatus' isn't defined for the type '_IlahiScreenState'.
+ - '_IlahiScreenState' is from 'package:ezanai/features/ilahi/ilahi_screen.dart' ('lib/features/ilahi/ilahi_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'PlaybackStatus'.
+      if (currentState.status == PlaybackStatus.paused) {
+                                 ^^^^^^^^^^^^^^
+lib/features/ilahi/player_screen.dart:44:13: Error: No named parameter with the name 'tooltip'.
+            tooltip: 'Oynatma hızı',
+            ^^^^^^^
+/opt/hostedtoolcache/flutter/stable-3.47.7-x64/flutter/packages/flutter/lib/src/material/text_button.dart:83:9: Context: Found this candidate, but the arguments don't match.
+  const TextButton({
+        ^^^^^^^^^^
+Target kernel_snapshot_program failed: Exception
+
 Note: /home/runner/.pub-cache/hosted/pub.dev/geolocator_android-5.1.1+1/android/src/main/java/com/baseflow/geolocator/location/LocationMapper.java uses or overrides a deprecated API.
 Note: Recompile with -Xlint:deprecation for details.
-Note: Some input files use or override a deprecated API.
-Note: Recompile with -Xlint:deprecation for details.
-Note: Some input files use or override a deprecated API.
-Note: Recompile with -Xlint:deprecation for details.
-Expected to find fonts for (packages/cupertino_icons/CupertinoIcons, MaterialIcons), but found (MaterialIcons). This usually means you are referring to font families in an IconData class but not including them in the assets section of your pubspec.yaml, are missing the package that would include them, or are missing "uses-material-design: true".
-Font asset "MaterialIcons-Regular.otf" was tree-shaken, reducing it from 1645184 to 26944 bytes (98.4% reduction). Tree-shaking can be disabled by providing the --no-tree-shake-icons flag when building your app.
-Warning: The generated ELF library contains unobfuscated DWARF debugging information.
-         To avoid this, use --strip to remove it.
-Warning: The generated ELF library contains unobfuscated DWARF debugging information.
-         To avoid this, use --strip to remove it.
-Warning: The generated ELF library contains unobfuscated DWARF debugging information.
-         To avoid this, use --strip to remove it.
-Caught exception: Already watching path: /home/runner/work/ezanapp/ezanapp/android
-Running Gradle task 'assembleRelease'...                          411.8s
-✓ Built build/app/outputs/flutter-apk/app-release.apk (83.8MB)
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileFlutterBuildRelease'.
+> Process 'command '/opt/hostedtoolcache/flutter/stable-3.47.7-x64/flutter/bin/flutter'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 3m 22s
+Running Gradle task 'assembleRelease'...                          203.5s
+Gradle task assembleRelease failed with exit code 1
 ```
 
 ## release
@@ -547,9 +741,45 @@ Alternatively, use the flag "--android-skip-build-dependency-validation" to bypa
 Potential fix: Your project's KGP version is typically defined in the plugins block of the `settings.gradle` file (/home/runner/work/ezanapp/ezanapp/android/settings.gradle), by a plugin with the id of org.jetbrains.kotlin.android. 
 If you don't see a plugins block, your project was likely created with an older template version, in which case it is most likely defined in the top-level build.gradle file (/home/runner/work/ezanapp/ezanapp/android/build.gradle) by the ext.kotlin_version property.
 
-Expected to find fonts for (packages/cupertino_icons/CupertinoIcons, MaterialIcons), but found (MaterialIcons). This usually means you are referring to font families in an IconData class but not including them in the assets section of your pubspec.yaml, are missing the package that would include them, or are missing "uses-material-design: true".
-Font asset "MaterialIcons-Regular.otf" was tree-shaken, reducing it from 1645184 to 26944 bytes (98.4% reduction). Tree-shaking can be disabled by providing the --no-tree-shake-icons flag when building your app.
-Caught exception: Already watching path: /home/runner/work/ezanapp/ezanapp/android
-Running Gradle task 'bundleRelease'...                             16.0s
-✓ Built build/app/outputs/bundle/release/app-release.aab (83.0MB)
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+lib/core/services/notification_service.dart:204:48: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+        await android.deleteNotificationChannel(
+                                               ^
+lib/core/services/notification_service.dart:207:48: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+        await android.deleteNotificationChannel(
+                                               ^
+lib/features/ilahi/ilahi_screen.dart:362:34: Error: The getter 'PlaybackStatus' isn't defined for the type '_IlahiScreenState'.
+ - '_IlahiScreenState' is from 'package:ezanai/features/ilahi/ilahi_screen.dart' ('lib/features/ilahi/ilahi_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'PlaybackStatus'.
+      if (currentState.status == PlaybackStatus.paused) {
+                                 ^^^^^^^^^^^^^^
+lib/features/ilahi/player_screen.dart:44:13: Error: No named parameter with the name 'tooltip'.
+            tooltip: 'Oynatma hızı',
+            ^^^^^^^
+/opt/hostedtoolcache/flutter/stable-3.47.7-x64/flutter/packages/flutter/lib/src/material/text_button.dart:83:9: Context: Found this candidate, but the arguments don't match.
+  const TextButton({
+        ^^^^^^^^^^
+Target kernel_snapshot_program failed: Exception
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileFlutterBuildRelease'.
+> Process 'command '/opt/hostedtoolcache/flutter/stable-3.47.7-x64/flutter/bin/flutter'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 1m 7s
+Running Gradle task 'bundleRelease'...                             67.3s
+Gradle task bundleRelease failed with exit code 1
 ```
