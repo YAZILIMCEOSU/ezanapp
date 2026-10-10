@@ -191,12 +191,18 @@ abstract final class TextNormalizer {
           }
         }
       }
-      return diffs <= 2;
+      if (diffs == 1) return a.length >= 7;
+      return diffs == 2;
     }
 
     // Uzunluk farkı 1: tek harf düşmesi veya eklenmesi.
     final String shorter = a.length < b.length ? a : b;
     final String longer = a.length < b.length ? b : a;
+    if (shorter.length < 6 &&
+        shorter.codeUnitAt(shorter.length - 1) !=
+            longer.codeUnitAt(longer.length - 1)) {
+      return false;
+    }
     int i = 0;
     int j = 0;
     bool skipped = false;

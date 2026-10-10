@@ -86,10 +86,11 @@ abstract final class GeoUtils {
   /// düzleminde karşılaştırılır.
   static double magneticDeclination(double latitude, double longitude) {
     if (!latitude.isFinite || !longitude.isFinite) return 0.0;
-    // Küresel jeomanyetik dipol + Avrasya/Orta Doğu bölgesel harmonik yaklaşımı (WMM 2025/2026).
+    // WMM-2025/2026 kuzey manyetik kutbu (Doğu yarımküre/Sibirya geçişi ~86.0°K, 158.0°D)
+    // + Avrasya/Anadolu/Orta Doğu bölgesel harmonik düzeltmesi.
     // Türkiye (36-42°K, 26-45°D) için +5.5° .. +7.0° aralığında gerçek WMM değerlerini verir.
-    const double poleLat = 80.65 * _deg2rad;
-    const double poleLon = -72.68 * _deg2rad;
+    const double poleLat = 86.0 * _deg2rad;
+    const double poleLon = 158.0 * _deg2rad;
     final double lat = latitude.clamp(-85.0, 85.0) * _deg2rad;
     final double lon = longitude * _deg2rad;
 
@@ -100,13 +101,13 @@ abstract final class GeoUtils {
         math.sin(lat) * math.cos(poleLat) * math.cos(dLon);
     final double dipoleDeclination = math.atan2(y, x) * _rad2deg;
 
-    // Doğu Akdeniz / Anadolu / Arap Yarımadası bölgesel anomali düzeltmesi:
+    // Doğu Akdeniz / Anadolu / Arap Yarımadası bölgesel WMM-2025 düzeltmesi:
     final double regionalEastAnomaly =
-        7.8 *
+        2.2 *
         math.exp(
-          -(math.pow((latitude - 38.0) / 28.0, 2) +
-              math.pow((longitude - 35.0) / 35.0, 2)),
+          -(math.pow((latitude - 39.0) / 26.0, 2) +
+              math.pow((longitude - 36.0) / 32.0, 2)),
         );
-    return (dipoleDeclination * 0.55 + regionalEastAnomaly).clamp(-35.0, 35.0);
+    return (dipoleDeclination + regionalEastAnomaly).clamp(-35.0, 35.0);
   }
 }

@@ -182,6 +182,35 @@ class LocalKnowledgeSource {
     );
   }
 
+  static const Set<String> _stopStems = <String>{
+    'nasil',
+    'nedir',
+    'neler',
+    'nelerdir',
+    'zaman',
+    'kac',
+    'hangi',
+    'icin',
+    'olur',
+    'yapil',
+    'yapilir',
+    'edil',
+    'edilir',
+    'alin',
+    'alinir',
+    'kilin',
+    'kilinir',
+    'okun',
+    'okunur',
+    'veril',
+    'verilir',
+    'tutul',
+    'tutulur',
+    'gerek',
+    'gerekir',
+    'caiz',
+  };
+
   /// Bir kaydın soruya uygunluk puanı.
   ///
   /// * Anahtar kelime katkısı: birebir geçme, kelime/kök örtüşmesi ve 1 harf
@@ -195,13 +224,17 @@ class LocalKnowledgeSource {
   ) {
     final _TermWeights weights = _TermWeights.instance;
     double score = 0;
+    bool hasTopicHit = false;
 
     for (final String keyword in entry.keywords) {
       final String normalized = TextNormalizer.normalize(keyword);
       if (normalized.isEmpty) continue;
 
       double base = 0;
-      if (question.contains(normalized)) base += 3 + normalized.length / 12;
+      if (question.contains(normalized)) {
+        base += 3 + normalized.length / 12;
+        hasTopicHit = true;
+      }
 
       final List<String> parts = TextNormalizer.tokens(normalized);
       if (parts.isEmpty) {
@@ -213,10 +246,14 @@ class LocalKnowledgeSource {
       int fuzzyHits = 0;
       for (final String part in parts) {
         final String partStem = TextNormalizer.stem(part);
+        final bool isStop =
+            _stopStems.contains(part) || _stopStems.contains(partStem);
         if (tokenSet.contains(part) || stemSet.contains(partStem)) {
           exactHits++;
-        } else if (_matchesFuzzy(part, partStem, tokenSet, stemSet)) {
+          if (!isStop) hasTopicHit = true;
+        } else if (!isStop && _matchesFuzzy(part, partStem, tokenSet, stemSet)) {
           fuzzyHits++;
+          hasTopicHit = true;
         }
       }
       final int totalHits = exactHits + fuzzyHits;
@@ -234,17 +271,20 @@ class LocalKnowledgeSource {
       titleStems.add(TextNormalizer.stem(token));
     }
     for (final String word in titleStems) {
-      if (word.length > 3) {
+      if (word.length > 3 && !_stopStems.contains(word)) {
         if (stemSet.contains(word)) {
           score += 0.9 * weights.idf(word);
+          hasTopicHit = true;
         } else if (stemSet.any(
           (String s) => TextNormalizer.isFuzzyTokenMatch(word, s),
         )) {
           score += 0.65 * weights.idf(word);
+          hasTopicHit = true;
         }
       }
     }
 
+    if (!hasTopicHit) return 0;
     return score;
   }
 
