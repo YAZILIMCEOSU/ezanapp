@@ -47,8 +47,7 @@ class IlahiRepository {
       audioUrl: 'asset:assets/audio/adhan/ilahi_ussak.mp3',
       durationSeconds: 78,
       license: 'Açık Vokal Arşiv (Enstrümansız / Telifsiz Vokal Kayıt)',
-      description:
-          'Müzik aleti içermeyen, tamamen insan sesiyle icra edilen huzurlu vokal ilahi (çevrimdışı hazır).',
+      description: 'Müzik aleti içermeyen, tamamen insan sesiyle icra edilen huzurlu vokal ilahi (çevrimdışı hazır).',
     ),
     IlahiTrack(
       id: 'zikir_huseyni_halka',
@@ -60,8 +59,7 @@ class IlahiRepository {
       audioUrl: 'asset:assets/audio/adhan/ilahi_huseyni.mp3',
       durationSeconds: 76,
       license: 'Açık Vokal Arşiv (Enstrümansız / Telifsiz Vokal Kayıt)',
-      description:
-          'Tesbih ve tefekkür vakitlerinde dinlenebilecek enstrümansız saf vokal ilahi (çevrimdışı hazır).',
+      description: 'Tesbih ve tefekkür vakitlerinde dinlenebilecek enstrümansız saf vokal ilahi (çevrimdışı hazır).',
     ),
     IlahiTrack(
       id: 'ilahi_hayir_iyilik',
@@ -73,8 +71,7 @@ class IlahiRepository {
       audioUrl: 'asset:assets/audio/adhan/ilahi_hayir.mp3',
       durationSeconds: 98,
       license: 'Açık Vokal Arşiv (Enstrümansız / Telifsiz Vokal Kayıt)',
-      description:
-          'İyilik ve merhamet temalı, müzik aletsiz gerçek vokal ilahi (çevrimdışı hazır).',
+      description: 'İyilik ve merhamet temalı, müzik aletsiz gerçek vokal ilahi (çevrimdışı hazır).',
     ),
     IlahiTrack(
       id: 'ilahi_hidayet_nuru',
@@ -86,8 +83,7 @@ class IlahiRepository {
       audioUrl: 'asset:assets/audio/adhan/ilahi_hidayet.mp3',
       durationSeconds: 124,
       license: 'Açık Vokal Arşiv (Enstrümansız / Telifsiz Vokal Kayıt)',
-      description:
-          'Hidayet ve dua temalı, enstrümansız tam vokal ilahi (çevrimdışı hazır).',
+      description: 'Hidayet ve dua temalı, enstrümansız tam vokal ilahi (çevrimdışı hazır).',
     ),
     IlahiTrack(
       id: 'ilahi_siginirim',
@@ -96,8 +92,7 @@ class IlahiRepository {
       album: 'Enstrümansız Vokal İlahi Seçkisi',
       kind: IlahiKind.ilahi,
       categories: <String>['İlahi Ezgileri', 'Dini Sesler'],
-      audioUrl:
-          'https://cdn.jsdelivr.net/gh/iamaanahmad/NasheedCollection@master/I%20Seek%20Protection.mp3',
+      audioUrl: 'https://cdn.jsdelivr.net/gh/iamaanahmad/NasheedCollection@master/I%20Seek%20Protection.mp3',
       durationSeconds: 132,
       license: 'Açık Vokal Arşiv (Enstrümansız / Telifsiz Vokal Kayıt)',
       description: 'Dua ve sığınma temalı, enstrümansız gerçek vokal ilahi.',
@@ -109,8 +104,7 @@ class IlahiRepository {
       album: 'Enstrümansız Vokal İlahi Seçkisi',
       kind: IlahiKind.ilahi,
       categories: <String>['İlahi Ezgileri', 'Dini Sesler'],
-      audioUrl:
-          'https://cdn.jsdelivr.net/gh/iamaanahmad/NasheedCollection@master/Smile.mp3',
+      audioUrl: 'https://cdn.jsdelivr.net/gh/iamaanahmad/NasheedCollection@master/Smile.mp3',
       durationSeconds: 185,
       license: 'Açık Vokal Arşiv (Enstrümansız / Telifsiz Vokal Kayıt)',
       description:
@@ -126,8 +120,7 @@ class IlahiRepository {
       audioUrl: 'asset:assets/audio/adhan/ezan_melodi.mp3',
       durationSeconds: 202,
       license: 'Açık Kamu Arşivi (Harem-i Şerîf Müezzin Tilaveti)',
-      description:
-          'Kâbe-i Muazzama Hicaz makamı gerçek müezzin ezan tilaveti (çevrimdışı hazır).',
+      description: 'Kâbe-i Muazzama Hicaz makamı gerçek müezzin ezan tilaveti (çevrimdışı hazır).',
     ),
     IlahiTrack(
       id: 'makam_saba_seher',
@@ -139,8 +132,7 @@ class IlahiRepository {
       audioUrl: 'asset:assets/audio/adhan/ezan_saba.mp3',
       durationSeconds: 70,
       license: 'Açık Kamu Arşivi (Türkiye Usulü Müezzin Tilaveti)',
-      description:
-          'Geleneksel Türkiye makamı gerçek müezzin ezan kaydı (çevrimdışı hazır).',
+      description: 'Geleneksel Türkiye makamı gerçek müezzin ezan kaydı (çevrimdışı hazır).',
     ),
     IlahiTrack(
       id: 'makam_segah_salavat',
@@ -152,8 +144,7 @@ class IlahiRepository {
       audioUrl: 'asset:assets/audio/adhan/ezan_segah.mp3',
       durationSeconds: 200,
       license: 'Açık Kamu Arşivi (Klasik Mısır Ezan Tilaveti)',
-      description:
-          'Abdülbâsıt Abdüssamed tarafından okunan gerçek makam ezanı (çevrimdışı hazır).',
+      description: 'Abdülbâsıt Abdüssamed tarafından okunan gerçek makam ezanı (çevrimdışı hazır).',
     ),
     IlahiTrack(
       id: 'makam_segah_tekbir',
@@ -165,8 +156,7 @@ class IlahiRepository {
       audioUrl: 'asset:assets/audio/adhan/ezan_tekbir.mp3',
       durationSeconds: 203,
       license: 'Açık Kamu Arşivi (Tarihî Klasik Ezan Kaydı)',
-      description:
-          'Muhammed Rıfat tarafından okunan tarihî klasik makam ezanı (çevrimdışı hazır).',
+      description: 'Muhammed Rıfat tarafından okunan tarihî klasik makam ezanı (çevrimdışı hazır).',
     ),
     IlahiTrack(
       id: 'ezan_minshawi_hicaz',
@@ -175,8 +165,7 @@ class IlahiRepository {
       album: 'Gerçek Müezzin Ezan Makamları',
       kind: IlahiKind.ezan,
       categories: <String>['Ezan Makamları', 'Dini Sesler'],
-      audioUrl:
-          'https://cdn.jsdelivr.net/gh/abodehq/Athan-MP3@master/Sounds/Athan%20Mohammad%20Almenshawy.mp3',
+      audioUrl: 'https://cdn.jsdelivr.net/gh/abodehq/Athan-MP3@master/Sounds/Athan%20Mohammad%20Almenshawy.mp3',
       durationSeconds: 251,
       license: 'Açık Kamu Arşivi (Klasik Ezan Tilaveti)',
       description:
