@@ -138,6 +138,7 @@ class HomeScreen extends ConsumerWidget {
                         times_: value,
                         now: now,
                         use24Hour: settings.use24Hour,
+                        notifications: settings.notifications,
                       ),
                       if (isRamadan) const _RamadanCard(),
                     ],
@@ -166,11 +167,13 @@ class _TodayTimesCard extends StatelessWidget {
     required this.times_,
     required this.now,
     required this.use24Hour,
+    required this.notifications,
   });
 
   final TodayTimes times_;
   final DateTime now;
   final bool use24Hour;
+  final NotificationSettings notifications;
 
   @override
   Widget build(BuildContext context) {
@@ -190,10 +193,20 @@ class _TodayTimesCard extends StatelessWidget {
             AppSpacing.xl,
             AppSpacing.sm,
           ),
-          action: TextButton.icon(
-            onPressed: () => context.go(AppRoutes.prayers),
-            icon: const Icon(Icons.table_chart_outlined, size: 16),
-            label: const Text('Tablo'),
+          action: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              TextButton.icon(
+                onPressed: () => context.push(AppRoutes.adhanSound),
+                icon: const Icon(Icons.volume_up_outlined, size: 16),
+                label: const Text('Ezan Sesi'),
+              ),
+              TextButton.icon(
+                onPressed: () => context.go(AppRoutes.prayers),
+                icon: const Icon(Icons.table_chart_outlined, size: 16),
+                label: const Text('Tablo'),
+              ),
+            ],
           ),
         ),
         for (final Prayer prayer in Prayer.values)
@@ -203,12 +216,22 @@ class _TodayTimesCard extends StatelessWidget {
             use24Hour: use24Hour,
             isCurrent: current == prayer,
             isNext: !snap.isAfterIsha && next?.prayer == prayer,
-            onTap: () => context.go(AppRoutes.prayers),
+            onTap: () => context.push(AppRoutes.adhanSound),
             trailing: Icon(
-              Icons.notifications_active_outlined,
-              size: 17,
-              color: Theme.of(context).colorScheme.onSurfaceVariant
-                  .withValues(alpha: 0.6),
+              notifications.enabled &&
+                      notifications.isEnabledFor(prayer) &&
+                      !notifications.soundFor(prayer).isSilent
+                  ? Icons.volume_up_rounded
+                  : Icons.notifications_off_outlined,
+              size: 18,
+              color:
+                  notifications.enabled &&
+                      notifications.isEnabledFor(prayer) &&
+                      !notifications.soundFor(prayer).isSilent
+                  ? AppColors.emerald500
+                  : Theme.of(
+                      context,
+                    ).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
             ),
           ),
         PrayerSourceNote(

@@ -17,7 +17,7 @@ enum AdhanSound {
   ),
   sabaMelodi(
     'Türkiye Makamı Gerçek Ezan (Diyanet Usulü)',
-    'Geleneksel Türkiye usulü gerçek müezzin ezan tilaveti (1 dk 10 sn, telifsiz)',
+    'Geleneksel Türkiye usulü tam müezzin ezan tilaveti (3 dk 08 sn, telifsiz)',
     'ezan_saba',
   ),
   segahMelodi(

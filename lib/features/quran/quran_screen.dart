@@ -8,6 +8,7 @@ import '../../design/app_spacing.dart';
 import '../../router/app_router.dart';
 import '../../state/content_providers.dart';
 import '../../state/providers.dart';
+import '../ilahi/player_controller.dart';
 import '../widgets/ad_banner.dart';
 import '../widgets/app_shell.dart';
 import '../widgets/state_views.dart';
@@ -52,6 +53,7 @@ class QuranScreen extends ConsumerWidget {
           ),
         ],
       ),
+      bottomNavigationBar: const PlayerBar(),
       body: CustomScrollView(
         slivers: <Widget>[
           SliverToBoxAdapter(

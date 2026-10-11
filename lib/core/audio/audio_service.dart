@@ -2,7 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:audio_session/audio_session.dart';
-import 'package:flutter/services.dart' show ByteData, Uint8List, rootBundle;
+import 'package:flutter/services.dart'
+    show ByteData, MethodChannel, Uint8List, rootBundle;
 import 'package:just_audio/just_audio.dart';
 
 import '../../data/models/app_settings.dart';
@@ -59,8 +60,14 @@ class AppAudioService {
   PlaybackStatus _status = PlaybackStatus.idle;
   PlaybackStatus get status => _status;
 
+  static const MethodChannel _hardwareChannel = MethodChannel(
+    'ezanai/sensors/methods',
+  );
+
   bool _initialized = false;
   bool _duckingEnabled = true;
+  bool _pausedByInterruption = false;
+  double _lastVolume = 1.0;
 
   Duration _lastPosition = Duration.zero;
   Duration? _lastDuration;
@@ -69,6 +76,17 @@ class AppAudioService {
 
   double _speed = 1.0;
   double get speed => _speed;
+
+  void _setHardwareWakeLock(bool enabled) {
+    try {
+      unawaited(
+        _hardwareChannel.invokeMethod<bool>(
+          'setAudioWakeLock',
+          <String, Object?>{'enabled': enabled},
+        ),
+      );
+    } catch (_) {}
+  }
 
   /// Ses oturumunu yapılandırır; bir kez çağrılır.
   Future<void> initialize({bool ducking = true}) async {
@@ -85,10 +103,27 @@ class AppAudioService {
       await _applyDucking();
       session.interruptionEventStream.listen((AudioInterruptionEvent event) {
         if (event.begin) {
+          if (event.type == AudioInterruptionType.duck) {
+            // Bildirim geldiğinde ezan/Kur'an/ilahi durdurulmaz; yalnızca
+            // bildirim süresince ses hafif kısılır.
+            unawaited(_player.setVolume((_lastVolume * 0.45).clamp(0.1, 1.0)));
+            return;
+          }
           AppLog.debug('Ses kesintisi başladı (${event.type.name})');
-          unawaited(_player.pause());
+          if (_status == PlaybackStatus.playing) {
+            _pausedByInterruption = true;
+            unawaited(_player.pause());
+          }
         } else {
+          if (event.type == AudioInterruptionType.duck) {
+            unawaited(_player.setVolume(_lastVolume.clamp(0.0, 1.0)));
+            return;
+          }
           AppLog.debug('Ses kesintisi bitti');
+          if (_pausedByInterruption) {
+            _pausedByInterruption = false;
+            unawaited(_player.play());
+          }
         }
       });
       session.becomingNoisyEventStream.listen(
@@ -112,6 +147,7 @@ class AppAudioService {
         }
         _queueUrls = const <String>[];
         _status = PlaybackStatus.completed;
+        _setHardwareWakeLock(false);
         if (!_statusController.isClosed) _statusController.add(_status);
         unawaited(_player.seek(Duration.zero));
         unawaited(_player.pause());
@@ -134,6 +170,9 @@ class AppAudioService {
           state.playing ? PlaybackStatus.playing : PlaybackStatus.paused,
         ProcessingState.completed => PlaybackStatus.completed,
       };
+      _setHardwareWakeLock(
+        _status == PlaybackStatus.playing || _status == PlaybackStatus.loading,
+      );
       if (!_statusController.isClosed) _statusController.add(_status);
     });
 
@@ -238,12 +277,14 @@ class AppAudioService {
             contentType: AndroidAudioContentType.music,
             usage: AndroidAudioUsage.media,
           ),
-          androidAudioFocusGainType: _duckingEnabled
-              ? AndroidAudioFocusGainType.gainTransientMayDuck
-              : AndroidAudioFocusGainType.gain,
+          // Ezan, Kur'an ve ilahi 3+ dakika sürdüğünden her zaman kalıcı
+          // "gain" odağı alınır; aksi halde Android "gainTransientMayDuck"
+          // odağını 30-40 saniye sonra otomatik iptal edebilir.
+          androidAudioFocusGainType: AndroidAudioFocusGainType.gain,
           androidWillPauseWhenDucked: false,
         ),
       );
+      await session.setActive(true);
     } catch (error) {
       AppLog.warning('Ses odağı ayarlanamadı', error: error);
     }
@@ -258,6 +299,7 @@ class AppAudioService {
     await initialize(ducking: _duckingEnabled);
     final int op = ++_operationId;
     _switchingSource = true;
+    _pausedByInterruption = false;
     _queueUrls = const <String>[];
     _lastPosition = Duration.zero;
     _lastDuration = null;
@@ -266,6 +308,7 @@ class AppAudioService {
         AppLog.warning('Ses dosyası bulunamadı: $path');
         return false;
       }
+      _setHardwareWakeLock(true);
       try {
         await _player.stop();
       } catch (_) {}
@@ -273,12 +316,16 @@ class AppAudioService {
       await _player.setAudioSource(AudioSource.file(path));
       if (op != _operationId) return false;
       await _player.setLoopMode(loop ? LoopMode.one : LoopMode.off);
-      if (volume != null) await _player.setVolume(volume.clamp(0.0, 1.0));
+      if (volume != null) {
+        _lastVolume = volume.clamp(0.0, 1.0);
+        await _player.setVolume(_lastVolume);
+      }
       unawaited(_player.play());
       _status = PlaybackStatus.playing;
       if (!_statusController.isClosed) _statusController.add(_status);
       return true;
     } catch (error, stackTrace) {
+      _setHardwareWakeLock(false);
       AppLog.error('Dosya çalınamadı', error: error, stackTrace: stackTrace);
       return false;
     } finally {
@@ -308,11 +355,14 @@ class AppAudioService {
     await initialize(ducking: _duckingEnabled);
     final int op = ++_operationId;
     _switchingSource = true;
+    _pausedByInterruption = false;
     _queueUrls = const <String>[];
     _lastPosition = Duration.zero;
     _lastDuration = null;
+    _lastVolume = volume.clamp(0.0, 1.0);
     final String resolvedAsset = _normalizeAssetPath(assetPath);
     try {
+      _setHardwareWakeLock(true);
       try {
         await _player.stop();
       } catch (_) {}
@@ -322,7 +372,7 @@ class AppAudioService {
         data.offsetInBytes,
         data.lengthInBytes,
       );
-      final String safeName = 'ezan_v3_${resolvedAsset.replaceAll('/', '_')}';
+      final String safeName = 'ezan_v4_${resolvedAsset.replaceAll('/', '_')}';
       final File tempFile = File('${Directory.systemTemp.path}/$safeName');
       if (!tempFile.existsSync() || tempFile.lengthSync() != bytes.length) {
         await tempFile.writeAsBytes(bytes, flush: true);
@@ -331,7 +381,7 @@ class AppAudioService {
       await _player.setAudioSource(AudioSource.file(tempFile.path));
       if (op != _operationId) return false;
       await _player.setLoopMode(loop ? LoopMode.one : LoopMode.off);
-      await _player.setVolume(volume.clamp(0.0, 1.0));
+      await _player.setVolume(_lastVolume);
       unawaited(_player.play());
       _status = PlaybackStatus.playing;
       if (!_statusController.isClosed) _statusController.add(_status);
@@ -342,12 +392,13 @@ class AppAudioService {
         await _player.setAudioSource(AudioSource.asset(resolvedAsset));
         if (op != _operationId) return false;
         await _player.setLoopMode(loop ? LoopMode.one : LoopMode.off);
-        await _player.setVolume(volume.clamp(0.0, 1.0));
+        await _player.setVolume(_lastVolume);
         unawaited(_player.play());
         _status = PlaybackStatus.playing;
         if (!_statusController.isClosed) _statusController.add(_status);
         return true;
       } catch (error, stackTrace) {
+        _setHardwareWakeLock(false);
         AppLog.error(
           'Varlık çalınamadı: $resolvedAsset',
           error: error,
@@ -376,10 +427,12 @@ class AppAudioService {
     await initialize(ducking: _duckingEnabled);
     final int op = ++_operationId;
     _switchingSource = true;
+    _pausedByInterruption = false;
     _queueUrls = const <String>[];
     _lastPosition = Duration.zero;
     _lastDuration = null;
     try {
+      _setHardwareWakeLock(true);
       try {
         await _player.stop();
       } catch (_) {}
@@ -387,12 +440,16 @@ class AppAudioService {
       await _player.setAudioSource(AudioSource.uri(Uri.parse(url)));
       if (op != _operationId) return false;
       await _player.setLoopMode(loop ? LoopMode.one : LoopMode.off);
-      if (volume != null) await _player.setVolume(volume.clamp(0.0, 1.0));
+      if (volume != null) {
+        _lastVolume = volume.clamp(0.0, 1.0);
+        await _player.setVolume(_lastVolume);
+      }
       unawaited(_player.play());
       _status = PlaybackStatus.playing;
       if (!_statusController.isClosed) _statusController.add(_status);
       return true;
     } catch (error, stackTrace) {
+      _setHardwareWakeLock(false);
       AppLog.error(
         'Akış çalınamadı: $url',
         error: error,
@@ -420,9 +477,11 @@ class AppAudioService {
     await initialize(ducking: _duckingEnabled);
     final int op = ++_operationId;
     _switchingSource = true;
+    _pausedByInterruption = false;
     _lastPosition = Duration.zero;
     _lastDuration = null;
     try {
+      _setHardwareWakeLock(true);
       try {
         await _player.stop();
       } catch (_) {}
@@ -438,12 +497,16 @@ class AppAudioService {
       );
       if (op != _operationId) return false;
       await _player.setLoopMode(LoopMode.off);
-      if (volume != null) await _player.setVolume(volume.clamp(0.0, 1.0));
+      if (volume != null) {
+        _lastVolume = volume.clamp(0.0, 1.0);
+        await _player.setVolume(_lastVolume);
+      }
       unawaited(_player.play());
       _status = PlaybackStatus.playing;
       if (!_statusController.isClosed) _statusController.add(_status);
       return true;
     } catch (error, stackTrace) {
+      _setHardwareWakeLock(false);
       _queueUrls = const <String>[];
       AppLog.error(
         'URL listesi çalınamadı',
@@ -466,8 +529,10 @@ class AppAudioService {
     await initialize(ducking: _duckingEnabled);
     final int op = ++_operationId;
     _switchingSource = true;
+    _pausedByInterruption = false;
     _queueUrls = const <String>[];
     try {
+      _setHardwareWakeLock(true);
       try {
         await _player.stop();
       } catch (_) {}
@@ -479,6 +544,7 @@ class AppAudioService {
       if (!_statusController.isClosed) _statusController.add(_status);
       return true;
     } catch (error, stackTrace) {
+      _setHardwareWakeLock(false);
       AppLog.error('Liste çalınamadı', error: error, stackTrace: stackTrace);
       return false;
     } finally {
@@ -492,12 +558,16 @@ class AppAudioService {
     if (_status == PlaybackStatus.completed) {
       await _player.seek(Duration.zero);
     }
+    _pausedByInterruption = false;
+    _setHardwareWakeLock(true);
     unawaited(_player.play());
     _status = PlaybackStatus.playing;
     if (!_statusController.isClosed) _statusController.add(_status);
   }
 
   Future<void> pause() async {
+    _pausedByInterruption = false;
+    _setHardwareWakeLock(false);
     await _player.pause();
     _status = PlaybackStatus.paused;
     if (!_statusController.isClosed) _statusController.add(_status);
@@ -510,8 +580,10 @@ class AppAudioService {
     ++_operationId;
     _switchingSource = false;
     _advancingQueue = false;
+    _pausedByInterruption = false;
     _queueUrls = const <String>[];
     _lastPosition = Duration.zero;
+    _setHardwareWakeLock(false);
     await _player.stop();
     _status = PlaybackStatus.idle;
     if (!_statusController.isClosed) _statusController.add(_status);
@@ -526,8 +598,10 @@ class AppAudioService {
   Future<void> seekToIndex(int index) =>
       _player.seek(Duration.zero, index: index);
 
-  Future<void> setVolume(double volume) =>
-      _player.setVolume(volume.clamp(0.0, 1.0));
+  Future<void> setVolume(double volume) async {
+    _lastVolume = volume.clamp(0.0, 1.0);
+    await _player.setVolume(_lastVolume);
+  }
 
   Future<void> setSpeed(double speed) async {
     _speed = speed.clamp(0.5, 2.0);

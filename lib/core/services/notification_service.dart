@@ -177,7 +177,7 @@ class NotificationService {
 
   static String _adhanChannelId(AdhanSound sound) {
     if (sound.isSilent) return NotificationChannels.prayer;
-    return '${NotificationChannels.adhan}_v3_${sound.name}';
+    return '${NotificationChannels.adhan}_v4_${sound.name}';
   }
 
   static AndroidNotificationSound? _rawSoundFor(AdhanSound sound) {
@@ -206,6 +206,9 @@ class NotificationService {
         );
         await android.deleteNotificationChannel(
           channelId: '${NotificationChannels.adhan}_v2_${sound.name}',
+        );
+        await android.deleteNotificationChannel(
+          channelId: '${NotificationChannels.adhan}_v3_${sound.name}',
         );
       } catch (_) {}
     }

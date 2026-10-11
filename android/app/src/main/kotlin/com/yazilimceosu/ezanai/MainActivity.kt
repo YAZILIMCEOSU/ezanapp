@@ -6,7 +6,10 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.net.wifi.WifiManager
 import android.os.Build
+import android.os.PowerManager
+import android.view.WindowManager
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
@@ -18,6 +21,8 @@ import java.security.MessageDigest
  *
  * - Pusula (manyetometre + ivmeölçer) verisini platform kanalı üzerinden
  *   Flutter'a aktarır: kalibrasyon ve kıble hassasiyeti için gereklidir.
+ * - Ezan, Kur'an ve ilahi oynatılırken ekran kapansa bile sesin 30-40 sn
+ *   sonra kesilmemesi için donanım WakeLock ve WifiLock kilidi yönetir.
  */
 class MainActivity : FlutterActivity(), SensorEventListener {
     private val channelName = "ezanai/sensors"
@@ -26,6 +31,8 @@ class MainActivity : FlutterActivity(), SensorEventListener {
     private var rotationSensor: Sensor? = null
     private var accelerometer: Sensor? = null
     private var magnetometer: Sensor? = null
+    private var audioWakeLock: PowerManager.WakeLock? = null
+    private var audioWifiLock: WifiManager.WifiLock? = null
 
     private val gravity = FloatArray(3)
     private val geomagnetic = FloatArray(3)
@@ -59,9 +66,63 @@ class MainActivity : FlutterActivity(), SensorEventListener {
                     "hasCompass" -> result.success(rotationSensor != null || magnetometer != null)
                     "hasAccelerometer" -> result.success(accelerometer != null)
                     "getIntegrityInfo" -> result.success(buildIntegrityInfo())
+                    "setAudioWakeLock" -> {
+                        val enabled = call.argument<Boolean>("enabled") ?: false
+                        updateAudioWakeLock(enabled)
+                        result.success(true)
+                    }
                     else -> result.notImplemented()
                 }
             }
+    }
+
+    private fun updateAudioWakeLock(enabled: Boolean) {
+        try {
+            runOnUiThread {
+                try {
+                    if (enabled) {
+                        window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                    } else {
+                        window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                    }
+                } catch (_: Throwable) {}
+            }
+            if (enabled) {
+                if (audioWakeLock == null) {
+                    val pm = applicationContext.getSystemService(Context.POWER_SERVICE) as? PowerManager
+                    audioWakeLock = pm?.newWakeLock(
+                        PowerManager.PARTIAL_WAKE_LOCK,
+                        "ezanai:audio_playback",
+                    )?.apply { setReferenceCounted(false) }
+                }
+                if (audioWakeLock?.isHeld == false) {
+                    // En fazla 25 dakika (uzun sure / ezan tilaveti boyunca CPU uyanık kalır)
+                    audioWakeLock?.acquire(25 * 60 * 1000L)
+                }
+                if (audioWifiLock == null) {
+                    val wm = applicationContext.getSystemService(Context.WIFI_SERVICE) as? WifiManager
+                    @Suppress("DEPRECATION")
+                    val lockMode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        WifiManager.WIFI_MODE_FULL_LOW_LATENCY
+                    } else {
+                        WifiManager.WIFI_MODE_FULL_HIGH_PERF
+                    }
+                    audioWifiLock = wm?.createWifiLock(lockMode, "ezanai:audio_wifi")?.apply {
+                        setReferenceCounted(false)
+                    }
+                }
+                if (audioWifiLock?.isHeld == false) {
+                    audioWifiLock?.acquire()
+                }
+            } else {
+                if (audioWakeLock?.isHeld == true) {
+                    audioWakeLock?.release()
+                }
+                if (audioWifiLock?.isHeld == true) {
+                    audioWifiLock?.release()
+                }
+            }
+        } catch (_: Throwable) {}
     }
 
     private fun buildIntegrityInfo(): Map<String, Any?> {
@@ -197,5 +258,10 @@ class MainActivity : FlutterActivity(), SensorEventListener {
     override fun onPause() {
         super.onPause()
         if (eventSink == null) stopListening()
+    }
+
+    override fun onDestroy() {
+        updateAudioWakeLock(false)
+        super.onDestroy()
     }
 }

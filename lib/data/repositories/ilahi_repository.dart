@@ -130,9 +130,9 @@ class IlahiRepository {
       kind: IlahiKind.ezan,
       categories: <String>['Ezan Makamları', 'Dini Sesler'],
       audioUrl: 'asset:assets/audio/adhan/ezan_saba.mp3',
-      durationSeconds: 70,
+      durationSeconds: 188,
       license: 'Açık Kamu Arşivi (Türkiye Usulü Müezzin Tilaveti)',
-      description: 'Geleneksel Türkiye makamı gerçek müezzin ezan kaydı (çevrimdışı hazır).',
+      description: 'Geleneksel Türkiye makamı tam müezzin ezan kaydı (çevrimdışı hazır).',
     ),
     IlahiTrack(
       id: 'makam_segah_salavat',
