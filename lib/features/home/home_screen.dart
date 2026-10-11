@@ -193,20 +193,10 @@ class _TodayTimesCard extends StatelessWidget {
             AppSpacing.xl,
             AppSpacing.sm,
           ),
-          action: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              TextButton.icon(
-                onPressed: () => context.push(AppRoutes.adhanSounds),
-                icon: const Icon(Icons.volume_up_outlined, size: 16),
-                label: const Text('Ezan Sesi'),
-              ),
-              TextButton.icon(
-                onPressed: () => context.go(AppRoutes.prayers),
-                icon: const Icon(Icons.table_chart_outlined, size: 16),
-                label: const Text('Tablo'),
-              ),
-            ],
+          action: TextButton.icon(
+            onPressed: () => context.go(AppRoutes.prayers),
+            icon: const Icon(Icons.table_chart_outlined, size: 16),
+            label: const Text('Tablo'),
           ),
         ),
         for (final Prayer prayer in Prayer.values)
