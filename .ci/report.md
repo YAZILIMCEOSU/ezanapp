@@ -1,11 +1,11 @@
-# CI raporu (2026-10-11 16:18 UTC)
+# CI raporu (2026-10-11 16:32 UTC)
 
 | adım | sonuç |
 |---|---|
 | pub get | success |
 | format | success |
 | analyze | success |
-| test | failure |
+| test | success |
 | test (uzak AI sözleşmesi) | success |
 | build (debug apk) | success |
 | build (release appbundle) | success |
@@ -217,30 +217,41 @@ Upgrading analysis_options.yaml to exclude build and platform directories.
 Computing fixes in ezanapp...
 Nothing to fix!
 == dart format ==
-Formatted 111 files (0 changed) in 1.18 seconds.
+Formatted 111 files (0 changed) in 1.21 seconds.
 ```
 
 ## analyze
 ```
 Analyzing ezanapp...                                            
-No issues found! (ran in 20.9s)
+No issues found! (ran in 20.6s)
 ```
 
 ## test
 ```
-00:00 +10: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli JSON ayrıştırma tüm alanları okur
-00:00 +11: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli eksik alanlar çökmez, kategori varsayılana düşer
-00:00 +12: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli kaynak künyesi paylaşım metninde yer alır
-00:00 +13: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli paylaşım metni Arapça, okunuş ve meali içerir
-00:00 +14: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli Arapçası olmayan dua bile okunabilir paylaşılır
-00:00 +15: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli arama diakritik ve büyük harf duyarsız
-00:00 +16: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli künye metni de aranabilir
-00:00 +17: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: DuaCatalog kategoriye göre süzer
-00:00 +18: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: DuaCatalog boş sorgu tüm listeyi döner
-00:00 +19: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: DuaCatalog sorguya göre süzer
-00:00 +20: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: DuaCatalog kimliğe göre bulur
-00:00 +21: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: DuaCatalog boş katalog güvenli
-00:01 +22: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında soru yerel bilgi tabanından kaynaklı yanıtlanır
+00:00 +0: loading /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart
+00:00 +0: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: sekme yolları beş ana sekme de çözümlenir
+00:00 +1: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: sekme yolları beş ana sekme de çözümlenir
+00:00 +2: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: sekme yolları beş ana sekme de çözümlenir
+00:00 +3: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: sekme yolları beş ana sekme de çözümlenir
+00:00 +4: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: sekme yolları beş ana sekme de çözümlenir
+00:00 +5: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: sekme yolları beş ana sekme de çözümlenir
+00:00 +6: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: sekme yolları beş ana sekme de çözümlenir
+00:00 +7: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: sekme yolları beş ana sekme de çözümlenir
+00:00 +8: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: sekme yolları beş ana sekme de çözümlenir
+00:00 +9: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: sekme yolları beş ana sekme de çözümlenir
+00:00 +10: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: sekme yolları beş ana sekme de çözümlenir
+00:00 +11: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: sekme yolları beş ana sekme de çözümlenir
+00:00 +12: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: sekme yolları beş ana sekme de çözümlenir
+00:00 +13: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: tüm sabit yollar çözümlenir sabit yol sabitleri
+00:00 +14: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: tüm sabit yollar çözümlenir parametreli yollar çözümlenir
+00:00 +15: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: tüm sabit yollar çözümlenir son sekmedeki alt sayfalar da çözümlenir
+00:00 +16: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: bildirim yönlendirmesi her bildirim hedefi geçerli bir yola gider
+00:00 +17: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: bildirim yönlendirmesi eski bildirim yükleri doğru ekrana yönlendirir
+00:00 +18: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: kaynak taraması app_router.dart içindeki her yol sabiti çözümlenir
+00:00 +19: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: bilinmeyen yol tanımsız yol hata ekranına düşer (çökme yok)
+00:00 +20: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: yol sabitleri tutarlı yol sabitleri Türkçe ve küçük harfli
+00:00 +21: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: yol sabitleri tutarlı sure/ayet yolu sorgu parametresiyle kurulur
+00:00 +22: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında soru yerel bilgi tabanından kaynaklı yanıtlanır
 00:01 +23: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında bilinmeyen soruda dürüst "bilmiyorum" cevabı döner
 00:01 +24: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında kaynaklı uzak yanıt kabul edilir
   Skip: EZANAI_API_BASE tanımlı değil
@@ -288,15 +299,15 @@ No issues found! (ran in 20.9s)
 00:02 +52 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: aralık (haftalık/aylık tablo) önbellek aralığı kapsıyorsa ağa çıkılmaz
 00:02 +53 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: aralık (haftalık/aylık tablo) önbellek yoksa çevrimdışı aralık yerel hesapla doldurulur
 00:02 +54 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) resmî yanıt çözümlenir (zarf + hicri tarih)
-00:02 +55 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: (setUpAll)
-00:02 +56 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: (setUpAll)
-00:02 +57 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: (setUpAll)
-00:02 +58 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: (setUpAll)
-00:02 +59 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: (setUpAll)
+00:02 +55 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) 5xx yanıtı geçici hata olarak bildirilir
+00:02 +56 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) bozuk JSON çökme yerine kaynak hatası üretir
+00:02 +57 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) ilçe kimliği yoksa servis çağrılmadan hata verir
+00:02 +58 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) AlAdhan yanıtı çözümlenir ve hicri etiket üretilir
 00:02 +59 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) AlAdhan boş vakit verisinde hata üretir
-00:02 +60 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: AI kota, kaynak doğrulama ve fetva güvenliği günlük kota dolsa bile İslam'ın ve imanın şartları gibi onaylı cevaplar engellenmez
-00:02 +61 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: AI kota, kaynak doğrulama ve fetva güvenliği günlük kota dolsa bile İslam'ın ve imanın şartları gibi onaylı cevaplar engellenmez
-00:02 +62 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: AI kota, kaynak doğrulama ve fetva güvenliği günlük kota dolsa bile İslam'ın ve imanın şartları gibi onaylı cevaplar engellenmez
+00:02 +60 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: kaynak bilgisi (kullanıcı mesajları) resmî veri varken son güncelleme bilgisi gösterilir
+00:02 +61 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: kaynak bilgisi (kullanıcı mesajları) konum seçilmemişse hesap bilgisi gösterilir
+00:02 +62 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: yerel hesap kalibrasyonu Diyanet yöntemiyle İstanbul için tutarlı vakitler üretir
+00:02 +63 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: (setUpAll)
 00:02 +63 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: AI kota, kaynak doğrulama ve fetva güvenliği günlük kota dolsa bile İslam'ın ve imanın şartları gibi onaylı cevaplar engellenmez
 00:02 +64 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: AI kota, kaynak doğrulama ve fetva güvenliği fetva soruları tespit edilir ve uydurma kaynaklar elenir
 00:02 +65 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Namaz vakitleri tekil anlık görüntü (PrayerScheduleSnapshot) gün içinde aktif vakit, sıradaki vakit ve geri sayım tutarlıdır
@@ -313,17 +324,19 @@ No issues found! (ran in 20.9s)
 00:03 +76 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu bildirim seslerinde çan ifadesi yer almaz; telifsiz ilahi ve ezan makamları kullanılır
 00:03 +77 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu uygulama adı Ezan, dil desteği TR/EN/AR, meal seçimi, saat geri alma ve Esmaül Hüsna doğrulanır
 00:03 +78 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu Kur'an meal seçimleri (TR Diyanet, TR Vakıf, EN Saheeh, AR الميسر) sure içeriğini gerçekten değiştirir ve tüm ezan/ilahi ses varlıkları mevcuttur
-00:03 +79 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu Kur'an meal seçimleri (TR Diyanet, TR Vakıf, EN Saheeh, AR الميسر) sure içeriğini gerçekten değiştirir ve tüm ezan/ilahi ses varlıkları mevcuttur
-00:03 +80 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu Kur'an meal seçimleri (TR Diyanet, TR Vakıf, EN Saheeh, AR الميسر) sure içeriğini gerçekten değiştirir ve tüm ezan/ilahi ses varlıkları mevcuttur
-00:03 +81 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu Kur'an meal seçimleri (TR Diyanet, TR Vakıf, EN Saheeh, AR الميسر) sure içeriğini gerçekten değiştirir ve tüm ezan/ilahi ses varlıkları mevcuttur
-00:03 +82 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu Kur'an meal seçimleri (TR Diyanet, TR Vakıf, EN Saheeh, AR الميسر) sure içeriğini gerçekten değiştirir ve tüm ezan/ilahi ses varlıkları mevcuttur
-00:03 +83 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu Kur'an meal seçimleri (TR Diyanet, TR Vakıf, EN Saheeh, AR الميسر) sure içeriğini gerçekten değiştirir ve tüm ezan/ilahi ses varlıkları mevcuttur
-00:03 +84 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu Kur'an meal seçimleri (TR Diyanet, TR Vakıf, EN Saheeh, AR الميسر) sure içeriğini gerçekten değiştirir ve tüm ezan/ilahi ses varlıkları mevcuttur
-00:03 +85 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu Kur'an meal seçimleri (TR Diyanet, TR Vakıf, EN Saheeh, AR الميسر) sure içeriğini gerçekten değiştirir ve tüm ezan/ilahi ses varlıkları mevcuttur
-00:03 +86 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu Kur'an meal seçimleri (TR Diyanet, TR Vakıf, EN Saheeh, AR الميسر) sure içeriğini gerçekten değiştirir ve tüm ezan/ilahi ses varlıkları mevcuttur
-00:03 +87 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu Kur'an meal seçimleri (TR Diyanet, TR Vakıf, EN Saheeh, AR الميسر) sure içeriğini gerçekten değiştirir ve tüm ezan/ilahi ses varlıkları mevcuttur
-00:03 +88 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu Kur'an meal seçimleri (TR Diyanet, TR Vakıf, EN Saheeh, AR الميسر) sure içeriğini gerçekten değiştirir ve tüm ezan/ilahi ses varlıkları mevcuttur
-00:03 +89 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: (tearDownAll)
+00:03 +79 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: (tearDownAll)
+00:03 +79 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: (setUpAll)
+00:03 +79 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: kategoriler tanımlı ve benzersiz
+00:03 +80 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: en az 30 dua var ve kimlikler benzersiz
+00:03 +81 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duada ad, okunuş, meal ve kategori dolu
+00:03 +82 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duada kaynak künyesi var
+00:03 +83 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: kaynak künyeleri ya Kur'an ya muteber hadis kaynağına dayanır
+00:03 +84 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duanın kategorisi kategori listesinde tanımlı
+00:03 +85 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her kategoride en az bir dua var (boş sekme olmasın)
+00:03 +86 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: Kur'an kaynaklı duaların künyesi sure/ayet içerir
+00:03 +87 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: Arapça metin içeren dualar Arapça alfabede
+00:03 +88 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: katalogda arama ve kategori süzme çalışıyor
+00:03 +89 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: (tearDownAll)
 00:04 +89 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı en az 20 kayıt ve benzersiz kimlikler
 00:04 +90 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı her kayıtta başlık, cevap, anahtar kelime ve kaynak var
 00:04 +91 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı anahtar kelimeler küçük harf ve ASCII (arama uyumu)
@@ -338,32 +351,32 @@ No issues found! (ran in 20.9s)
 00:04 +100 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi Türkçe karakter ve büyük harf farkı eşleşmeyi bozmaz
 00:04 +101 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi her yerel cevap kaynak, uyarı ve mezhep bilgisi taşır
 00:04 +102 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi konu kelimesi genel kelimelere üstün gelir (vitir/teravih)
-00:04 +103 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi ayırt edici kelime puanı, genel kelimelerden yüksektir
-00:04 +104 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi harf düşmesi olan sorular da eşleşir (hatim → hatmi)
-00:04 +105 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi Kâbe yönü sorusu kıble kaydına gider
-00:04 +106 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi önerilen sorular kimlik değil, okunabilir başlık olarak döner
-00:04 +107 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi kayda uymayan soru için uydurma cevap üretilmez
-00:04 +108 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi soru boşsa eşleşme yapılmaz
-00:04 +109 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi paylaşım metni kaynakları ve mezhep notlarını içerir
-00:04 +110 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi İslam'ın şartları sorusuna beş şartı doğru sırayla ve kaynaklı cevaplar
-00:04 +111 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi İmanın şartları sorusuna altı iman esasını doğru sırayla ve kaynaklı cevaplar
-00:04 +112 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi birleşik sorularda RAG yaklaşımıyla her iki doğrulanmış kayıt birleştirilir
-00:04 +113 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri yedi gün × altı vakit için kimlikler benzersiz
-00:04 +114 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri kimlikler ilgili aralıkta kalır
-00:04 +115 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri vakit kimlikleri tekil bildirim kimlikleriyle çakışmaz
-00:04 +116 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim yönlendirme yükü her hedef kendi yüküyle ayrışır
-00:04 +117 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim yönlendirme yükü ayrıntılı yükler ve tanımsız yükler güvenli
-00:04 +118 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları varsayılan olarak güneş vakti bildirilmez
-00:04 +119 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları kullanıcı bir vakti kapatabilir
-00:04 +120 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları bildirimler tümden kapatılınca hiçbir vakit bildirilmez
-00:04 +121 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları eksik ayar güvenli tarafta kalır (kapalı sayılır)
-00:04 +122 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu varsayılan sessiz saat kapalı
-00:04 +123 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu sessiz saat aralığı gece yarısını aşabilir
-00:04 +124 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu uyku modu 22:00–07:00 arasını kapsar
-00:04 +125 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu öğle vakti sessiz saate girmez
-00:04 +126 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı ön hatırlatma varsayılan olarak kapalı
-00:04 +127 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı ön hatırlatma dakikası ayarlanabilir
-00:04 +128 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı zamanlanan gün sayısı makul aralıkta
+00:04 +103 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri yedi gün × altı vakit için kimlikler benzersiz
+00:04 +104 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri yedi gün × altı vakit için kimlikler benzersiz
+00:04 +105 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri yedi gün × altı vakit için kimlikler benzersiz
+00:04 +106 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri yedi gün × altı vakit için kimlikler benzersiz
+00:04 +107 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi önerilen sorular kimlik değil, okunabilir başlık olarak döner
+00:04 +108 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri kimlikler ilgili aralıkta kalır
+00:04 +109 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi kayda uymayan soru için uydurma cevap üretilmez
+00:04 +110 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi kayda uymayan soru için uydurma cevap üretilmez
+00:04 +111 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi kayda uymayan soru için uydurma cevap üretilmez
+00:04 +112 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi kayda uymayan soru için uydurma cevap üretilmez
+00:04 +113 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları varsayılan olarak güneş vakti bildirilmez
+00:04 +114 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi soru boşsa eşleşme yapılmaz
+00:04 +115 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları kullanıcı bir vakti kapatabilir
+00:04 +116 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi paylaşım metni kaynakları ve mezhep notlarını içerir
+00:04 +117 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları bildirimler tümden kapatılınca hiçbir vakit bildirilmez
+00:04 +118 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi İslam'ın şartları sorusuna beş şartı doğru sırayla ve kaynaklı cevaplar
+00:04 +119 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi İslam'ın şartları sorusuna beş şartı doğru sırayla ve kaynaklı cevaplar
+00:04 +120 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi İslam'ın şartları sorusuna beş şartı doğru sırayla ve kaynaklı cevaplar
+00:04 +121 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi İslam'ın şartları sorusuna beş şartı doğru sırayla ve kaynaklı cevaplar
+00:04 +122 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi İslam'ın şartları sorusuna beş şartı doğru sırayla ve kaynaklı cevaplar
+00:04 +123 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi İslam'ın şartları sorusuna beş şartı doğru sırayla ve kaynaklı cevaplar
+00:04 +124 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı ön hatırlatma varsayılan olarak kapalı
+00:04 +125 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi İmanın şartları sorusuna altı iman esasını doğru sırayla ve kaynaklı cevaplar
+00:04 +126 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi İmanın şartları sorusuna altı iman esasını doğru sırayla ve kaynaklı cevaplar
+00:04 +127 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi İmanın şartları sorusuna altı iman esasını doğru sırayla ve kaynaklı cevaplar
+00:04 +128 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi birleşik sorularda RAG yaklaşımıyla her iki doğrulanmış kayıt birleştirilir
 00:05 +129 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Türkçe karakterleri sadeleştirir
 00:05 +130 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer kelimelere ayırır ve kısa kelimeleri atar
 00:05 +131 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer ekleri kaba biçimde kırpar
@@ -378,256 +391,57 @@ No issues found! (ran in 20.9s)
 00:06 +139 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
 00:06 +140 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
 00:06 +141 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
-══╡ EXCEPTION CAUGHT BY WIDGET INSPECTOR ╞══════════════════════════════════════════════════════════
-The following assertion was thrown:
-Looking up a deactivated widget's ancestor is unsafe.
-At this point the state of the widget's element tree is no longer stable.
-To safely refer to a widget's ancestor in its dispose() method, save a reference to the ancestor by
-calling dependOnInheritedWidgetOfExactType() in the widget's didChangeDependencies() method.
-
-When the exception was thrown, this was the stack:
-#0      Element._debugCheckStateIsActiveForAncestorLookup.<anonymous closure> (package:flutter/src/widgets/framework.dart:5062:9)
-#1      Element._debugCheckStateIsActiveForAncestorLookup (package:flutter/src/widgets/framework.dart:5076:6)
-#2      Element.visitAncestorElements (package:flutter/src/widgets/framework.dart:5187:12)
-#3      _describeRelevantUserCode (package:flutter/src/widgets/widget_inspector.dart:4342:13)
-#4      _parseDiagnosticsNode (package:flutter/src/widgets/widget_inspector.dart:4261:12)
-#5      debugTransformDebugCreator (package:flutter/src/widgets/widget_inspector.dart:4240:21)
-#6      _FlutterErrorDetailsNode.builder (package:flutter/src/foundation/assertions.dart:1300:31)
-#7      DiagnosticableNode.getProperties (package:flutter/src/foundation/diagnostics.dart:2943:68)
-#8      TextTreeRenderer._debugRender (package:flutter/src/foundation/diagnostics.dart:1270:63)
-#9      TextTreeRenderer.render (package:flutter/src/foundation/diagnostics.dart:1137:14)
-#10     DiagnosticsNode.toStringDeep.<anonymous closure> (package:flutter/src/foundation/diagnostics.dart:1818:75)
-#11     DiagnosticsNode.toStringDeep (package:flutter/src/foundation/diagnostics.dart:1825:6)
-#12     FlutterErrorDetails.toString (package:flutter/src/foundation/assertions.dart:736:65)
-#13     prettyPrint.prettyPrintImpl (package:matcher/src/pretty_print.dart:96:26)
-#14     prettyPrint.prettyPrintImpl.pp (package:matcher/src/pretty_print.dart:35:33)
-#15     prettyPrint.prettyPrintImpl (package:matcher/src/pretty_print.dart:48:21)
-#16     prettyPrint (package:matcher/src/pretty_print.dart:121:10)
-#17     StringDescription.addDescriptionOf (package:matcher/src/description.dart:49:11)
-#18     prettyPrint (package:matcher/src/expect/util/pretty_print.dart:32:25)
-#19     formatFailure (package:matcher/src/expect/expect.dart:199:25)
-#20     _expect.<anonymous closure> (package:matcher/src/expect/expect.dart:107:12)
-#21     _expect (package:matcher/src/expect/expect.dart:182:17)
-#22     expect (package:matcher/src/expect/expect.dart:65:3)
-#23     expect (package:flutter_test/src/widget_tester.dart:473:18)
-#24     renderScreen (file:///home/runner/work/ezanapp/ezanapp/test/support/test_runtime.dart:300:5)
-<asynchronous suspension>
-#25     main.<anonymous closure>.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:69:11)
-<asynchronous suspension>
-#26     main.screenTest.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:47:7)
-<asynchronous suspension>
-#27     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
-<asynchronous suspension>
-#28     TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
-<asynchronous suspension>
-<asynchronous suspension>
-(elided one frame from package:stack_trace)
-
-This exception was caught while trying to describe the user-relevant code of another error.
-════════════════════════════════════════════════════════════════════════════════════════════════════
-══╡ EXCEPTION CAUGHT BY WIDGET INSPECTOR ╞══════════════════════════════════════════════════════════
-The following assertion was thrown:
-Looking up a deactivated widget's ancestor is unsafe.
-At this point the state of the widget's element tree is no longer stable.
-To safely refer to a widget's ancestor in its dispose() method, save a reference to the ancestor by
-calling dependOnInheritedWidgetOfExactType() in the widget's didChangeDependencies() method.
-
-When the exception was thrown, this was the stack:
-#0      Element._debugCheckStateIsActiveForAncestorLookup.<anonymous closure> (package:flutter/src/widgets/framework.dart:5062:9)
-#1      Element._debugCheckStateIsActiveForAncestorLookup (package:flutter/src/widgets/framework.dart:5076:6)
-#2      Element.visitAncestorElements (package:flutter/src/widgets/framework.dart:5187:12)
-#3      _describeRelevantUserCode (package:flutter/src/widgets/widget_inspector.dart:4342:13)
-#4      _parseDiagnosticsNode (package:flutter/src/widgets/widget_inspector.dart:4261:12)
-#5      debugTransformDebugCreator (package:flutter/src/widgets/widget_inspector.dart:4240:21)
-#6      _FlutterErrorDetailsNode.builder (package:flutter/src/foundation/assertions.dart:1300:31)
-#7      DiagnosticableNode.emptyBodyDescription (package:flutter/src/foundation/diagnostics.dart:2939:45)
-#8      TextTreeRenderer._debugRender (package:flutter/src/foundation/diagnostics.dart:1307:14)
-#9      TextTreeRenderer.render (package:flutter/src/foundation/diagnostics.dart:1137:14)
-#10     DiagnosticsNode.toStringDeep.<anonymous closure> (package:flutter/src/foundation/diagnostics.dart:1818:75)
-#11     DiagnosticsNode.toStringDeep (package:flutter/src/foundation/diagnostics.dart:1825:6)
-#12     FlutterErrorDetails.toString (package:flutter/src/foundation/assertions.dart:736:65)
-#13     prettyPrint.prettyPrintImpl (package:matcher/src/pretty_print.dart:96:26)
-#14     prettyPrint.prettyPrintImpl.pp (package:matcher/src/pretty_print.dart:35:33)
-#15     prettyPrint.prettyPrintImpl (package:matcher/src/pretty_print.dart:48:21)
-#16     prettyPrint (package:matcher/src/pretty_print.dart:121:10)
-#17     StringDescription.addDescriptionOf (package:matcher/src/description.dart:49:11)
-#18     prettyPrint (package:matcher/src/expect/util/pretty_print.dart:32:25)
-#19     formatFailure (package:matcher/src/expect/expect.dart:199:25)
-#20     _expect.<anonymous closure> (package:matcher/src/expect/expect.dart:107:12)
-#21     _expect (package:matcher/src/expect/expect.dart:182:17)
-#22     expect (package:matcher/src/expect/expect.dart:65:3)
-#23     expect (package:flutter_test/src/widget_tester.dart:473:18)
-#24     renderScreen (file:///home/runner/work/ezanapp/ezanapp/test/support/test_runtime.dart:300:5)
-<asynchronous suspension>
-#25     main.<anonymous closure>.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:69:11)
-<asynchronous suspension>
-#26     main.screenTest.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:47:7)
-<asynchronous suspension>
-#27     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
-<asynchronous suspension>
-#28     TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
-<asynchronous suspension>
-<asynchronous suspension>
-(elided one frame from package:stack_trace)
-
-This exception was caught while trying to describe the user-relevant code of another error.
-════════════════════════════════════════════════════════════════════════════════════════════════════
-══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
-The following TestFailure was thrown running a test:
-Expected: empty
-  Actual: [
-            FlutterErrorDetails:══╡ EXCEPTION CAUGHT BY RENDERING LIBRARY ╞══════════════════════
-          The following assertion was thrown during layout:
-          A RenderFlex overflowed by 21 pixels on the right.
-
-          The overflowing RenderFlex has an orientation of Axis.horizontal.
-          The edge of the RenderFlex that is overflowing has been marked in
-          the rendering with a yellow and black striped pattern. This is
-          usually caused by the contents being too big for the RenderFlex.
-          Consider applying a flex factor (e.g. using an Expanded widget)
-          to force the children of the RenderFlex to fit within the
-          available space instead of being sized to their natural size.
-          This is considered an error condition because it indicates that
-          there is content that cannot be seen. If the content is
-          legitimately bigger than the available space, consider clipping
-          it with a ClipRect widget before putting it in the flex, or using
-          a scrollable container rather than a Flex, like a ListView.
-          The specific RenderFlex in question is: RenderFlex#5045c DISPOSED OVERFLOWING:
-            parentData: offset=Offset(20.0, 16.0) (can use size)
-            constraints: BoxConstraints(w=280.0, 0.0<=h<=Infinity)
-            size: Size(280.0, 384.0)
-            direction: horizontal
-            mainAxisAlignment: start
-            mainAxisSize: max
-            crossAxisAlignment: center
-            textDirection: ltr
-            verticalDirection: down
-            spacing: 0.0
-          ◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤
-
-          ═════════════════════════════════════════════════════════════════
-
-          ]
-Taşma hatası:
-A RenderFlex overflowed by 21 pixels on the right.
-debugCreator: Row ← Padding ← SectionHeader ← Column ← _TodayTimesCard ← Column ← SliverToBoxAdapter
-← Viewport ← IgnorePointer-[GlobalKey#a4bdd] ← Semantics ← Listener ← _GestureSemantics ← ⋯
-The overflowing RenderFlex has an orientation of Axis.horizontal.
-
-The edge of the RenderFlex that is overflowing has been marked in
-the rendering with a yellow and black striped pattern. This is
-usually caused by the contents being too big for the RenderFlex.
-
-Consider applying a flex factor (e.g. using an Expanded widget)
-to force the children of the RenderFlex to fit within the
-available space instead of being sized to their natural size.
-
-This is considered an error condition because it indicates that
-there is content that cannot be seen. If the content is
-legitimately bigger than the available space, consider clipping
-it with a ClipRect widget before putting it in the flex, or using
-a scrollable container rather than a Flex, like a ListView.
-
-The specific RenderFlex in question is: RenderFlex#5045c relayoutBoundary=up5 OVERFLOWING:
-  creator: Row ← Padding ← SectionHeader ← Column ← _TodayTimesCard
-    ← Column ← SliverToBoxAdapter ← Viewport ←
-    IgnorePointer-[GlobalKey#a4bdd] ← Semantics ← Listener ←
-    _GestureSemantics ← ⋯
-  parentData: offset=Offset(20.0, 16.0) (can use size)
-  constraints: BoxConstraints(w=280.0, 0.0<=h<=Infinity)
-  size: Size(280.0, 384.0)
-  direction: horizontal
-  mainAxisAlignment: start
-  mainAxisSize: max
-  crossAxisAlignment: center
-  textDirection: ltr
-  verticalDirection: down
-  spacing: 0.0
-
-◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤
-
-When the exception was thrown, this was the stack:
-#4      renderScreen (file:///home/runner/work/ezanapp/ezanapp/test/support/test_runtime.dart:300:5)
-<asynchronous suspension>
-#5      main.<anonymous closure>.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:69:11)
-<asynchronous suspension>
-#6      main.screenTest.<anonymous closure> (file:///home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart:47:7)
-<asynchronous suspension>
-#7      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
-<asynchronous suspension>
-#8      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
-<asynchronous suspension>
-<asynchronous suspension>
-(elided one frame from package:stack_trace)
-
-This was caught by the test expectation on the following line:
-  file:///home/runner/work/ezanapp/ezanapp/test/support/test_runtime.dart line 300
-The test description was:
-  Ana sayfa — küçük telefon 320×568
-════════════════════════════════════════════════════════════════════════════════════════════════════
-══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
-The following message was thrown:
-Multiple exceptions (3) were detected during the running of the current test, and at least one was
-unexpected.
-════════════════════════════════════════════════════════════════════════════════════════════════════
-00:07 +141 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
-00:07 +141 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568 [E]
-  Test failed. See exception logs above.
-  The test description was: Ana sayfa — küçük telefon 320×568
-  
-00:07 +142 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
-00:07 +143 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
-00:07 +144 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
-00:08 +145 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
-00:08 +146 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakitler — tablet 1024×1366
-00:08 +147 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları Daha Fazla ekranı yalnızca açık modülleri listeler
-00:08 +148 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Kur'an — küçük telefon 320×568
-00:08 +149 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Kur'an — telefon 411×914
-00:08 +150 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Kur'an — tablet 1024×1366
-00:08 +151 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — küçük telefon 320×568
-00:09 +152 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — telefon 411×914
-00:09 +153 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — tablet 1024×1366
-00:09 +154 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — tablet 1024×1366
-00:09 +155 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: yerel hesap, Diyanet vakitlerine ±3 dakika içinde kalır
-00:09 +156 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — küçük telefon 320×568
-00:09 +157 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — küçük telefon 320×568
-00:09 +158 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — küçük telefon 320×568
-00:09 +159 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — küçük telefon 320×568
-00:09 +160 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — telefon 411×914
-00:09 +161 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — tablet 1024×1366
-00:09 +162 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — küçük telefon 320×568
-00:09 +163 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — telefon 411×914
-00:09 +164 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — tablet 1024×1366
-00:09 +165 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — küçük telefon 320×568
-00:09 +166 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — telefon 411×914
-00:10 +167 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — tablet 1024×1366
-00:10 +168 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — küçük telefon 320×568
-00:10 +169 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — telefon 411×914
-00:10 +170 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — tablet 1024×1366
-00:10 +171 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — küçük telefon 320×568
-00:10 +172 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — telefon 411×914
-00:10 +173 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — tablet 1024×1366
-00:10 +174 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — küçük telefon 320×568
-00:10 +175 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — telefon 411×914
-00:10 +176 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — tablet 1024×1366
-00:11 +177 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — küçük telefon 320×568
-00:11 +178 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — telefon 411×914
-00:11 +179 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — tablet 1024×1366
-00:11 +180 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Dualar: künye özeti ve kategori çipleri görünür
-00:11 +181 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Hadis: başlık ve konu çipleri görünür
+00:07 +142 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
+00:07 +143 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
+00:07 +144 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
+00:07 +145 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
+00:07 +146 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakitler — telefon 411×914
+00:07 +147 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları Daha Fazla ekranı yalnızca açık modülleri listeler
+00:07 +148 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakitler — tablet 1024×1366
+00:07 +149 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Kur'an — küçük telefon 320×568
+00:08 +150 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Kur'an — telefon 411×914
+00:08 +151 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Kur'an — tablet 1024×1366
+00:08 +152 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — küçük telefon 320×568
+00:08 +153 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — telefon 411×914
+00:09 +154 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — tablet 1024×1366
+00:09 +155 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — tablet 1024×1366
+00:09 +156 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — tablet 1024×1366
+00:09 +157 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — tablet 1024×1366
+00:09 +158 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — tablet 1024×1366
+00:09 +159 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — tablet 1024×1366
+00:09 +160 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — küçük telefon 320×568
+00:09 +161 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — telefon 411×914
+00:09 +162 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — tablet 1024×1366
+00:09 +163 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — küçük telefon 320×568
+00:09 +164 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — telefon 411×914
+00:09 +165 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — tablet 1024×1366
+00:09 +166 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — küçük telefon 320×568
+00:09 +167 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — telefon 411×914
+00:09 +168 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — tablet 1024×1366
+00:09 +169 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — küçük telefon 320×568
+00:09 +170 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — telefon 411×914
+00:09 +171 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — tablet 1024×1366
+00:10 +172 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — küçük telefon 320×568
+00:10 +173 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — telefon 411×914
+00:10 +174 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — tablet 1024×1366
+00:10 +175 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — küçük telefon 320×568
+00:10 +176 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — telefon 411×914
+00:10 +177 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — tablet 1024×1366
+00:10 +178 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — küçük telefon 320×568
+00:10 +179 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — telefon 411×914
+00:10 +180 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — tablet 1024×1366
+00:10 +181 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Dualar: künye özeti ve kategori çipleri görünür
+00:10 +182 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Hadis: başlık ve konu çipleri görünür
 [hadis tanısı] çipler: false · yükleniyor: true · metinler: Hadis metni veya konu ara | Hadisler yükleniyor… | Hadis | Sahih kaynaklardan seçkiler
-00:11 +182 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Zikir: tesbih ekranı sayaç ile çizilir
-00:11 +183 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Vakitler: liste başlığı ve ayar ipucu birlikte görünür
-00:11 +184 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Kur'an: sure listesi yüklenir
-00:11 +185 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Daha Fazla: tüm bölüm girişleri listelenir
-00:11 +186 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir hata görünümü anlaşılır mesaj ve "Tekrar dene" sunar
-00:11 +187 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir izni olmayan hatalarda "Tekrar dene" gösterilmez
-00:11 +188 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir vakitler cihazda hesaplandıysa uyarı şeridi görünür
-00:11 +189 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: (tearDownAll)
-00:11 +189 ~6 -1: Some tests failed.
-
-Failing tests:
-  /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
+00:10 +183 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Zikir: tesbih ekranı sayaç ile çizilir
+00:11 +184 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Vakitler: liste başlığı ve ayar ipucu birlikte görünür
+00:11 +185 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Kur'an: sure listesi yüklenir
+00:11 +186 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Daha Fazla: tüm bölüm girişleri listelenir
+00:11 +187 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir hata görünümü anlaşılır mesaj ve "Tekrar dene" sunar
+00:11 +188 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir izni olmayan hatalarda "Tekrar dene" gösterilmez
+00:11 +189 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir vakitler cihazda hesaplandıysa uyarı şeridi görünür
+00:11 +190 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: (tearDownAll)
+00:11 +190 ~6: All tests passed!
 ```
 
 ## ai
@@ -706,7 +520,7 @@ Warning: The generated ELF library contains unobfuscated DWARF debugging informa
 Warning: The generated ELF library contains unobfuscated DWARF debugging information.
          To avoid this, use --strip to remove it.
 Caught exception: Already watching path: /home/runner/work/ezanapp/ezanapp/android
-Running Gradle task 'assembleRelease'...                          599.6s
+Running Gradle task 'assembleRelease'...                          578.2s
 ✓ Built build/app/outputs/flutter-apk/app-release.apk (87.7MB)
 ```
 
@@ -734,6 +548,6 @@ If you don't see a plugins block, your project was likely created with an older 
 Expected to find fonts for (packages/cupertino_icons/CupertinoIcons, MaterialIcons), but found (MaterialIcons). This usually means you are referring to font families in an IconData class but not including them in the assets section of your pubspec.yaml, are missing the package that would include them, or are missing "uses-material-design: true".
 Font asset "MaterialIcons-Regular.otf" was tree-shaken, reducing it from 1645184 to 28048 bytes (98.3% reduction). Tree-shaking can be disabled by providing the --no-tree-shake-icons flag when building your app.
 Caught exception: Already watching path: /home/runner/work/ezanapp/ezanapp/android
-Running Gradle task 'bundleRelease'...                             23.1s
+Running Gradle task 'bundleRelease'...                             23.5s
 ✓ Built build/app/outputs/bundle/release/app-release.aab (87.9MB)
 ```
