@@ -8,7 +8,6 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../core/audio/audio_service.dart';
 import '../../core/utils/app_time.dart';
-import '../../core/utils/logger.dart';
 import '../../data/models/app_settings.dart';
 import '../../data/models/quran_models.dart';
 import '../../data/repositories/quran_repository.dart';
@@ -249,8 +248,7 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
                 speed: _playbackSpeed,
                 arrowTrackingEnabled: _arrowTrackingEnabled,
                 elderlyLargeFont: settings.quranFontSize >= 32,
-                onTogglePlayPause: () =>
-                    _togglePlayPauseSurah(value, reciter),
+                onTogglePlayPause: () => _togglePlayPauseSurah(value, reciter),
                 onStop: _stopAudio,
                 onPreviousAyah: () => _stepAyah(value, reciter, -1),
                 onNextAyah: () => _stepAyah(value, reciter, 1),
@@ -285,8 +283,7 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
             return const EmptyView(
               icon: Icons.menu_book_outlined,
               title: 'Sure içeriği bulunamadı',
-              message:
-                  'Kur\'an verisi eksik görünüyor. Uygulamayı yeniden başlatmayı deneyin.',
+              message: 'Kur\'an verisi eksik görünüyor. Uygulamayı yeniden başlatmayı deneyin.',
             );
           }
           return ScrollablePositionedList.builder(
@@ -535,9 +532,8 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
               ),
               child: Text(
                 'Kur\'an Okuyucusu (Kari) Seçimi',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+                style: Theme.of(context).textTheme.titleMedium
+                    ?.copyWith(fontWeight: FontWeight.w700),
               ),
             ),
             for (final Reciter item in Reciters.all)
@@ -581,9 +577,8 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
               children: <Widget>[
                 Text(
                   'Yazı boyutu ve Ok Takipli Yaşlı Modu',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: Theme.of(context).textTheme.titleMedium
+                      ?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 Slider(
@@ -611,7 +606,9 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
                   value: _arrowTrackingEnabled,
-                  title: const Text('Yaşlılar için ok takipli kelime/satır vurgusu'),
+                  title: const Text(
+                    'Yaşlılar için ok takipli kelime/satır vurgusu',
+                  ),
                   subtitle: const Text(
                     'Okunan ayeti ve kelimeyi hareketli ok işaretiyle gösterir',
                   ),
@@ -670,9 +667,8 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
             ),
             child: Text(
               'Meal dili ve çevrimdışı indirme',
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+              style: Theme.of(context).textTheme.titleLarge
+                  ?.copyWith(fontWeight: FontWeight.w700),
             ),
           ),
           const Padding(
@@ -1119,7 +1115,8 @@ class _AyahCard extends StatelessWidget {
     final int activeWordIdx = audioWordProgress != null
         ? (audioWordProgress! * wordCount).floor().clamp(0, wordCount - 1)
         : manualWordIndex.clamp(0, wordCount - 1);
-    final double effectiveProgress = audioWordProgress ??
+    final double effectiveProgress =
+        audioWordProgress ??
         (wordCount <= 1 ? 1.0 : (activeWordIdx + 1) / wordCount);
 
     return Padding(

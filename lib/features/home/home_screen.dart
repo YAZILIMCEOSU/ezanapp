@@ -229,9 +229,8 @@ class _TodayTimesCard extends StatelessWidget {
                       notifications.isEnabledFor(prayer) &&
                       !notifications.soundFor(prayer).isSilent
                   ? AppColors.emerald500
-                  : Theme.of(
-                      context,
-                    ).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+                  : Theme.of(context).colorScheme.onSurfaceVariant
+                        .withValues(alpha: 0.5),
             ),
           ),
         PrayerSourceNote(

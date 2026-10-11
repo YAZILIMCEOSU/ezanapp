@@ -265,7 +265,7 @@ class AppAudioService {
     try {
       final AudioSession session = await AudioSession.instance;
       await session.configure(
-        AudioSessionConfiguration(
+        const AudioSessionConfiguration(
           avAudioSessionCategory: AVAudioSessionCategory.playback,
           avAudioSessionCategoryOptions:
               AVAudioSessionCategoryOptions.duckOthers,
@@ -273,7 +273,7 @@ class AppAudioService {
           avAudioSessionRouteSharingPolicy:
               AVAudioSessionRouteSharingPolicy.defaultPolicy,
           avAudioSessionSetActiveOptions: AVAudioSessionSetActiveOptions.none,
-          androidAudioAttributes: const AndroidAudioAttributes(
+          androidAudioAttributes: AndroidAudioAttributes(
             contentType: AndroidAudioContentType.music,
             usage: AndroidAudioUsage.media,
           ),
