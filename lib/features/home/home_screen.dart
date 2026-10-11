@@ -197,7 +197,7 @@ class _TodayTimesCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               TextButton.icon(
-                onPressed: () => context.push(AppRoutes.adhanSound),
+                onPressed: () => context.push(AppRoutes.adhanSounds),
                 icon: const Icon(Icons.volume_up_outlined, size: 16),
                 label: const Text('Ezan Sesi'),
               ),
@@ -216,7 +216,7 @@ class _TodayTimesCard extends StatelessWidget {
             use24Hour: use24Hour,
             isCurrent: current == prayer,
             isNext: !snap.isAfterIsha && next?.prayer == prayer,
-            onTap: () => context.push(AppRoutes.adhanSound),
+            onTap: () => context.push(AppRoutes.adhanSounds),
             trailing: Icon(
               notifications.enabled &&
                       notifications.isEnabledFor(prayer) &&
