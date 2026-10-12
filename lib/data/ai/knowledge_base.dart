@@ -860,7 +860,11 @@ abstract final class KnowledgeBase {
       madhabNotes: <String>[
         'Hanefî ve Şâfiî mezheplerinde Kuşluk namazı müstehap/mendup kabul edilir; ikişer rekâtta bir selam verilmesi efdaldir.',
       ],
-      related: <String>['israk_namazi', 'teheccud_gece_namazi', 'evvabin_namazi'],
+      related: <String>[
+        'israk_namazi',
+        'teheccud_gece_namazi',
+        'evvabin_namazi',
+      ],
       category: 'Nafile Namazlar',
     ),
     KnowledgeEntry(
@@ -893,7 +897,11 @@ abstract final class KnowledgeBase {
       madhabNotes: <String>[
         'Hanefîlere göre gece namazında ikişer veya dörder rekâtta bir, Şâfiîlere göre ise ikişer rekâtta bir selam verilmesi sünnettir.',
       ],
-      related: <String>['kusluk_duha_namazi', 'vitir_teravih', 'evvabin_namazi'],
+      related: <String>[
+        'kusluk_duha_namazi',
+        'vitir_teravih',
+        'evvabin_namazi',
+      ],
       category: 'Nafile Namazlar',
     ),
     KnowledgeEntry(
@@ -1274,7 +1282,8 @@ abstract final class KnowledgeBase {
     ),
     KnowledgeEntry(
       id: 'cemaat_imama_uyma',
-      title: 'Cemaatle namaz ve imama sonradan yetişme (mesbuk) nasıl tamamlanır?',
+      title:
+          'Cemaatle namaz ve imama sonradan yetişme (mesbuk) nasıl tamamlanır?',
       keywords: <String>[
         'mesbuk',
         'imama uymak',

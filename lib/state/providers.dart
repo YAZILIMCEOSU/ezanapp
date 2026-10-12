@@ -279,33 +279,35 @@ class LocationController extends Notifier<LocationState> {
     if (state.location.mode != LocationMode.gps) return;
     final AppRuntime runtime = ref.read(runtimeProvider);
     try {
-      _positionSub = runtime.location.watchPosition(distanceFilterMeters: 350).listen(
-        (LocationFix fix) async {
-          if (state.location.mode != LocationMode.gps) return;
-          final double movedKm = LocationService.distanceKm(
-            state.location.latitude,
-            state.location.longitude,
-            fix.latitude,
-            fix.longitude,
-          );
-          if (movedKm < 0.3) return;
-          City? matched;
-          try {
-            matched = await runtime.cities.nearest(fix.latitude, fix.longitude);
-          } catch (_) {}
-          await _persist(
-            UserLocation(
-              mode: LocationMode.gps,
-              latitude: fix.latitude,
-              longitude: fix.longitude,
-              city: matched,
-              updatedAt: DateTime.now(),
-              gpsAccuracyMeters: fix.accuracyMeters,
-            ),
-          );
-        },
-        onError: (_) {},
-      );
+      _positionSub = runtime.location
+          .watchPosition(distanceFilterMeters: 350)
+          .listen((LocationFix fix) async {
+            if (state.location.mode != LocationMode.gps) return;
+            final double movedKm = LocationService.distanceKm(
+              state.location.latitude,
+              state.location.longitude,
+              fix.latitude,
+              fix.longitude,
+            );
+            if (movedKm < 0.3) return;
+            City? matched;
+            try {
+              matched = await runtime.cities.nearest(
+                fix.latitude,
+                fix.longitude,
+              );
+            } catch (_) {}
+            await _persist(
+              UserLocation(
+                mode: LocationMode.gps,
+                latitude: fix.latitude,
+                longitude: fix.longitude,
+                city: matched,
+                updatedAt: DateTime.now(),
+                gpsAccuracyMeters: fix.accuracyMeters,
+              ),
+            );
+          }, onError: (_) {});
     } catch (_) {}
   }
 

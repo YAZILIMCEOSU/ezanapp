@@ -110,7 +110,9 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initLocationAndFetch());
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _initLocationAndFetch(),
+    );
   }
 
   @override

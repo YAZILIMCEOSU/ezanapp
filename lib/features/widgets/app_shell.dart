@@ -306,7 +306,8 @@ class _GlobalAudioMiniBarState extends ConsumerState<GlobalAudioMiniBar> {
         : (audio.activeCustomTitle ?? 'Ses Oynatılıyor');
     final String subtitle = isQuran
         ? '${audio.activeReciterName ?? 'Kur\'an Tilaveti'} · Sureye dönmek için dokunun'
-        : (audio.activeCustomSubtitle ?? 'Çalan sesi kontrol edin veya kapatın');
+        : (audio.activeCustomSubtitle ??
+              'Çalan sesi kontrol edin veya kapatın');
 
     return Material(
       color: theme.colorScheme.surfaceContainerHighest,
@@ -339,9 +340,7 @@ class _GlobalAudioMiniBarState extends ConsumerState<GlobalAudioMiniBar> {
                 ),
                 alignment: Alignment.center,
                 child: Icon(
-                  isQuran
-                      ? Icons.menu_book_rounded
-                      : Icons.graphic_eq_rounded,
+                  isQuran ? Icons.menu_book_rounded : Icons.graphic_eq_rounded,
                   size: 19,
                   color: AppColors.emerald500,
                 ),

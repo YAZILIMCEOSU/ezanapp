@@ -196,7 +196,7 @@ class _AiScreenState extends ConsumerState<AiScreen> {
         minChildSize: 0.45,
         maxChildSize: 0.94,
         builder: (BuildContext context, ScrollController controller) {
-          final List<KnowledgeEntry> all = KnowledgeBase.entries;
+          const List<KnowledgeEntry> all = KnowledgeBase.entries;
           return ListView.builder(
             controller: controller,
             padding: const EdgeInsets.fromLTRB(
@@ -237,9 +237,8 @@ class _AiScreenState extends ConsumerState<AiScreen> {
                 ),
                 title: Text(
                   entry.title,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium
+                      ?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 subtitle: Text(
                   '${entry.category} · ${entry.citations.first}',

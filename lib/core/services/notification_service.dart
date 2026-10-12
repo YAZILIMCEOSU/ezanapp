@@ -576,8 +576,7 @@ class NotificationService {
       await scheduleDailyReminder(
         id: NotificationIds.abdestSukur,
         title: 'Abdest Şükür & Tahiyyetü\'l-Mescid Hatırlatması',
-        body:
-            'Abdest sonrası 2 rekât Abdest Şükür namazını ve camiye girdiğinizde 2 rekât Tahiyyetü\'l-Mescid kılmayı unutmayın.',
+        body: 'Abdest sonrası 2 rekât Abdest Şükür namazını ve camiye girdiğinizde 2 rekât Tahiyyetü\'l-Mescid kılmayı unutmayın.',
         hour: 11,
         minute: 30,
         channelId: NotificationChannels.prayer,

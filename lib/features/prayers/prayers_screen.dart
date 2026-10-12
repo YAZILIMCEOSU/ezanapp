@@ -666,8 +666,7 @@ class _NafileAndSpecialPrayersSection extends ConsumerWidget {
         title: 'İşrak Namazı',
         rekatBadge: '2 Rekât',
         timeLabel: 'Alarm: ${_fmt(israkTime)} (Güneş + 47 dk)',
-        summary:
-            'Sabah namazını kıldıktan sonra zikirle meşgul olup güneş doğduktan ve kerahet vakti çıktıktan (~45-50 dk sonra) hemen kılınan 2 rekât namazdır (Kuşluk başlangıcıdır).',
+        summary: 'Sabah namazını kıldıktan sonra zikirle meşgul olup güneş doğduktan ve kerahet vakti çıktıktan (~45-50 dk sonra) hemen kılınan 2 rekât namazdır (Kuşluk başlangıcıdır).',
         guide:
             '• Vakti: Güneş doğup kerahet vakti çıktıktan (yaklaşık 45-50 dk sonra, bugün ${_fmt(israkTime)}) başlar.\n'
             '• Rekâtı: 2 rekâttır.\n'
@@ -688,8 +687,7 @@ class _NafileAndSpecialPrayersSection extends ConsumerWidget {
         rekatBadge: '2, 4, 8 veya 12 Rekât',
         timeLabel:
             'Vakit: ${_fmt(israkTime)} – ${_fmt(duhaEnd)} • Alarm: ${_fmt(duhaBest)}',
-        summary:
-            'Güneşin doğup kerahet vaktinin çıkmasından öğle kerahet vaktine kadar kılınan, vücudun 360 ekleminin şükrü yerine geçen müstehap namazdır.',
+        summary: 'Güneşin doğup kerahet vaktinin çıkmasından öğle kerahet vaktine kadar kılınan, vücudun 360 ekleminin şükrü yerine geçen müstehap namazdır.',
         guide:
             '• Vakti: Güneş doğduktan ~45-50 dk sonra (${_fmt(israkTime)}) başlar, öğle vaktine ~45 dk kalaya (${_fmt(duhaEnd)}) kadar devam eder. En faziletli vakti gündüzün dörtte biri geçtiği (${_fmt(duhaBest)}) saattir.\n'
             '• Rekâtı: En az 2, genellikle 4 veya 8, en çok 12 rekât olarak ikişer veya dörder rekâtta bir selam verilerek kılınır.\n'
@@ -710,8 +708,7 @@ class _NafileAndSpecialPrayersSection extends ConsumerWidget {
         rekatBadge: '2, 4 veya 6 Rekât',
         timeLabel:
             'Vakit: ${_fmt(aksam)} – ${_fmt(yatsi)} • Alarm: ${_fmt(evvabinTime)}',
-        summary:
-            'Akşam namazını kıldıktan hemen sonra, yatsı vakti girmeden önce Allah\'a yönelen kulların (evvâbîn) kıldığı 2, 4 veya 6 rekâtlık nafile namazdır.',
+        summary: 'Akşam namazını kıldıktan hemen sonra, yatsı vakti girmeden önce Allah\'a yönelen kulların (evvâbîn) kıldığı 2, 4 veya 6 rekâtlık nafile namazdır.',
         guide:
             '• Vakti: Akşam namazının farzı ve sünneti kılındıktan hemen sonra (bugün ${_fmt(evvabinTime)}) yatsı vakti (${_fmt(yatsi)}) girmeden önce kılınır.\n'
             '• Rekâtı: 2, 4 veya 6 rekât olarak eda edilir (ikişer rekâtta bir selam verilmesi müstehaptır).\n'
@@ -732,8 +729,7 @@ class _NafileAndSpecialPrayersSection extends ConsumerWidget {
         rekatBadge: '2 – 8 Rekât',
         timeLabel:
             'Seher Alarmı: ${_fmt(teheccudTime)} (İmsak: ${_fmt(imsak)})',
-        summary:
-            'Yatsı namazından sonra biraz uyuyup gece yarısı ile imsak vakti arasında uyanılarak kılınan, farz namazlardan sonra en faziletli namazdır.',
+        summary: 'Yatsı namazından sonra biraz uyuyup gece yarısı ile imsak vakti arasında uyanılarak kılınan, farz namazlardan sonra en faziletli namazdır.',
         guide:
             '• Vakti: Yatsı namazından sonra biraz uyuyup gece yarısı ile imsak (${_fmt(imsak)}) arasında uyanılarak kılınır. En faziletli vakti gecenin son üçte biri olan seher vaktidir (Alarm saati: ${_fmt(teheccudTime)}).\n'
             '• Rekâtı: 2 ile 8 rekât arasında (ikişer rekâtta bir selam verilerek) kılınır.\n'
@@ -753,8 +749,7 @@ class _NafileAndSpecialPrayersSection extends ConsumerWidget {
         title: 'Tahiyyetü\'l-Mescid & Abdest Şükür Namazı',
         rekatBadge: '2 Rekât + 2 Rekât',
         timeLabel: 'Camiye girince & Abdest sonrası (Kerahet vakti dışında)',
-        summary:
-            'Tahiyyetü\'l-Mescid: Camiye/mescide girildiğinde oturmadan önce kılınan 2 rekât selamlama namazıdır. Abdest Şükür: Abdest aldıktan hemen sonra azalar kurumadan kılınan 2 rekât namazdır.',
+        summary: 'Tahiyyetü\'l-Mescid: Camiye/mescide girildiğinde oturmadan önce kılınan 2 rekât selamlama namazıdır. Abdest Şükür: Abdest aldıktan hemen sonra azalar kurumadan kılınan 2 rekât namazdır.',
         guide:
             '• Tahiyyetü\'l-Mescid (2 Rekât): Bir camiye veya mescide girildiğinde, oturmadan önce mescidin Rabbine saygı amacıyla kılınan 2 rekâtlık sünnet namazdır (Buhârî, Salât, 60).\n'
             '• Abdest Şükür Namazı (2 Rekât): Abdest veya gusül aldıktan hemen sonra, azalar henüz kurumadan kılınan 2 rekâtlık namazdır; Hz. Bilâl-i Habeşî\'nin cennette ayak seslerinin duyulmasına vesile olan ameldir (Buhârî, Teheccüd, 17; Müslim, Fedâilü\'s-Sahâbe, 108).',
@@ -773,8 +768,7 @@ class _NafileAndSpecialPrayersSection extends ConsumerWidget {
         rekatBadge: 'Cemaatle Vakitli',
         timeLabel:
             'Cuma Hazırlık: ${_fmt(cumaPrep)} (Öğle: ${_fmt(ogle)}) • Bayram: ${_fmt(eidTime)}',
-        summary:
-            'Cuma namazı her Cuma öğle vaktinde cemaatle kılınır (4 ilk sünnet + 2 farz + 4 son sünnet). Ramazan ve Kurban Bayramı namazları güneşten ~48 dk sonra cemaatle 2 rekât vâcip olarak kılınır.',
+        summary: 'Cuma namazı her Cuma öğle vaktinde cemaatle kılınır (4 ilk sünnet + 2 farz + 4 son sünnet). Ramazan ve Kurban Bayramı namazları güneşten ~48 dk sonra cemaatle 2 rekât vâcip olarak kılınır.',
         guide:
             '• Cuma Namazı: Cuma günü öğle vaktinde (${_fmt(ogle)}) cemaatle kılınır; alarm öğleden 45 dk önce (${_fmt(cumaPrep)}) ve Cuma sabahı 09:30\'da hatırlatır.\n'
             '• Bayram Namazları (2 Rekât Vâcip): Ramazan ve Kurban Bayramının 1. günü güneş doğup kerahet vakti çıktıktan (~48 dk sonra, yaklaşık ${_fmt(eidTime)}) cemaatle 6 zâid tekbir alınarak kılınır.',
@@ -791,9 +785,9 @@ class _NafileAndSpecialPrayersSection extends ConsumerWidget {
       _NafilePrayerSpec(
         title: 'Teravih Namazı',
         rekatBadge: '20 Rekât Sünnet-i Müekkede',
-        timeLabel: 'Alarm: ${_fmt(teravihTime)} (Yatsı: ${_fmt(yatsi)} sonrası)',
-        summary:
-            'Ramazan ayı boyunca Yatsı namazının farzı ve son sünnetinden sonra, Vitir namazından önce cemaatle veya ferdi olarak 20 rekât kılınan sünnet-i müekkede namazdır.',
+        timeLabel:
+            'Alarm: ${_fmt(teravihTime)} (Yatsı: ${_fmt(yatsi)} sonrası)',
+        summary: 'Ramazan ayı boyunca Yatsı namazının farzı ve son sünnetinden sonra, Vitir namazından önce cemaatle veya ferdi olarak 20 rekât kılınan sünnet-i müekkede namazdır.',
         guide:
             '• Vakti: Yatsı namazından (${_fmt(yatsi)}) sonra Vitir namazından önce kılınır (Alarm: ${_fmt(teravihTime)}).\n'
             '• Rekâtı: 20 rekâttır; ikişer veya dörder rekâtta bir selam verilerek eda edilir.\n'
