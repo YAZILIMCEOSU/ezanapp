@@ -9,6 +9,7 @@ import android.hardware.SensorManager
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.PowerManager
+import android.view.Surface
 import android.view.WindowManager
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -39,6 +40,10 @@ class MainActivity : FlutterActivity(), SensorEventListener {
     private var hasGravity = false
     private var hasGeomagnetic = false
     private var lastFieldStrengthMicroTesla: Double? = null
+    private var lastMagAccuracy: Int = SensorManager.SENSOR_STATUS_ACCURACY_HIGH
+    private var smoothedSin: Double = 0.0
+    private var smoothedCos: Double = 1.0
+    private var hasSmoothedHeading: Boolean = false
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -191,17 +196,38 @@ class MainActivity : FlutterActivity(), SensorEventListener {
         when (event.sensor.type) {
             Sensor.TYPE_ROTATION_VECTOR -> {
                 val rotationMatrix = FloatArray(9)
-                SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values)
-                emitOrientation(rotationMatrix, event.accuracy)
+                val vec = if (event.values.size > 4) event.values.copyOfRange(0, 4) else event.values
+                SensorManager.getRotationMatrixFromVector(rotationMatrix, vec)
+                val effectiveAcc = if (event.accuracy > 0) event.accuracy else lastMagAccuracy
+                emitOrientation(rotationMatrix, effectiveAcc)
             }
             Sensor.TYPE_ACCELEROMETER -> {
-                System.arraycopy(event.values, 0, gravity, 0, 3)
-                hasGravity = true
-                emitFromGravityMagnetic()
+                val alpha = 0.18f
+                if (!hasGravity) {
+                    System.arraycopy(event.values, 0, gravity, 0, 3)
+                    hasGravity = true
+                } else {
+                    gravity[0] += alpha * (event.values[0] - gravity[0])
+                    gravity[1] += alpha * (event.values[1] - gravity[1])
+                    gravity[2] += alpha * (event.values[2] - gravity[2])
+                }
+                if (rotationSensor == null) {
+                    emitFromGravityMagnetic()
+                }
             }
             Sensor.TYPE_MAGNETIC_FIELD -> {
-                System.arraycopy(event.values, 0, geomagnetic, 0, 3)
-                hasGeomagnetic = true
+                if (event.accuracy > 0) {
+                    lastMagAccuracy = event.accuracy
+                }
+                val alpha = 0.18f
+                if (!hasGeomagnetic) {
+                    System.arraycopy(event.values, 0, geomagnetic, 0, 3)
+                    hasGeomagnetic = true
+                } else {
+                    geomagnetic[0] += alpha * (event.values[0] - geomagnetic[0])
+                    geomagnetic[1] += alpha * (event.values[1] - geomagnetic[1])
+                    geomagnetic[2] += alpha * (event.values[2] - geomagnetic[2])
+                }
                 val bx = event.values[0].toDouble()
                 val by = event.values[1].toDouble()
                 val bz = event.values[2].toDouble()
@@ -222,26 +248,80 @@ class MainActivity : FlutterActivity(), SensorEventListener {
         if (!hasGravity || !hasGeomagnetic) return
         val rotationMatrix = FloatArray(9)
         if (!SensorManager.getRotationMatrix(rotationMatrix, null, gravity, geomagnetic)) return
-        emitOrientation(rotationMatrix, 3)
+        emitOrientation(rotationMatrix, lastMagAccuracy)
+    }
+
+    @Suppress("DEPRECATION")
+    private fun currentSurfaceRotation(): Int {
+        return try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                display?.rotation ?: Surface.ROTATION_0
+            } else {
+                windowManager?.defaultDisplay?.rotation ?: Surface.ROTATION_0
+            }
+        } catch (_: Throwable) {
+            Surface.ROTATION_0
+        }
     }
 
     private fun emitOrientation(rotationMatrix: FloatArray, accuracy: Int) {
         val now = System.currentTimeMillis()
-        if (now - lastEmit < 40) return // ~25 Hz yeterli
+        if (now - lastEmit < 35) return // ~28 Hz akıcı pusula
         lastEmit = now
+
+        // Ekran yönüne (portre/yatay) göre koordinat sistemini eşle
+        val displayAdjusted = FloatArray(9)
+        val (axisX, axisY) = when (currentSurfaceRotation()) {
+            Surface.ROTATION_90 -> Pair(SensorManager.AXIS_Y, SensorManager.AXIS_MINUS_X)
+            Surface.ROTATION_180 -> Pair(SensorManager.AXIS_MINUS_X, SensorManager.AXIS_MINUS_Y)
+            Surface.ROTATION_270 -> Pair(SensorManager.AXIS_MINUS_Y, SensorManager.AXIS_X)
+            else -> Pair(SensorManager.AXIS_X, SensorManager.AXIS_Y)
+        }
+        SensorManager.remapCoordinateSystem(rotationMatrix, axisX, axisY, displayAdjusted)
+
         val orientation = FloatArray(3)
-        SensorManager.getOrientation(rotationMatrix, orientation)
-        val rawAzimuth = Math.toDegrees(orientation[0].toDouble())
+        SensorManager.getOrientation(displayAdjusted, orientation)
         val tiltDeg = Math.toDegrees(orientation[1].toDouble())
         val rollDeg = Math.toDegrees(orientation[2].toDouble())
+
+        // Telefon dik/yarı dik tutuluyorsa (eğim > 55°) gimbal kilitlenmesini önlemek için Z eksenini kullan
+        val rawAzimuth = if (kotlin.math.abs(tiltDeg) > 55.0) {
+            val uprightMatrix = FloatArray(9)
+            SensorManager.remapCoordinateSystem(
+                displayAdjusted,
+                SensorManager.AXIS_X,
+                SensorManager.AXIS_Z,
+                uprightMatrix,
+            )
+            val uprightOrientation = FloatArray(3)
+            SensorManager.getOrientation(uprightMatrix, uprightOrientation)
+            Math.toDegrees(uprightOrientation[0].toDouble())
+        } else {
+            Math.toDegrees(orientation[0].toDouble())
+        }
         if (!rawAzimuth.isFinite() || !tiltDeg.isFinite() || !rollDeg.isFinite()) return
 
-        val azimuthDegrees = ((rawAzimuth + 360.0) % 360.0).toFloat()
+        // Dairesel üstel yumuşatma (titreşimsiz Diyanet pusulası kararlılığı)
+        val rad = Math.toRadians(rawAzimuth)
+        val s = kotlin.math.sin(rad)
+        val c = kotlin.math.cos(rad)
+        if (!hasSmoothedHeading) {
+            smoothedSin = s
+            smoothedCos = c
+            hasSmoothedHeading = true
+        } else {
+            val smoothFactor = 0.25
+            smoothedSin += smoothFactor * (s - smoothedSin)
+            smoothedCos += smoothFactor * (c - smoothedCos)
+        }
+        val smoothedDeg = Math.toDegrees(kotlin.math.atan2(smoothedSin, smoothedCos))
+        val azimuthDegrees = ((smoothedDeg + 360.0) % 360.0).toFloat()
+
         val accuracyDegrees = when (accuracy) {
             SensorManager.SENSOR_STATUS_ACCURACY_HIGH -> 3.0
             SensorManager.SENSOR_STATUS_ACCURACY_MEDIUM -> 8.0
             SensorManager.SENSOR_STATUS_ACCURACY_LOW -> 15.0
-            else -> 25.0
+            else -> 12.0
         }
         val payload = mutableMapOf<String, Any>(
             "heading" to azimuthDegrees.toDouble(),
@@ -253,7 +333,11 @@ class MainActivity : FlutterActivity(), SensorEventListener {
         eventSink?.success(payload)
     }
 
-    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) = Unit
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+        if (sensor?.type == Sensor.TYPE_MAGNETIC_FIELD && accuracy > 0) {
+            lastMagAccuracy = accuracy
+        }
+    }
 
     override fun onPause() {
         super.onPause()

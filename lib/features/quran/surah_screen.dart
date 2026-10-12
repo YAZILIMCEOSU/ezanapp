@@ -271,7 +271,7 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
                 ayahDuration: _ayahDuration,
                 speed: _playbackSpeed,
                 arrowTrackingEnabled: _arrowTrackingEnabled,
-                elderlyLargeFont: settings.quranFontSize >= 32,
+                largeHatFont: settings.quranFontSize >= 32,
                 onTogglePlayPause: () => _togglePlayPauseSurah(value, reciter),
                 onStop: _stopAudio,
                 onPreviousAyah: () => _stepAyah(value, reciter, -1),
@@ -283,7 +283,7 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
                 onToggleArrowTracking: () => setState(
                   () => _arrowTrackingEnabled = !_arrowTrackingEnabled,
                 ),
-                onToggleElderlyFont: () {
+                onToggleLargeFont: () {
                   final double nextSize = settings.quranFontSize >= 32
                       ? 26
                       : 34;
@@ -793,7 +793,7 @@ class _QuranHorizontalPlayerBar extends StatelessWidget {
     required this.ayahDuration,
     required this.speed,
     required this.arrowTrackingEnabled,
-    required this.elderlyLargeFont,
+    required this.largeHatFont,
     required this.onTogglePlayPause,
     required this.onStop,
     required this.onPreviousAyah,
@@ -802,7 +802,7 @@ class _QuranHorizontalPlayerBar extends StatelessWidget {
     required this.onCycleSpeed,
     required this.onPickReciter,
     required this.onToggleArrowTracking,
-    required this.onToggleElderlyFont,
+    required this.onToggleLargeFont,
   });
 
   final Surah surah;
@@ -816,7 +816,7 @@ class _QuranHorizontalPlayerBar extends StatelessWidget {
   final Duration ayahDuration;
   final double speed;
   final bool arrowTrackingEnabled;
-  final bool elderlyLargeFont;
+  final bool largeHatFont;
   final VoidCallback onTogglePlayPause;
   final VoidCallback onStop;
   final VoidCallback onPreviousAyah;
@@ -825,7 +825,7 @@ class _QuranHorizontalPlayerBar extends StatelessWidget {
   final VoidCallback onCycleSpeed;
   final VoidCallback onPickReciter;
   final VoidCallback onToggleArrowTracking;
-  final VoidCallback onToggleElderlyFont;
+  final VoidCallback onToggleLargeFont;
 
   @override
   Widget build(BuildContext context) {
@@ -847,7 +847,7 @@ class _QuranHorizontalPlayerBar extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              // Üst satır: Ok Takibi bilgisi + Yaşlı Dostu hızlı butonlar
+              // Üst satır: İşaretli Takip bilgisi + Rahat Okuma hızlı butonlar
               Row(
                 children: <Widget>[
                   const Icon(
@@ -901,28 +901,28 @@ class _QuranHorizontalPlayerBar extends StatelessWidget {
                   const SizedBox(width: 6),
                   InkWell(
                     borderRadius: BorderRadius.circular(999),
-                    onTap: onToggleElderlyFont,
+                    onTap: onToggleLargeFont,
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 8,
                         vertical: 3,
                       ),
                       decoration: BoxDecoration(
-                        color: elderlyLargeFont
+                        color: largeHatFont
                             ? AppColors.gold500.withValues(alpha: 0.20)
                             : theme.colorScheme.surface,
                         borderRadius: BorderRadius.circular(999),
                         border: Border.all(
-                          color: elderlyLargeFont
+                          color: largeHatFont
                               ? AppColors.gold600
                               : theme.colorScheme.outlineVariant,
                         ),
                       ),
                       child: Text(
-                        'İri Hat (A+)',
+                        'Rahat Okuma (A+)',
                         style: theme.textTheme.labelSmall?.copyWith(
                           fontWeight: FontWeight.w700,
-                          color: elderlyLargeFont ? AppColors.gold600 : null,
+                          color: largeHatFont ? AppColors.gold600 : null,
                         ),
                       ),
                     ),
