@@ -649,8 +649,10 @@ class AppAudioService {
     _activeCustomTitle = null;
     _activeCustomSubtitle = null;
     _lastPosition = Duration.zero;
-    _setHardwareWakeLock(false);
-    await _player.stop();
+    if (_playerInstance != null) {
+      _setHardwareWakeLock(false);
+      await _playerInstance!.stop();
+    }
     _status = PlaybackStatus.idle;
     if (!_statusController.isClosed) _statusController.add(_status);
   }

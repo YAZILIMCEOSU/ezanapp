@@ -11,6 +11,7 @@ import '../core/services/notification_service.dart';
 import '../core/services/push_service.dart';
 import '../core/utils/logger.dart';
 import '../data/models/app_settings.dart';
+import '../data/models/city.dart';
 import '../data/models/prayer.dart';
 import '../data/models/prayer_times_day.dart';
 import '../design/app_theme.dart';
