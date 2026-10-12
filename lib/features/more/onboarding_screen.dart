@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -38,6 +40,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Future<void> _finish() async {
     final runtime = ref.read(runtimeProvider);
     await runtime.preferences.setBool('onboarding_done', true);
+    unawaited(ref.read(notificationCoordinatorProvider).reschedule());
     if (mounted) context.go(AppRoutes.home);
   }
 
@@ -167,7 +170,7 @@ class _WelcomePage extends StatelessWidget {
           Image.asset('assets/images/logo_mark.png', width: 96, height: 96),
           const SizedBox(height: AppSpacing.xl),
           Text(
-            'Ezan\'a hoş geldiniz',
+            'Ezan Vaktim Pro\'ya hoş geldiniz',
             style: theme.textTheme.headlineMedium?.copyWith(
               fontWeight: FontWeight.w800,
               letterSpacing: -0.6,

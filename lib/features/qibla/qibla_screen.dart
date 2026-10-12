@@ -42,6 +42,13 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
     final CompassService service = ref.read(compassServiceProvider);
     final double qibla = ref.read(qiblaDirectionProvider);
     final UserLocation location = ref.read(activeLocationProvider);
+    if (location.mode == LocationMode.gps) {
+      unawaited(
+        ref
+            .read(locationControllerProvider.notifier)
+            .refreshFromGps(requestPermission: false),
+      );
+    }
     final double declination = GeoUtils.magneticDeclination(
       location.latitude,
       location.longitude,
@@ -107,7 +114,18 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
         title: const Text('Kıble'),
         actions: <Widget>[
           IconButton(
-            tooltip: 'Haritada aç',
+            tooltip: 'GPS ile tam konumumu güncelle',
+            onPressed: () =>
+                ref.read(locationControllerProvider.notifier).refreshFromGps(),
+            icon: const Icon(Icons.my_location_rounded, size: 20),
+          ),
+          IconButton(
+            tooltip: 'Haritada tam konumumu işaretle',
+            onPressed: () => _openExactPin(location, qibla),
+            icon: const Icon(Icons.location_on_outlined, size: 20),
+          ),
+          IconButton(
+            tooltip: 'Kâbe rotası ile haritada aç',
             onPressed: () => _openMap(location),
             icon: const Icon(Icons.map_outlined, size: 20),
           ),
@@ -199,6 +217,26 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _openExactPin(UserLocation location, double qibla) async {
+    final String label =
+        'Konumum (${location.label}) • Kıble Açısı: ${qibla.toStringAsFixed(1)}°';
+    final Uri geoUri = Uri.parse(
+      'geo:${location.latitude},${location.longitude}?q=${location.latitude},${location.longitude}(${Uri.encodeComponent(label)})',
+    );
+    final Uri webUri = Uri.parse(
+      'https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}',
+    );
+    bool opened = false;
+    try {
+      opened = await launchUrl(geoUri, mode: LaunchMode.externalApplication);
+    } catch (_) {}
+    if (!opened) {
+      try {
+        opened = await launchUrl(webUri, mode: LaunchMode.externalApplication);
+      } catch (_) {}
+    }
   }
 
   Future<void> _openMap(UserLocation location) async {

@@ -11,23 +11,23 @@ import '../prayer/prayer_calculator.dart';
 /// Ezan bildirim sesi seçenekleri.
 enum AdhanSound {
   ezanMelodi(
-    'Mekke-i Mükerreme (Harem-i Şerîf) Ezanı',
-    'Kâbe-i Muazzama Hicaz makamı gerçek müezzin ezan tilaveti (3 dk 22 sn, telifsiz)',
+    'Kâbe İmamı (Mekke Harem-i Şerîf) Tam Ezanı',
+    'Kâbe-i Muazzama Hicaz makamı gerçek müezzin tam ezan tilaveti (3 dk 22 sn, telifsiz)',
     'ezan_melodi',
   ),
   sabaMelodi(
-    'Türkiye Makamı Gerçek Ezan (Diyanet Usulü)',
+    'Türkiye Makamı Tam Ezan (Diyanet Usulü)',
     'Geleneksel Türkiye usulü tam müezzin ezan tilaveti (3 dk 08 sn, telifsiz)',
     'ezan_saba',
   ),
   segahMelodi(
-    'Mısır / Segâh Makamı Ezan (Abdülbâsıt)',
-    'Abdülbâsıt Abdüssamed gerçek ezan tilaveti (3 dk 20 sn, telifsiz)',
+    'Mısır / Segâh Makamı Tam Ezan (Abdülbâsıt)',
+    'Abdülbâsıt Abdüssamed gerçek tam ezan tilaveti (3 dk 20 sn, telifsiz)',
     'ezan_segah',
   ),
   tekbirMelodi(
-    'Klasik Makam Ezanı (Muhammed Rıfat)',
-    'Muhammed Rıfat klasik makam gerçek ezan tilaveti (3 dk 23 sn, telifsiz)',
+    'Klasik Makam Tam Ezanı (Muhammed Rıfat)',
+    'Muhammed Rıfat klasik makam gerçek tam ezan tilaveti (3 dk 23 sn, telifsiz)',
     'ezan_tekbir',
   ),
   tone1(
@@ -107,6 +107,13 @@ class NotificationSettings {
     this.hatimReminderEnabled = false,
     this.hatimReminderHour = 21,
     this.hatimReminderMinute = 0,
+    this.israkAlarm = false,
+    this.duhaAlarm = false,
+    this.evvabinAlarm = false,
+    this.teheccudAlarm = false,
+    this.teravihAlarm = false,
+    this.eidAlarm = true,
+    this.abdestSukurReminder = false,
     this.inAppAdhanEnabled = true,
     this.daysToSchedule = 7,
   });
@@ -153,6 +160,15 @@ class NotificationSettings {
   final bool hatimReminderEnabled;
   final int hatimReminderHour;
   final int hatimReminderMinute;
+
+  /// Nafile ve özel vakitli namaz alarmları.
+  final bool israkAlarm;
+  final bool duhaAlarm;
+  final bool evvabinAlarm;
+  final bool teheccudAlarm;
+  final bool teravihAlarm;
+  final bool eidAlarm;
+  final bool abdestSukurReminder;
 
   /// Uygulama açıkken ezan sesini çal.
   final bool inAppAdhanEnabled;
@@ -205,6 +221,13 @@ class NotificationSettings {
     bool? hatimReminderEnabled,
     int? hatimReminderHour,
     int? hatimReminderMinute,
+    bool? israkAlarm,
+    bool? duhaAlarm,
+    bool? evvabinAlarm,
+    bool? teheccudAlarm,
+    bool? teravihAlarm,
+    bool? eidAlarm,
+    bool? abdestSukurReminder,
     bool? inAppAdhanEnabled,
     int? daysToSchedule,
   }) => NotificationSettings(
@@ -240,6 +263,13 @@ class NotificationSettings {
     hatimReminderEnabled: hatimReminderEnabled ?? this.hatimReminderEnabled,
     hatimReminderHour: hatimReminderHour ?? this.hatimReminderHour,
     hatimReminderMinute: hatimReminderMinute ?? this.hatimReminderMinute,
+    israkAlarm: israkAlarm ?? this.israkAlarm,
+    duhaAlarm: duhaAlarm ?? this.duhaAlarm,
+    evvabinAlarm: evvabinAlarm ?? this.evvabinAlarm,
+    teheccudAlarm: teheccudAlarm ?? this.teheccudAlarm,
+    teravihAlarm: teravihAlarm ?? this.teravihAlarm,
+    eidAlarm: eidAlarm ?? this.eidAlarm,
+    abdestSukurReminder: abdestSukurReminder ?? this.abdestSukurReminder,
     inAppAdhanEnabled: inAppAdhanEnabled ?? this.inAppAdhanEnabled,
     daysToSchedule: daysToSchedule ?? this.daysToSchedule,
   );
@@ -278,6 +308,13 @@ class NotificationSettings {
     'hatimReminderEnabled': hatimReminderEnabled,
     'hatimReminderHour': hatimReminderHour,
     'hatimReminderMinute': hatimReminderMinute,
+    'israkAlarm': israkAlarm,
+    'duhaAlarm': duhaAlarm,
+    'evvabinAlarm': evvabinAlarm,
+    'teheccudAlarm': teheccudAlarm,
+    'teravihAlarm': teravihAlarm,
+    'eidAlarm': eidAlarm,
+    'abdestSukurReminder': abdestSukurReminder,
     'inAppAdhanEnabled': inAppAdhanEnabled,
     'daysToSchedule': daysToSchedule,
   };
@@ -331,6 +368,13 @@ class NotificationSettings {
       hatimReminderEnabled: boolOr('hatimReminderEnabled', false),
       hatimReminderHour: intOr('hatimReminderHour', 21),
       hatimReminderMinute: intOr('hatimReminderMinute', 0),
+      israkAlarm: boolOr('israkAlarm', false),
+      duhaAlarm: boolOr('duhaAlarm', false),
+      evvabinAlarm: boolOr('evvabinAlarm', false),
+      teheccudAlarm: boolOr('teheccudAlarm', false),
+      teravihAlarm: boolOr('teravihAlarm', false),
+      eidAlarm: boolOr('eidAlarm', true),
+      abdestSukurReminder: boolOr('abdestSukurReminder', false),
       inAppAdhanEnabled: boolOr('inAppAdhanEnabled', true),
       daysToSchedule: intOr('daysToSchedule', 7),
     );

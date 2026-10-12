@@ -241,27 +241,72 @@ class LocationState {
 
 class LocationController extends Notifier<LocationState> {
   static const String _locationKey = 'active_location';
+  StreamSubscription<LocationFix>? _positionSub;
 
   @override
   LocationState build() {
+    ref.onDispose(() {
+      _positionSub?.cancel();
+      _positionSub = null;
+    });
     final AppRuntime runtime = ref.read(runtimeProvider);
     final Map<String, Object?>? stored = runtime.preferences.getJson(
       _locationKey,
     );
-    if (stored != null) {
-      try {
-        return LocationState(location: UserLocation.fromJson(stored));
-      } catch (error) {
-        AppLog.warning('Kayıtlı konum okunamadı: $error');
-      }
-    }
-    return const LocationState(
+    LocationState initial = const LocationState(
       location: UserLocation(
         mode: LocationMode.gps,
         latitude: AppConstants.defaultLatitude,
         longitude: AppConstants.defaultLongitude,
       ),
     );
+    if (stored != null) {
+      try {
+        initial = LocationState(location: UserLocation.fromJson(stored));
+      } catch (error) {
+        AppLog.warning('Kayıtlı konum okunamadı: $error');
+      }
+    }
+    if (initial.location.mode == LocationMode.gps) {
+      unawaited(Future<void>.microtask(_ensureAutoWatch));
+    }
+    return initial;
+  }
+
+  Future<void> _ensureAutoWatch() async {
+    await _positionSub?.cancel();
+    _positionSub = null;
+    if (state.location.mode != LocationMode.gps) return;
+    final AppRuntime runtime = ref.read(runtimeProvider);
+    try {
+      _positionSub = runtime.location.watchPosition(distanceFilterMeters: 350).listen(
+        (LocationFix fix) async {
+          if (state.location.mode != LocationMode.gps) return;
+          final double movedKm = LocationService.distanceKm(
+            state.location.latitude,
+            state.location.longitude,
+            fix.latitude,
+            fix.longitude,
+          );
+          if (movedKm < 0.3) return;
+          City? matched;
+          try {
+            matched = await runtime.cities.nearest(fix.latitude, fix.longitude);
+          } catch (_) {}
+          await _persist(
+            UserLocation(
+              mode: LocationMode.gps,
+              latitude: fix.latitude,
+              longitude: fix.longitude,
+              city: matched,
+              updatedAt: DateTime.now(),
+              gpsAccuracyMeters: fix.accuracyMeters,
+            ),
+          );
+        },
+        onError: (_) {},
+      );
+    } catch (_) {}
   }
 
   /// GPS ile konumu tazeler. Başarısız olursa [LocationState.error] doludur.
@@ -346,6 +391,12 @@ class LocationController extends Notifier<LocationState> {
 
   Future<void> _persist(UserLocation location) async {
     state = state.copyWith(location: location, busy: false, error: null);
+    if (location.mode == LocationMode.gps) {
+      unawaited(_ensureAutoWatch());
+    } else {
+      await _positionSub?.cancel();
+      _positionSub = null;
+    }
     try {
       await ref
           .read(runtimeProvider)

@@ -1,10 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/audio/audio_service.dart';
 import '../../core/config/app_features.dart';
 import '../../core/l10n/app_strings.dart';
 import '../../design/app_colors.dart';
+import '../../design/app_spacing.dart';
+import '../../router/app_router.dart';
 import '../../state/providers.dart';
 import 'prayer_countdown_chip.dart';
 
@@ -78,29 +83,36 @@ class AppShell extends ConsumerWidget {
     );
     return Scaffold(
       body: navigationShell,
-      bottomNavigationBar: DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(
-              color: Theme.of(context).colorScheme.outlineVariant
-                  .withValues(alpha: 0.5),
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          GlobalAudioMiniBar(currentBranch: navigationShell.currentIndex),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border(
+                top: BorderSide(
+                  color: Theme.of(context).colorScheme.outlineVariant
+                      .withValues(alpha: 0.5),
+                ),
+              ),
+            ),
+            child: NavigationBar(
+              // Kapatılan modül açık kalmışsa (ör. eski bir bağlantı) çubuk ilk
+              // sekmeyi işaretler; yönlendirme kullanıcıyı zaten ana sayfaya alır.
+              selectedIndex: selected < 0 ? 0 : selected,
+              onDestinationSelected: (int index) =>
+                  _onSelect(tabs[index].branch),
+              destinations: <Widget>[
+                for (final ShellTab tab in tabs)
+                  NavigationDestination(
+                    icon: Icon(tab.icon),
+                    selectedIcon: Icon(tab.activeIcon),
+                    label: tab.label,
+                  ),
+              ],
             ),
           ),
-        ),
-        child: NavigationBar(
-          // Kapatılan modül açık kalmışsa (ör. eski bir bağlantı) çubuk ilk
-          // sekmeyi işaretler; yönlendirme kullanıcıyı zaten ana sayfaya alır.
-          selectedIndex: selected < 0 ? 0 : selected,
-          onDestinationSelected: (int index) => _onSelect(tabs[index].branch),
-          destinations: <Widget>[
-            for (final ShellTab tab in tabs)
-              NavigationDestination(
-                icon: Icon(tab.icon),
-                selectedIcon: Icon(tab.activeIcon),
-                label: tab.label,
-              ),
-          ],
-        ),
+        ],
       ),
     );
   }
@@ -224,7 +236,185 @@ class BrandMark extends StatelessWidget {
         width: size,
         height: size,
         filterQuality: FilterQuality.medium,
-        semanticLabel: 'EzanAI logosu',
+        semanticLabel: 'Ezan Vaktim Pro logosu',
+      ),
+    );
+  }
+}
+
+/// Tüm ana sekmelerde (Ana Sayfa, Vakitler, Kur'an, İlahi, Daha Fazla) görünür
+/// global Kur'an ve ses kontrol çubuğu.
+///
+/// Kullanıcı Kur'an'da sesli bir sure açıp başka menüye geçtiğinde çalan sureyi
+/// buradan görebilir, önceki/sonraki ayete geçebilir, duraklatabilir, kapatabilir
+/// (`✕`) veya çubuğa dokunarak ilgili sure ve ayete geri dönebilir.
+class GlobalAudioMiniBar extends ConsumerStatefulWidget {
+  const GlobalAudioMiniBar({required this.currentBranch, super.key});
+
+  final int currentBranch;
+
+  @override
+  ConsumerState<GlobalAudioMiniBar> createState() => _GlobalAudioMiniBarState();
+}
+
+class _GlobalAudioMiniBarState extends ConsumerState<GlobalAudioMiniBar> {
+  StreamSubscription<PlaybackStatus>? _statusSub;
+  StreamSubscription<int>? _queueSub;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final AppAudioService audio = ref.read(runtimeProvider).audio;
+      _statusSub = audio.statusStream.listen((_) {
+        if (mounted) setState(() {});
+      });
+      _queueSub = audio.queueIndexStream.listen((_) {
+        if (mounted) setState(() {});
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _statusSub?.cancel();
+    _queueSub?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final AppAudioService audio = ref.read(runtimeProvider).audio;
+    final bool isQuran = audio.hasActiveQuranSession;
+    // İlahi sekmesinde (branch == 3) zaten kendi PlayerBar'ı olduğundan yalnızca
+    // Kur'an tilaveti çalıyorsa göster; diğer tüm sekmelerde aktif ses varsa göster.
+    if (!isQuran &&
+        (widget.currentBranch == 3 || !audio.hasActiveAudioSession)) {
+      return const SizedBox.shrink();
+    }
+
+    final ThemeData theme = Theme.of(context);
+    final bool playing = audio.status == PlaybackStatus.playing;
+    final bool loading = audio.status == PlaybackStatus.loading;
+    final int surahNum = audio.activeSurahNumber ?? 1;
+    final int ayahNum = audio.activeAyahNumber;
+    final int totalAyahs = audio.activeTotalAyahs;
+
+    final String title = isQuran
+        ? '${audio.activeSurahName ?? '$surahNum. Sure'} • $ayahNum${totalAyahs > 0 ? '/$totalAyahs' : ''}. Ayet'
+        : (audio.activeCustomTitle ?? 'Ses Oynatılıyor');
+    final String subtitle = isQuran
+        ? '${audio.activeReciterName ?? 'Kur\'an Tilaveti'} · Sureye dönmek için dokunun'
+        : (audio.activeCustomSubtitle ?? 'Çalan sesi kontrol edin veya kapatın');
+
+    return Material(
+      color: theme.colorScheme.surfaceContainerHighest,
+      elevation: 6,
+      child: InkWell(
+        onTap: isQuran
+            ? () => context.push(AppRoutes.surah(surahNum, ayah: ayahNum))
+            : null,
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: 6,
+          ),
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(
+                color: AppColors.emerald500.withValues(alpha: 0.45),
+                width: 1.5,
+              ),
+            ),
+          ),
+          child: Row(
+            children: <Widget>[
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: AppColors.emerald500.withValues(alpha: 0.16),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                alignment: Alignment.center,
+                child: Icon(
+                  isQuran
+                      ? Icons.menu_book_rounded
+                      : Icons.graphic_eq_rounded,
+                  size: 19,
+                  color: AppColors.emerald500,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    Text(
+                      subtitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (isQuran && totalAyahs > 1)
+                IconButton(
+                  visualDensity: VisualDensity.compact,
+                  tooltip: 'Önceki Ayet',
+                  onPressed: ayahNum > 1
+                      ? () => audio.jumpToQueueIndex(ayahNum - 2)
+                      : null,
+                  icon: const Icon(Icons.skip_previous_rounded, size: 22),
+                ),
+              IconButton(
+                visualDensity: VisualDensity.compact,
+                tooltip: playing ? 'Duraklat' : 'Devam Et',
+                onPressed: loading ? null : audio.togglePlayPause,
+                icon: Icon(
+                  loading
+                      ? Icons.hourglass_top_rounded
+                      : playing
+                      ? Icons.pause_circle_filled_rounded
+                      : Icons.play_circle_fill_rounded,
+                  size: 28,
+                  color: AppColors.emerald500,
+                ),
+              ),
+              if (isQuran && totalAyahs > 1)
+                IconButton(
+                  visualDensity: VisualDensity.compact,
+                  tooltip: 'Sonraki Ayet',
+                  onPressed: ayahNum < totalAyahs
+                      ? () => audio.jumpToQueueIndex(ayahNum)
+                      : null,
+                  icon: const Icon(Icons.skip_next_rounded, size: 22),
+                ),
+              IconButton(
+                visualDensity: VisualDensity.compact,
+                tooltip: 'Sesi Kapat / Durdur',
+                onPressed: () async {
+                  await audio.stop();
+                  if (mounted) setState(() {});
+                },
+                icon: const Icon(Icons.close_rounded, size: 20),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

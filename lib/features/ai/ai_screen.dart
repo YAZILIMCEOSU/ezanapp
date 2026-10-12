@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../data/ai/knowledge_base.dart';
 import '../../data/models/ai_models.dart';
 import '../../data/repositories/ai_repository.dart';
 import '../../design/app_colors.dart';
@@ -22,13 +23,7 @@ class _AiScreenState extends ConsumerState<AiScreen> {
   final TextEditingController _input = TextEditingController();
   final ScrollController _scroll = ScrollController();
 
-  static const List<String> _suggestions = <String>[
-    'İslam\'ın şartları nelerdir?',
-    'İmanın şartları nelerdir?',
-    'Sabah namazının vakti ne zaman biter?',
-    'Zekât kimlere verilir?',
-    'Hanefî ve Şâfiî\'ye göre ikindi vakti farkı nedir?',
-  ];
+  static const List<String> _suggestions = KnowledgeBase.suggestedQuestions;
 
   @override
   void dispose() {
@@ -65,6 +60,11 @@ class _AiScreenState extends ConsumerState<AiScreen> {
       appBar: AppBar(
         title: const Text('AI İslam Asistanı'),
         actions: <Widget>[
+          IconButton(
+            tooltip: 'Tüm İlmihal ve Fıkıh Konuları',
+            onPressed: _showTopicsCatalog,
+            icon: const Icon(Icons.menu_book_outlined, size: 20),
+          ),
           IconButton(
             tooltip: 'Sohbetler',
             onPressed: _showConversations,
@@ -184,6 +184,80 @@ class _AiScreenState extends ConsumerState<AiScreen> {
 
   bool messagesEmpty(AsyncValue<AiConversation?> chat) =>
       chat.value?.messages.isEmpty ?? true;
+
+  void _showTopicsCatalog() {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (BuildContext sheetContext) => DraggableScrollableSheet(
+        expand: false,
+        initialChildSize: 0.78,
+        minChildSize: 0.45,
+        maxChildSize: 0.94,
+        builder: (BuildContext context, ScrollController controller) {
+          final List<KnowledgeEntry> all = KnowledgeBase.entries;
+          return ListView.builder(
+            controller: controller,
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              0,
+              AppSpacing.lg,
+              AppSpacing.xl,
+            ),
+            itemCount: all.length + 1,
+            itemBuilder: (BuildContext context, int index) {
+              if (index == 0) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'Doğrulanmış İlmihal & Fıkıh Rehberi (${all.length} Konu)',
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.w800),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Kur\'an, sahih hadis ve Diyanet İlmihali kaynaklı tüm konu başlıkları:',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
+                );
+              }
+              final KnowledgeEntry entry = all[index - 1];
+              return ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                leading: const Icon(
+                  Icons.help_outline_rounded,
+                  color: AppColors.emerald500,
+                  size: 20,
+                ),
+                title: Text(
+                  entry.title,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                subtitle: Text(
+                  '${entry.category} · ${entry.citations.first}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.labelSmall,
+                ),
+                onTap: () {
+                  Navigator.of(sheetContext).pop();
+                  _send(entry.title);
+                },
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
 
   void _showConversations() {
     showModalBottomSheet<void>(
@@ -412,7 +486,7 @@ class _MessageBubble extends StatelessWidget {
                       text:
                           '${message.text}\n\n'
                           '${message.sources.map((AiSource s) => '• ${s.label}${s.detail == null ? '' : ' · ${s.detail}'}').join('\n')}\n\n'
-                          '(EzanAI AI asistanı — kaynaklı yanıt)',
+                          '(Ezan Vaktim Pro AI Asistanı — kaynaklı yanıt)',
                     ),
                   ),
                   icon: const Icon(Icons.ios_share_rounded, size: 17),
@@ -433,15 +507,39 @@ class _MessageBubble extends StatelessWidget {
   };
 }
 
-class _EmptyChat extends StatelessWidget {
+class _EmptyChat extends StatefulWidget {
   const _EmptyChat({required this.suggestions, required this.onPick});
 
   final List<String> suggestions;
   final Future<void> Function([String? preset]) onPick;
 
   @override
+  State<_EmptyChat> createState() => _EmptyChatState();
+}
+
+class _EmptyChatState extends State<_EmptyChat> {
+  String _selectedCategory = 'Tümü';
+
+  static const List<String> _categories = <String>[
+    'Tümü',
+    'Nafile Namazlar',
+    'Namaz',
+    'Fıkıh',
+    'Ramazan',
+    'İbadet',
+    'İman',
+    'Kur\'an',
+    'Dua',
+    'Ahlak',
+  ];
+
+  @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final List<KnowledgeEntry> entries = _selectedCategory == 'Tümü'
+        ? KnowledgeBase.entries
+        : KnowledgeBase.byCategory(_selectedCategory);
+
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.xl),
       children: <Widget>[
@@ -450,33 +548,86 @@ class _EmptyChat extends StatelessWidget {
           size: 44,
           color: AppColors.gold500,
         ),
-        const SizedBox(height: AppSpacing.lg),
+        const SizedBox(height: AppSpacing.md),
         Text(
-          'Kaynaklı dini soru-cevap',
+          'Kaynaklı İslami Soru-Cevap & İlmihal Asistanı',
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w800,
           ),
         ),
-        const SizedBox(height: AppSpacing.sm),
+        const SizedBox(height: AppSpacing.xs),
         Text(
-          'Sorularınızı yazın; yanıtlar Kur\'an ayetleri, sahih hadisler ve güvenilir '
-          'fıkıh kaynaklarına dayanarak kaynak gösterilir. Farklı mezhep görüşleri '
-          'ayrıca belirtilir ve kesin hüküm yerine bilgi verilir.',
-          style: theme.textTheme.bodyMedium?.copyWith(height: 1.6),
+          'Sorularınızı doğal dille yazın veya aşağıdaki konu başlıklarından seçin. '
+          'Yanıtlar Kur\'an ayetleri, sahih hadisler ve Diyanet İlmihali kaynaklarıyla '
+          've mezhep farkları belirtilerek sunulur.',
+          style: theme.textTheme.bodyMedium?.copyWith(height: 1.55),
         ),
-        const SizedBox(height: AppSpacing.xl),
-        Text('Örnek sorular', style: theme.textTheme.titleSmall),
+        const SizedBox(height: AppSpacing.md),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: <Widget>[
+              for (final String cat in _categories)
+                Padding(
+                  padding: const EdgeInsets.only(right: 6),
+                  child: ChoiceChip(
+                    label: Text(cat),
+                    selected: _selectedCategory == cat,
+                    onSelected: (_) => setState(() => _selectedCategory = cat),
+                  ),
+                ),
+            ],
+          ),
+        ),
+        const SizedBox(height: AppSpacing.md),
+        Text(
+          '$_selectedCategory Konuları (${entries.length} doğrulanmış başlık)',
+          style: theme.textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
         const SizedBox(height: AppSpacing.sm),
-        for (final String suggestion in suggestions)
+        for (final KnowledgeEntry entry in entries)
           Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.sm),
             child: OutlinedButton(
-              onPressed: () => onPick(suggestion),
+              onPressed: () => widget.onPick(entry.title),
               style: OutlinedButton.styleFrom(
                 alignment: Alignment.centerLeft,
                 padding: const EdgeInsets.all(AppSpacing.md),
               ),
-              child: Text(suggestion, style: theme.textTheme.bodySmall),
+              child: Row(
+                children: <Widget>[
+                  const Icon(
+                    Icons.menu_book_rounded,
+                    size: 16,
+                    color: AppColors.emerald500,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          entry.title,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        Text(
+                          '${entry.category} · ${entry.citations.first}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Icon(Icons.chevron_right_rounded, size: 18),
+                ],
+              ),
             ),
           ),
       ],

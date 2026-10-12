@@ -1,6 +1,6 @@
 /// Uygulama geneli sabitler.
 abstract final class AppConstants {
-  static const String appName = 'Ezan';
+  static const String appName = 'Ezan Vaktim Pro';
   static const String tagline = 'Akıllı İslam Asistanı';
   static const String packageName = 'com.yazilimceosu.ezanai';
 

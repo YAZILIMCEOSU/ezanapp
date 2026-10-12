@@ -87,10 +87,10 @@ class LocationService {
     }
   }
 
-  /// Tek seferlik konum alır. Önce son bilinen konum denenir (hızlı açılış).
+  /// Tek seferlik konum alır. Güncel ve hassas GPS koordinatı döndürür.
   Future<LocationFix> getCurrentPosition({
     Duration timeout = const Duration(seconds: 20),
-    bool preferLastKnown = true,
+    bool preferLastKnown = false,
   }) async {
     final LocationStatus status = await requestPermission();
     switch (status) {
@@ -107,7 +107,7 @@ class LocationService {
       final Position? last = await Geolocator.getLastKnownPosition();
       if (last != null &&
           last.timestamp.difference(DateTime.now()).abs() <
-              const Duration(hours: 12)) {
+              const Duration(seconds: 45)) {
         return _toFix(last);
       }
     }
@@ -115,7 +115,7 @@ class LocationService {
     try {
       final Position position = await Geolocator.getCurrentPosition(
         locationSettings: LocationSettings(
-          accuracy: LocationAccuracy.medium,
+          accuracy: LocationAccuracy.high,
           timeLimit: timeout,
         ),
       );
@@ -129,6 +129,18 @@ class LocationService {
       AppLog.error('Konum alınamadı', error: error, stackTrace: stackTrace);
       throw AppException.network('Konum alınamadı.');
     }
+  }
+
+  /// Konum açıkken yer değişimini (ör. >=350m) canlı izler.
+  Stream<LocationFix> watchPosition({int distanceFilterMeters = 350}) async* {
+    final LocationStatus status = await checkStatus();
+    if (status != LocationStatus.granted) return;
+    yield* Geolocator.getPositionStream(
+      locationSettings: LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: distanceFilterMeters,
+      ),
+    ).map(_toFix);
   }
 
   LocationFix _toFix(Position position) => LocationFix(

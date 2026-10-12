@@ -18,7 +18,7 @@ import '../../state/content_providers.dart';
 import '../../state/providers.dart';
 import '../widgets/state_views.dart';
 
-/// Sure okuma ekranı: Arapça metin, meal, yatay MediaPlayer ve yaşlı dostu ok takipli okuma.
+/// Sure okuma ekranı: Arapça metin, meal, yatay MediaPlayer ve Diyanet TV Mukabele tarzı İşaretli Takip.
 class SurahScreen extends ConsumerStatefulWidget {
   const SurahScreen({required this.surahNumber, this.initialAyah, super.key});
 
@@ -57,8 +57,18 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
       if (!mounted) return;
       final AppAudioService audio = ref.read(runtimeProvider).audio;
       _playbackSpeed = audio.speed;
+      if (audio.hasActiveQuranSession &&
+          audio.activeSurahNumber == widget.surahNumber) {
+        setState(() {
+          _playingAyah = audio.activeAyahNumber;
+          _trackedAyah = audio.activeAyahNumber;
+          _playbackStatus = audio.status;
+          _ayahPosition = audio.position ?? Duration.zero;
+          _ayahDuration = audio.duration ?? Duration.zero;
+        });
+      }
       _queueSub = audio.queueIndexStream.listen((int idx) {
-        if (!mounted || _playingAyah == null) return;
+        if (!mounted || audio.activeSurahNumber != widget.surahNumber) return;
         final int nextAyah = idx + 1;
         setState(() {
           _playingAyah = nextAyah;
@@ -74,6 +84,16 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
       });
       _statusSub = audio.statusStream.listen((PlaybackStatus status) {
         if (!mounted) return;
+        if (audio.activeSurahNumber != null &&
+            audio.activeSurahNumber != widget.surahNumber) {
+          if (_playingAyah != null) {
+            setState(() {
+              _playingAyah = null;
+              _playbackStatus = PlaybackStatus.idle;
+            });
+          }
+          return;
+        }
         setState(() {
           _playbackStatus = status;
           if (status == PlaybackStatus.completed ||
@@ -85,7 +105,11 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
         });
       });
       _positionSub = audio.positionStream.listen((Duration pos) {
-        if (!mounted || _playingAyah == null) return;
+        if (!mounted ||
+            _playingAyah == null ||
+            audio.activeSurahNumber != widget.surahNumber) {
+          return;
+        }
         setState(() {
           _ayahPosition = pos;
           _ayahDuration = audio.duration ?? _ayahDuration;
@@ -172,8 +196,8 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
         actions: <Widget>[
           IconButton(
             tooltip: _arrowTrackingEnabled
-                ? 'Ok takibi açık (yaşlı dostu)'
-                : 'Ok takibini aç',
+                ? 'İşaretli Takip açık (Mukabele)'
+                : 'İşaretli Takibi aç',
             onPressed: () {
               setState(() => _arrowTrackingEnabled = !_arrowTrackingEnabled);
               ScaffoldMessenger.of(context)
@@ -182,8 +206,8 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
                   SnackBar(
                     content: Text(
                       _arrowTrackingEnabled
-                          ? 'Ok takipli yaşlı dostu okuma modu açıldı.'
-                          : 'Ok takibi kapatıldı.',
+                          ? 'İşaretli Takip (Diyanet Mukabele ok takibi) açıldı.'
+                          : 'İşaretli Takip kapatıldı.',
                     ),
                     duration: const Duration(seconds: 2),
                   ),
@@ -201,7 +225,7 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
             icon: const Icon(Icons.language_rounded, size: 20),
           ),
           IconButton(
-            tooltip: 'Yazı boyutu ve yaşlı modu',
+            tooltip: 'Yazı boyutu ve İşaretli Takip',
             onPressed: () => _showFontSheet(context, ref, settings),
             icon: const Icon(Icons.format_size_rounded, size: 20),
           ),
@@ -322,6 +346,23 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
                     _trackedAyah = ayah.number;
                     _manualWordIndex = 0;
                   });
+                },
+                onTapWord: (int wordIdx, int wordCount) {
+                  setState(() {
+                    _trackedAyah = ayah.number;
+                    _manualWordIndex = wordIdx.clamp(0, wordCount - 1);
+                  });
+                  if (isPlayingThis &&
+                      _ayahDuration.inMilliseconds > 0 &&
+                      wordCount > 1) {
+                    final int targetMs =
+                        ((wordIdx / wordCount) * _ayahDuration.inMilliseconds)
+                            .round();
+                    ref
+                        .read(runtimeProvider)
+                        .audio
+                        .seek(Duration(milliseconds: targetMs));
+                  }
                 },
                 onStepWord: (int delta, int wordCount) {
                   setState(() {
@@ -475,6 +516,12 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
     });
     _scrollToAyah(ayahNumber);
     final AppAudioService audio = ref.read(runtimeProvider).audio;
+    audio.setQuranSession(
+      surahNumber: content.surah.number,
+      surahName: content.surah.nameTurkish,
+      reciterName: reciter.name,
+      totalAyahs: content.ayahs.length,
+    );
     final bool ok = await audio.playUrlList(urls, initialIndex: startIndex);
     if (_playbackSpeed != 1.0) {
       await audio.setSpeed(_playbackSpeed);
@@ -576,7 +623,7 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  'Yazı boyutu ve Ok Takipli Yaşlı Modu',
+                  'Yazı Boyutu ve İşaretli Takip (Mukabele)',
                   style: Theme.of(context).textTheme.titleMedium
                       ?.copyWith(fontWeight: FontWeight.w700),
                 ),
@@ -607,10 +654,10 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
                   contentPadding: EdgeInsets.zero,
                   value: _arrowTrackingEnabled,
                   title: const Text(
-                    'Yaşlılar için ok takipli kelime/satır vurgusu',
+                    'İşaretli Takip (Diyanet TV Mukabele ok takibi)',
                   ),
                   subtitle: const Text(
-                    'Okunan ayeti ve kelimeyi hareketli ok işaretiyle gösterir',
+                    'Okunan ayeti ve kelimeyi hareketli ok işaretiyle (▼) adım adım gösterir',
                   ),
                   onChanged: (bool value) {
                     setModalState(() => _arrowTrackingEnabled = value);
@@ -839,7 +886,9 @@ class _QuranHorizontalPlayerBar extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        arrowTrackingEnabled ? '➤ Ok Takibi Açık' : 'Ok Takibi',
+                        arrowTrackingEnabled
+                            ? '▼ İşaretli Takip'
+                            : 'İşaretli Takip',
                         style: theme.textTheme.labelSmall?.copyWith(
                           fontWeight: FontWeight.w700,
                           color: arrowTrackingEnabled
@@ -870,7 +919,7 @@ class _QuranHorizontalPlayerBar extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        'Yaşlı Modu (A+)',
+                        'İri Hat (A+)',
                         style: theme.textTheme.labelSmall?.copyWith(
                           fontWeight: FontWeight.w700,
                           color: elderlyLargeFont ? AppColors.gold600 : null,
@@ -1081,6 +1130,7 @@ class _AyahCard extends StatelessWidget {
     required this.audioWordProgress,
     required this.manualWordIndex,
     required this.onTapCard,
+    required this.onTapWord,
     required this.onStepWord,
     required this.onBookmark,
     required this.onShare,
@@ -1097,6 +1147,7 @@ class _AyahCard extends StatelessWidget {
   final double? audioWordProgress;
   final int manualWordIndex;
   final VoidCallback onTapCard;
+  final void Function(int wordIndex, int wordCount) onTapWord;
   final void Function(int delta, int wordCount) onStepWord;
   final VoidCallback onBookmark;
   final VoidCallback onShare;
@@ -1178,8 +1229,8 @@ class _AyahCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           isPlaying
-                              ? '➤ ŞU AN OKUNAN SATIR (${ayah.number}. Ayet • ${activeWordIdx + 1}/$wordCount. kelime)'
-                              : '➤ OK TAKİP SATIRI (${ayah.number}. Ayet • ${activeWordIdx + 1}/$wordCount. kelime)',
+                              ? '▼ İŞARETLİ TAKİP • ŞU AN OKUNAN (${ayah.number}. Ayet • ${activeWordIdx + 1}/$wordCount. kelime)'
+                              : '▼ İŞARETLİ TAKİP SATIRI (${ayah.number}. Ayet • ${activeWordIdx + 1}/$wordCount. kelime)',
                           style: theme.textTheme.labelMedium?.copyWith(
                             fontWeight: FontWeight.w800,
                             color: isPlaying
@@ -1252,43 +1303,112 @@ class _AyahCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: AppSpacing.sm),
-              // Ok Takipli Arapça Metin: aktif kelime ok işareti (⬅) ve vurgulu arka planla gösterilir
+              // Diyanet TV Mukabele Tarzı İşaretli Takip: Sağdan sola (RTL) her
+              // kelime üzerinde hareketli ok işaretçisi (▼), altın/zümrüt vurgu
+              // kutusu ve kelimeye dokunarak doğrudan o kelimeye geçme.
               if ((isPlaying || isArrowTracked) && arabicWords.length > 1)
                 Directionality(
                   textDirection: TextDirection.rtl,
-                  child: RichText(
-                    textAlign: TextAlign.right,
-                    textDirection: TextDirection.rtl,
-                    text: TextSpan(
-                      style: AppTheme.arabic(theme.textTheme, size: fontSize),
-                      children: <InlineSpan>[
-                        for (int i = 0; i < arabicWords.length; i++)
-                          TextSpan(
-                            text: i == activeWordIdx
-                                ? '⬅${arabicWords[i]} '
-                                : '${arabicWords[i]} ',
-                            style: i == activeWordIdx
-                                ? AppTheme.arabic(
-                                    theme.textTheme,
-                                    size: fontSize + 2,
-                                    color: AppColors.emerald500,
-                                  ).copyWith(
-                                    fontWeight: FontWeight.w800,
-                                    backgroundColor: AppColors.gold500
-                                        .withValues(alpha: 0.28),
+                  child: Wrap(
+                    alignment: WrapAlignment.start,
+                    crossAxisAlignment: WrapCrossAlignment.end,
+                    spacing: 6,
+                    runSpacing: 10,
+                    children: <Widget>[
+                      for (int i = 0; i < arabicWords.length; i++)
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () => onTapWord(i, wordCount),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 180),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 3,
+                            ),
+                            decoration: BoxDecoration(
+                              color: i == activeWordIdx
+                                  ? AppColors.gold500.withValues(alpha: 0.28)
+                                  : i < activeWordIdx
+                                  ? AppColors.emerald500.withValues(alpha: 0.08)
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(10),
+                              border: i == activeWordIdx
+                                  ? Border.all(
+                                      color: isPlaying
+                                          ? AppColors.emerald500
+                                          : AppColors.gold600,
+                                      width: 2,
+                                    )
+                                  : null,
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                if (i == activeWordIdx)
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 6,
+                                      vertical: 1,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: isPlaying
+                                          ? AppColors.emerald500
+                                          : AppColors.gold600,
+                                      borderRadius: BorderRadius.circular(999),
+                                    ),
+                                    child: Text(
+                                      '▼ ${i + 1}',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w800,
+                                        height: 1.1,
+                                      ),
+                                    ),
                                   )
-                                : i < activeWordIdx
-                                ? AppTheme.arabic(
-                                    theme.textTheme,
-                                    size: fontSize,
-                                  ).copyWith(
-                                    color: theme.colorScheme.onSurface
-                                        .withValues(alpha: 0.72),
-                                  )
-                                : null,
+                                else
+                                  const SizedBox(height: 14),
+                                Text(
+                                  arabicWords[i],
+                                  textDirection: TextDirection.rtl,
+                                  style: i == activeWordIdx
+                                      ? AppTheme.arabic(
+                                          theme.textTheme,
+                                          size: fontSize + 2,
+                                          color: isPlaying
+                                              ? AppColors.emerald500
+                                              : AppColors.gold600,
+                                        ).copyWith(fontWeight: FontWeight.w800)
+                                      : i < activeWordIdx
+                                      ? AppTheme.arabic(
+                                          theme.textTheme,
+                                          size: fontSize,
+                                        ).copyWith(
+                                          color: theme.colorScheme.onSurface
+                                              .withValues(alpha: 0.78),
+                                        )
+                                      : AppTheme.arabic(
+                                          theme.textTheme,
+                                          size: fontSize,
+                                        ),
+                                ),
+                                if (i == activeWordIdx)
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 2),
+                                    width: 28,
+                                    height: 3.5,
+                                    decoration: BoxDecoration(
+                                      color: isPlaying
+                                          ? AppColors.emerald500
+                                          : AppColors.gold600,
+                                      borderRadius: BorderRadius.circular(99),
+                                    ),
+                                  ),
+                              ],
+                            ),
                           ),
-                      ],
-                    ),
+                        ),
+                    ],
                   ),
                 )
               else

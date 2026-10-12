@@ -49,12 +49,17 @@ abstract final class NotificationIds {
   static const int zikirReminder = 3006;
   static const int hatimReminder = 3007;
   static const int test = 3008;
+  static const int abdestSukur = 3009;
+  static const int baseNafile = 4000;
 
   static int adhan(int dayIndex, Prayer prayer) =>
       baseAdhan + dayIndex * 10 + prayer.index;
 
   static int pre(int dayIndex, Prayer prayer) =>
       preReminder + dayIndex * 10 + prayer.index;
+
+  static int nafile(int dayIndex, int slot) =>
+      baseNafile + dayIndex * 10 + slot;
 }
 
 /// Ezan, vakit, Ramazan ve içerik bildirimlerini yönetir.
@@ -406,6 +411,181 @@ class NotificationService {
           }
         }
       }
+
+      // --- Nafile ve Özel Vakitli Namaz Alarmları ---
+      final AdhanSound nafileSound = settings.adhanSound;
+      final String nafileChannel = _adhanChannelId(nafileSound);
+
+      // 0) İşrak Namazı Alarmı (Güneş doğduktan +47 dk sonra, kerahet çıkışı, 2 rekât)
+      if (settings.israkAlarm) {
+        final DateTime? gunes = day.timeOf(Prayer.gunes);
+        if (gunes != null) {
+          final DateTime israkTime = gunes.add(const Duration(minutes: 47));
+          if (israkTime.isAfter(now)) {
+            final bool quiet = settings.isInQuietHours(
+              israkTime.hour * 60 + israkTime.minute,
+            );
+            await _schedule(
+              id: NotificationIds.nafile(dayIndex, 0),
+              title: 'İşrak Namazı Vakti (${_format(israkTime)})',
+              body:
+                  '$locationLabel • Güneş doğup kerahet vakti çıktı. 2 rekât İşrak namazı vakti girdi.',
+              when: israkTime,
+              channelId: nafileChannel,
+              settings: settings,
+              quiet: quiet || nafileSound.isSilent,
+              soundOverride: nafileSound,
+              payload: NotificationRoute.times.value,
+              hijriOffsetDays: hijriOffsetDays,
+            );
+            scheduled++;
+          }
+        }
+      }
+
+      // 1) Kuşluk (Duha) Namazı Alarmı (Güneşten +120 dk sonra faziletli vakit, 2-8-12 rekât)
+      if (settings.duhaAlarm) {
+        final DateTime? gunes = day.timeOf(Prayer.gunes);
+        if (gunes != null) {
+          final DateTime duhaTime = gunes.add(const Duration(minutes: 120));
+          if (duhaTime.isAfter(now)) {
+            final bool quiet = settings.isInQuietHours(
+              duhaTime.hour * 60 + duhaTime.minute,
+            );
+            await _schedule(
+              id: NotificationIds.nafile(dayIndex, 1),
+              title: 'Kuşluk (Duha) Namazı Vakti (${_format(duhaTime)})',
+              body:
+                  '$locationLabel • Kuşluk (Duha) namazının en faziletli vakti (2, 4, 8 veya 12 rekât).',
+              when: duhaTime,
+              channelId: nafileChannel,
+              settings: settings,
+              quiet: quiet || nafileSound.isSilent,
+              soundOverride: nafileSound,
+              payload: NotificationRoute.times.value,
+              hijriOffsetDays: hijriOffsetDays,
+            );
+            scheduled++;
+          }
+        }
+      }
+
+      // 2) Evvâbîn Namazı Alarmı (Akşam namazından +25 dk sonra, yatsı girmeden, 2/4/6 rekât)
+      if (settings.evvabinAlarm) {
+        final DateTime? aksam = day.timeOf(Prayer.aksam);
+        if (aksam != null) {
+          final DateTime evvabinTime = aksam.add(const Duration(minutes: 25));
+          if (evvabinTime.isAfter(now)) {
+            final bool quiet = settings.isInQuietHours(
+              evvabinTime.hour * 60 + evvabinTime.minute,
+            );
+            await _schedule(
+              id: NotificationIds.nafile(dayIndex, 2),
+              title: 'Evvâbîn Namazı Vakti (${_format(evvabinTime)})',
+              body:
+                  '$locationLabel • Akşam namazı sonrası 2, 4 veya 6 rekât Evvâbîn namazı hatırlatması.',
+              when: evvabinTime,
+              channelId: nafileChannel,
+              settings: settings,
+              quiet: quiet || nafileSound.isSilent,
+              soundOverride: nafileSound,
+              payload: NotificationRoute.times.value,
+              hijriOffsetDays: hijriOffsetDays,
+            );
+            scheduled++;
+          }
+        }
+      }
+
+      // 3) Teheccüd (Gece) Namazı Alarmı (İmsak'tan 75 dk önce seher vakti, 2-8 rekât)
+      if (settings.teheccudAlarm) {
+        final DateTime? imsak = day.timeOf(Prayer.imsak);
+        if (imsak != null) {
+          final DateTime teheccudTime = imsak.subtract(
+            const Duration(minutes: 75),
+          );
+          if (teheccudTime.isAfter(now)) {
+            await _schedule(
+              id: NotificationIds.nafile(dayIndex, 3),
+              title: 'Teheccüd (Gece) Namazı Vakti (${_format(teheccudTime)})',
+              body:
+                  '$locationLabel • Seher vakti (İmsak: ${_format(imsak)}). 2 ile 8 rekât arası Teheccüd namazı vakti.',
+              when: teheccudTime,
+              channelId: nafileChannel,
+              settings: settings,
+              quiet: nafileSound.isSilent,
+              soundOverride: nafileSound,
+              payload: NotificationRoute.times.value,
+              hijriOffsetDays: hijriOffsetDays,
+            );
+            scheduled++;
+          }
+        }
+      }
+
+      // 4) Teravih Namazı Alarmı (Yatsıdan +25 dk sonra, 20 rekât)
+      if (settings.teravihAlarm) {
+        final DateTime? yatsi = day.timeOf(Prayer.yatsi);
+        if (yatsi != null) {
+          final DateTime teravihTime = yatsi.add(const Duration(minutes: 25));
+          if (teravihTime.isAfter(now)) {
+            await _schedule(
+              id: NotificationIds.nafile(dayIndex, 4),
+              title: 'Teravih Namazı Hatırlatması (${_format(teravihTime)})',
+              body:
+                  '$locationLabel • Yatsı namazı sonrası 20 rekât Teravih ve Vitir namazı vakti.',
+              when: teravihTime,
+              channelId: nafileChannel,
+              settings: settings,
+              quiet: nafileSound.isSilent,
+              soundOverride: nafileSound,
+              payload: NotificationRoute.times.value,
+              hijriOffsetDays: hijriOffsetDays,
+            );
+            scheduled++;
+          }
+        }
+      }
+
+      // 5) Cuma Namazı Vakit Öncesi Hazırlık Alarmı (Cuma günü Öğle'den 45 dk önce)
+      if (settings.fridayNotification && day.date.weekday == DateTime.friday) {
+        final DateTime? ogle = day.timeOf(Prayer.ogle);
+        if (ogle != null) {
+          final DateTime cumaPrep = ogle.subtract(const Duration(minutes: 45));
+          if (cumaPrep.isAfter(now)) {
+            await _schedule(
+              id: NotificationIds.nafile(dayIndex, 5),
+              title: 'Cuma Namazına 45 Dakika Kaldı (${_format(ogle)})',
+              body:
+                  '$locationLabel • Cuma hutbesi, gusül, Kehf Suresi ve Tahiyyetü\'l-Mescid için camiye hazırlık vakti.',
+              when: cumaPrep,
+              channelId: nafileChannel,
+              settings: settings,
+              quiet: nafileSound.isSilent,
+              soundOverride: nafileSound,
+              payload: NotificationRoute.times.value,
+              hijriOffsetDays: hijriOffsetDays,
+            );
+            scheduled++;
+          }
+        }
+      }
+    }
+
+    if (settings.abdestSukurReminder) {
+      await scheduleDailyReminder(
+        id: NotificationIds.abdestSukur,
+        title: 'Abdest Şükür & Tahiyyetü\'l-Mescid Hatırlatması',
+        body:
+            'Abdest sonrası 2 rekât Abdest Şükür namazını ve camiye girdiğinizde 2 rekât Tahiyyetü\'l-Mescid kılmayı unutmayın.',
+        hour: 11,
+        minute: 30,
+        channelId: NotificationChannels.prayer,
+        settings: settings,
+        enabled: true,
+        payload: NotificationRoute.times.value,
+      );
+      scheduled++;
     }
 
     if (settings.fridayNotification) {
@@ -590,7 +770,11 @@ class NotificationService {
         await _plugin.cancel(id: NotificationIds.adhan(day, prayer));
         await _plugin.cancel(id: NotificationIds.pre(day, prayer));
       }
+      for (int slot = 0; slot < 7; slot++) {
+        await _plugin.cancel(id: NotificationIds.nafile(day, slot));
+      }
     }
+    await _plugin.cancel(id: NotificationIds.abdestSukur);
   }
 
   Future<void> cancelAll() async {
@@ -630,29 +814,52 @@ class NotificationService {
       soundOverride: soundOverride,
     );
     try {
+      // Android 12-15+ cihazlarda uygulama tamamen kapalıyken ve derin uyku
+      // (Doze) modundayken dahi zamanında çalması için önce alarmClock denenir.
       await _plugin.zonedSchedule(
         id: id,
         title: title,
         body: body,
         scheduledDate: scheduled,
         notificationDetails: details,
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        androidScheduleMode: AndroidScheduleMode.alarmClock,
         payload: payload,
       );
-    } on PlatformException catch (error) {
-      // Tam alarm izni yoksa (Android 12+) esnek zamanlamaya düşeriz.
-      AppLog.warning(
-        'Tam alarm zamanlanamadı, esnek moda geçildi: ${error.code}',
-      );
-      await _plugin.zonedSchedule(
-        id: id,
-        title: title,
-        body: body,
-        scheduledDate: scheduled,
-        notificationDetails: details,
-        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-        payload: payload,
-      );
+    } catch (_) {
+      try {
+        await _plugin.zonedSchedule(
+          id: id,
+          title: title,
+          body: body,
+          scheduledDate: scheduled,
+          notificationDetails: details,
+          androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+          payload: payload,
+        );
+      } on PlatformException catch (error) {
+        AppLog.warning(
+          'Tam alarm zamanlanamadı, esnek moda geçildi: ${error.code}',
+        );
+        await _plugin.zonedSchedule(
+          id: id,
+          title: title,
+          body: body,
+          scheduledDate: scheduled,
+          notificationDetails: details,
+          androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+          payload: payload,
+        );
+      } catch (_) {
+        await _plugin.zonedSchedule(
+          id: id,
+          title: title,
+          body: body,
+          scheduledDate: scheduled,
+          notificationDetails: details,
+          androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+          payload: payload,
+        );
+      }
     }
   }
 
@@ -672,14 +879,16 @@ class NotificationService {
         _channelTitle(channelId),
         channelDescription: _channelDescription(channelId),
         importance: silent ? Importance.defaultImportance : Importance.max,
-        priority: silent ? Priority.defaultPriority : Priority.high,
+        priority: silent ? Priority.defaultPriority : Priority.max,
         playSound: !sound.isSilent,
         sound: androidSound,
+        audioAttributesUsage: AudioAttributesUsage.alarm,
+        fullScreenIntent: !silent,
         enableVibration: settings.vibrationEnabled && !silent,
         category: AndroidNotificationCategory.alarm,
         visibility: NotificationVisibility.public,
         color: const Color(0xFF0E4A3F),
-        ticker: 'EzanAI',
+        ticker: 'Ezan Vaktim Pro',
       ),
       iOS: DarwinNotificationDetails(
         presentAlert: true,
@@ -690,23 +899,31 @@ class NotificationService {
     );
   }
 
-  String _channelTitle(String channelId) => switch (channelId) {
-    NotificationChannels.adhan => 'Ezan ve vakit bildirimleri',
-    NotificationChannels.prayer => 'Namaz vakti hatırlatmaları',
-    NotificationChannels.ramadan => 'Ramazan bildirimleri',
-    NotificationChannels.daily => 'Günün içeriği',
-    NotificationChannels.zikir => 'Zikir ve hatim hatırlatmaları',
-    _ => 'Uygulama bildirimleri',
-  };
+  String _channelTitle(String channelId) {
+    if (channelId.startsWith(NotificationChannels.adhan)) {
+      return 'Ezan ve vakit bildirimleri';
+    }
+    return switch (channelId) {
+      NotificationChannels.prayer => 'Namaz vakti hatırlatmaları',
+      NotificationChannels.ramadan => 'Ramazan bildirimleri',
+      NotificationChannels.daily => 'Günün içeriği',
+      NotificationChannels.zikir => 'Zikir ve hatim hatırlatmaları',
+      _ => 'Uygulama bildirimleri',
+    };
+  }
 
-  String _channelDescription(String channelId) => switch (channelId) {
-    NotificationChannels.adhan => 'Namaz vakti girdiğinde gösterilir.',
-    NotificationChannels.prayer => 'Vakit girdiğinde sessiz bilgilendirme.',
-    NotificationChannels.ramadan => 'Sahur ve iftar hatırlatmaları.',
-    NotificationChannels.daily => 'Günün ayeti ve hadisi.',
-    NotificationChannels.zikir => 'Zikir ve hatim hedefleri.',
-    _ => 'Genel bilgilendirmeler.',
-  };
+  String _channelDescription(String channelId) {
+    if (channelId.startsWith(NotificationChannels.adhan)) {
+      return 'Namaz ve nafile vakti girdiğinde tam ezan veya ilahi ile gösterilir.';
+    }
+    return switch (channelId) {
+      NotificationChannels.prayer => 'Vakit girdiğinde sessiz bilgilendirme.',
+      NotificationChannels.ramadan => 'Sahur ve iftar hatırlatmaları.',
+      NotificationChannels.daily => 'Günün ayeti ve hadisi.',
+      NotificationChannels.zikir => 'Zikir ve hatim hedefleri.',
+      _ => 'Genel bilgilendirmeler.',
+    };
+  }
 
   String _titleFor(Prayer prayer, bool quiet) => switch (prayer) {
     Prayer.imsak => 'İmsak vakti girdi',

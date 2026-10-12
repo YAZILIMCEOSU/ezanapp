@@ -69,15 +69,16 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
                     ),
                     borderRadius: AppRadius.allLg,
                   ),
-                  child: const Icon(
-                    Icons.mosque_rounded,
-                    color: AppColors.gold400,
-                    size: 42,
+                  alignment: Alignment.center,
+                  child: Image.asset(
+                    'assets/images/logo_mark_small.png',
+                    width: 56,
+                    height: 56,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 Text(
-                  'Ezan',
+                  'Ezan Vaktim Pro',
                   style: theme.textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.w800,
                     letterSpacing: -0.4,

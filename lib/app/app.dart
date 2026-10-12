@@ -56,6 +56,18 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp>
       _lastTimeZoneOffset = now.timeZoneOffset;
 
       ref.invalidate(clockProvider);
+      final UserLocation currentLoc = ref.read(activeLocationProvider);
+      if (currentLoc.mode == LocationMode.gps) {
+        final DateTime? updated = currentLoc.updatedAt;
+        if (updated == null ||
+            now.difference(updated) > const Duration(minutes: 2)) {
+          unawaited(
+            ref
+                .read(locationControllerProvider.notifier)
+                .refreshFromGps(requestPermission: false),
+          );
+        }
+      }
       if (dayChanged || tzChanged) {
         ref.read(runtimeProvider).prayerTimes.clearMemoryCache();
         ref.invalidate(prayerTimesProvider);
@@ -97,6 +109,21 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp>
     );
     if (!onboardingDone) {
       appRouter.go(AppRoutes.onboarding);
+    } else {
+      unawaited(() async {
+        try {
+          final bool permitted = await runtime.notifications.hasPermission();
+          if (!permitted) {
+            await runtime.notifications.requestPermission();
+          }
+          await ref.read(notificationCoordinatorProvider).reschedule();
+          if (ref.read(activeLocationProvider).mode == LocationMode.gps) {
+            await ref
+                .read(locationControllerProvider.notifier)
+                .refreshFromGps(requestPermission: false);
+          }
+        } catch (_) {}
+      }());
     }
   }
 
@@ -241,7 +268,7 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp>
     };
 
     return MaterialApp.router(
-      title: 'Ezan',
+      title: 'Ezan Vaktim Pro',
       scaffoldMessengerKey: _messengerKey,
       debugShowCheckedModeBanner: false,
       routerConfig: appRouter,

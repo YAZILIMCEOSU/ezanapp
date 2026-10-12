@@ -427,8 +427,8 @@ void main() {
       expect(AdhanSound.tone3.label, contains('Ezan'));
     });
 
-    test('uygulama adı Ezan, dil desteği TR/EN/AR, meal seçimi, saat geri alma ve Esmaül Hüsna doğrulanır', () {
-      expect(AppConstants.appName, 'Ezan');
+    test('uygulama adı Ezan Vaktim Pro, dil desteği TR/EN/AR, meal seçimi, saat geri alma ve Esmaül Hüsna doğrulanır', () {
+      expect(AppConstants.appName, 'Ezan Vaktim Pro');
       expect(AppStrings.supportedLanguages.length, 3);
       expect(const AppStrings('en').tabPrayers, 'Prayer Times');
       expect(const AppStrings('ar').tabPrayers, 'أوقات الصلاة');
@@ -595,6 +595,63 @@ void main() {
         status: PurchaseStatus.purchased,
       );
       expect(billing.verifyReceiptIntegrity(fakePurchase), isFalse);
+    });
+
+    test('Nafile namaz alarmları, Kâbe İmamı ezanı, global Kur\'an oturumu ve genişletilmiş İslami Asistan doğrulanır', () async {
+      expect(AdhanSound.ezanMelodi.label, contains('Kâbe İmamı'));
+
+      const NotificationSettings baseNotif = NotificationSettings();
+      final NotificationSettings withNafile = baseNotif.copyWith(
+        israkAlarm: true,
+        duhaAlarm: true,
+        evvabinAlarm: true,
+        teheccudAlarm: true,
+        teravihAlarm: true,
+        eidAlarm: true,
+        abdestSukurReminder: true,
+      );
+      final NotificationSettings roundTrip = NotificationSettings.fromJson(
+        withNafile.toJson(),
+      );
+      expect(roundTrip.israkAlarm, isTrue);
+      expect(roundTrip.duhaAlarm, isTrue);
+      expect(roundTrip.evvabinAlarm, isTrue);
+      expect(roundTrip.teheccudAlarm, isTrue);
+      expect(roundTrip.teravihAlarm, isTrue);
+      expect(roundTrip.eidAlarm, isTrue);
+      expect(roundTrip.abdestSukurReminder, isTrue);
+
+      final AppAudioService audio = AppAudioService();
+      audio.setQuranSession(
+        surahNumber: 36,
+        surahName: 'Yâsîn',
+        reciterName: 'Mişârî el-Afâsî',
+        totalAyahs: 83,
+      );
+      expect(audio.activeSurahNumber, 36);
+      expect(audio.activeSurahName, 'Yâsîn');
+      expect(audio.activeTotalAyahs, 83);
+      await audio.stop();
+      expect(audio.activeSurahNumber, isNull);
+      await audio.dispose();
+
+      final LocalKnowledgeSource kb = LocalKnowledgeSource();
+      for (final String q in <String>[
+        'Kuşluk (Duha) namazı nasıl kılınır?',
+        'Teheccüd (gece) namazı kaç rekâttır?',
+        'Evvabîn namazı ne zaman kılınır?',
+        'İşrak namazı güneşten kaç dakika sonra kılınır?',
+        'Tahiyyetü\'l-Mescid namazı nedir?',
+        'Abdest şükür namazı nedir?',
+        'Bayram namazı nasıl kılınır?',
+        'Sehiv secdesi nasıl yapılır?',
+        'Kerahet vakitleri hangileridir?',
+        'Abdesti bozan durumlar nelerdir?',
+      ]) {
+        final answer = kb.answer(q);
+        expect(answer, isNotNull, reason: 'Cevaplanamayan soru: $q');
+        expect(answer!.sources, isNotEmpty, reason: 'Kaynaksız yanıt: $q');
+      }
     });
   });
 }

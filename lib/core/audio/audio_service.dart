@@ -57,6 +57,53 @@ class AppAudioService {
   int get currentQueueIndex => _queueIndex;
   int get queueLength => _queueUrls.length;
 
+  // Global Kur'an / Ses oturumu bilgisi (farklı menülere geçilse bile korunur).
+  int? _activeSurahNumber;
+  String? _activeSurahName;
+  String? _activeReciterName;
+  int _activeTotalAyahs = 0;
+  String? _activeCustomTitle;
+  String? _activeCustomSubtitle;
+
+  int? get activeSurahNumber => _activeSurahNumber;
+  String? get activeSurahName => _activeSurahName;
+  String? get activeReciterName => _activeReciterName;
+  int get activeTotalAyahs => _activeTotalAyahs;
+  int get activeAyahNumber => _queueIndex + 1;
+  String? get activeCustomTitle => _activeCustomTitle;
+  String? get activeCustomSubtitle => _activeCustomSubtitle;
+  bool get hasActiveQuranSession =>
+      _activeSurahNumber != null &&
+      (_status == PlaybackStatus.playing ||
+          _status == PlaybackStatus.paused ||
+          _status == PlaybackStatus.loading);
+  bool get hasActiveAudioSession =>
+      _status == PlaybackStatus.playing ||
+      _status == PlaybackStatus.paused ||
+      _status == PlaybackStatus.loading;
+
+  void setQuranSession({
+    required int surahNumber,
+    required String surahName,
+    required String reciterName,
+    required int totalAyahs,
+  }) {
+    _activeSurahNumber = surahNumber;
+    _activeSurahName = surahName;
+    _activeReciterName = reciterName;
+    _activeTotalAyahs = totalAyahs;
+    _activeCustomTitle = null;
+    _activeCustomSubtitle = null;
+    if (!_statusController.isClosed) _statusController.add(_status);
+  }
+
+  void _clearQuranSession() {
+    _activeSurahNumber = null;
+    _activeSurahName = null;
+    _activeReciterName = null;
+    _activeTotalAyahs = 0;
+  }
+
   PlaybackStatus _status = PlaybackStatus.idle;
   PlaybackStatus get status => _status;
 
@@ -146,6 +193,9 @@ class AppAudioService {
           return;
         }
         _queueUrls = const <String>[];
+        _clearQuranSession();
+        _activeCustomTitle = null;
+        _activeCustomSubtitle = null;
         _status = PlaybackStatus.completed;
         _setHardwareWakeLock(false);
         if (!_statusController.isClosed) _statusController.add(_status);
@@ -295,12 +345,17 @@ class AppAudioService {
     String path, {
     double? volume,
     bool loop = false,
+    String? title,
+    String? subtitle,
   }) async {
     await initialize(ducking: _duckingEnabled);
     final int op = ++_operationId;
     _switchingSource = true;
     _pausedByInterruption = false;
     _queueUrls = const <String>[];
+    _clearQuranSession();
+    _activeCustomTitle = title;
+    _activeCustomSubtitle = subtitle;
     _lastPosition = Duration.zero;
     _lastDuration = null;
     try {
@@ -351,12 +406,17 @@ class AppAudioService {
     String assetPath, {
     double volume = 1.0,
     bool loop = false,
+    String? title,
+    String? subtitle,
   }) async {
     await initialize(ducking: _duckingEnabled);
     final int op = ++_operationId;
     _switchingSource = true;
     _pausedByInterruption = false;
     _queueUrls = const <String>[];
+    _clearQuranSession();
+    _activeCustomTitle = title;
+    _activeCustomSubtitle = subtitle;
     _lastPosition = Duration.zero;
     _lastDuration = null;
     _lastVolume = volume.clamp(0.0, 1.0);
@@ -429,6 +489,9 @@ class AppAudioService {
     _switchingSource = true;
     _pausedByInterruption = false;
     _queueUrls = const <String>[];
+    _clearQuranSession();
+    _activeCustomTitle = title;
+    _activeCustomSubtitle = artist ?? album;
     _lastPosition = Duration.zero;
     _lastDuration = null;
     try {
@@ -582,6 +645,9 @@ class AppAudioService {
     _advancingQueue = false;
     _pausedByInterruption = false;
     _queueUrls = const <String>[];
+    _clearQuranSession();
+    _activeCustomTitle = null;
+    _activeCustomSubtitle = null;
     _lastPosition = Duration.zero;
     _setHardwareWakeLock(false);
     await _player.stop();

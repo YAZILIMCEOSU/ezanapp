@@ -830,20 +830,620 @@ abstract final class KnowledgeBase {
       related: <String>['namaz_rekat', 'imsak_orucu'],
       category: 'Namaz',
     ),
+    KnowledgeEntry(
+      id: 'kusluk_duha_namazi',
+      title: 'Kuşluk (Duha) namazı nasıl kılınır, vakti ve rekâtı nedir?',
+      keywords: <String>[
+        'kusluk',
+        'duha',
+        'kusluk namazi',
+        'duha namazi',
+        'kusluk vakti',
+        'kusluk kac rekat',
+      ],
+      answer:
+          'Kuşluk (Duha) namazı, güneş doğup kerahet vakti çıktıktan (~45-50 dk sonra) '
+          'öğle kerahet vaktine (öğleden ~45 dk öncesine) kadar kılınan, 2, 4, 8 veya 12 rekâtlık '
+          'müstehap/sünnet bir nafile namazdır.',
+      details: <String>[
+        'En faziletli vakti gündüzün dörtte biri geçtiği (güneşten yaklaşık 2 saat sonrası) saattir.',
+        'En az 2, genellikle 4 veya 8, en çok 12 rekât olarak ikişer veya dörder rekâtta bir selam verilerek kılınır.',
+        'Hz. Peygamber (s.a.s.), insan vücudundaki 360 eklemin her biri için günlük sadaka gerektiğini ve 2 rekât Kuşluk namazının bunun yerine geçtiğini bildirmiştir.',
+        'Vakitler ekranından Kuşluk (Duha) Namazı Alarmını tek dokunuşla açabilirsiniz.',
+      ],
+      citations: <String>[
+        'Müslim, Müsâfirîn, 84',
+        'Buhârî, Teheccüd, 31',
+        'Tirmizî, Vitir, 15',
+        'Diyanet İşleri Başkanlığı İlmihali, Cilt 1 (Nafile Namazlar)',
+      ],
+      madhabNotes: <String>[
+        'Hanefî ve Şâfiî mezheplerinde Kuşluk namazı müstehap/mendup kabul edilir; ikişer rekâtta bir selam verilmesi efdaldir.',
+      ],
+      related: <String>['israk_namazi', 'teheccud_gece_namazi', 'evvabin_namazi'],
+      category: 'Nafile Namazlar',
+    ),
+    KnowledgeEntry(
+      id: 'teheccud_gece_namazi',
+      title: 'Teheccüd (Gece) namazı nasıl kılınır, vakti ve rekâtı nedir?',
+      keywords: <String>[
+        'teheccud',
+        'gece namazi',
+        'teheccud namazi',
+        'seher namazi',
+        'teheccud kac rekat',
+        'teheccud vakti',
+      ],
+      answer:
+          'Teheccüd (gece) namazı, yatsı namazından sonra biraz uyuyup gece yarısı ile '
+          'imsak vakti arasında uyanılarak kılınan, farz namazlardan sonra en faziletli namazdır. '
+          '2 ile 8 rekât arasında (ikişer rekâtta bir selam verilerek) kılınır.',
+      details: <String>[
+        'En faziletli vakti gecenin son üçte biri olan seher vaktidir (İmsak vaktinden ~60-90 dk öncesi).',
+        'Niyet: "Niyet ettim Allah rızası için Teheccüd namazını kılmaya."',
+        'Vitir namazı henüz kılınmadıysa Teheccüd namazının ardından Vitir namazı ile gece ibadeti tamamlanır.',
+        'Vakitler ekranından Teheccüd (Seher) Alarmını aktif edebilirsiniz.',
+      ],
+      citations: <String>[
+        'Kur\'an-ı Kerim, İsrâ 17/79',
+        'Kur\'an-ı Kerim, Müzzemmil 73/1-6',
+        'Müslim, Sıyâm, 202',
+        'Buhârî, Teheccüd, 1',
+      ],
+      madhabNotes: <String>[
+        'Hanefîlere göre gece namazında ikişer veya dörder rekâtta bir, Şâfiîlere göre ise ikişer rekâtta bir selam verilmesi sünnettir.',
+      ],
+      related: <String>['kusluk_duha_namazi', 'vitir_teravih', 'evvabin_namazi'],
+      category: 'Nafile Namazlar',
+    ),
+    KnowledgeEntry(
+      id: 'evvabin_namazi',
+      title: 'Evvâbîn namazı nedir, ne zaman ve kaç rekât kılınır?',
+      keywords: <String>[
+        'evvabin',
+        'evvabin namazi',
+        'aksamdan sonra nafile',
+        'evvabin kac rekat',
+      ],
+      answer:
+          'Evvâbîn namazı, akşam namazının farzı ve sünneti kılındıktan hemen sonra, '
+          'yatsı vakti girmeden önce Allah\'a yönelen kulların (evvâbîn) kıldığı 2, 4 veya 6 rekâtlık nafile namazdır.',
+      details: <String>[
+        'Akşam namazının 2 rekât sünnetinden sonra kalkılarak 2, 4 veya 6 rekât olarak eda edilir.',
+        'İkişer rekâtta bir selam verilerek kılınması daha faziletlidir.',
+        'Vakitler ekranından Evvâbîn Namazı Alarmını (Akşam + 25 dk) açabilirsiniz.',
+      ],
+      citations: <String>[
+        'Tirmizî, Mevâkît, 203',
+        'İbn Mâce, İkâmet, 185',
+        'Diyanet İşleri Başkanlığı İlmihali, Cilt 1 (Evvâbîn Namazı)',
+      ],
+      related: <String>['kusluk_duha_namazi', 'teheccud_gece_namazi'],
+      category: 'Nafile Namazlar',
+    ),
+    KnowledgeEntry(
+      id: 'israk_namazi',
+      title: 'İşrak namazı nedir, güneşten kaç dakika sonra kılınır?',
+      keywords: <String>[
+        'israk',
+        'israk namazi',
+        'israk vakti',
+        'gunes dogduktan sonra namaz',
+      ],
+      answer:
+          'İşrak namazı, sabah namazını kıldıktan sonra zikir ve tefekkürle meşgul olup '
+          'güneş doğduktan ve kerahet vakti çıktıktan (yaklaşık 45-50 dakika sonra) hemen kılınan '
+          '2 rekâtlık nafile namazdır (Kuşluk namazının başlangıç vaktidir).',
+      details: <String>[
+        'Güneş doğarken ve doğduktan sonraki ilk 45 dakika kerahet vaktidir; bu süre çıktıktan hemen sonra 2 rekât olarak kılınır.',
+        'Hadis-i şerifte sabah namazını cemaatle kılıp güneş doğuncaya kadar zikirle meşgul olan ve ardından 2 rekât İşrak namazı kılan kimseye tam bir hac ve umre sevabı verileceği müjdelenmiştir.',
+        'Vakitler ekranından İşrak Namazı Alarmını (Güneş + 47 dk) açabilirsiniz.',
+      ],
+      citations: <String>[
+        'Tirmizî, Cum\'a, 59 (Hadis no: 586)',
+        'Diyanet İşleri Başkanlığı İlmihali, Cilt 1 (İşrak ve Kuşluk Namazı)',
+      ],
+      related: <String>['kusluk_duha_namazi', 'kerahet_vakitleri'],
+      category: 'Nafile Namazlar',
+    ),
+    KnowledgeEntry(
+      id: 'tahiyyetul_mescid',
+      title: 'Tahiyyetü\'l-Mescid namazı nedir ve nasıl kılınır?',
+      keywords: <String>[
+        'tahiyyetul mescid',
+        'tahiyyatul mescid',
+        'mescid namazi',
+        'camiye girince kilinan namaz',
+      ],
+      answer:
+          'Tahiyyetü\'l-Mescid, bir camiye veya mescide girildiğinde oturmadan önce '
+          'mescidin Rabbine saygı ve selamlama amacıyla kılınan 2 rekâtlık sünnet/müstehap namazdır.',
+      details: <String>[
+        'Kerahet vakitleri dışında camiye her girişte oturmadan önce 2 rekât olarak kılınır.',
+        'Camiye girildiğinde cemaatle farz namaza başlanmışsa veya vakit namazının sünneti kılınırsa bu namaz Tahiyyetü\'l-Mescid yerine de geçer.',
+        'Hutbe okunurken camiye giren kişi Hanefî mezhebine göre namaz kılmaz, oturup hutbeyi dinler; Şâfiî mezhebine göre ise kısa şekilde 2 rekât kılar.',
+      ],
+      citations: <String>[
+        'Buhârî, Salât, 60; Teheccüd, 25',
+        'Müslim, Müsâfirîn, 69-70',
+        'Diyanet İşleri Başkanlığı İlmihali, Cilt 1',
+      ],
+      madhabNotes: <String>[
+        'Hanefî, Mâlikî ve Hanbelîlere göre cuma hutbesi esnasında camiye giren kişi Tahiyyetü\'l-Mescid kılmaz, hutbeyi dinler; Şâfiîlere göre ise hafif/kısa olarak 2 rekât kılar.',
+      ],
+      related: <String>['abdest_sukur_namazi', 'cuma_namazi'],
+      category: 'Nafile Namazlar',
+    ),
+    KnowledgeEntry(
+      id: 'abdest_sukur_namazi',
+      title: 'Abdest şükür namazı nedir ve ne zaman kılınır?',
+      keywords: <String>[
+        'abdest sukur',
+        'abdest namazi',
+        'abdestten sonra namaz',
+        'sukur namazi',
+      ],
+      answer:
+          'Abdest şükür namazı, abdest veya gusül aldıktan hemen sonra, azalar henüz '
+          'kurumadan (kerahet vakti değilse) kılınan 2 rekâtlık çok faziletli bir nafile namazdır.',
+      details: <String>[
+        'Hz. Peygamber (s.a.s.), Hz. Bilâl-i Habeşî\'ye cennette önünde ayak seslerini duyduğunu söyleyip hangi ameli yaptığını sorduğunda, Hz. Bilâl her abdest aldığında mutlaka 2 rekât namaz kıldığını belirtmiştir.',
+        'Niyet: "Niyet ettim Allah rızası için abdest şükür namazı kılmaya."',
+      ],
+      citations: <String>[
+        'Buhârî, Teheccüd, 17',
+        'Müslim, Fedâilü\'s-Sahâbe, 108',
+        'Ebû Dâvûd, Tahâret, 65',
+      ],
+      related: <String>['abdest', 'tahiyyetul_mescid'],
+      category: 'Nafile Namazlar',
+    ),
+    KnowledgeEntry(
+      id: 'bayram_namazi',
+      title: 'Bayram namazı (Ramazan ve Kurban Bayramı) nasıl kılınır?',
+      keywords: <String>[
+        'bayram namazi',
+        'ramazan bayrami namazi',
+        'kurban bayrami namazi',
+        'zaid tekbir',
+        'bayram namazi kac rekat',
+      ],
+      answer:
+          'Bayram namazı, Ramazan ve Kurban Bayramlarının 1. günü güneş doğup kerahet vakti '
+          'çıktıktan (~45-50 dk sonra) cemaatle kılınan 2 rekâtlık namazdır ve 6 ilave (zâid) tekbir içerir.',
+      details: <String>[
+        '1. Rekât: İftitah tekbiri ve Sübhaneke\'den sonra eller kaldırılarak 3 kez ilave tekbir alınır (ilk ikisinde eller yana salınır, üçüncüsünde bağlanır); ardından imam açıktan Fâtiha ve sure okur.',
+        '2. Rekât: İmam Fâtiha ve sureyi okuduktan sonra rükûya gitmeden önce yine eller kulak hizasına kaldırılarak 3 kez ilave tekbir alınır, dördüncü tekbirle rükûya gidilir.',
+        'Namazdan sonra bayram hutbesi okunur; Kurban Bayramında Arefe günü sabah namazından bayramın 4. günü ikindi namazına kadar (23 vakit) farz namazların hemen ardından teşrik tekbirleri getirilir.',
+      ],
+      citations: <String>[
+        'Kur\'an-ı Kerim, Kevser 108/2',
+        'Buhârî, Îdeyn, 1-7',
+        'Müslim, Salâtü\'l-Îdeyn, 1-9',
+        'Diyanet İşleri Başkanlığı İlmihali, Cilt 1 (Bayram Namazları)',
+      ],
+      madhabNotes: <String>[
+        'Bayram namazı Hanefî mezhebine göre vâcip, Şâfiî ve Mâlikî mezheplerine göre müekked sünnet, Hanbelî mezhebine göre farz-ı kifâyedir.',
+      ],
+      related: <String>['cuma_namazi', 'kurban'],
+      category: 'Namaz',
+    ),
+    KnowledgeEntry(
+      id: 'cenaze_namazi',
+      title: 'Cenaze namazı nasıl kılınır ve duaları nelerdir?',
+      keywords: <String>[
+        'cenaze namazi',
+        'cenaze',
+        'er kisi niyetine',
+        'cenaze tekbir',
+        'cenaze duasi',
+      ],
+      answer:
+          'Cenaze namazı, rükû ve secdesi olmayan, ayakta 4 tekbirle kılınan ve vefat eden '
+          'mümin için dua niteliği taşıyan farz-ı kifâye bir ibadettir.',
+      details: <String>[
+        '1. Tekbir: Eller kaldırılıp bağlanır, "ve celle senâük" ilavesiyle Sübhaneke okunur.',
+        '2. Tekbir: Eller kaldırılmadan tekbir alınır, Salli ve Bârik duaları okunur.',
+        '3. Tekbir: Eller kaldırılmadan tekbir alınır, cenaze duası (bilenmezse Rabbenâ âtinâ / الفاتحة dua niyetiyle) okunur.',
+        '4. Tekbir: Eller kaldırılmadan tekbir alınır ve sağa-sola selam verilir.',
+      ],
+      citations: <String>[
+        'Buhârî, Cenâiz, 54-65',
+        'Müslim, Cenâiz, 63-85',
+        'Diyanet İşleri Başkanlığı İlmihali, Cilt 1 (Cenaze Namazı)',
+      ],
+      madhabNotes: <String>[
+        'Hanefîlerde yalnızca ilk tekbirde eller kaldırılır; Şâfiîlerde ise dört tekbirin tamamında eller kaldırılır ve 1. tekbirden sonra Fâtiha okunur.',
+      ],
+      related: <String>['kabir_ziyaret', 'dua_adab'],
+      category: 'Namaz',
+    ),
+    KnowledgeEntry(
+      id: 'sehiv_secdesi',
+      title: 'Sehiv (yanılma) secdesi nedir, ne zaman ve nasıl yapılır?',
+      keywords: <String>[
+        'sehiv secdesi',
+        'sehiv',
+        'namazda yanilma',
+        'namazda sasirma',
+        'vacipleri terk',
+      ],
+      answer:
+          'Sehiv secdesi, namazda farzlardan birinin geciktirilmesi veya vâciplerden birinin '
+          'unutularak terk edilmesi/geciktirilmesi durumunda namazın sonunda yapılan iki secdedir.',
+      details: <String>[
+        'Nasıl yapılır (Hanefî): Son oturuşta yalnız Ettehiyyâtü okunduktan sonra sağa (veya iki tarafa) selam verilir, hemen "Allâhu ekber" diyerek peş peşe iki secde yapılır; tekrar oturulup Ettehiyyâtü, Salli-Bârik ve Rabbenâ duaları okunarak iki tarafa selam verilir.',
+        'Gerektiren başlıca durumlar: Fâtiha\'yı veya zamm-ı sureyi unutmak, ilk oturuşu unutarak üçüncü rekâta kalkmak, Kunut dualarını veya vitir/bayram tekbirlerini unutmak.',
+      ],
+      citations: <String>[
+        'Buhârî, Sehv, 1-9',
+        'Müslim, Mesâcid, 85-102',
+        'Diyanet İşleri Başkanlığı İlmihali, Cilt 1 (Sehiv Secdesi)',
+      ],
+      madhabNotes: <String>[
+        'Hanefîlerde selamdan sonra, Şâfiîlerde ise son oturuşta selam vermeden hemen önce iki secde yapılır.',
+      ],
+      related: <String>['namazin_sartlari', 'namazi_bozanlar'],
+      category: 'Namaz',
+    ),
+    KnowledgeEntry(
+      id: 'tilavet_secdesi',
+      title: 'Tilâvet secdesi nedir ve nasıl yapılır?',
+      keywords: <String>[
+        'tilavet secdesi',
+        'secde ayeti',
+        'kuran secde',
+        'tilavet',
+      ],
+      answer:
+          'Tilâvet secdesi, Kur\'an-ı Kerim\'deki 14 secde ayetinden biri okunduğunda veya '
+          'dinlendiğinde abdestli ve kıbleye dönük olarak yapılan tek secdedir.',
+      details: <String>[
+        'Eller kaldırılmadan "Allâhu ekber" diyerek doğrudan secdeye gidilir, üç kez "Sübhâne Rabbiye\'l-a\'lâ" denir ve "Allâhu ekber" diyerek kalkılır; kalkarken "Gufrâneke Rabbenâ ve ileyke\'l-masîr" denmesi müstehaptır.',
+        'Secde ayetlerinin bulunduğu 14 sure: A\'râf (206), Ra\'d (15), Nahl (49), İsrâ (107), Meryem (58), Hac (18), Furkân (60), Neml (25), Secde (15), Sâd (24), Fussilet (37), Necm (62), İnşikâk (21), Alak (19).',
+      ],
+      citations: <String>[
+        'Buhârî, Sücûdü\'l-Kur\'ân, 1-12',
+        'Müslim, Mesâcid, 103-114',
+        'Diyanet İşleri Başkanlığı İlmihali, Cilt 1',
+      ],
+      madhabNotes: <String>[
+        'Tilâvet secdesi Hanefî mezhebine göre vâcip, Şâfiî ve Hanbelî mezheplerine göre sünnettir.',
+      ],
+      related: <String>['kuran_okuma', 'sehiv_secdesi'],
+      category: 'Kur\'an',
+    ),
+    KnowledgeEntry(
+      id: 'istihare_namazi',
+      title: 'İstihare namazı ve duası nasıl yapılır?',
+      keywords: <String>[
+        'istihare',
+        'istihare namazi',
+        'istihare duasi',
+        'hayirlisini istemek',
+      ],
+      answer:
+          'İstihare, mübah olan önemli bir işin (evlilik, iş, yolculuk vb.) hakkında hayırlı '
+          'olup olmadığını Allah\'tan dilemek için 2 rekât nafile namaz kılıp istihare duasını okumaktır.',
+      details: <String>[
+        'Önce konu hakkında bilenlerle istişare (danışma) yapılır, ardından 2 rekât istihare namazı kılınır (1. rekâtta Kâfirûn, 2. rekâtta İhlâs suresi okunması müstehaptır).',
+        'Namazdan sonra Peygamber Efendimiz\'in öğrettiği "Allâhümme innî estehîrüke bi-ilmike..." istihare duası okunur.',
+        'İstiharede mutlaka rüya görmek şart değildir; dua sonrası kalbin meylettiği ve gönül ferahlığı oluşan yön tercih edilir.',
+      ],
+      citations: <String>[
+        'Buhârî, Teheccüd, 25; Deavât, 48',
+        'Tirmizî, Vitir, 18',
+        'Diyanet İşleri Başkanlığı İlmihali, Cilt 1 (İstihare Namazı)',
+      ],
+      related: <String>['hacet_tovbe_namazi', 'dua_adab'],
+      category: 'Nafile Namazlar',
+    ),
+    KnowledgeEntry(
+      id: 'hacet_tovbe_namazi',
+      title: 'Hacet namazı ve Tövbe namazı nasıl kılınır?',
+      keywords: <String>[
+        'hacet namazi',
+        'tovbe namazi',
+        'hacet duasi',
+        'dilek namazi',
+        'istigfar namazi',
+      ],
+      answer:
+          'Hacet namazı dünyevî veya uhrevî bir dileğin gerçekleşmesi için 2 veya 4 rekât olarak; '
+          'Tövbe namazı ise işlenen bir günahtan pişmanlık duyup af dilemek için 2 rekât olarak kılınan nafile namazlardır.',
+      details: <String>[
+        'Hacet namazından sonra Allah\'a hamd ve Resûlullah\'a salavat getirilerek hacet duası okunur.',
+        'Tövbe namazında güzelce abdest alınıp 2 rekât namaz kılınır ve bir daha günaha dönmemeye azmedilerek istiğfar edilir.',
+      ],
+      citations: <String>[
+        'Kur\'an-ı Kerim, Bakara 2/45, 153',
+        'Tirmizî, Salât, 181; Vitir, 17',
+        'Ebû Dâvûd, Vitir, 26',
+      ],
+      related: <String>['istihare_namazi', 'kul_hakki_tovbe'],
+      category: 'Nafile Namazlar',
+    ),
+    KnowledgeEntry(
+      id: 'tesbih_namazi',
+      title: 'Tesbih namazı nasıl kılınır ve kaç rekâttır?',
+      keywords: <String>[
+        'tesbih namazi',
+        'tesbih namazi nasil kilinir',
+        '300 tesbih',
+      ],
+      answer:
+          'Tesbih namazı, her rekâtında 75\'er defa olmak üzere toplam 300 defa '
+          '"Sübhânallâhi ve\'l-hamdü lillâhi ve lâ ilâhe illallâhü vallâhu ekber" tesbihi okunarak kılınan 4 rekâtlık mendup bir nafile namazdır.',
+      details: <String>[
+        'Her rekâtta: Sübhaneke\'den sonra 15, zamm-ı sureden sonra ayakta 10, rükûda 10, rükûdan kalkınca 10, birinci secdede 10, iki secde arasında 10, ikinci secdede 10 kez (toplam 75 kez) tesbih okunur.',
+        'Ömürde en az bir kez, mümkünse yılda, ayda veya haftada bir kılınması tavsiye edilmiştir.',
+      ],
+      citations: <String>[
+        'Ebû Dâvûd, Tatavvu, 14',
+        'Tirmizî, Vitir, 19',
+        'İbn Mâce, İkâmet, 190',
+      ],
+      related: <String>['teheccud_gece_namazi', 'kadir_gecesi'],
+      category: 'Nafile Namazlar',
+    ),
+    KnowledgeEntry(
+      id: 'kerahet_vakitleri',
+      title: 'Kerahet vakitleri (namaz kılınmayan vakitler) hangileridir?',
+      keywords: <String>[
+        'kerahet',
+        'kerahet vakti',
+        'kerahet vakitleri',
+        'mekruh vakitler',
+        'namaz kilinmayan saatler',
+      ],
+      answer:
+          'Günün 3 vaktinde farz ve nafile hiçbir namaz kılınmaz (kerahet-i tahrîmiyye): '
+          '1) Güneşin doğmasından itibaren yaklaşık 45-50 dakika, '
+          '2) Güneş tam tepe noktasındayken (öğle ezanından önceki ~40-45 dakika — istivâ vakti), '
+          '3) Güneşin sararıp batmaya yüz tutmasından akşam ezanına kadar olan ~45 dakika (yalnızca o günün ikindi farzı kılınabilir).',
+      details: <String>[
+        'Ayrıca imsak vaktinden güneş doğuncaya kadar sabah namazının sünneti dışında nafile namaz kılınmaz; ikindi farzından akşam ezanına kadar da nafile namaz kılınmaz (kaza namazı bu iki aralıkta kılınabilir, ancak 3 ana kerahet vaktinde kaza da kılınmaz).',
+        'Güneş doğduktan ~47 dk sonra kerahet çıkar ve İşrak / Kuşluk vakti başlar.',
+      ],
+      citations: <String>[
+        'Müslim, Müsâfirîn, 293',
+        'Buhârî, Mevâkît, 30-31',
+        'Diyanet İşleri Başkanlığı İlmihali, Cilt 1 (Kerahet Vakitleri)',
+      ],
+      madhabNotes: <String>[
+        'Şâfiî mezhebinde sebebi bulunan namazlar (Tahiyyetü\'l-Mescid, kaza namazı) kerahet vakitlerinde de kılınabilir; Hanefî mezhebinde ise 3 ana kerahet vaktinde kaza ve cenaze namazı dahil hiçbir namaz kılınmaz.',
+      ],
+      related: <String>['israk_namazi', 'kusluk_duha_namazi', 'kaza_namaz'],
+      category: 'Namaz',
+    ),
+    KnowledgeEntry(
+      id: 'abdesti_bozanlar',
+      title: 'Abdesti bozan ve bozmayan durumlar nelerdir?',
+      keywords: <String>[
+        'abdesti bozan',
+        'abdest bozulur mu',
+        'kan abdesti bozar mi',
+        'uyumak abdesti bozar mi',
+        'aglamak abdesti bozar mi',
+        'oje abdest',
+        'dis dolgusu',
+      ],
+      answer:
+          'Önden ve arkadan çıkan idrar, dışkı, yel, akıntı; ağız dolusu kusmak; '
+          'uzanarak veya bir yere yaslanarak uyumak; bayılmak ve namazda yanındakinin duyacağı kadar gülmek (Hanefî\'de) abdesti bozar.',
+      details: <String>[
+        'Vücuttan çıkıp etrafına dağılan kan, irin ve sarı su Hanefî mezhebine göre abdesti bozar; Şâfiî mezhebine göre ise ön ve arka yol dışında vücuttan çıkan kan abdesti bozmaz.',
+        'Ağlamak (gözyaşı), tırnak kesmek, saç tıraşı olmak, ağız dolusu olmayan kusmuk ve çıkmayıp yerinde kalan kan damlası abdesti bozmaz.',
+        'Tırnak üzerindeki oje gibi su geçirmeyen tabakalar abdest ve gusle engeldir; ancak tedavi amaçlı diş dolgusu ve kaplama gusle/abdeste engel değildir.',
+      ],
+      citations: <String>[
+        'Kur\'an-ı Kerim, Mâide 5/6',
+        'Buhârî, Vudû, 34; Müslim, Hayz, 84-99',
+        'Diyanet İşleri Başkanlığı İlmihali, Cilt 1 (Abdesti Bozan Şeyler)',
+      ],
+      madhabNotes: <String>[
+        'Hanefîlere göre vücuttan akıp yayılan kan abdesti bozar, karşı cinse dokunmak bozmaz; Şâfiîlere göre ise kan akması abdesti bozmaz, mahrem olmayan karşı cinse engelsiz ten teması abdesti bozar.',
+      ],
+      related: <String>['abdest', 'gusul', 'teyemmum'],
+      category: 'Fıkıh',
+    ),
+    KnowledgeEntry(
+      id: 'namazi_bozanlar',
+      title: 'Namazı bozan durumlar nelerdir?',
+      keywords: <String>[
+        'namazi bozan',
+        'namaz bozulur mu',
+        'namazda konusmak',
+        'namazda gulmek',
+        'namazda aglamak',
+      ],
+      answer:
+          'Namaz içindeyken konuşmak, bir şey yemek-içmek, kıbleden göğsü çevirmek, '
+          'abdestin bozulması, özürsüz öksürük/ah-oh çekmek, dışarıdan bakanın namazda olmadığını sanacağı kadar hareket etmek (amel-i kesîr) namazı bozar.',
+      details: <String>[
+        'Allah korkusu, cennet veya cehennem düşüncesiyle sessizce ağlamak namazı bozmaz; dünya acısı veya ağrısı sebebiyle sesli ağlamak namazı bozar.',
+        'Namazda önünden birinin geçmesi namazı bozmaz, ancak geçen kişi günaha girer; sütre koymak sünnettir.',
+      ],
+      citations: <String>[
+        'Buhârî, Amel fi\'s-Salât, 1-18',
+        'Müslim, Mesâcid, 33',
+        'Diyanet İşleri Başkanlığı İlmihali, Cilt 1 (Namazı Bozan Şeyler)',
+      ],
+      related: <String>['namazin_sartlari', 'sehiv_secdesi'],
+      category: 'Namaz',
+    ),
+    KnowledgeEntry(
+      id: 'cemaat_imama_uyma',
+      title: 'Cemaatle namaz ve imama sonradan yetişme (mesbuk) nasıl tamamlanır?',
+      keywords: <String>[
+        'mesbuk',
+        'imama uymak',
+        'cemaate sonradan yetismek',
+        'ikinci rekata yetismek',
+        'ucuncu rekata yetismek',
+      ],
+      answer:
+          'İmama rükûda yetişen kişi o rekâta yetişmiş sayılır; sonradan yetişen (mesbuk), '
+          'imam son oturuşta sağa selam verdikten sonra selam vermeden ayağa kalkar ve kaçırdığı rekâtları tek başına tamamlar.',
+      details: <String>[
+        '1 rekât kaçıran: İmam selam verince kalkar, Sübhaneke + Eûzü-Besmele + Fâtiha + zamm-ı sure okuyup rükû ve secdesini yapar, oturup duaları okuyarak selam verir.',
+        '2 rekât kaçıran: Kalkıp iki rekâtı Fâtiha ve sure ile kılar (akşam namazında 2 rekât kaçıran kişi, kalktığı ilk rekâttan sonra bir kez oturup Ettehiyyâtü okur çünkü o onun ikinci rekâtıdır).',
+        '3 rekât kaçıran (4 rekâtlı namazda): Kalkar, 1. rekâtı Fâtiha+sure ile kılar ve oturup Ettehiyyâtü okur; sonra kalkıp 2. rekâtı Fâtiha+sure ile, 3. rekâtı yalnız Fâtiha ile kılar ve son oturuşla tamamlar.',
+      ],
+      citations: <String>[
+        'Buhârî, Ezân, 21; Müslim, Mesâcid, 151',
+        'Diyanet İşleri Başkanlığı İlmihali, Cilt 1 (Mesbukun Namazı)',
+      ],
+      related: <String>['cuma_namazi', 'namaz_rekat'],
+      category: 'Namaz',
+    ),
+    KnowledgeEntry(
+      id: 'namaz_dualari_sure_sirasi',
+      title: 'Namazda okunan dualar ve kısa surelerin sırası nasıldır?',
+      keywords: <String>[
+        'sure sirasi',
+        'namaz sureleri',
+        'fil kureys maun kevser',
+        'subhaneke ettehiyyatu',
+        'kunut duasi',
+      ],
+      answer:
+          'Namazda zamm-ı surelerin Mushaf\'taki sırasına (tertibine) uyularak okunması vâcip/müstehaptır: '
+          'Asr → Hümeze → Fîl → Kureyş → Mâûn → Kevser → Kâfirûn → Nasr → Tebbet → İhlâs → Felak → Nâs.',
+      details: <String>[
+        'İkinci rekâtta birinci rekâtta okunan sureden daha önceki (üstteki) bir sureyi okumak mekruhtur (yanlışlıkla okunursa namaz bozulmaz ve sehiv secdesi gerekmez).',
+        'Oturuşlarda sırasıyla: İlk oturuşta yalnız Ettehiyyâtü; son oturuşta Ettehiyyâtü + Allâhümme Salli + Allâhümme Bârik + Rabbenâ âtinâ ve Rabbenâğfirlî duaları okunur.',
+      ],
+      citations: <String>[
+        'Diyanet İşleri Başkanlığı İlmihali, Cilt 1 (Kıraat ve Tertip)',
+      ],
+      related: <String>['namazin_sartlari', 'sehiv_secdesi'],
+      category: 'Namaz',
+    ),
+    KnowledgeEntry(
+      id: 'kaza_kefaret_fidye_oruc',
+      title: 'Kaza orucu, kefaret orucu ve oruç fidyesi nedir?',
+      keywords: <String>[
+        'kaza orucu',
+        'kefaret orucu',
+        'fidye',
+        'oruc fidyesi',
+        '61 gun',
+      ],
+      answer:
+          'Yolculuk, hastalık veya özel hâl gibi meşru bir mazeretle tutulamayan veya yanılarak bozulan '
+          'Ramazan oruçları için gününe gün (1 gün) kaza gerekir; mazeretsiz olarak bilerek yeme-içme ile '
+          'başlanmış Ramazan orucunu bozmak ise Hanefî\'ye göre hem 1 gün kaza hem 60 gün aralıksız kefaret gerektirir.',
+      details: <String>[
+        'Oruç Fidyesi: İyileşme ümidi olmayan kronik hastalar ve oruç tutamayacak kadar yaşlı kimseler, tutamadıkları her gün için bir fakiri doyuracak miktarda (fitre tutarında) fidye verirler.',
+        'Uygulamanın "Kaza Takibi" ekranından kaza oruçlarınızı ve namazlarınızı kolayca takip edebilirsiniz.',
+      ],
+      citations: <String>[
+        'Kur\'an-ı Kerim, Bakara 2/184-185',
+        'Buhârî, Savm, 30; Müslim, Sıyâm, 81',
+        'Diyanet İşleri Başkanlığı İlmihali, Cilt 1 (Oruç Kefareti ve Fidye)',
+      ],
+      madhabNotes: <String>[
+        'Hanefî ve Mâlikîlere göre mazeretsiz bilerek yeme-içme de kefaret gerektirir; Şâfiî ve Hanbelîlere göre ise yalnızca Ramazan orucunu cinsel ilişkiyle bozmak kefaret, yeme-içmeyle bozmak ise tövbe ve kaza gerektirir.',
+      ],
+      related: <String>['oruc_bozan', 'imsak_orucu', 'fitre'],
+      category: 'Ramazan',
+    ),
+    KnowledgeEntry(
+      id: 'adak_yemin_kefareti',
+      title: 'Adak (nezir) ve yemin kefareti nedir?',
+      keywords: <String>[
+        'adak',
+        'nezir',
+        'yemin kefareti',
+        'yemin bozmak',
+        'adak kurbani',
+      ],
+      answer:
+          'Adak (nezir), kişinin dinen yükümlü olmadığı ibadet cinsinden bir ameli Allah\'a söz vererek '
+          'kendisine vâcip kılmasıdır; şart gerçekleştiğinde yerine getirilmesi vâciptir. '
+          'Yemin kefareti ise Allah adına yapılan bir yeminin bozulması hâlinde 10 fakiri doyurmak/giydirmek, '
+          'buna gücü yetmezse 3 gün oruç tutmaktır.',
+      details: <String>[
+        'Adak kurbanının etinden adayan kişi, eşi, anne-babası, dede-nineleri, çocukları ve torunları yiyemez; tamamı ihtiyaç sahiplerine dağıtılır.',
+      ],
+      citations: <String>[
+        'Kur\'an-ı Kerim, Mâide 5/89; İnsan 76/7',
+        'Buhârî, Eymân, 1-28',
+        'Diyanet İşleri Başkanlığı İlmihali, Cilt 1-2',
+      ],
+      related: <String>['kurban', 'zekat'],
+      category: 'Fıkıh',
+    ),
+    KnowledgeEntry(
+      id: 'kul_hakki_tovbe',
+      title: 'Kul hakkı, gıybet ve tövbe-istiğfar şartları nelerdir?',
+      keywords: <String>[
+        'kul hakki',
+        'giybet',
+        'dedikodu',
+        'helallesmek',
+        'tovbe sartlari',
+      ],
+      answer:
+          'Allah kendi hakkı olan günahları samimi tövbe (nasûh tövbesi) ile bağışlar; ancak '
+          'kul hakkı içeren günahlarda (haksız kazanç, gıybet, iftira, kalp kırma) tövbenin kabulü için '
+          'hak sahibiyle helalleşmek ve maddi hakkı iade etmek şarttır.',
+      details: <String>[
+        'Tövbenin 4 şartı: 1) Günahı derhal terk etmek, 2) Yaptığına kalpten pişman olmak, 3) Bir daha dönmemeye azmetmek, 4) Kul hakkı varsa helalleşmek.',
+      ],
+      citations: <String>[
+        'Kur\'an-ı Kerim, Hucurât 49/12; Tahrîm 66/8',
+        'Buhârî, Mezâlim, 10; Rikâk, 48',
+        'Müslim, Birr, 59',
+      ],
+      related: <String>['hacet_tovbe_namazi', 'faiz_ticaret'],
+      category: 'Ahlak',
+    ),
+    KnowledgeEntry(
+      id: 'nazar_korunma_dualari',
+      title: 'Nazar ve korunma duaları hakkında İslam\'ın ölçüsü nedir?',
+      keywords: <String>[
+        'nazar',
+        'nazar duasi',
+        'buyu',
+        'korunma duasi',
+        'felak nas',
+        'ayetel kursi',
+      ],
+      answer:
+          'Nazar (göz değmesi) hadis-i şeriflerle sabit bir hakikattir; korunmak için Kur\'an\'dan '
+          'Fâtiha, Âyetü\'l-Kürsî (Bakara 255), Kalem Suresi 51-52. ayetler ve Muavvizeteyn (İhlâs, Felak, Nâs) '
+          'surelerini okumak ve Allah\'a sığınmak sünnettir.',
+      details: <String>[
+        'Nazar boncuğu, kurşun döktürmek veya muska/falcılardan medet ummak İslam\'da caiz değildir; şifa ve koruma yalnızca Allah\'tan beklenir.',
+      ],
+      citations: <String>[
+        'Kur\'an-ı Kerim, Kalem 68/51-52; Felak 113/1-5; Nâs 114/1-6',
+        'Buhârî, Tıb, 36; Müslim, Selâm, 41-42',
+        'Diyanet İşleri Başkanlığı Din İşleri Yüksek Kurulu Kararları',
+      ],
+      related: <String>['dua_adab', 'kuran_okuma'],
+      category: 'Dua',
+    ),
   ];
 
   /// Kullanıcıya önerilen örnek sorular.
   static const List<String> suggestedQuestions = <String>[
+    'Kuşluk (Duha) namazı nasıl kılınır, vakti ve rekâtı nedir?',
+    'Teheccüd (Gece) namazı nasıl kılınır, vakti ve rekâtı nedir?',
+    'Evvâbîn namazı nedir, ne zaman ve kaç rekât kılınır?',
+    'İşrak namazı nedir, güneşten kaç dakika sonra kılınır?',
+    'Tahiyyetü\'l-Mescid namazı nedir ve nasıl kılınır?',
+    'Abdest şükür namazı nedir ve ne zaman kılınır?',
+    'Bayram namazı (Ramazan ve Kurban Bayramı) nasıl kılınır?',
+    'Sehiv (yanılma) secdesi nedir, ne zaman ve nasıl yapılır?',
     'İslam\'ın şartları nelerdir?',
     'İmanın şartları nelerdir?',
-    'Akşam namazı kaç rekât?',
-    'Abdest nasıl alınır?',
-    'Sabah namazını kaçırdım ne yapmalıyım?',
-    'Bugün iftar saat kaçta?',
-    'Seferi namaz nasıl kılınır?',
-    'Kıble yönü nasıl bulunur?',
-    'Zekât oranı nedir?',
-    'Kadir gecesi ne zaman?',
+    'Abdesti bozan ve bozmayan durumlar nelerdir?',
+    'Kerahet vakitleri (namaz kılınmayan vakitler) hangileridir?',
+    'Cemaatle namaz ve imama sonradan yetişme (mesbuk) nasıl tamamlanır?',
+    'Kaza orucu, kefaret orucu ve oruç fidyesi nedir?',
   ];
 
   static List<KnowledgeEntry> byCategory(String category) =>

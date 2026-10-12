@@ -274,6 +274,76 @@ class _NotificationSettingsScreenState
               ),
             ),
           ],
+          const SectionHeader(title: 'Nafile ve Vakitli Özel Namaz Alarmları'),
+          SwitchListTile(
+            secondary: const Icon(Icons.wb_sunny_outlined),
+            title: const Text('İşrak Namazı Alarmı (2 Rekât)'),
+            subtitle: const Text(
+              'Güneş doğup kerahet vakti çıktıktan (~47 dk sonra) alarm çalar',
+            ),
+            value: settings.israkAlarm,
+            onChanged: (bool value) => _update(
+              (NotificationSettings s) => s.copyWith(israkAlarm: value),
+            ),
+          ),
+          SwitchListTile(
+            secondary: const Icon(Icons.light_mode_rounded),
+            title: const Text('Kuşluk (Duha) Namazı Alarmı (2–8–12 Rekât)'),
+            subtitle: const Text(
+              'Güneşten 2 saat sonra en faziletli Kuşluk vaktinde alarm çalar',
+            ),
+            value: settings.duhaAlarm,
+            onChanged: (bool value) => _update(
+              (NotificationSettings s) => s.copyWith(duhaAlarm: value),
+            ),
+          ),
+          SwitchListTile(
+            secondary: const Icon(Icons.nights_stay_outlined),
+            title: const Text('Evvâbîn Namazı Alarmı (2, 4 veya 6 Rekât)'),
+            subtitle: const Text(
+              'Akşam namazından 25 dk sonra (yatsı girmeden önce) alarm çalar',
+            ),
+            value: settings.evvabinAlarm,
+            onChanged: (bool value) => _update(
+              (NotificationSettings s) => s.copyWith(evvabinAlarm: value),
+            ),
+          ),
+          SwitchListTile(
+            secondary: const Icon(Icons.bedtime_rounded),
+            title: const Text('Teheccüd (Gece) Namazı Alarmı (2–8 Rekât)'),
+            subtitle: const Text(
+              'Gece yarısı ile İmsak arasında (İmsak\'tan 75 dk önce seher vakti) alarm çalar',
+            ),
+            value: settings.teheccudAlarm,
+            onChanged: (bool value) => _update(
+              (NotificationSettings s) => s.copyWith(teheccudAlarm: value),
+            ),
+          ),
+          SwitchListTile(
+            secondary: const Icon(Icons.auto_awesome_rounded),
+            title: const Text('Teravih Namazı Alarmı (20 Rekât)'),
+            subtitle: const Text(
+              'Yatsı namazından 25 dk sonra Teravih ve Vitir hatırlatması',
+            ),
+            value: settings.teravihAlarm,
+            onChanged: (bool value) => _update(
+              (NotificationSettings s) => s.copyWith(teravihAlarm: value),
+            ),
+          ),
+          SwitchListTile(
+            secondary: const Icon(Icons.mosque_outlined),
+            title: const Text(
+              'Tahiyyetü\'l-Mescid & Abdest Şükür Namazı (2 Rekât)',
+            ),
+            subtitle: const Text(
+              'Camiye girince ve abdest sonrası 2 rekât sünnet namaz hatırlatması',
+            ),
+            value: settings.abdestSukurReminder,
+            onChanged: (bool value) => _update(
+              (NotificationSettings s) =>
+                  s.copyWith(abdestSukurReminder: value),
+            ),
+          ),
           const SectionHeader(title: 'Günlük hatırlatmalar'),
           SwitchListTile(
             secondary: const Icon(Icons.menu_book_outlined),
@@ -321,7 +391,7 @@ class _NotificationSettingsScreenState
                   .read(runtimeProvider)
                   .notifications
                   .showNow(
-                    title: 'EzanAI test bildirimi',
+                    title: 'Ezan Vaktim Pro test bildirimi',
                     body: 'Bildirimler çalışıyor. Vakitlerde görüşmek üzere!',
                   );
               if (context.mounted) {
@@ -359,7 +429,7 @@ class _NotificationSettingsScreenState
               padding: EdgeInsets.symmetric(horizontal: AppSpacing.xl),
               child: Text(
                 'Zamanlanmış bildirim görünmüyor. Android pil optimizasyonu zamanlanmış '
-                'bildirimleri kısıtlayabilir; sistem ayarlarından EzanAI için '
+                'bildirimleri kısıtlayabilir; sistem ayarlarından Ezan Vaktim Pro için '
                 '"Kısıtlanmamış" seçeneğini işaretleyin.',
               ),
             ),

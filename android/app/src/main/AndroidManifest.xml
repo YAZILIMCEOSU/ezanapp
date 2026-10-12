@@ -13,6 +13,8 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -30,7 +32,7 @@
     <uses-feature android:name="android.hardware.sensor.compass" android:required="false" />
 
     <application
-        android:label="Ezan"
+        android:label="Ezan Vaktim Pro"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -52,8 +54,8 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize"
-            android:showWhenLocked="false"
-            android:turnScreenOn="false"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
             tools:ignore="Instantiatable">
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
@@ -92,7 +94,11 @@
             </intent-filter>
         </receiver>
 
-        <!-- Ezan bildirimleri: yeniden başlatmada zamanlamaları geri yükler -->
+        <!-- Ezan bildirimleri: uygulama kapalıyken zamanı gelen alarmı karşılar ve yeniden başlatmada zamanlamaları geri yükler -->
+        <receiver
+            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver"
+            android:exported="false" />
+
         <receiver
             android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver"
             android:exported="false"
@@ -102,8 +108,15 @@
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
                 <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
             </intent-filter>
         </receiver>
+
+        <receiver
+            android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver"
+            android:exported="false" />
 
         <!-- Google Mobile Ads SDK: gerçek kimlik tanımlanmadığında Google'ın resmî
              örnek uygulama kimliği kullanılır; böylece MobileAdsInitProvider açılışta

@@ -173,6 +173,11 @@ class _TodayView extends ConsumerWidget {
                   offset: settings.manualOffsets[prayer.key] ?? 0,
                 ),
               ),
+            _NafileAndSpecialPrayersSection(
+              day: day,
+              settings: settings,
+              use24Hour: settings.use24Hour,
+            ),
             PrayerSourceNote(
               day: day,
               use24Hour: settings.use24Hour,
@@ -571,3 +576,446 @@ final FutureProvider<String> activeSourceInfoProvider = FutureProvider<String>((
   final UserLocation location = ref.watch(activeLocationProvider);
   return ref.watch(runtimeProvider).prayerTimes.describeActiveSource(location);
 });
+
+class _NafilePrayerSpec {
+  const _NafilePrayerSpec({
+    required this.title,
+    required this.rekatBadge,
+    required this.timeLabel,
+    required this.summary,
+    required this.guide,
+    required this.icon,
+    required this.enabled,
+    required this.onToggle,
+  });
+
+  final String title;
+  final String rekatBadge;
+  final String timeLabel;
+  final String summary;
+  final String guide;
+  final IconData icon;
+  final bool enabled;
+  final ValueChanged<bool> onToggle;
+}
+
+/// Nafile ve vakitli özel namazlar (İşrak, Kuşluk/Duha, Evvâbîn, Teheccüd,
+/// Tahiyyetü'l-Mescid, Abdest Şükür, Cuma, Bayram ve Teravih) için otomatik
+/// vakit hesaplama, rehber ve tek tıkla alarm kurma bölümü.
+class _NafileAndSpecialPrayersSection extends ConsumerWidget {
+  const _NafileAndSpecialPrayersSection({
+    required this.day,
+    required this.settings,
+    required this.use24Hour,
+  });
+
+  final PrayerTimesDay day;
+  final AppSettings settings;
+  final bool use24Hour;
+
+  String _fmt(DateTime? dt) =>
+      dt == null ? '--:--' : AppTime.formatTime(dt, use24Hour: use24Hour);
+
+  Future<void> _updateNotif(
+    BuildContext context,
+    WidgetRef ref,
+    NotificationSettings next,
+    String label,
+    bool enabled,
+  ) async {
+    await ref
+        .read(settingsControllerProvider.notifier)
+        .updateNotifications(next);
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(
+            enabled
+                ? '$label alarmı kuruldu (${next.adhanSound.label}).'
+                : '$label alarmı kapatıldı.',
+          ),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ThemeData theme = Theme.of(context);
+    final NotificationSettings ns = settings.notifications;
+
+    final DateTime? imsak = day.timeOf(Prayer.imsak);
+    final DateTime? gunes = day.timeOf(Prayer.gunes);
+    final DateTime? ogle = day.timeOf(Prayer.ogle);
+    final DateTime? aksam = day.timeOf(Prayer.aksam);
+    final DateTime? yatsi = day.timeOf(Prayer.yatsi);
+
+    final DateTime? israkTime = gunes?.add(const Duration(minutes: 47));
+    final DateTime? duhaBest = gunes?.add(const Duration(minutes: 120));
+    final DateTime? duhaEnd = ogle?.subtract(const Duration(minutes: 45));
+    final DateTime? evvabinTime = aksam?.add(const Duration(minutes: 25));
+    final DateTime? teheccudTime = imsak?.subtract(const Duration(minutes: 75));
+    final DateTime? teravihTime = yatsi?.add(const Duration(minutes: 25));
+    final DateTime? cumaPrep = ogle?.subtract(const Duration(minutes: 45));
+    final DateTime? eidTime = gunes?.add(const Duration(minutes: 48));
+
+    final List<_NafilePrayerSpec> items = <_NafilePrayerSpec>[
+      _NafilePrayerSpec(
+        title: 'İşrak Namazı',
+        rekatBadge: '2 Rekât',
+        timeLabel: 'Alarm: ${_fmt(israkTime)} (Güneş + 47 dk)',
+        summary:
+            'Sabah namazını kıldıktan sonra zikirle meşgul olup güneş doğduktan ve kerahet vakti çıktıktan (~45-50 dk sonra) hemen kılınan 2 rekât namazdır (Kuşluk başlangıcıdır).',
+        guide:
+            '• Vakti: Güneş doğup kerahet vakti çıktıktan (yaklaşık 45-50 dk sonra, bugün ${_fmt(israkTime)}) başlar.\n'
+            '• Rekâtı: 2 rekâttır.\n'
+            '• Niyeti: "Niyet ettim Allah rızası için İşrak namazını kılmaya."\n'
+            '• Fazileti: Tirmizî\'de (Cum\'a, 59) geçen hadis-i şerifte sabah namazını cemaatle kılıp güneş doğuncaya kadar Allah\'ı zikrederek ardından 2 rekât İşrak namazı kılan kimseye tam bir hac ve umre sevabı verileceği müjdelenmiştir.',
+        icon: Icons.wb_sunny_outlined,
+        enabled: ns.israkAlarm,
+        onToggle: (bool v) => _updateNotif(
+          context,
+          ref,
+          ns.copyWith(israkAlarm: v),
+          'İşrak Namazı',
+          v,
+        ),
+      ),
+      _NafilePrayerSpec(
+        title: 'Kuşluk (Duha) Namazı',
+        rekatBadge: '2, 4, 8 veya 12 Rekât',
+        timeLabel:
+            'Vakit: ${_fmt(israkTime)} – ${_fmt(duhaEnd)} • Alarm: ${_fmt(duhaBest)}',
+        summary:
+            'Güneşin doğup kerahet vaktinin çıkmasından öğle kerahet vaktine kadar kılınan, vücudun 360 ekleminin şükrü yerine geçen müstehap namazdır.',
+        guide:
+            '• Vakti: Güneş doğduktan ~45-50 dk sonra (${_fmt(israkTime)}) başlar, öğle vaktine ~45 dk kalaya (${_fmt(duhaEnd)}) kadar devam eder. En faziletli vakti gündüzün dörtte biri geçtiği (${_fmt(duhaBest)}) saattir.\n'
+            '• Rekâtı: En az 2, genellikle 4 veya 8, en çok 12 rekât olarak ikişer veya dörder rekâtta bir selam verilerek kılınır.\n'
+            '• Niyeti: "Niyet ettim Allah rızası için Kuşluk (Duha) namazını kılmaya."\n'
+            '• Kaynak: Müslim, Müsâfirîn, 84; Buhârî, Teheccüd, 31.',
+        icon: Icons.light_mode_rounded,
+        enabled: ns.duhaAlarm,
+        onToggle: (bool v) => _updateNotif(
+          context,
+          ref,
+          ns.copyWith(duhaAlarm: v),
+          'Kuşluk (Duha) Namazı',
+          v,
+        ),
+      ),
+      _NafilePrayerSpec(
+        title: 'Evvâbîn Namazı',
+        rekatBadge: '2, 4 veya 6 Rekât',
+        timeLabel:
+            'Vakit: ${_fmt(aksam)} – ${_fmt(yatsi)} • Alarm: ${_fmt(evvabinTime)}',
+        summary:
+            'Akşam namazını kıldıktan hemen sonra, yatsı vakti girmeden önce Allah\'a yönelen kulların (evvâbîn) kıldığı 2, 4 veya 6 rekâtlık nafile namazdır.',
+        guide:
+            '• Vakti: Akşam namazının farzı ve sünneti kılındıktan hemen sonra (bugün ${_fmt(evvabinTime)}) yatsı vakti (${_fmt(yatsi)}) girmeden önce kılınır.\n'
+            '• Rekâtı: 2, 4 veya 6 rekât olarak eda edilir (ikişer rekâtta bir selam verilmesi müstehaptır).\n'
+            '• Niyeti: "Niyet ettim Allah rızası için Evvâbîn namazını kılmaya."\n'
+            '• Kaynak: Tirmizî, Mevâkît, 203; İbn Mâce, İkâmet, 185.',
+        icon: Icons.nights_stay_outlined,
+        enabled: ns.evvabinAlarm,
+        onToggle: (bool v) => _updateNotif(
+          context,
+          ref,
+          ns.copyWith(evvabinAlarm: v),
+          'Evvâbîn Namazı',
+          v,
+        ),
+      ),
+      _NafilePrayerSpec(
+        title: 'Teheccüd (Gece) Namazı',
+        rekatBadge: '2 – 8 Rekât',
+        timeLabel:
+            'Seher Alarmı: ${_fmt(teheccudTime)} (İmsak: ${_fmt(imsak)})',
+        summary:
+            'Yatsı namazından sonra biraz uyuyup gece yarısı ile imsak vakti arasında uyanılarak kılınan, farz namazlardan sonra en faziletli namazdır.',
+        guide:
+            '• Vakti: Yatsı namazından sonra biraz uyuyup gece yarısı ile imsak (${_fmt(imsak)}) arasında uyanılarak kılınır. En faziletli vakti gecenin son üçte biri olan seher vaktidir (Alarm saati: ${_fmt(teheccudTime)}).\n'
+            '• Rekâtı: 2 ile 8 rekât arasında (ikişer rekâtta bir selam verilerek) kılınır.\n'
+            '• Niyeti: "Niyet ettim Allah rızası için Teheccüd namazını kılmaya."\n'
+            '• Kaynak: İsrâ Suresi, 17/79; Müslim, Sıyam, 202.',
+        icon: Icons.bedtime_rounded,
+        enabled: ns.teheccudAlarm,
+        onToggle: (bool v) => _updateNotif(
+          context,
+          ref,
+          ns.copyWith(teheccudAlarm: v),
+          'Teheccüd (Gece) Namazı',
+          v,
+        ),
+      ),
+      _NafilePrayerSpec(
+        title: 'Tahiyyetü\'l-Mescid & Abdest Şükür Namazı',
+        rekatBadge: '2 Rekât + 2 Rekât',
+        timeLabel: 'Camiye girince & Abdest sonrası (Kerahet vakti dışında)',
+        summary:
+            'Tahiyyetü\'l-Mescid: Camiye/mescide girildiğinde oturmadan önce kılınan 2 rekât selamlama namazıdır. Abdest Şükür: Abdest aldıktan hemen sonra azalar kurumadan kılınan 2 rekât namazdır.',
+        guide:
+            '• Tahiyyetü\'l-Mescid (2 Rekât): Bir camiye veya mescide girildiğinde, oturmadan önce mescidin Rabbine saygı amacıyla kılınan 2 rekâtlık sünnet namazdır (Buhârî, Salât, 60).\n'
+            '• Abdest Şükür Namazı (2 Rekât): Abdest veya gusül aldıktan hemen sonra, azalar henüz kurumadan kılınan 2 rekâtlık namazdır; Hz. Bilâl-i Habeşî\'nin cennette ayak seslerinin duyulmasına vesile olan ameldir (Buhârî, Teheccüd, 17; Müslim, Fedâilü\'s-Sahâbe, 108).',
+        icon: Icons.mosque_outlined,
+        enabled: ns.abdestSukurReminder,
+        onToggle: (bool v) => _updateNotif(
+          context,
+          ref,
+          ns.copyWith(abdestSukurReminder: v),
+          'Abdest Şükür & Tahiyyetü\'l-Mescid',
+          v,
+        ),
+      ),
+      _NafilePrayerSpec(
+        title: 'Cuma Namazı & Bayram Namazları',
+        rekatBadge: 'Cemaatle Vakitli',
+        timeLabel:
+            'Cuma Hazırlık: ${_fmt(cumaPrep)} (Öğle: ${_fmt(ogle)}) • Bayram: ${_fmt(eidTime)}',
+        summary:
+            'Cuma namazı her Cuma öğle vaktinde cemaatle kılınır (4 ilk sünnet + 2 farz + 4 son sünnet). Ramazan ve Kurban Bayramı namazları güneşten ~48 dk sonra cemaatle 2 rekât vâcip olarak kılınır.',
+        guide:
+            '• Cuma Namazı: Cuma günü öğle vaktinde (${_fmt(ogle)}) cemaatle kılınır; alarm öğleden 45 dk önce (${_fmt(cumaPrep)}) ve Cuma sabahı 09:30\'da hatırlatır.\n'
+            '• Bayram Namazları (2 Rekât Vâcip): Ramazan ve Kurban Bayramının 1. günü güneş doğup kerahet vakti çıktıktan (~48 dk sonra, yaklaşık ${_fmt(eidTime)}) cemaatle 6 zâid tekbir alınarak kılınır.',
+        icon: Icons.groups_rounded,
+        enabled: ns.fridayNotification,
+        onToggle: (bool v) => _updateNotif(
+          context,
+          ref,
+          ns.copyWith(fridayNotification: v, eidAlarm: v),
+          'Cuma ve Bayram Namazı',
+          v,
+        ),
+      ),
+      _NafilePrayerSpec(
+        title: 'Teravih Namazı',
+        rekatBadge: '20 Rekât Sünnet-i Müekkede',
+        timeLabel: 'Alarm: ${_fmt(teravihTime)} (Yatsı: ${_fmt(yatsi)} sonrası)',
+        summary:
+            'Ramazan ayı boyunca Yatsı namazının farzı ve son sünnetinden sonra, Vitir namazından önce cemaatle veya ferdi olarak 20 rekât kılınan sünnet-i müekkede namazdır.',
+        guide:
+            '• Vakti: Yatsı namazından (${_fmt(yatsi)}) sonra Vitir namazından önce kılınır (Alarm: ${_fmt(teravihTime)}).\n'
+            '• Rekâtı: 20 rekâttır; ikişer veya dörder rekâtta bir selam verilerek eda edilir.\n'
+            '• Kaynak: Buhârî, Salâtü\'t-Terâvîh, 1; Müslim, Müsâfirîn, 173.',
+        icon: Icons.auto_awesome_rounded,
+        enabled: ns.teravihAlarm,
+        onToggle: (bool v) => _updateNotif(
+          context,
+          ref,
+          ns.copyWith(teravihAlarm: v),
+          'Teravih Namazı',
+          v,
+        ),
+      ),
+    ];
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.lg,
+        AppSpacing.lg,
+        AppSpacing.xs,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              const Icon(
+                Icons.alarm_add_rounded,
+                size: 20,
+                color: AppColors.emerald500,
+              ),
+              const SizedBox(width: AppSpacing.xs),
+              Expanded(
+                child: Text(
+                  'Nafile & Vakitli Özel Namaz Alarmları',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+              TextButton.icon(
+                style: TextButton.styleFrom(
+                  visualDensity: VisualDensity.compact,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                ),
+                onPressed: () => context.push(AppRoutes.adhanSounds),
+                icon: const Icon(Icons.music_note_rounded, size: 16),
+                label: const Text('Ses Seç'),
+              ),
+            ],
+          ),
+          Text(
+            'Kuşluk (Duha), Teheccüd, Evvâbîn, İşrak, Tahiyyetü\'l-Mescid, Abdest Şükür, Cuma, Bayram ve Teravih namazları için otomatik vakit hesabı ve sesli alarm.',
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          for (final _NafilePrayerSpec spec in items)
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+              child: Card(
+                margin: EdgeInsets.zero,
+                child: InkWell(
+                  borderRadius: AppRadius.allMd,
+                  onTap: () => _showGuideSheet(context, spec),
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              width: 38,
+                              height: 38,
+                              decoration: BoxDecoration(
+                                color: spec.enabled
+                                    ? AppColors.emerald500.withValues(
+                                        alpha: 0.16,
+                                      )
+                                    : theme.colorScheme.surfaceContainerHighest,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              alignment: Alignment.center,
+                              child: Icon(
+                                spec.icon,
+                                size: 20,
+                                color: spec.enabled
+                                    ? AppColors.emerald500
+                                    : theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                            const SizedBox(width: AppSpacing.sm),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Wrap(
+                                    spacing: 6,
+                                    runSpacing: 4,
+                                    crossAxisAlignment:
+                                        WrapCrossAlignment.center,
+                                    children: <Widget>[
+                                      Text(
+                                        spec.title,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: theme.textTheme.titleSmall
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w800,
+                                            ),
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 6,
+                                          vertical: 2,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: AppColors.gold500.withValues(
+                                            alpha: 0.18,
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            6,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          spec.rekatBadge,
+                                          style: theme.textTheme.labelSmall
+                                              ?.copyWith(
+                                                fontWeight: FontWeight.w700,
+                                                color: AppColors.gold600,
+                                              ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    spec.timeLabel,
+                                    style: theme.textTheme.labelSmall?.copyWith(
+                                      color: AppColors.emerald500,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Switch(
+                              value: spec.enabled,
+                              onChanged: spec.onToggle,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          spec.summary,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  void _showGuideSheet(BuildContext context, _NafilePrayerSpec spec) {
+    final ThemeData theme = Theme.of(context);
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (BuildContext sheetContext) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.xl,
+            0,
+            AppSpacing.xl,
+            AppSpacing.xl,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Icon(spec.icon, color: AppColors.emerald500),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: Text(
+                      '${spec.title} (${spec.rekatBadge})',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                spec.timeLabel,
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: AppColors.emerald500,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                spec.guide,
+                style: theme.textTheme.bodyMedium?.copyWith(height: 1.55),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
