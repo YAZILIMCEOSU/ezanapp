@@ -773,7 +773,7 @@ class _QiblaNeedlePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final Offset center = Offset(size.width / 2, size.height / 2);
-    final double tipY = 64.0;
+    const double tipY = 64.0;
 
     // İnce ok gövdesi (merkezden Kâbe rozetine)
     canvas.drawLine(
