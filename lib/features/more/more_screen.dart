@@ -54,48 +54,54 @@ class _MoreScreenState extends ConsumerState<MoreScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(
               AppSpacing.lg,
+              AppSpacing.md,
               AppSpacing.lg,
-              AppSpacing.lg,
-              AppSpacing.sm,
+              AppSpacing.xs,
             ),
-            child: GridView.count(
-              crossAxisCount: 3,
+            child: GridView(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              mainAxisSpacing: 12,
-              crossAxisSpacing: 12,
-              childAspectRatio: 0.94,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                mainAxisExtent: 78,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
+              ),
               children: <Widget>[
-                const _MenuGridCard(
-                  icon: Icons.menu_book_rounded,
-                  badgeIcon: Icons.auto_stories_rounded,
-                  label: 'Kur\'an',
-                  route: AppRoutes.quran,
-                ),
-                const _MenuGridCard(
-                  icon: Icons.local_library_rounded,
-                  badgeIcon: Icons.format_quote_rounded,
-                  label: 'Kütüphane',
-                  route: AppRoutes.hadith,
-                ),
-                const _MenuGridCard(
-                  icon: Icons.graphic_eq_rounded,
-                  badgeIcon: Icons.play_circle_fill_rounded,
-                  label: 'Aşr-ı Şerifler',
-                  route: AppRoutes.ilahi,
-                ),
+                if (features.quran)
+                  const _MenuGridCard(
+                    icon: Icons.menu_book_rounded,
+                    badgeIcon: Icons.auto_stories_rounded,
+                    label: 'Kur\'an',
+                    route: AppRoutes.quran,
+                  ),
+                if (features.hadith)
+                  const _MenuGridCard(
+                    icon: Icons.local_library_rounded,
+                    badgeIcon: Icons.format_quote_rounded,
+                    label: 'Kütüphane',
+                    route: AppRoutes.hadith,
+                  ),
+                if (features.ilahi)
+                  const _MenuGridCard(
+                    icon: Icons.graphic_eq_rounded,
+                    badgeIcon: Icons.play_circle_fill_rounded,
+                    label: 'Aşr-ı Şerifler',
+                    route: AppRoutes.ilahi,
+                  ),
                 const _MenuGridCard(
                   icon: Icons.calendar_month_rounded,
                   badgeIcon: Icons.brightness_3_rounded,
                   label: 'Dini Günler',
                   route: AppRoutes.calendar,
                 ),
-                const _MenuGridCard(
-                  icon: Icons.mark_email_unread_rounded,
-                  badgeIcon: Icons.favorite_rounded,
-                  label: 'Tebrikler',
-                  route: AppRoutes.dualar,
-                ),
+                if (features.dua)
+                  const _MenuGridCard(
+                    icon: Icons.mark_email_unread_rounded,
+                    badgeIcon: Icons.favorite_rounded,
+                    label: 'Tebrikler',
+                    route: AppRoutes.dualar,
+                  ),
                 const _MenuGridCard(
                   icon: Icons.home_rounded,
                   badgeIcon: Icons.access_time_filled_rounded,
@@ -126,12 +132,13 @@ class _MoreScreenState extends ConsumerState<MoreScreen> {
                   label: 'Kıble Pusulası',
                   route: AppRoutes.qibla,
                 ),
-                const _MenuGridCard(
-                  icon: Icons.auto_awesome_rounded,
-                  badgeIcon: Icons.verified_rounded,
-                  label: 'İslami Asistan',
-                  route: AppRoutes.ai,
-                ),
+                if (features.ai)
+                  const _MenuGridCard(
+                    icon: Icons.auto_awesome_rounded,
+                    badgeIcon: Icons.verified_rounded,
+                    label: 'İslami Asistan',
+                    route: AppRoutes.ai,
+                  ),
                 const _MenuGridCard(
                   icon: Icons.fact_check_rounded,
                   badgeIcon: Icons.edit_calendar_rounded,
@@ -380,7 +387,7 @@ class _MenuGridCard extends StatelessWidget {
             ? context.go(route)
             : context.push(route),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
@@ -402,24 +409,24 @@ class _MenuGridCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Container(
-                width: 56,
-                height: 56,
+                width: 38,
+                height: 38,
                 decoration: BoxDecoration(
                   color: isDark
                       ? const Color(0xFF0097A7).withValues(alpha: 0.16)
                       : const Color(0xFFEAF4F8),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Stack(
                   alignment: Alignment.center,
                   children: <Widget>[
-                    Icon(icon, size: 30, color: const Color(0xFF0097A7)),
+                    Icon(icon, size: 22, color: const Color(0xFF0097A7)),
                     Positioned(
-                      right: 7,
-                      bottom: 7,
+                      right: 4,
+                      bottom: 4,
                       child: Container(
-                        width: 18,
-                        height: 18,
+                        width: 14,
+                        height: 14,
                         decoration: BoxDecoration(
                           color: isDark
                               ? theme.colorScheme.surface
@@ -429,7 +436,7 @@ class _MenuGridCard extends StatelessWidget {
                         alignment: Alignment.center,
                         child: Icon(
                           badgeIcon,
-                          size: 13,
+                          size: 10,
                           color: const Color(0xFFFF7043),
                         ),
                       ),
@@ -437,17 +444,19 @@ class _MenuGridCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 8),
-              Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.labelMedium?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  color: isDark
-                      ? theme.colorScheme.onSurface
-                      : const Color(0xFF1E353D),
+              const SizedBox(height: 4),
+              Flexible(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    color: isDark
+                        ? theme.colorScheme.onSurface
+                        : const Color(0xFF1E353D),
+                  ),
                 ),
               ),
             ],

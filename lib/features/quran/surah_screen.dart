@@ -431,7 +431,7 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
                   final int currentIdx = isPlayingThis
                       ? _resolveWordIndexByWeight(
                           words,
-                          _speechProgressForAyah(ayah.number) ?? 0.0,
+                          _speechProgressForAyah(ayah.number),
                         )
                       : _manualWordIndex;
                   final int nextWord = currentIdx + delta;
