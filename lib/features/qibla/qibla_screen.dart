@@ -277,10 +277,7 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
           else ...<Widget>[
             const SizedBox(height: AppSpacing.xs),
             Center(
-              child: _CompassDial(
-                reading: activeReading,
-                qibla: compassQibla,
-              ),
+              child: _CompassDial(reading: activeReading, qibla: compassQibla),
             ),
             const SizedBox(height: AppSpacing.md),
             Padding(
@@ -327,6 +324,8 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
                   'Kıble farkı ${activeReading.differenceToQibla!.abs().toStringAsFixed(1)}°',
             ),
           const SectionHeader(title: 'Kıble nasıl bulunur? (Diyanet Yöntemi)'),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
             child: Text(
               '1. Telefonu yere paralel (avuç içinde veya masada düz) tutun.\n'
               '2. Üstteki Kıble kutusunda (${compassQibla.toStringAsFixed(1)}°) ve çember üzerindeki Kâbe simgesinde tam Kıble yönü görünür.\n'

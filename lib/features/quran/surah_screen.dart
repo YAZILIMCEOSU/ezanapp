@@ -1438,18 +1438,12 @@ class _AyahCard extends StatelessWidget {
                                   textDirection: TextDirection.rtl,
                                   text: _buildTajweedWordSpan(
                                     arabicWords[i],
-                                    baseStyle: AppTheme.arabic(
+                                    baseStyle: _wordArabicStyle(
                                       theme.textTheme,
-                                      size: i == activeWordIdx
-                                          ? fontSize + 2
-                                          : fontSize,
-                                      color: i == activeWordIdx && !isDark
-                                          ? const Color(0xFF1B1B1B)
-                                          : theme.colorScheme.onSurface,
-                                    ).copyWith(
-                                      fontWeight: i == activeWordIdx
-                                          ? FontWeight.w800
-                                          : FontWeight.w600,
+                                      fontSize: fontSize,
+                                      isActive: i == activeWordIdx,
+                                      isDark: isDark,
+                                      defaultColor: theme.colorScheme.onSurface,
                                     ),
                                     isDark: isDark,
                                   ),
@@ -1588,6 +1582,23 @@ class _AyahCard extends StatelessWidget {
 /// Arapça kelimelerin fonetik/med/şedde ağırlığına göre şu an okunan kelime
 /// indeksini hesaplar; kısa edatların (فِي, مَن, لَا) hızlı geçilmesini ve
 /// medli/şeddeli kelimelerin gerçek tilavet süresiyle tam senkron kalmasını sağlar.
+TextStyle _wordArabicStyle(
+  TextTheme textTheme, {
+  required double fontSize,
+  required bool isActive,
+  required bool isDark,
+  required Color defaultColor,
+}) {
+  final TextStyle base = AppTheme.arabic(
+    textTheme,
+    size: isActive ? fontSize + 2 : fontSize,
+    color: isActive && !isDark ? const Color(0xFF1B1B1B) : defaultColor,
+  );
+  return base.copyWith(
+    fontWeight: isActive ? FontWeight.w800 : FontWeight.w600,
+  );
+}
+
 int _resolveWordIndexByWeight(List<String> words, double progress) {
   if (words.isEmpty) return 0;
   if (words.length == 1) return 0;
@@ -1788,14 +1799,13 @@ class _MushafAyahMedallion extends StatelessWidget {
       '٨',
       '٩',
     ];
-    return number
-        .toString()
-        .split('')
-        .map((String ch) {
-          final int? d = int.tryParse(ch);
-          return d != null ? digits[d] : ch;
-        })
-        .join();
+    final String raw = number.toString();
+    final StringBuffer out = StringBuffer();
+    for (int i = 0; i < raw.length; i++) {
+      final int? d = int.tryParse(raw[i]);
+      out.write(d != null ? digits[d] : raw[i]);
+    }
+    return out.toString();
   }
 
   @override
@@ -1820,4 +1830,3 @@ class _MushafAyahMedallion extends StatelessWidget {
     );
   }
 }
-
