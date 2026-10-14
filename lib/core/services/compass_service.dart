@@ -77,9 +77,9 @@ class CompassReading {
   bool get hasMagneticInterference =>
       (fieldStrengthMicroTesla != null &&
           fieldStrengthMicroTesla!.isFinite &&
-          (fieldStrengthMicroTesla! < 22.0 ||
-              fieldStrengthMicroTesla! > 68.0)) ||
-      stabilityDegrees > 22.0;
+          (fieldStrengthMicroTesla! < 12.0 ||
+              fieldStrengthMicroTesla! > 88.0)) ||
+      stabilityDegrees > 35.0;
 
   /// Telefon aşırı eğik mi tutuluyor?
   bool get isTilted => tilt.abs() > 45 || roll.abs() > 45;

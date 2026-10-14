@@ -241,10 +241,15 @@ class AppAudioService {
       }
     });
 
-    _positionSub = _player.positionStream.listen((Duration position) {
-      _lastPosition = position;
-      if (!_positionController.isClosed) _positionController.add(position);
-    });
+    _positionSub = _player
+        .createPositionStream(
+          minPeriod: const Duration(milliseconds: 45),
+          maxPeriod: const Duration(milliseconds: 90),
+        )
+        .listen((Duration position) {
+          _lastPosition = position;
+          if (!_positionController.isClosed) _positionController.add(position);
+        });
 
     _durationSub = _player.durationStream.listen((Duration? d) {
       if (d != null && d > Duration.zero) {
@@ -260,12 +265,20 @@ class AppAudioService {
     try {
       while (_queueUrls.isNotEmpty && _queueIndex + 1 < _queueUrls.length) {
         _queueIndex += 1;
+        _lastPosition = Duration.zero;
+        _lastDuration = null;
         if (!_queueIndexController.isClosed) {
           _queueIndexController.add(_queueIndex);
         }
         final String nextUrl = _queueUrls[_queueIndex];
         try {
-          await _player.setAudioSource(AudioSource.uri(Uri.parse(nextUrl)));
+          final Duration? d = await _player.setAudioSource(
+            AudioSource.uri(Uri.parse(nextUrl)),
+          );
+          if (d != null && d > Duration.zero) {
+            _lastDuration = d;
+            if (!_durationController.isClosed) _durationController.add(d);
+          }
           await _player.setLoopMode(LoopMode.off);
           unawaited(_player.play());
           _status = PlaybackStatus.playing;
@@ -291,13 +304,19 @@ class AppAudioService {
     _advancingQueue = true;
     try {
       _queueIndex = clamped;
+      _lastPosition = Duration.zero;
+      _lastDuration = null;
       if (!_queueIndexController.isClosed) {
         _queueIndexController.add(_queueIndex);
       }
-      await _player.setAudioSource(
+      final Duration? d = await _player.setAudioSource(
         AudioSource.uri(Uri.parse(_queueUrls[_queueIndex])),
       );
       if (op != _operationId) return false;
+      if (d != null && d > Duration.zero) {
+        _lastDuration = d;
+        if (!_durationController.isClosed) _durationController.add(d);
+      }
       await _player.setLoopMode(LoopMode.off);
       unawaited(_player.play());
       _status = PlaybackStatus.playing;

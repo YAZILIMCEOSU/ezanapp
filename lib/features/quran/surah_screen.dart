@@ -36,11 +36,13 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
   StreamSubscription<int>? _queueSub;
   StreamSubscription<PlaybackStatus>? _statusSub;
   StreamSubscription<Duration>? _positionSub;
+  StreamSubscription<Duration>? _durationSub;
   int _lastSavedAyah = 0;
   int? _playingAyah;
   int _trackedAyah = 1;
   int _manualWordIndex = 0;
   bool _arrowTrackingEnabled = true;
+  int _syncOffsetMs = 280; // Ses başlangıcıyla tam eşzamanlı ön telafi (ms)
   PlaybackStatus _playbackStatus = PlaybackStatus.idle;
   Duration _ayahPosition = Duration.zero;
   Duration _ayahDuration = Duration.zero;
@@ -115,6 +117,14 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
           _ayahDuration = audio.duration ?? _ayahDuration;
         });
       });
+      _durationSub = audio.durationStream.listen((Duration dur) {
+        if (!mounted ||
+            _playingAyah == null ||
+            audio.activeSurahNumber != widget.surahNumber) {
+          return;
+        }
+        setState(() => _ayahDuration = dur);
+      });
     });
   }
 
@@ -123,6 +133,7 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
     _queueSub?.cancel();
     _statusSub?.cancel();
     _positionSub?.cancel();
+    _durationSub?.cancel();
     _positions.itemPositions.removeListener(_rememberPosition);
     super.dispose();
   }
@@ -155,11 +166,55 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
         .saveProgress(widget.surahNumber, ayahNumber);
   }
 
-  double get _currentAyahProgress {
-    if (_ayahDuration.inMilliseconds <= 0) return 0.0;
-    return (_ayahPosition.inMilliseconds / _ayahDuration.inMilliseconds)
-        .clamp(0.0, 0.999)
-        .toDouble();
+  /// Ayetin ses dosyası içindeki gerçek konuşma ilerlemesini (0.0..1.0) hesaplar.
+  ///
+  /// EveryAyah MP3 kayıtlarında:
+  /// 1) 1. ve 9. sure dışındaki surelerin 1. ayet (`001.mp3`) kaydının başında
+  ///    ~4.0 sn boyunca Besmele okunur; bu sürede ibre ilk kelimede bekler ve
+  ///    Besmele biter bitmez kelimelerle senkron ilerler.
+  /// 2) Her ayet MP3'ünün sonunda Medd-i Arız uzatması ve ~0.6–1.0 sn nefes/sükût
+  ///    boşluğu yer alır; bu kuyruk düşülerek kelimelerin geriden gelmesi önlenir.
+  double _speechProgressForAyah(int ayahNumber) {
+    final int totalMs = _ayahDuration.inMilliseconds;
+    if (totalMs <= 0) return 0.0;
+    final int rawPosMs = _ayahPosition.inMilliseconds + _syncOffsetMs;
+
+    final bool hasEmbeddedBasmala =
+        ayahNumber == 1 &&
+        widget.surahNumber != 1 &&
+        widget.surahNumber != 9 &&
+        totalMs > 5400;
+    final double leadInMs = hasEmbeddedBasmala
+        ? (totalMs * 0.42).clamp(3200.0, 4500.0)
+        : 45.0;
+    final double trailOutMs = (totalMs * 0.19).clamp(340.0, 1050.0);
+    final double activeWindowMs = (totalMs - leadInMs - trailOutMs).clamp(
+      400.0,
+      totalMs.toDouble(),
+    );
+    final double elapsedSpeechMs = rawPosMs - leadInMs;
+    return (elapsedSpeechMs / activeWindowMs).clamp(0.0, 0.999).toDouble();
+  }
+
+  void _cycleSyncOffset() {
+    const List<int> offsets = <int>[280, 480, 680, 0];
+    final int idx = offsets.indexOf(_syncOffsetMs);
+    final int next = offsets[(idx + 1) % offsets.length];
+    setState(() => _syncOffsetMs = next);
+    final String label = switch (next) {
+      0 => 'Standart (0 ms)',
+      280 => 'Tam Senkron (+280 ms)',
+      480 => 'Hızlı Takip (+480 ms)',
+      _ => 'Önden Takip (+680 ms)',
+    };
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text('İşaretli Takip Senkronu: $label'),
+          duration: const Duration(milliseconds: 1400),
+        ),
+      );
   }
 
   @override
@@ -292,6 +347,7 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
                       .setQuranFontSize(nextSize);
                   setState(() => _arrowTrackingEnabled = true);
                 },
+                onCycleSyncOffset: _cycleSyncOffset,
               ),
         orElse: () => null,
       ),
@@ -339,7 +395,9 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
                 isBookmarked: isBookmarked,
                 isPlaying: isPlayingThis,
                 isArrowTracked: isTrackedThis,
-                audioWordProgress: isPlayingThis ? _currentAyahProgress : null,
+                audioWordProgress: isPlayingThis
+                    ? _speechProgressForAyah(ayah.number)
+                    : null,
                 manualWordIndex: isTrackedThis ? _manualWordIndex : 0,
                 onTapCard: () {
                   setState(() {
@@ -803,6 +861,7 @@ class _QuranHorizontalPlayerBar extends StatelessWidget {
     required this.onPickReciter,
     required this.onToggleArrowTracking,
     required this.onToggleLargeFont,
+    required this.onCycleSyncOffset,
   });
 
   final Surah surah;
@@ -826,6 +885,7 @@ class _QuranHorizontalPlayerBar extends StatelessWidget {
   final VoidCallback onPickReciter;
   final VoidCallback onToggleArrowTracking;
   final VoidCallback onToggleLargeFont;
+  final VoidCallback onCycleSyncOffset;
 
   @override
   Widget build(BuildContext context) {
@@ -887,7 +947,7 @@ class _QuranHorizontalPlayerBar extends StatelessWidget {
                       ),
                       child: Text(
                         arrowTrackingEnabled
-                            ? '▼ İşaretli Takip'
+                            ? '▲ İşaretli Takip'
                             : 'İşaretli Takip',
                         style: theme.textTheme.labelSmall?.copyWith(
                           fontWeight: FontWeight.w700,
@@ -898,7 +958,31 @@ class _QuranHorizontalPlayerBar extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: 4),
+                  InkWell(
+                    borderRadius: BorderRadius.circular(999),
+                    onTap: onCycleSyncOffset,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 7,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surface,
+                        borderRadius: BorderRadius.circular(999),
+                        border: Border.all(
+                          color: theme.colorScheme.outlineVariant,
+                        ),
+                      ),
+                      child: Text(
+                        'Senkron',
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
                   InkWell(
                     borderRadius: BorderRadius.circular(999),
                     onTap: onToggleLargeFont,
@@ -1157,6 +1241,7 @@ class _AyahCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final bool isDark = theme.brightness == Brightness.dark;
     final List<String> arabicWords = ayah.arabic
         .trim()
         .split(RegExp(r'\s+'))
@@ -1164,11 +1249,18 @@ class _AyahCard extends StatelessWidget {
         .toList(growable: false);
     final int wordCount = arabicWords.isEmpty ? 1 : arabicWords.length;
     final int activeWordIdx = audioWordProgress != null
-        ? (audioWordProgress! * wordCount).floor().clamp(0, wordCount - 1)
+        ? _resolveWordIndexByWeight(arabicWords, audioWordProgress!)
         : manualWordIndex.clamp(0, wordCount - 1);
     final double effectiveProgress =
         audioWordProgress ??
         (wordCount <= 1 ? 1.0 : (activeWordIdx + 1) / wordCount);
+
+    // Mushaf sayfa zemini (açık temada sıcak Mushaf kremi, koyu temada derin Mushaf zemini)
+    final Color mushafBg = isPlaying
+        ? (isDark ? const Color(0xFF132A23) : const Color(0xFFFDF6E2))
+        : isArrowTracked
+        ? (isDark ? const Color(0xFF1E241B) : const Color(0xFFFCF7E8))
+        : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.35);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(
@@ -1182,13 +1274,7 @@ class _AyahCard extends StatelessWidget {
         onTap: onTapCard,
         child: Container(
           decoration: BoxDecoration(
-            color: isPlaying
-                ? AppColors.emerald600.withValues(alpha: 0.12)
-                : isArrowTracked
-                ? AppColors.gold500.withValues(alpha: 0.10)
-                : theme.colorScheme.surfaceContainerHighest.withValues(
-                    alpha: 0.35,
-                  ),
+            color: mushafBg,
             borderRadius: AppRadius.allLg,
             border: Border.all(
               width: (isPlaying || isArrowTracked) ? 2.0 : 1.0,
@@ -1219,8 +1305,8 @@ class _AyahCard extends StatelessWidget {
                   child: Row(
                     children: <Widget>[
                       Icon(
-                        Icons.double_arrow_rounded,
-                        size: 20,
+                        Icons.change_history_rounded,
+                        size: 18,
                         color: isPlaying
                             ? AppColors.emerald500
                             : AppColors.gold600,
@@ -1229,8 +1315,8 @@ class _AyahCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           isPlaying
-                              ? '▼ İŞARETLİ TAKİP • ŞU AN OKUNAN (${ayah.number}. Ayet • ${activeWordIdx + 1}/$wordCount. kelime)'
-                              : '▼ İŞARETLİ TAKİP SATIRI (${ayah.number}. Ayet • ${activeWordIdx + 1}/$wordCount. kelime)',
+                              ? '▲ TECVİDLİ MUKABELE TAKİBİ • ${ayah.number}. Ayet (${activeWordIdx + 1}/$wordCount. kelime)'
+                              : '▲ İŞARETLİ TAKİP SATIRI • ${ayah.number}. Ayet (${activeWordIdx + 1}/$wordCount. kelime)',
                           style: theme.textTheme.labelMedium?.copyWith(
                             fontWeight: FontWeight.w800,
                             color: isPlaying
@@ -1303,120 +1389,116 @@ class _AyahCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: AppSpacing.sm),
-              // Diyanet TV Mukabele Tarzı İşaretli Takip: Sağdan sola (RTL) her
-              // kelime üzerinde hareketli ok işaretçisi (▼), altın/zümrüt vurgu
-              // kutusu ve kelimeye dokunarak doğrudan o kelimeye geçme.
-              if ((isPlaying || isArrowTracked) && arabicWords.length > 1)
+              // Diyanet TV Mukabele & Mushaf Sarı Vurgulu + 3B Yeşil Üçgen İbreli (▲)
+              // + Renkli Tecvidli Kelime Takibi:
+              if ((isPlaying || isArrowTracked) && arabicWords.isNotEmpty)
                 Directionality(
                   textDirection: TextDirection.rtl,
                   child: Wrap(
                     alignment: WrapAlignment.start,
-                    crossAxisAlignment: WrapCrossAlignment.end,
-                    spacing: 6,
-                    runSpacing: 10,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 8,
+                    runSpacing: 12,
                     children: <Widget>[
                       for (int i = 0; i < arabicWords.length; i++)
                         GestureDetector(
                           behavior: HitTestBehavior.opaque,
                           onTap: () => onTapWord(i, wordCount),
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 180),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 6,
-                              vertical: 3,
-                            ),
-                            decoration: BoxDecoration(
-                              color: i == activeWordIdx
-                                  ? AppColors.gold500.withValues(alpha: 0.28)
-                                  : i < activeWordIdx
-                                  ? AppColors.emerald500.withValues(alpha: 0.08)
-                                  : Colors.transparent,
-                              borderRadius: BorderRadius.circular(10),
-                              border: i == activeWordIdx
-                                  ? Border.all(
-                                      color: isPlaying
-                                          ? AppColors.emerald500
-                                          : AppColors.gold600,
-                                      width: 2,
-                                    )
-                                  : null,
-                            ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                if (i == activeWordIdx)
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 6,
-                                      vertical: 1,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: isPlaying
-                                          ? AppColors.emerald500
-                                          : AppColors.gold600,
-                                      borderRadius: BorderRadius.circular(999),
-                                    ),
-                                    child: Text(
-                                      '▼ ${i + 1}',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w800,
-                                        height: 1.1,
-                                      ),
-                                    ),
-                                  )
-                                else
-                                  const SizedBox(height: 14),
-                                Text(
-                                  arabicWords[i],
-                                  textDirection: TextDirection.rtl,
-                                  style: i == activeWordIdx
-                                      ? AppTheme.arabic(
-                                          theme.textTheme,
-                                          size: fontSize + 2,
-                                          color: isPlaying
-                                              ? AppColors.emerald500
-                                              : AppColors.gold600,
-                                        ).copyWith(fontWeight: FontWeight.w800)
-                                      : i < activeWordIdx
-                                      ? AppTheme.arabic(
-                                          theme.textTheme,
-                                          size: fontSize,
-                                        ).copyWith(
-                                          color: theme.colorScheme.onSurface
-                                              .withValues(alpha: 0.78),
-                                        )
-                                      : AppTheme.arabic(
-                                          theme.textTheme,
-                                          size: fontSize,
-                                        ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              AnimatedContainer(
+                                duration: const Duration(milliseconds: 110),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
                                 ),
-                                if (i == activeWordIdx)
-                                  Container(
-                                    margin: const EdgeInsets.only(top: 2),
-                                    width: 28,
-                                    height: 3.5,
-                                    decoration: BoxDecoration(
-                                      color: isPlaying
-                                          ? AppColors.emerald500
-                                          : AppColors.gold600,
-                                      borderRadius: BorderRadius.circular(99),
+                                decoration: BoxDecoration(
+                                  // Fotoğraf 5: Aktif kelimede Mushaf Sarı Vurgu Kutusu (#FFF176)
+                                  color: i == activeWordIdx
+                                      ? (isDark
+                                            ? const Color(
+                                                0xFFFFEE58,
+                                              ).withValues(alpha: 0.30)
+                                            : const Color(0xFFFFF176))
+                                      : i < activeWordIdx
+                                      ? AppColors.emerald500.withValues(
+                                          alpha: 0.08,
+                                        )
+                                      : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: i == activeWordIdx
+                                      ? Border.all(
+                                          color: const Color(0xFFFBC02D),
+                                          width: 1.8,
+                                        )
+                                      : null,
+                                ),
+                                child: RichText(
+                                  textDirection: TextDirection.rtl,
+                                  text: _buildTajweedWordSpan(
+                                    arabicWords[i],
+                                    baseStyle: AppTheme.arabic(
+                                      theme.textTheme,
+                                      size: i == activeWordIdx
+                                          ? fontSize + 2
+                                          : fontSize,
+                                      color: i == activeWordIdx && !isDark
+                                          ? const Color(0xFF1B1B1B)
+                                          : theme.colorScheme.onSurface,
+                                    ).copyWith(
+                                      fontWeight: i == activeWordIdx
+                                          ? FontWeight.w800
+                                          : FontWeight.w600,
                                     ),
+                                    isDark: isDark,
                                   ),
-                              ],
-                            ),
+                                ),
+                              ),
+                              // Fotoğraf 4: Kelimenin tam altında yukarı bakan 3B Yeşil Üçgen Ok (▲)
+                              if (i == activeWordIdx)
+                                const Padding(
+                                  padding: EdgeInsets.only(top: 3),
+                                  child: CustomPaint(
+                                    size: Size(24, 15),
+                                    painter: _MukabelePointerTrianglePainter(),
+                                  ),
+                                )
+                              else
+                                const SizedBox(height: 18),
+                            ],
                           ),
                         ),
+                      // Mushaf Ayet Gülü (۝٣٥)
+                      _MushafAyahMedallion(ayahNumber: ayah.number),
                     ],
                   ),
                 )
               else
-                Text(
-                  ayah.arabic,
-                  textAlign: TextAlign.right,
+                Directionality(
                   textDirection: TextDirection.rtl,
-                  style: AppTheme.arabic(theme.textTheme, size: fontSize),
+                  child: Wrap(
+                    alignment: WrapAlignment.start,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 6,
+                    runSpacing: 8,
+                    children: <Widget>[
+                      for (final String w in arabicWords)
+                        RichText(
+                          textDirection: TextDirection.rtl,
+                          text: _buildTajweedWordSpan(
+                            w,
+                            baseStyle: AppTheme.arabic(
+                              theme.textTheme,
+                              size: fontSize,
+                              color: theme.colorScheme.onSurface,
+                            ),
+                            isDark: isDark,
+                          ),
+                        ),
+                      _MushafAyahMedallion(ayahNumber: ayah.number),
+                    ],
+                  ),
                 ),
               // Arapça okuma yönüne (sağdan sola ◀──) uygun hareketli ok takip çubuğu
               if (isPlaying || isArrowTracked) ...<Widget>[
@@ -1502,3 +1584,240 @@ class _AyahCard extends StatelessWidget {
     );
   }
 }
+
+/// Arapça kelimelerin fonetik/med/şedde ağırlığına göre şu an okunan kelime
+/// indeksini hesaplar; kısa edatların (فِي, مَن, لَا) hızlı geçilmesini ve
+/// medli/şeddeli kelimelerin gerçek tilavet süresiyle tam senkron kalmasını sağlar.
+int _resolveWordIndexByWeight(List<String> words, double progress) {
+  if (words.isEmpty) return 0;
+  if (words.length == 1) return 0;
+  final double clamped = progress.clamp(0.0, 0.9999);
+  final List<double> weights = <double>[
+    for (int i = 0; i < words.length; i++)
+      _phoneticArabicWordWeight(words[i], isLastWord: i == words.length - 1),
+  ];
+  double totalWeight = 0;
+  for (final double w in weights) {
+    totalWeight += w;
+  }
+  if (totalWeight <= 0) {
+    return (clamped * words.length).floor().clamp(0, words.length - 1);
+  }
+  final double target = clamped * totalWeight;
+  double cumulative = 0;
+  for (int i = 0; i < weights.length; i++) {
+    cumulative += weights[i];
+    if (target <= cumulative) return i;
+  }
+  return words.length - 1;
+}
+
+double _phoneticArabicWordWeight(String word, {required bool isLastWord}) {
+  double weight = 0.8;
+  for (int i = 0; i < word.length; i++) {
+    final int code = word.codeUnitAt(i);
+    if (code == 0x0651) {
+      // Şedde (ّ)
+      weight += 1.3;
+    } else if (code == 0x0653 || code == 0x0670 || code == 0x0622) {
+      // Med işareti (ٓ), Asârî elif (ٰ), Medli elif (آ)
+      weight += 2.2;
+    } else if (code >= 0x064B && code <= 0x064D) {
+      // Tenvin (ً ٌ ٍ) -> İhfa / İdğam / Gunne uzatması
+      weight += 1.4;
+    } else if (code == 0x0627 ||
+        code == 0x0648 ||
+        code == 0x064A ||
+        code == 0x0649) {
+      // Med harfleri (ا و ي ى)
+      weight += 1.25;
+    } else if (code >= 0x0621 && code <= 0x064A) {
+      // Temel Arapça harfler
+      weight += 0.85;
+    }
+  }
+  if (isLastWord) {
+    // Ayet sonu Medd-i Arız / vakıf uzatması
+    weight += 2.4;
+  }
+  return weight;
+}
+
+/// Diyanet TV Mukabele / Tecvidli Kur'an-ı Kerim renk kodlaması:
+/// - Kırmızı/Pembe (#D81B60): Med harfleri ve uzatma işaretleri (آ ٰ ٓ)
+/// - Yeşil (#2E7D32): Gunne, İhfa, İdğam, Tenvin ve Şeddeli Nun/Mim (نّ مّ ً ٌ ٍ)
+/// - Mavi (#1565C0): Kalkale (ق ط ب ج د) ve kalın (Tefhim) harfler (ص ض ط ظ ق)
+TextSpan _buildTajweedWordSpan(
+  String word, {
+  required TextStyle baseStyle,
+  required bool isDark,
+}) {
+  final Color maddColor = isDark
+      ? const Color(0xFFFF5252)
+      : const Color(0xFFD81B60);
+  final Color ghunnahColor = isDark
+      ? const Color(0xFF69F0AE)
+      : const Color(0xFF2E7D32);
+  final Color qalqalahColor = isDark
+      ? const Color(0xFF64B5F6)
+      : const Color(0xFF1565C0);
+
+  // Kelimeyi harf + hareke kümelerine (grapheme benzeri) ayır
+  final List<String> clusters = <String>[];
+  StringBuffer current = StringBuffer();
+  for (int i = 0; i < word.length; i++) {
+    final int code = word.codeUnitAt(i);
+    final bool isCombining =
+        (code >= 0x064B && code <= 0x065F) ||
+        code == 0x0670 ||
+        (code >= 0x06D6 && code <= 0x06ED);
+    if (!isCombining && current.isNotEmpty) {
+      clusters.add(current.toString());
+      current = StringBuffer();
+    }
+    current.writeCharCode(code);
+  }
+  if (current.isNotEmpty) {
+    clusters.add(current.toString());
+  }
+
+  return TextSpan(
+    style: baseStyle,
+    children: <InlineSpan>[
+      for (final String cluster in clusters)
+        TextSpan(
+          text: cluster,
+          style: _clusterTajweedColor(
+            cluster,
+            maddColor: maddColor,
+            ghunnahColor: ghunnahColor,
+            qalqalahColor: qalqalahColor,
+          ),
+        ),
+    ],
+  );
+}
+
+TextStyle? _clusterTajweedColor(
+  String cluster, {
+  required Color maddColor,
+  required Color ghunnahColor,
+  required Color qalqalahColor,
+}) {
+  if (cluster.contains('\u0653') ||
+      cluster.contains('\u0670') ||
+      cluster.contains('\u0622')) {
+    return TextStyle(color: maddColor);
+  }
+  if (cluster.contains('\u064B') ||
+      cluster.contains('\u064C') ||
+      cluster.contains('\u064D') ||
+      ((cluster.startsWith('ن') || cluster.startsWith('م')) &&
+          (cluster.contains('\u0651') || cluster.contains('\u0652')))) {
+    return TextStyle(color: ghunnahColor);
+  }
+  const String qalqalahAndHeavy = 'قطبجدصضطظق';
+  if (cluster.isNotEmpty && qalqalahAndHeavy.contains(cluster[0])) {
+    if (cluster.contains('\u0652') || 'صضطظق'.contains(cluster[0])) {
+      return TextStyle(color: qalqalahColor);
+    }
+  }
+  return null;
+}
+
+/// Diyanet TV Mukabele (Fotoğraf 4) tarzı kelimenin tam altında duran
+/// 3 boyutlu zümrüt yeşili üçgen/piramit ok işaretçisi (▲).
+class _MukabelePointerTrianglePainter extends CustomPainter {
+  const _MukabelePointerTrianglePainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final double midX = size.width / 2;
+    // Sol yarı (açık zümrüt 3B yüzey)
+    final Path leftFace = Path()
+      ..moveTo(midX, 0)
+      ..lineTo(0, size.height)
+      ..lineTo(midX, size.height - 2)
+      ..close();
+    canvas.drawPath(leftFace, Paint()..color = const Color(0xFF43D18A));
+
+    // Sağ yarı (koyu zümrüt 3B gölge yüzey)
+    final Path rightFace = Path()
+      ..moveTo(midX, 0)
+      ..lineTo(size.width, size.height)
+      ..lineTo(midX, size.height - 2)
+      ..close();
+    canvas.drawPath(rightFace, Paint()..color = const Color(0xFF198754));
+
+    // Dış kontur
+    final Path outline = Path()
+      ..moveTo(midX, 0)
+      ..lineTo(0, size.height)
+      ..lineTo(size.width, size.height)
+      ..close();
+    canvas.drawPath(
+      outline,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 0.9
+        ..color = const Color(0xFF0D5C38),
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _MukabelePointerTrianglePainter oldDelegate) =>
+      false;
+}
+
+/// Mushaf Ayet Gülü (۝٣٥) — Fotoğraf 4 ve 5'teki kırmızı-altın ayet sonu madalyonu.
+class _MushafAyahMedallion extends StatelessWidget {
+  const _MushafAyahMedallion({required this.ayahNumber});
+
+  final int ayahNumber;
+
+  static String _toArabicIndicDigits(int number) {
+    const List<String> digits = <String>[
+      '٠',
+      '١',
+      '٢',
+      '٣',
+      '٤',
+      '٥',
+      '٦',
+      '٧',
+      '٨',
+      '٩',
+    ];
+    return number
+        .toString()
+        .split('')
+        .map((String ch) {
+          final int? d = int.tryParse(ch);
+          return d != null ? digits[d] : ch;
+        })
+        .join();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: const Color(0xFFD84315).withValues(alpha: 0.14),
+        shape: BoxShape.circle,
+        border: Border.all(color: const Color(0xFFD9A441), width: 1.8),
+      ),
+      child: Text(
+        _toArabicIndicDigits(ayahNumber),
+        style: const TextStyle(
+          fontFamily: 'Amiri',
+          fontSize: 15,
+          fontWeight: FontWeight.w800,
+          color: Color(0xFFC62828),
+        ),
+      ),
+    );
+  }
+}
+

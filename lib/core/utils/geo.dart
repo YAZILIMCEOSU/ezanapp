@@ -103,11 +103,24 @@ abstract final class GeoUtils {
 
     // Doğu Akdeniz / Anadolu / Arap Yarımadası bölgesel WMM-2025 düzeltmesi:
     final double regionalEastAnomaly =
-        2.2 *
+        1.92 *
         math.exp(
           -(math.pow((latitude - 39.0) / 26.0, 2) +
               math.pow((longitude - 36.0) / 32.0, 2)),
         );
     return (dipoleDeclination + regionalEastAnomaly).clamp(-35.0, 35.0);
+  }
+
+  /// Diyanet Kıble Pusulası uyumlu pusula kıble açısı (derece, 0-360°).
+  ///
+  /// Coğrafi büyük daire kıble açısı ([qiblaBearing]) ile yerel jeomanyetik
+  /// sapma açısını ([magneticDeclination]) birleştirerek doğrudan telefonun
+  /// pusula sensörü (`magneticHeading`) ile karşılaştırılan Diyanet Kıble
+  /// Pusulası açısını döner (ör. Maltepe/İstanbul için 151.95° + 5.80° = 157.7°).
+  static double compassQiblaBearing(double latitude, double longitude) {
+    return normalizeDegrees(
+      qiblaBearing(latitude, longitude) +
+          magneticDeclination(latitude, longitude),
+    );
   }
 }
