@@ -208,7 +208,7 @@ class ThemeModeController extends Notifier<AppThemeMode> {
   void syncFromSettings(AppThemeMode mode) => state = mode;
 
   static ThemeMode toMaterial(AppThemeMode mode) => switch (mode) {
-    AppThemeMode.system => ThemeMode.system,
+    AppThemeMode.system => ThemeMode.light,
     AppThemeMode.light => ThemeMode.light,
     AppThemeMode.dark => ThemeMode.dark,
     AppThemeMode.amoled => ThemeMode.dark,

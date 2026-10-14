@@ -358,37 +358,62 @@ class _QuickActionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme scheme = Theme.of(context).colorScheme;
+    final ThemeData theme = Theme.of(context);
+    final bool isDark = theme.brightness == Brightness.dark;
     return Material(
-      color: scheme.surfaceContainerHighest.withValues(alpha: 0.55),
-      borderRadius: AppRadius.allMd,
+      color: isDark ? theme.colorScheme.surface : Colors.white,
+      borderRadius: BorderRadius.circular(18),
+      elevation: 0,
       child: InkWell(
         onTap: onTap,
-        borderRadius: AppRadius.allMd,
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
+        borderRadius: BorderRadius.circular(18),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(
+              color: isDark
+                  ? theme.colorScheme.outlineVariant
+                  : const Color(0xFFE1ECF2),
+            ),
+            boxShadow: isDark
+                ? const <BoxShadow>[]
+                : <BoxShadow>[
+                    BoxShadow(
+                      color: const Color(0xFF00838F).withValues(alpha: 0.06),
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+          ),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Container(
-                padding: const EdgeInsets.all(7),
+                width: 42,
+                height: 42,
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.16),
-                  borderRadius: BorderRadius.circular(10),
+                  color: isDark
+                      ? color.withValues(alpha: 0.18)
+                      : const Color(0xFFEAF4F8),
+                  borderRadius: BorderRadius.circular(13),
                 ),
-                child: Icon(icon, size: 18, color: color),
+                alignment: Alignment.center,
+                child: Icon(icon, size: 22, color: const Color(0xFF0097A7)),
               ),
-              // Etiket esnektir: küçük ekranlarda sığmazsa kırpılır, kutu
-              // taşmaz (Spacer + iki satıra kayan etiket taşma veriyordu).
+              const SizedBox(height: 6),
               Flexible(
                 child: Text(
                   label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
                     letterSpacing: -0.1,
+                    color: isDark
+                        ? theme.colorScheme.onSurface
+                        : const Color(0xFF1E353D),
                   ),
                 ),
               ),

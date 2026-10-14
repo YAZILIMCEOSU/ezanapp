@@ -284,13 +284,14 @@ class MainActivity : FlutterActivity(), SensorEventListener {
         val tiltDeg = Math.toDegrees(orientation[1].toDouble())
         val rollDeg = Math.toDegrees(orientation[2].toDouble())
 
-        // Telefon dik/yarı dik tutuluyorsa (eğim > 55°) gimbal kilitlenmesini önlemek için Z eksenini kullan
-        val rawAzimuth = if (kotlin.math.abs(tiltDeg) > 55.0) {
+        // Telefon tam dik (kamera karşıya bakar gibi > 75°) tutuluyorsa AXIS_MINUS_Z kullan;
+        // normal masaüstü ve elde tutuş açılarında (0°..75°) doğrudan +Y eksenini kullan.
+        val rawAzimuth = if (tiltDeg < -75.0) {
             val uprightMatrix = FloatArray(9)
             SensorManager.remapCoordinateSystem(
                 displayAdjusted,
                 SensorManager.AXIS_X,
-                SensorManager.AXIS_Z,
+                SensorManager.AXIS_MINUS_Z,
                 uprightMatrix,
             )
             val uprightOrientation = FloatArray(3)

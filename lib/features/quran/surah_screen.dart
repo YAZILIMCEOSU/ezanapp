@@ -423,24 +423,55 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
                   }
                 },
                 onStepWord: (int delta, int wordCount) {
-                  setState(() {
-                    final int nextWord = _manualWordIndex + delta;
-                    if (nextWord >= wordCount) {
-                      if (ayah.number < value.ayahs.length) {
+                  final List<String> words = ayah.arabic
+                      .trim()
+                      .split(RegExp(r'\s+'))
+                      .where((String w) => w.isNotEmpty)
+                      .toList(growable: false);
+                  final int currentIdx = isPlayingThis
+                      ? _resolveWordIndexByWeight(
+                          words,
+                          _speechProgressForAyah(ayah.number) ?? 0.0,
+                        )
+                      : _manualWordIndex;
+                  final int nextWord = currentIdx + delta;
+                  if (nextWord >= wordCount) {
+                    if (isPlayingThis) {
+                      _stepAyah(value, reciter, 1);
+                    } else if (ayah.number < value.ayahs.length) {
+                      setState(() {
                         _trackedAyah = ayah.number + 1;
                         _manualWordIndex = 0;
-                        _scrollToAyah(_trackedAyah);
-                      }
-                    } else if (nextWord < 0) {
-                      if (ayah.number > 1) {
+                      });
+                      _scrollToAyah(_trackedAyah);
+                    }
+                  } else if (nextWord < 0) {
+                    if (isPlayingThis) {
+                      _stepAyah(value, reciter, -1);
+                    } else if (ayah.number > 1) {
+                      setState(() {
                         _trackedAyah = ayah.number - 1;
                         _manualWordIndex = 0;
-                        _scrollToAyah(_trackedAyah);
-                      }
-                    } else {
-                      _manualWordIndex = nextWord;
+                      });
+                      _scrollToAyah(_trackedAyah);
                     }
-                  });
+                  } else {
+                    setState(() {
+                      _trackedAyah = ayah.number;
+                      _manualWordIndex = nextWord;
+                    });
+                    if (isPlayingThis &&
+                        _ayahDuration.inMilliseconds > 0 &&
+                        wordCount > 1) {
+                      final int totalMs = _ayahDuration.inMilliseconds;
+                      final int targetMs = ((nextWord / wordCount) * totalMs)
+                          .round();
+                      ref
+                          .read(runtimeProvider)
+                          .audio
+                          .seek(Duration(milliseconds: targetMs));
+                    }
+                  }
                 },
                 onBookmark: () async {
                   await ref
@@ -1508,38 +1539,51 @@ class _AyahCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (!isPlaying)
-                  Padding(
-                    padding: const EdgeInsets.only(top: AppSpacing.sm),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        OutlinedButton.icon(
-                          style: OutlinedButton.styleFrom(
-                            visualDensity: VisualDensity.compact,
-                          ),
-                          onPressed: () => onStepWord(-1, wordCount),
-                          icon: const Icon(
-                            Icons.arrow_back_ios_new_rounded,
-                            size: 14,
-                          ),
-                          label: const Text('Önceki Kelime'),
+                // Oklu Takip Kontrol Çubuğu (Hem sesli okuma sırasında hem manuel okumada her zaman aktif!)
+                Padding(
+                  padding: const EdgeInsets.only(top: AppSpacing.sm),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          visualDensity: VisualDensity.compact,
                         ),
-                        const SizedBox(width: AppSpacing.sm),
-                        FilledButton.tonalIcon(
-                          style: FilledButton.styleFrom(
-                            visualDensity: VisualDensity.compact,
-                          ),
-                          onPressed: () => onStepWord(1, wordCount),
-                          icon: const Icon(
-                            Icons.double_arrow_rounded,
-                            size: 16,
-                          ),
-                          label: const Text('Kelime İlerle ⬅'),
+                        onPressed: () => onStepWord(-1, wordCount),
+                        icon: const Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          size: 14,
                         ),
-                      ],
-                    ),
+                        label: const Text('Önceki Kelime'),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.emerald500.withValues(alpha: 0.14),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: Text(
+                          '▲ ${activeWordIdx + 1} / $wordCount. Kelime',
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.emerald500,
+                          ),
+                        ),
+                      ),
+                      FilledButton.tonalIcon(
+                        style: FilledButton.styleFrom(
+                          visualDensity: VisualDensity.compact,
+                        ),
+                        onPressed: () => onStepWord(1, wordCount),
+                        icon: const Icon(Icons.double_arrow_rounded, size: 16),
+                        label: const Text('Kelime İlerle ⬅'),
+                      ),
+                    ],
                   ),
+                ),
               ],
               if (showTranslation) ...<Widget>[
                 const SizedBox(height: AppSpacing.lg),

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Ezan Vaktim Pro — harici kütüphane gerektirmeyen (saf Python + SDF yumuşatma)
-Altın Mihrap Kemeri + Gün Batımı Cami Silüeti + Hilal & Yıldız launcher/store ikon üreticisi.
+Turkuvaz Işık Hüzmeli Zemin + Beyaz Kubbeli Çift Minareli Cami + Hilal Alemi + Altın/Beyaz PRO Rozetli
+launcher ve Play Store ikon üreticisi.
 
 Çalıştırma: python3 tools/design/make_icons.py
 """
@@ -17,14 +18,14 @@ RES = os.path.join(ROOT, 'android', 'app', 'src', 'main', 'res')
 STORE = os.path.join(ROOT, 'store')
 IMAGES = os.path.join(ROOT, 'assets', 'images')
 
-NAVY_DEEP = (6, 20, 39)
-NAVY_MID = (12, 34, 61)
-GOLD_LIGHT = (248, 214, 138)
-GOLD_MID = (218, 172, 92)
-GOLD_DARK = (158, 114, 48)
-SUNSET_CORE = (255, 196, 98)
-SUNSET_ORANGE = (224, 132, 54)
-SILHOUETTE = (7, 22, 40)
+TURQ_DEEP = (0, 68, 82)       # #004452
+TURQ_MID = (0, 134, 152)     # #008698
+TURQ_BRIGHT = (28, 194, 212) # #1CC2D4
+TURQ_GLOW = (142, 238, 248)  # #8EEEF8
+WHITE_PURE = (255, 255, 255)
+WHITE_SOFT = (232, 247, 250)
+GOLD_LIGHT = (255, 224, 130)
+GOLD_MID = (242, 184, 72)
 
 
 def clamp(v: float, lo: float = 0.0, hi: float = 1.0) -> float:
@@ -70,23 +71,16 @@ def sd_rounded_box(px: float, py: float, bx: float, by: float, r: float) -> floa
     return sd_box(px, py, bx - r, by - r) - r
 
 
-def arch_half_width(y: float, top_peak: float = -0.355, shoulder_y: float = -0.020, col_hw: float = 0.258) -> float:
-    """Klasik İslami sivri mihrap kemerinin y koordinatına göre yarı genişliği."""
-    if y < top_peak:
-        return -1.0
-    if y >= 0.025:
-        return col_hw
-    if y >= shoulder_y:
-        t = (y - shoulder_y) / (0.025 - shoulder_y)
-        return (col_hw - 0.022) + 0.022 * smoothstep(0.0, 1.0, t)
-    # Sivri kemer (top_peak tepe noktasında tam 0'a kavuşur, omuzda col_hw - 0.022 olur)
-    t = clamp((y - top_peak) / (shoulder_y - top_peak))
-    return (col_hw - 0.022) * math.sin(t * math.pi * 0.5) ** 0.78
+def sd_arch(px: float, py: float, hw: float, hh: float) -> float:
+    """Üstü yarım daire kemerli, altı dikdörtgen pencere/kapı SDF fonksiyonu."""
+    if py < 0.0:
+        return math.hypot(px, py) - hw
+    return sd_box(px, py - hh * 0.5, hw, hh * 0.5)
 
 
-def sample_emblem(nx: float, ny: float, aa: float, scale: float = 1.0):
-    """Fotoğraf 1'deki Altın Mihrap Kemeri + Gün Batımı Işıltısı +
-    Çift Minareli Cami Silüeti + Altın Hilal & 4 Köşeli Yıldız tasarımını üretir.
+def sample_mosque_emblem(nx: float, ny: float, aa: float, scale: float = 1.0):
+    """Beyaz Cami Silüeti (Ana kubbe + hilal alem + 2 yan kubbe + 2 çift şerefeli minare +
+    kemerli pencereler + altın PRO rozeti) üretir.
     """
     x = nx / scale
     y = ny / scale
@@ -94,107 +88,134 @@ def sample_emblem(nx: float, ny: float, aa: float, scale: float = 1.0):
     ax = abs(x)
     col = (0.0, 0.0, 0.0, 0.0)
 
-    top_y = -0.355
-    top_outer = -0.405
-    bot_y = 0.340
-    frame_thick = 0.036
+    # 1. Cami ana beyaz silüeti SDF birleşimi
+    # Alt mermer kaide ve ana gövde
+    plinth = sd_rounded_box(x, y - 0.255, 0.318, 0.024, 0.010)
+    body = sd_rounded_box(x, y - 0.165, 0.258, 0.078, 0.012)
+    # Kubbe kasnağı (ana gövde ile kubbeyi kesintisiz birleştirir)
+    drum = sd_rounded_box(x, y - 0.068, 0.162, 0.042, 0.008)
 
-    inner_hw = arch_half_width(y, top_peak=top_y, shoulder_y=-0.020, col_hw=0.256)
-    outer_hw = arch_half_width(y, top_peak=top_outer, shoulder_y=-0.032, col_hw=0.256 + frame_thick)
+    # Ana kubbe (merkez: 0.0, 0.042 — kasnağa tam oturur)
+    main_dome = max(math.hypot(x * 0.95, (y - 0.042) * 1.02) - 0.156, y - 0.045)
 
-    # İç kemer alanı
-    in_inner = (top_y <= y <= bot_y) and (ax <= inner_hw)
-    d_inner = max(ax - inner_hw, top_y - y, y - bot_y)
-    inner_a = 1.0 - smoothstep(-eps, eps, d_inner)
+    # Yan kubbeler (±0.188, y = 0.095 — gövdeye tam oturur)
+    side_dome = max(math.hypot(ax - 0.188, (y - 0.095) * 1.05) - 0.066, y - 0.098)
 
-    if inner_a > 0.0:
-        # 1. Gece gökyüzü + Cami arkası sıcak gün batımı ışıltısı
-        sky_t = clamp((y - top_y) / (bot_y - top_y))
-        sky_rgb = lerp_rgb(NAVY_DEEP, NAVY_MID, sky_t)
+    # Ana kubbe üstü hilal alemi (direk + yukarı bakan zarif hilal)
+    finial_pole = sd_box(x, y - (-0.132), 0.0055, 0.028)
+    finial_ball = math.hypot(x, y - (-0.128)) - 0.011
+    c_outer = math.hypot(x, y - (-0.172)) - 0.028
+    c_inner = math.hypot(x, y - (-0.182)) - 0.022
+    finial_crescent = max(c_outer, -c_inner)
 
-        # Gün batımı radyal parlaması (merkez: 0.0, +0.16)
-        glow_d = math.hypot(x * 1.15, (y - 0.165) * 1.35)
-        glow_core = clamp(1.0 - glow_d / 0.26) ** 1.6
-        glow_wide = clamp(1.0 - glow_d / 0.42) ** 2.0
-        sky_rgb = lerp_rgb(sky_rgb, SUNSET_ORANGE, glow_wide * 0.82)
-        sky_rgb = lerp_rgb(sky_rgb, SUNSET_CORE, glow_core * 0.92)
+    mosque_d = min(
+        plinth,
+        body,
+        drum,
+        main_dome,
+        side_dome,
+        finial_pole,
+        finial_ball,
+        finial_crescent,
+    )
 
-        # 2. Uzak tepeler (silüet katmanı)
-        hill_y = 0.215 + 0.025 * math.sin(x * 9.0 + 0.6) - 0.045 * (ax / 0.26)
-        if y >= hill_y - eps:
-            hill_a = smoothstep(hill_y - eps, hill_y + eps, y)
-            sky_rgb = lerp_rgb(sky_rgb, (26, 42, 62), hill_a * 0.68)
+    # Çift Minare (±0.286)
+    min_x = 0.286
+    min_base = sd_box(ax - min_x, y - 0.145, 0.026, 0.095)
+    min_shaft = sd_box(ax - min_x, y - (-0.035), 0.019, 0.185)
+    balc1 = sd_rounded_box(ax - min_x, y - (-0.025), 0.033, 0.009, 0.004)
+    balc2 = sd_rounded_box(ax - min_x, y - (-0.125), 0.031, 0.009, 0.004)
+    mosque_d = min(mosque_d, min_base, min_shaft, balc1, balc2)
 
-        # 3. Cami silüeti (Ana kubbe + 2 yan kubbe + 2 omuz kubbesi + 2 ince minare + alem)
-        mosque_d = 1.0
-        base_floor = 0.255
-        # Alt gövde
-        mosque_d = min(mosque_d, sd_box(x, y - 0.295, 0.24, 0.050))
-        # Ana kubbe
-        main_dome = max(math.hypot(x, (y - 0.242) * 1.08) - 0.074, y - 0.255)
-        mosque_d = min(mosque_d, main_dome)
-        # Ana kubbe alemi (ince direk + minik hilal)
-        finial_d = sd_box(x, y - 0.156, 0.0028, 0.016)
-        mosque_d = min(mosque_d, finial_d)
-        # Yan kubbeler (±0.088)
-        side_dome = max(math.hypot(ax - 0.088, (y - 0.252) * 1.12) - 0.036, y - 0.265)
-        mosque_d = min(mosque_d, side_dome)
-        # Dış küçük kubbeler (±0.168)
-        outer_dome = max(math.hypot(ax - 0.168, (y - 0.268) * 1.15) - 0.022, y - 0.280)
-        mosque_d = min(mosque_d, outer_dome)
+    # Minare sivri külahı (y: -0.315 .. -0.215)
+    if -0.325 <= y <= -0.210:
+        t_sp = clamp((y - (-0.315)) / 0.100)
+        cone_hw = 0.019 * t_sp + 0.0015
+        cone_d = max(abs(ax - min_x) - cone_hw, -0.315 - y, y - (-0.215))
+        mosque_d = min(mosque_d, cone_d)
+    min_finial = sd_box(ax - min_x, y - (-0.332), 0.0035, 0.018)
+    mosque_d = min(mosque_d, min_finial)
 
-        # Çift minare (±0.140)
-        min_x = 0.140
-        # Minare gövdesi
-        min_shaft = sd_box(ax - min_x, y - 0.178, 0.0095, 0.095)
-        # Şerefeler (2 adet)
-        balc1 = sd_box(ax - min_x, y - 0.125, 0.0145, 0.0045)
-        balc2 = sd_box(ax - min_x, y - 0.168, 0.0135, 0.0045)
-        mosque_d = min(mosque_d, min_shaft, balc1, balc2)
-        # Minare külahı (sivri tepe: 0.055 .. 0.095)
-        if 0.048 <= y <= 0.095:
-            t_sp = clamp((y - 0.052) / 0.043)
-            sp_d = abs(ax - min_x) - (0.0095 * t_sp + 0.001)
-            mosque_d = min(mosque_d, sp_d)
+    # 2. Gövde içi kemerli kapı ve pencere boşlukları (kesintisiz kemer SDF)
+    door_arch = sd_arch(x, y - 0.152, 0.036, 0.082)
+    win1 = sd_arch(ax - 0.105, y - 0.160, 0.020, 0.052)
+    win2 = sd_arch(ax - 0.188, y - 0.166, 0.018, 0.046)
+    uwin0 = math.hypot(x, y - 0.068) - 0.011
+    uwin1 = math.hypot(ax - 0.052, y - 0.068) - 0.010
+    uwin2 = math.hypot(ax - 0.104, y - 0.068) - 0.010
+    cutout_d = min(door_arch, win1, win2, uwin0, uwin1, uwin2)
 
-        mosque_a = 1.0 - smoothstep(-eps, eps, mosque_d)
-        if mosque_a > 0.0:
-            sky_rgb = lerp_rgb(sky_rgb, SILHOUETTE, mosque_a)
+    final_mosque_d = max(mosque_d, -cutout_d)
 
-        # 4. Gökyüzünde zarif Altın Hilal + 4 köşeli parlak yıldız
-        mcx, mcy = -0.004, -0.105
-        mr = 0.102
-        ccx, ccy = mcx + 0.032, mcy - 0.022
-        cr = 0.091
-        d_cresc = max(math.hypot(x - mcx, y - mcy) - mr, -(math.hypot(x - ccx, y - ccy) - cr))
-        cresc_a = 1.0 - smoothstep(-eps, eps, d_cresc)
-        if cresc_a > 0.0:
-            gt = clamp((-0.02 - y) / 0.18)
-            c_rgb = lerp_rgb(GOLD_MID, GOLD_LIGHT, gt)
-            sky_rgb = lerp_rgb(sky_rgb, c_rgb, cresc_a)
+    mosque_a = 1.0 - smoothstep(-eps, eps, final_mosque_d)
+    if mosque_a > 0.0:
+        w_t = clamp((y - (-0.32)) / 0.62)
+        w_rgb = lerp_rgb(WHITE_PURE, WHITE_SOFT, w_t * 0.35)
+        col = blend_rgba(col, w_rgb, mosque_a)
 
-        # 4 köşeli ışıltı yıldızı (hilalin ortasında)
-        sx, sy = abs(x - 0.002), abs(y - (-0.112))
-        d_star4 = (sx ** 0.55 + sy ** 0.55) - (0.017 ** 0.55)
-        star_a = 1.0 - smoothstep(-eps, eps, d_star4)
-        if star_a > 0.0:
-            sky_rgb = lerp_rgb(sky_rgb, GOLD_LIGHT, star_a)
-
-        col = blend_rgba(col, sky_rgb, inner_a)
-
-    # 5. 3B Altın Mihrap Kemeri Çerçevesi
-    d_outer = max(ax - outer_hw, top_outer - y, y - bot_y)
-    d_frame = max(d_outer, -d_inner)
-    frame_a = 1.0 - smoothstep(-eps, eps, d_frame)
-    if frame_a > 0.0:
-        # 3B bevel / altın ışık-gölge geçişi
-        bevel = clamp(0.5 + (inner_hw + frame_thick * 0.5 - ax) / frame_thick)
-        vert_shine = clamp(1.0 - (y - top_outer) / (bot_y - top_outer))
-        gold_col = lerp_rgb(GOLD_DARK, GOLD_MID, bevel)
-        gold_col = lerp_rgb(gold_col, GOLD_LIGHT, vert_shine * 0.55 + (1.0 - abs(bevel - 0.5) * 2.0) * 0.35)
-        col = blend_rgba(col, gold_col, frame_a)
+    # 3. Sağ alt köşede altın "PRO" rozeti (y: 0.245, x: 0.175)
+    badge_d = sd_rounded_box(x - 0.165, y - 0.252, 0.105, 0.036, 0.018)
+    badge_a = 1.0 - smoothstep(-eps, eps, badge_d)
+    if badge_a > 0.0:
+        b_rgb = lerp_rgb(GOLD_LIGHT, GOLD_MID, clamp((y - 0.216) / 0.072))
+        col = blend_rgba(col, b_rgb, badge_a)
+        # Rozet içinde koyu turkuvaz "PRO" harf çizgileri
+        px_b = x - 0.165
+        py_b = y - 0.252
+        # P harfi (x: -0.055)
+        p_d = min(
+            sd_box(px_b - (-0.064), py_b, 0.005, 0.018),
+            max(
+                sd_rounded_box(px_b - (-0.050), py_b - (-0.007), 0.014, 0.011, 0.006),
+                -sd_rounded_box(px_b - (-0.050), py_b - (-0.007), 0.006, 0.004, 0.002),
+            ),
+        )
+        # R harfi (x: 0.0)
+        r_d = min(
+            sd_box(px_b - (-0.014), py_b, 0.005, 0.018),
+            max(
+                sd_rounded_box(px_b - 0.0, py_b - (-0.007), 0.014, 0.011, 0.006),
+                -sd_rounded_box(px_b - 0.0, py_b - (-0.007), 0.006, 0.004, 0.002),
+            ),
+            sd_box(px_b - 0.006 - max(py_b, 0.0) * 0.45, py_b - 0.009, 0.005, 0.009),
+        )
+        # O harfi (x: +0.052)
+        o_d = max(
+            sd_rounded_box(px_b - 0.050, py_b, 0.016, 0.018, 0.010),
+            -sd_rounded_box(px_b - 0.050, py_b, 0.007, 0.010, 0.004),
+        )
+        txt_d = min(p_d, r_d, o_d)
+        txt_a = 1.0 - smoothstep(-eps, eps, txt_d)
+        if txt_a > 0.0:
+            col = blend_rgba(col, TURQ_DEEP, txt_a)
 
     return col
+
+
+def sample_turquoise_background(nx: float, ny: float, aa: float):
+    """Fotoğraf 1'deki canlı Turkuvaz gradyan + sol üstten diyagonal ışık hüzmeleri +
+    parlak çerçeve efektini üretir.
+    """
+    # Sol üstten (-0.5, -0.5) sağ alta (+0.5, +0.5) diyagonal turkuvaz geçiş
+    diag_t = clamp((nx + ny + 1.0) * 0.5)
+    bg_rgb = lerp_rgb(TURQ_BRIGHT, TURQ_MID, clamp(diag_t * 1.15))
+    bg_rgb = lerp_rgb(bg_rgb, TURQ_DEEP, clamp((diag_t - 0.35) * 1.35))
+
+    # Sol üst köşeden yayılan zarif ışık hüzmeleri (sunbeams)
+    dx = nx - (-0.48)
+    dy = ny - (-0.48)
+    dist = math.hypot(dx, dy)
+    angle = math.atan2(dy, dx)
+    rays = (math.sin(angle * 14.0) * 0.5 + 0.5) ** 2.2
+    ray_fade = clamp(1.0 - dist / 1.15) ** 1.6
+    bg_rgb = lerp_rgb(bg_rgb, TURQ_GLOW, rays * ray_fade * 0.28 + (ray_fade ** 2.2) * 0.25)
+
+    # İnce iç çerçeve parıltısı
+    d_inner_border = abs(sd_rounded_box(nx, ny, 0.455, 0.455, 0.165)) - 0.006
+    border_a = (1.0 - smoothstep(-aa, aa, d_inner_border)) * 0.32
+    bg_rgb = lerp_rgb(bg_rgb, TURQ_GLOW, border_a)
+
+    return (bg_rgb[0], bg_rgb[1], bg_rgb[2], 1.0)
 
 
 def render_image(size: int, with_background: bool, rounded_corners: bool, scale: float) -> bytes:
@@ -207,22 +228,15 @@ def render_image(size: int, with_background: bool, rounded_corners: bool, scale:
         for px in range(size):
             nx = (px + 0.5) / size - 0.5
             if with_background:
-                dist = math.hypot(nx, ny) / 0.70710678
-                t = clamp(dist ** 1.35)
-                bg = (
-                    NAVY_MID[0] + (NAVY_DEEP[0] - NAVY_MID[0]) * t,
-                    NAVY_MID[1] + (NAVY_DEEP[1] - NAVY_MID[1]) * t,
-                    NAVY_MID[2] + (NAVY_DEEP[2] - NAVY_MID[2]) * t,
-                    1.0,
-                )
-                em = sample_emblem(nx, ny, aa, scale)
+                bg = sample_turquoise_background(nx, ny, aa)
+                em = sample_mosque_emblem(nx, ny, aa, scale)
                 col = blend_rgba(bg, (em[0], em[1], em[2]), em[3])
                 if rounded_corners:
                     d_rr = sd_rounded_box(nx, ny, 0.5, 0.5, 0.22)
                     mask_a = 1.0 - smoothstep(-aa, aa, d_rr)
                     col = (col[0], col[1], col[2], col[3] * mask_a)
             else:
-                col = sample_emblem(nx, ny, aa, scale)
+                col = sample_mosque_emblem(nx, ny, aa, scale)
 
             r = int(clamp(col[0], 0.0, 255.0) + 0.5)
             g = int(clamp(col[1], 0.0, 255.0) + 0.5)
@@ -280,13 +294,13 @@ def main() -> None:
     # Arayüz içi şeffaf zeminli logo işareti
     save_file(
         os.path.join(IMAGES, 'logo_mark.png'),
-        render_image(512, with_background=False, rounded_corners=False, scale=0.92),
+        render_image(512, with_background=True, rounded_corners=True, scale=0.96),
     )
     save_file(
         os.path.join(IMAGES, 'logo_mark_small.png'),
-        render_image(256, with_background=False, rounded_corners=False, scale=0.92),
+        render_image(256, with_background=True, rounded_corners=True, scale=0.96),
     )
-    print('Ezan Vaktim Pro mihrap ikonları başarıyla üretildi.')
+    print('Ezan Vaktim Pro turkuvaz cami ikonları başarıyla üretildi.')
 
 
 if __name__ == '__main__':

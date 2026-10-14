@@ -50,6 +50,97 @@ class _MoreScreenState extends ConsumerState<MoreScreen> {
         padding: const EdgeInsets.only(bottom: AppSpacing.xl),
         children: <Widget>[
           if (features.premium) _PremiumCard(premium: premium),
+          // Ezan Vakti Pro & e-Diyanet tarzı 3 sütunlu beyaz/turkuvaz Menü ızgarası
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              AppSpacing.lg,
+              AppSpacing.lg,
+              AppSpacing.sm,
+            ),
+            child: GridView.count(
+              crossAxisCount: 3,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              mainAxisSpacing: 12,
+              crossAxisSpacing: 12,
+              childAspectRatio: 0.94,
+              children: <Widget>[
+                const _MenuGridCard(
+                  icon: Icons.menu_book_rounded,
+                  badgeIcon: Icons.auto_stories_rounded,
+                  label: 'Kur\'an',
+                  route: AppRoutes.quran,
+                ),
+                const _MenuGridCard(
+                  icon: Icons.local_library_rounded,
+                  badgeIcon: Icons.format_quote_rounded,
+                  label: 'Kütüphane',
+                  route: AppRoutes.hadith,
+                ),
+                const _MenuGridCard(
+                  icon: Icons.graphic_eq_rounded,
+                  badgeIcon: Icons.play_circle_fill_rounded,
+                  label: 'Aşr-ı Şerifler',
+                  route: AppRoutes.ilahi,
+                ),
+                const _MenuGridCard(
+                  icon: Icons.calendar_month_rounded,
+                  badgeIcon: Icons.brightness_3_rounded,
+                  label: 'Dini Günler',
+                  route: AppRoutes.calendar,
+                ),
+                const _MenuGridCard(
+                  icon: Icons.mark_email_unread_rounded,
+                  badgeIcon: Icons.favorite_rounded,
+                  label: 'Tebrikler',
+                  route: AppRoutes.dualar,
+                ),
+                const _MenuGridCard(
+                  icon: Icons.home_rounded,
+                  badgeIcon: Icons.access_time_filled_rounded,
+                  label: 'Ana Sayfa',
+                  route: AppRoutes.home,
+                ),
+                const _MenuGridCard(
+                  icon: Icons.schedule_rounded,
+                  badgeIcon: Icons.notifications_active_rounded,
+                  label: 'Vaktinde Kıl',
+                  route: AppRoutes.prayers,
+                ),
+                const _MenuGridCard(
+                  icon: Icons.ads_click_rounded,
+                  badgeIcon: Icons.fingerprint_rounded,
+                  label: 'Zikirmatik',
+                  route: AppRoutes.zikir,
+                ),
+                const _MenuGridCard(
+                  icon: Icons.mosque_rounded,
+                  badgeIcon: Icons.location_on_rounded,
+                  label: 'Yakın Camiler',
+                  route: AppRoutes.mosques,
+                ),
+                const _MenuGridCard(
+                  icon: Icons.explore_rounded,
+                  badgeIcon: Icons.navigation_rounded,
+                  label: 'Kıble Pusulası',
+                  route: AppRoutes.qibla,
+                ),
+                const _MenuGridCard(
+                  icon: Icons.auto_awesome_rounded,
+                  badgeIcon: Icons.verified_rounded,
+                  label: 'İslami Asistan',
+                  route: AppRoutes.ai,
+                ),
+                const _MenuGridCard(
+                  icon: Icons.fact_check_rounded,
+                  badgeIcon: Icons.edit_calendar_rounded,
+                  label: 'Kazalar',
+                  route: AppRoutes.kazaTracker,
+                ),
+              ],
+            ),
+          ),
           const SectionHeader(title: 'İbadet'),
           const _Tile(
             icon: Icons.explore_outlined,
@@ -260,6 +351,112 @@ const Set<String> _tabRoutes = <String>{
   AppRoutes.ilahi,
   AppRoutes.more,
 };
+
+/// Ezan Vakti Pro & e-Diyanet tarzı beyaz yuvarlatılmış kare kart + turkuvaz/mercan çift renkli ikon.
+class _MenuGridCard extends StatelessWidget {
+  const _MenuGridCard({
+    required this.icon,
+    required this.badgeIcon,
+    required this.label,
+    required this.route,
+  });
+
+  final IconData icon;
+  final IconData badgeIcon;
+  final String label;
+  final String route;
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final bool isDark = theme.brightness == Brightness.dark;
+    return Material(
+      color: isDark ? theme.colorScheme.surface : Colors.white,
+      borderRadius: BorderRadius.circular(20),
+      elevation: 0,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(20),
+        onTap: () => _tabRoutes.contains(route)
+            ? context.go(route)
+            : context.push(route),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: isDark
+                  ? theme.colorScheme.outlineVariant
+                  : const Color(0xFFE1ECF2),
+            ),
+            boxShadow: isDark
+                ? const <BoxShadow>[]
+                : <BoxShadow>[
+                    BoxShadow(
+                      color: const Color(0xFF00838F).withValues(alpha: 0.06),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? const Color(0xFF0097A7).withValues(alpha: 0.16)
+                      : const Color(0xFFEAF4F8),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: <Widget>[
+                    Icon(icon, size: 30, color: const Color(0xFF0097A7)),
+                    Positioned(
+                      right: 7,
+                      bottom: 7,
+                      child: Container(
+                        width: 18,
+                        height: 18,
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? theme.colorScheme.surface
+                              : Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                        alignment: Alignment.center,
+                        child: Icon(
+                          badgeIcon,
+                          size: 13,
+                          color: const Color(0xFFFF7043),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.labelMedium?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  color: isDark
+                      ? theme.colorScheme.onSurface
+                      : const Color(0xFF1E353D),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 class _Tile extends StatelessWidget {
   const _Tile({
