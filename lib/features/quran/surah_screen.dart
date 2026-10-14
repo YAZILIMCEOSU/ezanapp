@@ -1417,9 +1417,8 @@ class _AyahCard extends StatelessWidget {
                                   // Fotoğraf 5: Aktif kelimede Mushaf Sarı Vurgu Kutusu (#FFF176)
                                   color: i == activeWordIdx
                                       ? (isDark
-                                            ? const Color(
-                                                0xFFFFEE58,
-                                              ).withValues(alpha: 0.30)
+                                            ? const Color(0xFFFFEE58)
+                                                  .withValues(alpha: 0.30)
                                             : const Color(0xFFFFF176))
                                       : i < activeWordIdx
                                       ? AppColors.emerald500.withValues(
