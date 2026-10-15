@@ -487,16 +487,27 @@ class DiyanetKerahatAndNafileBar extends StatelessWidget {
         yatsi != null &&
         !now.isBefore(aksam.add(const Duration(minutes: 15))) &&
         now.isBefore(yatsi)) {
-      statusTitle = 'Evvâbîn Namazı Vakti Aktif (${_fmt(evvabin)} – ${_fmt(yatsi)})';
+      statusTitle =
+          'Evvâbîn Namazı Vakti Aktif (${_fmt(evvabin)} – ${_fmt(yatsi)})';
     }
 
-    final Color badgeColor = isKerahat ? AppColors.warning : AppColors.emerald500;
+    final Color badgeColor = isKerahat
+        ? AppColors.warning
+        : AppColors.emerald500;
     final List<({String label, String value, bool warn})> chips =
         <({String label, String value, bool warn})>[
           (label: 'İşrak', value: _fmt(israk), warn: false),
           (label: 'Kuşluk (Duha)', value: _fmt(duhaBest), warn: false),
-          (label: 'İstiva (Kerahat)', value: '${_fmt(istivaStart)}-${_fmt(ogle)}', warn: true),
-          (label: 'İsfirar (Kerahat)', value: '${_fmt(isfirarStart)}-${_fmt(aksam)}', warn: true),
+          (
+            label: 'İstiva (Kerahat)',
+            value: '${_fmt(istivaStart)}-${_fmt(ogle)}',
+            warn: true,
+          ),
+          (
+            label: 'İsfirar (Kerahat)',
+            value: '${_fmt(isfirarStart)}-${_fmt(aksam)}',
+            warn: true,
+          ),
           (label: 'Evvâbîn', value: _fmt(evvabin), warn: false),
           (label: 'Teheccüd', value: _fmt(teheccud), warn: false),
         ];
@@ -519,9 +530,7 @@ class DiyanetKerahatAndNafileBar extends StatelessWidget {
             decoration: BoxDecoration(
               color: badgeColor.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: badgeColor.withValues(alpha: 0.45),
-              ),
+              border: Border.all(color: badgeColor.withValues(alpha: 0.45)),
             ),
             child: Row(
               children: <Widget>[
@@ -600,4 +609,3 @@ class DiyanetKerahatAndNafileBar extends StatelessWidget {
     );
   }
 }
-

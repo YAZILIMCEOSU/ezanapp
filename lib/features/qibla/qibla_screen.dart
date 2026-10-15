@@ -627,9 +627,7 @@ class _CompassDial extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: 4),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
           decoration: BoxDecoration(
-            color: aligned
-                ? AppColors.success
-                : accent.withValues(alpha: 0.14),
+            color: aligned ? AppColors.success : accent.withValues(alpha: 0.14),
             borderRadius: BorderRadius.circular(999),
           ),
           child: Row(
@@ -1084,23 +1082,11 @@ class _QiblaGeodesicMapPainter extends CustomPainter {
     );
 
     // 5. Kullanıcı konumu pimi
-    canvas.drawCircle(
-      center,
-      8,
-      Paint()..color = const Color(0xFF00897B),
-    );
-    canvas.drawCircle(
-      center,
-      3.5,
-      Paint()..color = Colors.white,
-    );
+    canvas.drawCircle(center, 8, Paint()..color = const Color(0xFF00897B));
+    canvas.drawCircle(center, 3.5, Paint()..color = Colors.white);
 
     // 6. Kâbe-i Muazzama pimi
-    canvas.drawCircle(
-      kaabaPos,
-      14,
-      Paint()..color = const Color(0xFF1C1C1C),
-    );
+    canvas.drawCircle(kaabaPos, 14, Paint()..color = const Color(0xFF1C1C1C));
     canvas.drawRect(
       Rect.fromCenter(
         center: kaabaPos - const Offset(0, 3),
@@ -1138,7 +1124,10 @@ class _QiblaGeodesicMapPainter extends CustomPainter {
     kaabaLabel.paint(
       canvas,
       Offset(
-        (kaabaPos.dx - kaabaLabel.width / 2).clamp(8, size.width - kaabaLabel.width - 8),
+        (kaabaPos.dx - kaabaLabel.width / 2).clamp(
+          8,
+          size.width - kaabaLabel.width - 8,
+        ),
         (kaabaPos.dy + 16).clamp(8, size.height - 20),
       ),
     );

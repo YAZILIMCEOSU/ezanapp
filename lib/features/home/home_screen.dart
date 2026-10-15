@@ -228,11 +228,7 @@ class _TodayTimesCard extends StatelessWidget {
           use24Hour: use24Hour,
           warning: times_.warning,
         ),
-        DiyanetKerahatAndNafileBar(
-          day: day,
-          now: now,
-          use24Hour: use24Hour,
-        ),
+        DiyanetKerahatAndNafileBar(day: day, now: now, use24Hour: use24Hour),
       ],
     );
   }

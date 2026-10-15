@@ -408,9 +408,8 @@ class QuranScreen extends ConsumerWidget {
                     ),
                     child: Text(
                       'Cüz Seçimi (1–30. Cüz — e-Diyanet Fihristi)',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
+                      style: Theme.of(context).textTheme.titleMedium
+                          ?.copyWith(fontWeight: FontWeight.w800),
                     ),
                   );
                 }

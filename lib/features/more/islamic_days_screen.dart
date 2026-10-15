@@ -116,7 +116,10 @@ class IslamicDaysScreen extends ConsumerWidget {
                         '${AppTime.formatDateShort(item.date)} ${item.date.year} · '
                         '${AppTime.relativeDays(item.date, now)}\n${item.description}',
                       ),
-                      trailing: const Icon(Icons.info_outline_rounded, size: 20),
+                      trailing: const Icon(
+                        Icons.info_outline_rounded,
+                        size: 20,
+                      ),
                       isThreeLine: true,
                       onTap: () => _showDayGuideSheet(context, item, now),
                     ),
@@ -160,9 +163,8 @@ class IslamicDaysScreen extends ConsumerWidget {
             children: <Widget>[
               Text(
                 item.title,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
+                style: Theme.of(context).textTheme.titleLarge
+                    ?.copyWith(fontWeight: FontWeight.w800),
               ),
               const SizedBox(height: 4),
               Text(
@@ -177,9 +179,8 @@ class IslamicDaysScreen extends ConsumerWidget {
               const Divider(height: 24),
               Text(
                 'Diyanet İhya ve İbadet Tavsiyeleri',
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
+                style: Theme.of(context).textTheme.titleSmall
+                    ?.copyWith(fontWeight: FontWeight.w800),
               ),
               const SizedBox(height: 8),
               const Text(
