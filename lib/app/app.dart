@@ -81,6 +81,14 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp>
 
   void _bindNotifications() {
     final runtime = ref.read(runtimeProvider);
+    final UserLocation currentLoc = ref.read(activeLocationProvider);
+    if (currentLoc.mode == LocationMode.gps) {
+      unawaited(
+        ref
+            .read(locationControllerProvider.notifier)
+            .refreshFromGps(requestPermission: false),
+      );
+    }
     _routeSub = runtime.notifications.onRoute.listen((NotificationRoute route) {
       final String path = AppRoutes.fromNotification(route);
       AppLog.debug('Bildirimden yönlendirme: $path');

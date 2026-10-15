@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -28,7 +29,9 @@ class QiblaScreen extends ConsumerStatefulWidget {
 
 class _QiblaScreenState extends ConsumerState<QiblaScreen> {
   StreamSubscription<CompassReading?>? _subscription;
+  CompassService? _compassService;
   CompassReading? _reading;
+  bool _wasAligned = false;
   bool _supported = true;
   bool _showMapTab = false;
   String? _error;
@@ -41,13 +44,18 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
 
   Future<void> _start() async {
     final CompassService service = ref.read(compassServiceProvider);
+    _compassService = service;
     unawaited(
       ref
           .read(locationControllerProvider.notifier)
           .refreshFromGps(requestPermission: false),
     );
     final UserLocation location = ref.read(activeLocationProvider);
-    final double compassQibla = GeoUtils.compassQiblaBearing(
+    final double trueQibla = GeoUtils.qiblaBearing(
+      location.latitude,
+      location.longitude,
+    );
+    final double declination = GeoUtils.magneticDeclination(
       location.latitude,
       location.longitude,
     );
@@ -63,12 +71,25 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
       (CompassReading? reading) {
         if (!mounted) return;
         final UserLocation currentLocation = ref.read(activeLocationProvider);
-        final double currentCompassQibla = GeoUtils.compassQiblaBearing(
+        final double currentTrueQibla = GeoUtils.qiblaBearing(
           currentLocation.latitude,
           currentLocation.longitude,
         );
+        final double currentDeclination = GeoUtils.magneticDeclination(
+          currentLocation.latitude,
+          currentLocation.longitude,
+        );
+        final CompassReading? updated = reading?.withQibla(
+          currentTrueQibla,
+          declination: currentDeclination,
+        );
+        final bool nowAligned = updated?.isAligned ?? false;
+        if (nowAligned && !_wasAligned) {
+          HapticFeedback.selectionClick();
+        }
+        _wasAligned = nowAligned;
         setState(() {
-          _reading = reading?.withQibla(currentCompassQibla, declination: 0);
+          _reading = updated;
           _error = reading == null
               ? 'Pusula verisi okunamadı. Telefonu 8 çizer gibi hareket ettirip tekrar deneyin.'
               : null;
@@ -79,12 +100,13 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
         if (mounted) setState(() => _error = 'Pusula okunamadı.');
       },
     );
-    service.start(qiblaDirection: compassQibla, declination: 0);
+    service.start(qiblaDirection: trueQibla, declination: declination);
   }
 
   @override
   void dispose() {
     _subscription?.cancel();
+    unawaited(_compassService?.stop());
     super.dispose();
   }
 
@@ -102,8 +124,8 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
       location.longitude,
     );
     final CompassReading? activeReading = _reading?.withQibla(
-      compassQibla,
-      declination: 0,
+      trueQibla,
+      declination: declination,
     );
     final ThemeData theme = Theme.of(context);
 
@@ -275,14 +297,18 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
           else ...<Widget>[
             const SizedBox(height: AppSpacing.xs),
             Center(
-              child: _CompassDial(reading: activeReading, qibla: compassQibla),
+              child: _CompassDial(
+                reading: activeReading,
+                qibla: trueQibla,
+                displayQibla: trueQibla,
+              ),
             ),
             const SizedBox(height: AppSpacing.md),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
               child: _QiblaDirectionBanner(
                 reading: activeReading,
-                qibla: compassQibla,
+                qibla: trueQibla,
               ),
             ),
           ],
@@ -462,17 +488,23 @@ class _QiblaDirectionBanner extends StatelessWidget {
 
 /// Pusula kadranı — Diyanet Kıble Pusulası birebir beyaz kadran & Kâbe oku tasarımı.
 class _CompassDial extends StatelessWidget {
-  const _CompassDial({required this.reading, required this.qibla});
+  const _CompassDial({
+    required this.reading,
+    required this.qibla,
+    required this.displayQibla,
+  });
 
   final CompassReading? reading;
   final double qibla;
+  final double displayQibla;
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final bool isDark = theme.brightness == Brightness.dark;
     final double heading = reading?.heading ?? 0;
-    final double qiblaRelative = GeoUtils.normalizeSigned(qibla - heading);
+    final double qiblaRelative =
+        reading?.differenceToQibla ?? GeoUtils.normalizeSigned(qibla - heading);
     final bool aligned = reading?.isAligned ?? false;
     final bool close = reading?.isClose ?? false;
     final Color accent = aligned
@@ -484,9 +516,9 @@ class _CompassDial extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        // Diyanet tarzı üst Kıble derece kartı (ör. Kıble 157.7°)
+        // Diyanet tarzı üst Kıble derece kartı
         Container(
-          margin: const EdgeInsets.only(bottom: 14),
+          margin: const EdgeInsets.only(bottom: 8),
           padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
           decoration: BoxDecoration(
             color: const Color(0xFF26A69A).withValues(alpha: 0.16),
@@ -518,14 +550,14 @@ class _CompassDial extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    'Kıble',
+                    'Kıble Açısı',
                     style: theme.textTheme.labelSmall?.copyWith(
                       fontWeight: FontWeight.w700,
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
                   ),
                   Text(
-                    '${qibla.toStringAsFixed(1)}°',
+                    '${displayQibla.toStringAsFixed(1)}°',
                     style: theme.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w900,
                       color: const Color(0xFF00796B),
@@ -535,6 +567,12 @@ class _CompassDial extends StatelessWidget {
               ),
             ],
           ),
+        ),
+        // Sabit üst nişangâh (12 yönü — Kâbe rozeti ve ok buraya hizalanır)
+        Icon(
+          Icons.arrow_drop_down_rounded,
+          size: 30,
+          color: aligned ? AppColors.success : accent,
         ),
         SizedBox(
           width: 300,

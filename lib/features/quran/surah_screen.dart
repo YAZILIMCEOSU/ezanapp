@@ -385,6 +385,8 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
                 value.surah.number * 1000 + ayah.number,
               );
               final bool isPlayingThis = _playingAyah == ayah.number;
+              final bool isAudioActivelyPlaying =
+                  isPlayingThis && _playbackStatus == PlaybackStatus.playing;
               final bool isTrackedThis =
                   _arrowTrackingEnabled &&
                   (_playingAyah ?? _trackedAyah) == ayah.number;
@@ -395,7 +397,7 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
                 isBookmarked: isBookmarked,
                 isPlaying: isPlayingThis,
                 isArrowTracked: isTrackedThis,
-                audioWordProgress: isPlayingThis
+                audioWordProgress: isAudioActivelyPlaying
                     ? _speechProgressForAyah(ayah.number)
                     : null,
                 manualWordIndex: isTrackedThis ? _manualWordIndex : 0,
@@ -406,16 +408,23 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
                   });
                 },
                 onTapWord: (int wordIdx, int wordCount) {
+                  final int clampedIdx = wordIdx.clamp(0, wordCount - 1);
+                  final int targetMs =
+                      (isPlayingThis &&
+                          _ayahDuration.inMilliseconds > 0 &&
+                          wordCount > 1)
+                      ? (((clampedIdx + 0.35) / wordCount) *
+                                _ayahDuration.inMilliseconds)
+                            .round()
+                      : 0;
                   setState(() {
                     _trackedAyah = ayah.number;
-                    _manualWordIndex = wordIdx.clamp(0, wordCount - 1);
+                    _manualWordIndex = clampedIdx;
+                    if (targetMs > 0) {
+                      _ayahPosition = Duration(milliseconds: targetMs);
+                    }
                   });
-                  if (isPlayingThis &&
-                      _ayahDuration.inMilliseconds > 0 &&
-                      wordCount > 1) {
-                    final int targetMs =
-                        ((wordIdx / wordCount) * _ayahDuration.inMilliseconds)
-                            .round();
+                  if (targetMs > 0) {
                     ref
                         .read(runtimeProvider)
                         .audio
@@ -428,7 +437,7 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
                       .split(RegExp(r'\s+'))
                       .where((String w) => w.isNotEmpty)
                       .toList(growable: false);
-                  final int currentIdx = isPlayingThis
+                  final int currentIdx = isAudioActivelyPlaying
                       ? _resolveWordIndexByWeight(
                           words,
                           _speechProgressForAyah(ayah.number),
@@ -456,16 +465,22 @@ class _SurahScreenState extends ConsumerState<SurahScreen> {
                       _scrollToAyah(_trackedAyah);
                     }
                   } else {
+                    final int targetMs =
+                        (isPlayingThis &&
+                            _ayahDuration.inMilliseconds > 0 &&
+                            wordCount > 1)
+                        ? (((nextWord + 0.35) / wordCount) *
+                                  _ayahDuration.inMilliseconds)
+                              .round()
+                        : 0;
                     setState(() {
                       _trackedAyah = ayah.number;
                       _manualWordIndex = nextWord;
+                      if (targetMs > 0) {
+                        _ayahPosition = Duration(milliseconds: targetMs);
+                      }
                     });
-                    if (isPlayingThis &&
-                        _ayahDuration.inMilliseconds > 0 &&
-                        wordCount > 1) {
-                      final int totalMs = _ayahDuration.inMilliseconds;
-                      final int targetMs = ((nextWord / wordCount) * totalMs)
-                          .round();
+                    if (targetMs > 0) {
                       ref
                           .read(runtimeProvider)
                           .audio

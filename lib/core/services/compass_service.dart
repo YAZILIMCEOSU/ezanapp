@@ -153,6 +153,8 @@ class CompassService {
   bool _started = false;
   double? _qiblaDirection;
   double _declination = 0;
+  CompassReading? _lastReading;
+  CompassReading? get lastReading => _lastReading;
 
   /// Ham sensör paketinin geçerli sayısal değerler içerdiğini doğrular.
   static bool isValidSensorPayload(Map<Object?, Object?> map) {
@@ -187,7 +189,18 @@ class CompassService {
   void start({double? qiblaDirection, double declination = 0}) {
     _qiblaDirection = qiblaDirection ?? _qiblaDirection;
     _declination = declination;
-    if (_started) return;
+    if (_started && _subscription != null) {
+      if (_lastReading != null && !_controller.isClosed) {
+        final CompassReading updated = _qiblaDirection != null
+            ? _lastReading!.withQibla(
+                _qiblaDirection!,
+                declination: _declination,
+              )
+            : _lastReading!;
+        _controller.add(updated);
+      }
+      return;
+    }
     _started = true;
     try {
       _subscription = _channel.receiveBroadcastStream().listen(
@@ -238,6 +251,7 @@ class CompassService {
                 declination: _declination,
               );
             }
+            _lastReading = reading;
             if (!_controller.isClosed) _controller.add(reading);
           }
         },
