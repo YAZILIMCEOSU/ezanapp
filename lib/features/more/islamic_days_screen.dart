@@ -108,12 +108,17 @@ class IslamicDaysScreen extends ConsumerWidget {
                               ),
                         ),
                       ),
-                      title: Text(item.title),
+                      title: Text(
+                        item.title,
+                        style: const TextStyle(fontWeight: FontWeight.w700),
+                      ),
                       subtitle: Text(
                         '${AppTime.formatDateShort(item.date)} ${item.date.year} · '
                         '${AppTime.relativeDays(item.date, now)}\n${item.description}',
                       ),
+                      trailing: const Icon(Icons.info_outline_rounded, size: 20),
                       isThreeLine: true,
+                      onTap: () => _showDayGuideSheet(context, item, now),
                     ),
                 ],
               );
@@ -123,13 +128,70 @@ class IslamicDaysScreen extends ConsumerWidget {
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: AppSpacing.xl),
             child: Text(
-              'Hicri tarihler Umm al-Qura takvimine göre hesaplanır ve Diyanet '
-              'takviminden ±1 gün farklı olabilir. Ayarlardan ±3 güne kadar '
-              'kaydırma yapabilirsiniz.',
+              'Hicri tarihler Umm al-Qura ve Diyanet takvimine göre hesaplanır; '
+              'ayarlardan ±3 güne kadar Hicri gün düzeltmesi yapabilirsiniz.',
               style: TextStyle(height: 1.5),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showDayGuideSheet(
+    BuildContext context,
+    ({String title, DateTime date, String description}) item,
+    DateTime now,
+  ) {
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (BuildContext sheetContext) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.xl,
+            0,
+            AppSpacing.xl,
+            AppSpacing.xl,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                item.title,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                '${AppTime.formatDateLong(item.date)} • ${AppTime.relativeDays(item.date, now)}',
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  color: AppColors.emerald500,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Text(item.description, style: const TextStyle(height: 1.5)),
+              const Divider(height: 24),
+              Text(
+                'Diyanet İhya ve İbadet Tavsiyeleri',
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                '• Kur\'an-ı Kerim tilaveti, tefekkür ve tevbe-istiğfar ile geceyi ihya etmek.\n'
+                '• Kazası olanların kaza namazı, olmayanların nafile/tesbih namazı kılması.\n'
+                '• Gündüzünü (bayram günleri hariç) nafile oruçla değerlendirmek.\n'
+                '• Anne-baba, akraba ve ihtiyaç sahiplerini sevindirip hayır duası almak.',
+                style: TextStyle(height: 1.55),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

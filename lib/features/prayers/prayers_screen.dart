@@ -173,6 +173,11 @@ class _TodayView extends ConsumerWidget {
                   offset: settings.manualOffsets[prayer.key] ?? 0,
                 ),
               ),
+            DiyanetKerahatAndNafileBar(
+              day: day,
+              now: now,
+              use24Hour: settings.use24Hour,
+            ),
             _NafileAndSpecialPrayersSection(
               day: day,
               settings: settings,

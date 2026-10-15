@@ -119,18 +119,26 @@ class QuranScreen extends ConsumerWidget {
               child: Row(
                 children: <Widget>[
                   Expanded(
-                    child: _MiniStat(
-                      icon: Icons.bookmark_added_outlined,
-                      label: 'Okunan cüz',
-                      value: '$completedJuz / 30',
+                    child: InkWell(
+                      borderRadius: AppRadius.allMd,
+                      onTap: () => _showJuzSheet(context),
+                      child: _MiniStat(
+                        icon: Icons.bookmark_added_outlined,
+                        label: 'Okunan cüz (Sec)',
+                        value: '$completedJuz / 30',
+                      ),
                     ),
                   ),
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
-                    child: _MiniStat(
-                      icon: Icons.record_voice_over_outlined,
-                      label: 'Okuyucu',
-                      value: reciter.name.split(' ').first,
+                    child: InkWell(
+                      borderRadius: AppRadius.allMd,
+                      onTap: () => _showReciterSheet(context, ref, reciter),
+                      child: _MiniStat(
+                        icon: Icons.record_voice_over_outlined,
+                        label: 'Okuyucu',
+                        value: reciter.name.split(' ').first,
+                      ),
                     ),
                   ),
                 ],
@@ -141,8 +149,8 @@ class QuranScreen extends ConsumerWidget {
             child: SectionHeader(
               title: 'Sureler',
               action: TextButton(
-                onPressed: () => _showReciterSheet(context, ref, reciter),
-                child: const Text('Okuyucu'),
+                onPressed: () => _showJuzSheet(context),
+                child: const Text('Cüzler (30)'),
               ),
             ),
           ),
@@ -341,6 +349,102 @@ class QuranScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  static const List<({int juz, int surah, int ayah, String label})> _juzStarts =
+      <({int juz, int surah, int ayah, String label})>[
+        (juz: 1, surah: 1, ayah: 1, label: 'Fâtiha 1. Ayet'),
+        (juz: 2, surah: 2, ayah: 142, label: 'Bakara 142. Ayet'),
+        (juz: 3, surah: 2, ayah: 253, label: 'Bakara 253. Ayet'),
+        (juz: 4, surah: 3, ayah: 93, label: 'Âl-i İmrân 93. Ayet'),
+        (juz: 5, surah: 4, ayah: 24, label: 'Nisâ 24. Ayet'),
+        (juz: 6, surah: 4, ayah: 148, label: 'Nisâ 148. Ayet'),
+        (juz: 7, surah: 5, ayah: 82, label: 'Mâide 82. Ayet'),
+        (juz: 8, surah: 6, ayah: 111, label: 'En\'âm 111. Ayet'),
+        (juz: 9, surah: 7, ayah: 88, label: 'A\'râf 88. Ayet'),
+        (juz: 10, surah: 8, ayah: 41, label: 'Enfâl 41. Ayet'),
+        (juz: 11, surah: 9, ayah: 93, label: 'Tevbe 93. Ayet'),
+        (juz: 12, surah: 11, ayah: 6, label: 'Hûd 6. Ayet'),
+        (juz: 13, surah: 12, ayah: 53, label: 'Yûsuf 53. Ayet'),
+        (juz: 14, surah: 15, ayah: 1, label: 'Hicr 1. Ayet'),
+        (juz: 15, surah: 17, ayah: 1, label: 'İsrâ 1. Ayet'),
+        (juz: 16, surah: 18, ayah: 75, label: 'Kehf 75. Ayet'),
+        (juz: 17, surah: 21, ayah: 1, label: 'Enbiyâ 1. Ayet'),
+        (juz: 18, surah: 23, ayah: 1, label: 'Mü\'minûn 1. Ayet'),
+        (juz: 19, surah: 25, ayah: 21, label: 'Furkan 21. Ayet'),
+        (juz: 20, surah: 27, ayah: 56, label: 'Neml 56. Ayet'),
+        (juz: 21, surah: 29, ayah: 46, label: 'Ankebût 46. Ayet'),
+        (juz: 22, surah: 33, ayah: 31, label: 'Ahzâb 31. Ayet'),
+        (juz: 23, surah: 36, ayah: 28, label: 'Yâsîn 28. Ayet'),
+        (juz: 24, surah: 39, ayah: 32, label: 'Zümer 32. Ayet'),
+        (juz: 25, surah: 41, ayah: 47, label: 'Fussilet 47. Ayet'),
+        (juz: 26, surah: 46, ayah: 1, label: 'Ahkâf 1. Ayet'),
+        (juz: 27, surah: 51, ayah: 31, label: 'Zâriyât 31. Ayet'),
+        (juz: 28, surah: 58, ayah: 1, label: 'Mücâdele 1. Ayet'),
+        (juz: 29, surah: 67, ayah: 1, label: 'Mülk 1. Ayet'),
+        (juz: 30, surah: 78, ayah: 1, label: 'Nebe 1. Ayet (Amme Cüzü)'),
+      ];
+
+  void _showJuzSheet(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (BuildContext sheetContext) => DraggableScrollableSheet(
+        expand: false,
+        initialChildSize: 0.72,
+        builder: (BuildContext context, ScrollController controller) =>
+            ListView.builder(
+              controller: controller,
+              itemCount: _juzStarts.length + 1,
+              itemBuilder: (BuildContext context, int index) {
+                if (index == 0) {
+                  return Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.xl,
+                      0,
+                      AppSpacing.xl,
+                      AppSpacing.md,
+                    ),
+                    child: Text(
+                      'Cüz Seçimi (1–30. Cüz — e-Diyanet Fihristi)',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  );
+                }
+                final item = _juzStarts[index - 1];
+                return ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: AppColors.emerald500.withValues(
+                      alpha: 0.14,
+                    ),
+                    foregroundColor: AppColors.emerald500,
+                    child: Text(
+                      '${item.juz}',
+                      style: const TextStyle(fontWeight: FontWeight.w800),
+                    ),
+                  ),
+                  title: Text(
+                    '${item.juz}. Cüz',
+                    style: const TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                  subtitle: Text('Başlangıç: ${item.label}'),
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                  onTap: () {
+                    Navigator.of(sheetContext).pop();
+                    thisContextPush(context, item.surah, item.ayah);
+                  },
+                );
+              },
+            ),
+      ),
+    );
+  }
+
+  void thisContextPush(BuildContext context, int surah, int ayah) {
+    context.push(AppRoutes.surah(surah, ayah: ayah));
   }
 }
 

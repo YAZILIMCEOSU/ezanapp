@@ -269,6 +269,14 @@ class CompassService {
     }
   }
 
+  Future<void> resetCompass() async {
+    _recentHeadings.clear();
+    _lastReading = null;
+    try {
+      await _methods.invokeMethod<bool>('resetCompass');
+    } catch (_) {}
+  }
+
   Future<void> stop() async {
     _started = false;
     _recentHeadings.clear();

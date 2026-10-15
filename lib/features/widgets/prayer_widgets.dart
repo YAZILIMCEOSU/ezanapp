@@ -419,3 +419,185 @@ class PrayerTableRow extends StatelessWidget {
     );
   }
 }
+
+/// e-Diyanet tarzı canlı Kerahat Vakti ve Nafile Namaz Vakitleri (İşrak, Duha,
+/// İstiva, İsfirar, Evvâbîn, Teheccüd) durum şeridi.
+class DiyanetKerahatAndNafileBar extends StatelessWidget {
+  const DiyanetKerahatAndNafileBar({
+    required this.day,
+    required this.now,
+    this.use24Hour = true,
+    super.key,
+  });
+
+  final PrayerTimesDay day;
+  final DateTime now;
+  final bool use24Hour;
+
+  String _fmt(DateTime? dt) =>
+      dt == null ? '--:--' : AppTime.formatTime(dt, use24Hour: use24Hour);
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final DateTime? imsak = day.timeOf(Prayer.imsak);
+    final DateTime? gunes = day.timeOf(Prayer.gunes);
+    final DateTime? ogle = day.timeOf(Prayer.ogle);
+    final DateTime? aksam = day.timeOf(Prayer.aksam);
+    final DateTime? yatsi = day.timeOf(Prayer.yatsi);
+
+    final DateTime? israk = gunes?.add(const Duration(minutes: 45));
+    final DateTime? duhaBest = gunes?.add(const Duration(minutes: 110));
+    final DateTime? istivaStart = ogle?.subtract(const Duration(minutes: 45));
+    final DateTime? isfirarStart = aksam?.subtract(const Duration(minutes: 45));
+    final DateTime? evvabin = aksam?.add(const Duration(minutes: 20));
+    final DateTime? teheccud = imsak?.subtract(const Duration(minutes: 75));
+
+    bool isKerahat = false;
+    String statusTitle =
+        'Kerahat Vakti Değil · Nafile ve Kaza Namazı Kılınabilir';
+    if (gunes != null &&
+        israk != null &&
+        !now.isBefore(gunes) &&
+        now.isBefore(israk)) {
+      isKerahat = true;
+      statusTitle =
+          'Kerahat Vakti (Güneş Doğuşu) · İşrak Vakti: ${_fmt(israk)}';
+    } else if (istivaStart != null &&
+        ogle != null &&
+        !now.isBefore(istivaStart) &&
+        now.isBefore(ogle)) {
+      isKerahat = true;
+      statusTitle =
+          'Kerahat Vakti (İstiva / Öğle Öncesi) · Öğle: ${_fmt(ogle)}';
+    } else if (isfirarStart != null &&
+        aksam != null &&
+        !now.isBefore(isfirarStart) &&
+        now.isBefore(aksam)) {
+      isKerahat = true;
+      statusTitle =
+          'Kerahat Vakti (Akşam Öncesi · Yalnızca Günün İkindi Farzı Kılınır)';
+    } else if (israk != null &&
+        istivaStart != null &&
+        !now.isBefore(israk) &&
+        now.isBefore(istivaStart)) {
+      statusTitle =
+          'İşrak & Kuşluk (Duha) Vakti Aktif (${_fmt(israk)} – ${_fmt(istivaStart)})';
+    } else if (aksam != null &&
+        yatsi != null &&
+        !now.isBefore(aksam.add(const Duration(minutes: 15))) &&
+        now.isBefore(yatsi)) {
+      statusTitle = 'Evvâbîn Namazı Vakti Aktif (${_fmt(evvabin)} – ${_fmt(yatsi)})';
+    }
+
+    final Color badgeColor = isKerahat ? AppColors.warning : AppColors.emerald500;
+    final List<({String label, String value, bool warn})> chips =
+        <({String label, String value, bool warn})>[
+          (label: 'İşrak', value: _fmt(israk), warn: false),
+          (label: 'Kuşluk (Duha)', value: _fmt(duhaBest), warn: false),
+          (label: 'İstiva (Kerahat)', value: '${_fmt(istivaStart)}-${_fmt(ogle)}', warn: true),
+          (label: 'İsfirar (Kerahat)', value: '${_fmt(isfirarStart)}-${_fmt(aksam)}', warn: true),
+          (label: 'Evvâbîn', value: _fmt(evvabin), warn: false),
+          (label: 'Teheccüd', value: _fmt(teheccud), warn: false),
+        ];
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.xs,
+        AppSpacing.lg,
+        AppSpacing.sm,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: 8,
+            ),
+            decoration: BoxDecoration(
+              color: badgeColor.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: badgeColor.withValues(alpha: 0.45),
+              ),
+            ),
+            child: Row(
+              children: <Widget>[
+                Icon(
+                  isKerahat
+                      ? Icons.warning_amber_rounded
+                      : Icons.verified_rounded,
+                  size: 17,
+                  color: badgeColor,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    statusTitle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      color: theme.colorScheme.onSurface,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 6),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: <Widget>[
+                for (final ({String label, String value, bool warn}) item
+                    in chips)
+                  Container(
+                    margin: const EdgeInsets.only(right: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.surfaceContainerHighest
+                          .withValues(alpha: 0.65),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: item.warn
+                            ? AppColors.warning.withValues(alpha: 0.35)
+                            : theme.colorScheme.outlineVariant,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Text(
+                          '${item.label}: ',
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(
+                          item.value,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            fontWeight: FontWeight.w800,
+                            color: item.warn
+                                ? AppColors.warning
+                                : AppColors.emerald500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
