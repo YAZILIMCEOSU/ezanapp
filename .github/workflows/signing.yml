@@ -1,0 +1,65 @@
+name: 1) İmzalama anahtarı oluştur (bir kez)
+
+# Play Store'a yükleme yapabilmek için gereken "imzalama anahtarı"nı üretir.
+# Bilgisayara hiçbir şey kurmanız gerekmez: bu sayfadaki düğmeler yeterlidir.
+#
+# Kullanım (ayrıntılı anlatım: docs/BASLA.md §6):
+#   1. Settings > Secrets and variables > Actions > New repository secret
+#      Ad: KEYSTORE_PASSWORD     Değer: kendi seçtiğiniz uzun bir parola
+#   2. Actions > "1) İmzalama anahtarı oluştur (bir kez)" > Run workflow
+#   3. Bittiğinde sayfanın altındaki "Artifacts" bölümünden
+#      "imzalama-anahtari" dosyasını indirin ve güvenli bir yere saklayın.
+#
+# ÖNEMLİ: Bu işi yaparken depo **özel (private)** olmalıdır; herkese açık
+# depolarda indirilen dosyaları başkaları da görebilir. Ayrıntı: docs/BASLA.md §6.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Java kur
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Anahtarı üret
+        env:
+          KS_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          set -e
+          if [ -z "$KS_PASSWORD" ]; then
+            echo "::error::KEYSTORE_PASSWORD gizli değişkeni tanımlı değil."
+            echo "Settings > Secrets and variables > Actions bölümünden ekleyin (docs/BASLA.md §6)."
+            exit 1
+          fi
+          rm -f upload.jks keystore.base64.txt
+          keytool -genkeypair -v \
+            -keystore upload.jks \
+            -storepass "$KS_PASSWORD" \
+            -keypass "$KS_PASSWORD" \
+            -alias ezanai \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -dname "CN=EzanAI, OU=Yazilimceosu, O=Yazilimceosu, L=Istanbul, C=TR"
+          # Parola girilmeden okunabilen, yalnızca aktarım için kullanılan biçim
+          base64 -w0 upload.jks > keystore.base64.txt
+          echo "== Sertifika özeti (Play Console'da gerekmez, kayıt için) =="
+          keytool -list -v -keystore upload.jks -storepass "$KS_PASSWORD" | grep -E "SHA256|SHA1" || true
+          echo "== Oluşan dosyalar =="
+          ls -l upload.jks keystore.base64.txt
+
+      - name: Dosyaları yükle (indirilebilir)
+        uses: actions/upload-artifact@v4
+        with:
+          name: imzalama-anahtari
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            upload.jks
+            keystore.base64.txt

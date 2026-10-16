@@ -1,0 +1,11 @@
+# EzanAI — yükleme (upload) anahtarı yapılandırması
+#
+# Bu dosyayı android/key.properties olarak kopyalayıp doldurun.
+# Gerçek dosya ve .jks anahtarı depoya GİRMEZ (.gitignore).
+#
+#   cp android/key.properties.example android/key.properties
+#
+storePassword=PAROLA
+keyPassword=PAROLA
+keyAlias=ezanai
+storeFile=/absolute/yol/ezanai-upload.jks

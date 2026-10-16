@@ -1,0 +1,10 @@
+{
+  "EZANAI_API_BASE": "https://api.ezanai.app",
+  "SUPABASE_URL": "https://xxxx.supabase.co",
+  "SUPABASE_ANON_KEY": "sb_publishable_xxx",
+  "FIREBASE_ENABLED": true,
+  "ILAHI_CATALOG_URL": "https://api.ezanai.app/ilahi/katalog.json",
+  "ADMOB_BANNER_ID": "ca-app-pub-0000000000000000/0000000000",
+  "ADMOB_INTERSTITIAL_ID": "ca-app-pub-0000000000000000/1111111111",
+  "ADMOB_REWARDED_ID": "ca-app-pub-0000000000000000/2222222222"
+}

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Yalnızca HTTPS; kullanıcı verisi ve API anahtarları korunur -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">ezanvakti.imsakiyem.com</domain>
+        <domain includeSubdomains="true">api.aladhan.com</domain>
+        <domain includeSubdomains="true">ezanai.app</domain>
+    </domain-config>
+</network-security-config>
