@@ -64,7 +64,7 @@ metinleri kullanın; kapalı modüllerden söz etmeyin.
 **Uygulama adı (30 karakter):**
 
 ```
-EzanAI: Namaz Vakitleri
+Ezan Vaktim Pro: Namaz, Kıble, Kur'an
 ```
 
 **Kısa açıklama (80 karakter):**
@@ -76,7 +76,7 @@ Namaz vakitleri, ezan bildirimi, kıble ve tesbih: çevrimdışı da çalışır
 **Tam açıklama (MVP):**
 
 ```
-EzanAI, günlük ibadetlerinizi kolaylaştıran sade ve güvenilir bir namaz vakti
+Ezan Vaktim Pro, günlük ibadetlerinizi kolaylaştıran sade ve güvenilir bir namaz vakti
 asistanıdır. İnternet olmasa bile vakitlerinizi gösterir; reklamlar yalnızca
 ücretsiz sürümde görünür.
 
@@ -105,7 +105,7 @@ Hicri tarih dönüşümü, kandil ve bayram günleri, önemli gün hatırlatmala
 Hesap açmanız gerekmez. Konum bilgisi cihazınızda kalır, sunucuya gönderilmez.
 Tüm kayıtlarınız cihazınızda saklanır ve dilediğiniz an silinebilir.
 
-EzanAI bir bilgilendirme uygulamasıdır; dinî konularda kesin hüküm vermez.
+Ezan Vaktim Pro bir bilgilendirme uygulamasıdır; dinî konularda kesin hüküm vermez.
 Vakitlerde tereddüt hâlinde bulunduğunuz yerin resmî ilanlarını esas alın.
 ```
 

@@ -46,14 +46,13 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
     final CompassService service = ref.read(compassServiceProvider);
     _compassService = service;
     final UserLocation initialLoc = ref.read(activeLocationProvider);
-    unawaited(
-      ref
-          .read(locationControllerProvider.notifier)
-          .refreshFromGps(
-            requestPermission:
-                initialLoc.mode == LocationMode.gps && initialLoc.city == null,
-          ),
-    );
+    if (initialLoc.mode == LocationMode.gps) {
+      unawaited(
+        ref
+            .read(locationControllerProvider.notifier)
+            .refreshFromGps(requestPermission: true),
+      );
+    }
     final UserLocation location = ref.read(activeLocationProvider);
     final double trueQibla = GeoUtils.qiblaBearing(
       location.latitude,

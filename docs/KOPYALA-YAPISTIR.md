@@ -11,7 +11,7 @@ Hiçbir şeyi değiştirmen gerekmiyor. (Yer tutucular: `KULLANICI` = GitHub kul
 ## 1. Uygulama adı (Play Console → "Uygulama adı")
 
 ```
-EzanAI: Namaz Vakitleri
+Ezan Vaktim Pro: Namaz, Kıble, Kur'an
 ```
 
 ## 2. Kısa açıklama (80 karakter sınırı)
@@ -23,7 +23,7 @@ Namaz vakitleri, ezan bildirimi, kıble ve tesbih: çevrimdışı da çalışır
 ## 3. Tam açıklama (uzun alan)
 
 ```
-EzanAI, günlük ibadetlerinizi kolaylaştıran sade ve güvenilir bir namaz vakti
+Ezan Vaktim Pro, günlük ibadetlerinizi kolaylaştıran sade ve güvenilir bir namaz vakti
 asistanıdır. İnternet olmasa bile vakitlerinizi gösterir.
 
 • NAMAZ VAKİTLERİ
@@ -51,7 +51,7 @@ Hicri tarih dönüşümü, kandil ve bayram günleri, önemli gün hatırlatmala
 Hesap açmanız gerekmez. Konum bilgisi cihazınızda kalır, sunucuya gönderilmez.
 Tüm kayıtlarınız cihazınızda saklanır ve dilediğiniz an silinebilir.
 
-EzanAI bir bilgilendirme uygulamasıdır; dinî konularda kesin hüküm vermez.
+Ezan Vaktim Pro bir bilgilendirme uygulamasıdır; dinî konularda kesin hüküm vermez.
 Vakitlerde tereddüt hâlinde bulunduğunuz yerin resmî ilanlarını esas alın.
 ```
 
@@ -81,7 +81,7 @@ Geri bildiriminiz bizim için değerli: destek@ezanai.app
 ## 6. Test kullanıcılarına göndereceğin mesaj (WhatsApp / e-posta)
 
 ```
-Merhaba! EzanAI adlı namaz vakti uygulamasını test ediyorum. Google, yayına
+Merhaba! Ezan Vaktim Pro adlı namaz vakti uygulamasını test ediyorum. Google, yayına
 almadan önce 14 gün boyunca en az 12 kişinin denemesini şart koşuyor.
 
 Yapman gereken tek şey:

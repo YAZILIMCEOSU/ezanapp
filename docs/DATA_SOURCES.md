@@ -1,6 +1,6 @@
 # Veri kaynakları, lisanslar ve atıf yükümlülükleri
 
-EzanAI, dini metinleri ve coğrafi verileri **yalnızca lisansa uygun, açık kaynaklı
+Ezan Vaktim Pro, dini metinleri ve coğrafi verileri **yalnızca lisansa uygun, açık kaynaklı
 veya izinli** kaynaklardan alır. Bu belge hangi içeriğin nereden geldiğini, hangi
 lisansa tabi olduğunu ve uygulamada nasıl atıf yapıldığını açıklar.
 

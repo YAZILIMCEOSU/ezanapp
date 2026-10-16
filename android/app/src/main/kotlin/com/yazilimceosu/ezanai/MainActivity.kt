@@ -191,18 +191,34 @@ class MainActivity : FlutterActivity(), SensorEventListener {
     private fun startListening() {
         stopListening()
         hasSmoothedHeading = false
-        // Donanım ivmeölçer + manyetometre birincil gerçek manyetik kuzey kaynağıdır (jiroskop sapması yapmaz)
-        accelerometer?.let {
-            sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_GAME)
-        }
-        magnetometer?.let {
-            sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_GAME)
-        }
-        if (accelerometer == null || magnetometer == null) {
-            geomagneticRotationSensor?.let {
-                sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_GAME)
-            } ?: rotationSensor?.let {
-                sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_GAME)
+        // e-Diyanet & Android Sensor Fusion standardı:
+        // 1) TYPE_ROTATION_VECTOR tek başına birincil yön sensörüdür (jiroskop el ivmesini filtreler).
+        // 2) Yoksa TYPE_GEOMAGNETIC_ROTATION_VECTOR, o da yoksa ACCELEROMETER + MAGNETIC_FIELD kullanılır.
+        // 3) MAGNETIC_FIELD ayrıca yalnızca alan şiddeti (µT) ve doğruluk (accuracy) ölçümü için dinlenir.
+        when {
+            rotationSensor != null -> {
+                sensorManager?.registerListener(this, rotationSensor, SensorManager.SENSOR_DELAY_GAME)
+                magnetometer?.let {
+                    sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_UI)
+                }
+            }
+            geomagneticRotationSensor != null -> {
+                sensorManager?.registerListener(
+                    this,
+                    geomagneticRotationSensor,
+                    SensorManager.SENSOR_DELAY_GAME,
+                )
+                magnetometer?.let {
+                    sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_UI)
+                }
+            }
+            else -> {
+                accelerometer?.let {
+                    sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_GAME)
+                }
+                magnetometer?.let {
+                    sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_GAME)
+                }
             }
         }
     }
@@ -213,8 +229,15 @@ class MainActivity : FlutterActivity(), SensorEventListener {
 
     override fun onSensorChanged(event: SensorEvent) {
         when (event.sensor.type) {
+            Sensor.TYPE_ROTATION_VECTOR, Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR -> {
+                val rotationMatrix = FloatArray(9)
+                val vec = if (event.values.size > 4) event.values.copyOfRange(0, 4) else event.values
+                SensorManager.getRotationMatrixFromVector(rotationMatrix, vec)
+                val effectiveAcc = if (event.accuracy > 0) event.accuracy else lastMagAccuracy
+                emitOrientation(rotationMatrix, effectiveAcc)
+            }
             Sensor.TYPE_ACCELEROMETER -> {
-                val alpha = 0.35f
+                val alpha = 0.25f
                 if (!hasGravity) {
                     System.arraycopy(event.values, 0, gravity, 0, 3)
                     hasGravity = true
@@ -223,20 +246,13 @@ class MainActivity : FlutterActivity(), SensorEventListener {
                     gravity[1] += alpha * (event.values[1] - gravity[1])
                     gravity[2] += alpha * (event.values[2] - gravity[2])
                 }
-                emitFromGravityMagnetic()
+                if (rotationSensor == null && geomagneticRotationSensor == null) {
+                    emitFromGravityMagnetic()
+                }
             }
             Sensor.TYPE_MAGNETIC_FIELD -> {
                 if (event.accuracy > 0) {
                     lastMagAccuracy = event.accuracy
-                }
-                val alpha = 0.35f
-                if (!hasGeomagnetic) {
-                    System.arraycopy(event.values, 0, geomagnetic, 0, 3)
-                    hasGeomagnetic = true
-                } else {
-                    geomagnetic[0] += alpha * (event.values[0] - geomagnetic[0])
-                    geomagnetic[1] += alpha * (event.values[1] - geomagnetic[1])
-                    geomagnetic[2] += alpha * (event.values[2] - geomagnetic[2])
                 }
                 val bx = event.values[0].toDouble()
                 val by = event.values[1].toDouble()
@@ -245,15 +261,18 @@ class MainActivity : FlutterActivity(), SensorEventListener {
                 if (magnitude.isFinite()) {
                     lastFieldStrengthMicroTesla = magnitude
                 }
-                emitFromGravityMagnetic()
-            }
-            Sensor.TYPE_ROTATION_VECTOR, Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR -> {
-                if (hasGravity && hasGeomagnetic) return
-                val rotationMatrix = FloatArray(9)
-                val vec = if (event.values.size > 4) event.values.copyOfRange(0, 4) else event.values
-                SensorManager.getRotationMatrixFromVector(rotationMatrix, vec)
-                val effectiveAcc = if (event.accuracy > 0) event.accuracy else lastMagAccuracy
-                emitOrientation(rotationMatrix, effectiveAcc)
+                if (rotationSensor == null && geomagneticRotationSensor == null) {
+                    val alpha = 0.25f
+                    if (!hasGeomagnetic) {
+                        System.arraycopy(event.values, 0, geomagnetic, 0, 3)
+                        hasGeomagnetic = true
+                    } else {
+                        geomagnetic[0] += alpha * (event.values[0] - geomagnetic[0])
+                        geomagnetic[1] += alpha * (event.values[1] - geomagnetic[1])
+                        geomagnetic[2] += alpha * (event.values[2] - geomagnetic[2])
+                    }
+                    emitFromGravityMagnetic()
+                }
             }
         }
     }

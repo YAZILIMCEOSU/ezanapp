@@ -278,10 +278,11 @@ class CompassService {
   }
 
   Future<void> stop() async {
+    final StreamSubscription<Object?>? sub = _subscription;
+    _subscription = null;
     _started = false;
     _recentHeadings.clear();
-    await _subscription?.cancel();
-    _subscription = null;
+    await sub?.cancel();
   }
 
   Future<void> dispose() async {

@@ -1,10 +1,10 @@
-# EzanAI — Gizlilik Politikası
+# Ezan Vaktim Pro — Gizlilik Politikası
 
 **Son güncelleme:** 5 Ekim 2026
 **Yürürlük tarihi:** Yayın tarihi itibarıyla
-**Veri sorumlusu:** EzanAI (YazılımCeosu) — destek@ezanai.app
+**Veri sorumlusu:** Ezan Vaktim Pro (YazılımCeosu) — destek@ezanai.app
 
-Bu politika, **EzanAI — Akıllı İslam Asistanı** mobil uygulamasında (paket adı
+Bu politika, **Ezan Vaktim Pro — Akıllı İslam Asistanı** mobil uygulamasında (paket adı
 `com.yazilimceosu.ezanai`) hangi verilerin işlendiğini, neden işlendiğini, nerede
 saklandığını ve haklarınızı nasıl kullanabileceğinizi açıklar.
 
@@ -96,7 +96,7 @@ uygulama içinde duyurulur. Güncel sürüm her zaman bu sayfada yayımlanır.
 
 ## English summary
 
-EzanAI does not require an account. Location is used **on-device** for prayer times
+Ezan Vaktim Pro does not require an account. Location is used **on-device** for prayer times
 and qibla; it is not uploaded. Favorites, reading progress, dhikr logs and AI chats
 are stored locally in SQLite and are only included in an end-to-end encrypted backup
 if you explicitly enable cloud backup, which uses an **anonymous** identity (no email,

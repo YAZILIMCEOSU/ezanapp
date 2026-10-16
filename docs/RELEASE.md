@@ -1,6 +1,6 @@
 # Yayınlama rehberi (Android / Google Play)
 
-Bu belge, EzanAI'nin imzalı sürümünü üretmek, arka uç servislerini bağlamak ve
+Bu belge, Ezan Vaktim Pro'nin imzalı sürümünü üretmek, arka uç servislerini bağlamak ve
 Play Console'da yayınlamak için gereken tüm adımları içerir.
 
 ---
@@ -23,7 +23,7 @@ Anahtar deposu ve parolalar **depoya girmez** (`.gitignore` içindedir).
 ```bash
 keytool -genkeypair -v -keystore ~/ezanai-upload.jks \
   -alias ezanai -keyalg RSA -keysize 2048 -validity 10000 \
-  -dname "CN=EzanAI, OU=YazilimCeosu, O=YazilimCeosu, L=Istanbul, C=TR"
+  -dname "CN=Ezan Vaktim Pro, OU=YazilimCeosu, O=YazilimCeosu, L=Istanbul, C=TR"
 ```
 
 Ardından `android/key.properties` dosyasını oluşturun (örnek: `android/key.properties.example`):

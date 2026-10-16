@@ -51,7 +51,7 @@ sıraya koyar. Her adımın **sorumlusu** ve **tahmini süresi** yazar.
 # 1) Anahtarı üret (parolaları bir parola yöneticisine kaydet!)
 keytool -genkeypair -v -keystore ~/ezanai-upload.jks \
   -alias ezanai -keyalg RSA -keysize 2048 -validity 10000 \
-  -dname "CN=EzanAI, OU=YazilimCeosu, O=YazilimCeosu, L=Istanbul, C=TR"
+  -dname "CN=Ezan Vaktim Pro, OU=YazilimCeosu, O=YazilimCeosu, L=Istanbul, C=TR"
 
 # 2) Yapılandırmayı oluştur
 cp android/key.properties.example android/key.properties
@@ -89,7 +89,7 @@ Dosya yoksa Gradle eklentisi hiç uygulanmaz; **yerel vakit bildirimleri
 ## 4. Play Console kaydı (2–4 saat)
 
 1. [Play Console](https://play.google.com/console) → hesap türü (kişisel/kurumsal).
-2. **Uygulama oluştur:** ad `EzanAI`, dil Türkçe, ücretsiz, uygulama.
+2. **Uygulama oluştur:** ad `Ezan Vaktim Pro`, dil Türkçe, ücretsiz, uygulama.
 3. **Mağaza girişi:** `docs/PLAY_STORE.md` §1–3 metinlerini kopyala-yapıştır.
 4. **Görseller:** `store/play_icon_512.png`, `store/play_feature_graphic_1024x500.png`
    hazır; **ekran görüntüleri** gerekli (en az 2, en fazla 8 telefon görseli).

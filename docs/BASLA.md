@@ -45,7 +45,7 @@ Bu adım Play ile ilgili değil; uygulamanı gerçekten görüp beğenip beğenm
 7. Telefonda **Dosyalar** (veya İndirilenler) uygulamasını aç, `app-debug.apk` dosyasına dokun.
 8. Telefon "Bilinmeyen kaynaklardan yüklemeye izin ver" derse → **İzin ver** → **Kur** → **Aç**.
 
-**Doğru yaptığının kanıtı:** Telefonda "EzanAI" uygulaması açılır, vakitler ve geri sayım görünür.
+**Doğru yaptığının kanıtı:** Telefonda "Ezan Vaktim Pro" uygulaması açılır, vakitler ve geri sayım görünür.
 
 > ⚠️ Bu dosya **deneme** sürümüdür; Play'e yüklenmez, sadece telefonda denenir. İnternet olmadan da vakitlerin görünmesi gerekiyor (uçak modunu açıp dene — çökmezse doğrudur).
 
@@ -83,7 +83,7 @@ Bu adres bizim hazırladığımız sayfadan gelecek. Sırasıyla:
 ### 3.1 — Hazır değişiklikleri birleştir
 
 1. Bilgisayarda **https://github.com/YAZILIMCEOSU/ezanapp/pulls** adresine git.
-2. **"EzanAI: tam uygulama + yayın paketi"** başlıklı kaydı aç (numarası #1).
+2. **"Ezan Vaktim Pro: tam uygulama + yayın paketi"** başlıklı kaydı aç (numarası #1).
 3. Yeşil **"Merge pull request"** düğmesine bas → çıkan ekranda yine yeşil
    **"Confirm merge"** düğmesine bas.
 
@@ -107,7 +107,7 @@ Tarayıcıda şu adresi aç:
 https://KULLANICI.github.io/ezanapp/privacy.html
 ```
 
-**Doğru yaptığının kanıtı:** Sayfa açılır ve "EzanAI — Gizlilik Politikası" başlığını görürsün.
+**Doğru yaptığının kanıtı:** Sayfa açılır ve "Ezan Vaktim Pro — Gizlilik Politikası" başlığını görürsün.
 **Bu adresi bir yere kopyala** (Notlar uygulaması, e-posta taslağı) — §5'te Play'e yazacaksın.
 
 > Not: Adres ilk 1–2 dakikada açılmazsa panik yapma; GitHub bazen gecikir. 5 dakika sonra tekrar dene.
@@ -143,7 +143,7 @@ https://KULLANICI.github.io/ezanapp/privacy.html
 ### 5.1 — Uygulamayı oluştur
 
 1. **"Uygulama oluştur"** düğmesine bas.
-2. Uygulama adı: **EzanAI: Namaz Vakitleri**
+2. Uygulama adı: **Ezan Vaktim Pro: Namaz, Kıble, Kur'an**
 3. Varsayılan dil: **Türkçe (tr-TR)**
 4. Tür: **Uygulama** · Ücretsiz/Ücretli: **Ücretsiz**
 5. Beyanları işaretle → **Oluştur**.
@@ -220,7 +220,7 @@ ZIP'in içinde iki dosya var:
 Yap:
 
 1. ZIP'i bilgisayarında güvenli bir klasöre çıkar (ör. `Belgeler/ezanai-anahtar`).
-2. **`upload.jks` ve parolanı kendine e-posta at** (ör. konu: "EzanAI imzalama anahtarı yedeği").
+2. **`upload.jks` ve parolanı kendine e-posta at** (ör. konu: "Ezan Vaktim Pro imzalama anahtarı yedeği").
 3. `keystore.base64.txt` dosyasını **Not Defteri** (Windows) veya **TextEdit** (Mac) ile aç,
    içindeki tüm metni **kopyala** (Ctrl+A, Ctrl+C).
 4. Depo → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**:
@@ -290,7 +290,7 @@ Bu noktada ürün **Play'de yayında** demektir (yalnızca senin görebildiğin 
    (12 şart; 2 kişilik yedek, erken ayrılan olursa sayacın sıfırlanmaması için.)
 3. Listeye şu mesajı gönder (WhatsApp/e-posta; kopyala-yapıştır):
 
-   > Merhaba! EzanAI adlı namaz vakti uygulamasını test ediyorum. Google, yayına almadan önce
+   > Merhaba! Ezan Vaktim Pro adlı namaz vakti uygulamasını test ediyorum. Google, yayına almadan önce
    > 14 gün boyunca en az 12 kişinin denemesini şart koşuyor. İster misin?
    > Yapman gereken tek şey: aşağıdaki bağlantıya tıklayıp "Katıl" ve uygulamayı kurmak,
    > sonraki 14 gün boyunca **silmemek** (arada açıp kullanman da yeterli).

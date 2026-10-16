@@ -46,59 +46,7 @@ class HomeScreen extends ConsumerWidget {
             physics: const AlwaysScrollableScrollPhysics(),
             slivers: <Widget>[
               SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.xl,
-                    AppSpacing.lg,
-                    AppSpacing.lg,
-                    0,
-                  ),
-                  child: Row(
-                    children: <Widget>[
-                      const BrandMark(size: 26),
-                      const SizedBox(width: AppSpacing.md),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              AppTime.greetingFor(
-                                now,
-                                afterMaghrib: times.maybeWhen(
-                                  data: (TodayTimes value) =>
-                                      value.day.currentPrayer(now) ==
-                                          Prayer.aksam ||
-                                      value.day.currentPrayer(now) ==
-                                          Prayer.yatsi,
-                                  orElse: () => false,
-                                ),
-                              ),
-                              style: Theme.of(context).textTheme.titleLarge
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.w700,
-                                    letterSpacing: -0.3,
-                                  ),
-                            ),
-                            Text(
-                              '${hijri.longFormatted} · ${AppTime.formatDateLong(now)}',
-                              style: Theme.of(context).textTheme.bodySmall
-                                  ?.copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurfaceVariant,
-                                  ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      IconButton.filledTonal(
-                        tooltip: 'Ayarlar',
-                        onPressed: () => context.push(AppRoutes.settings),
-                        icon: const Icon(Icons.settings_outlined, size: 20),
-                      ),
-                    ],
-                  ),
-                ),
+                child: _EDiyanetTopHeader(now: now, hijri: hijri),
               ),
               SliverToBoxAdapter(
                 child: times.when(
@@ -123,17 +71,19 @@ class HomeScreen extends ConsumerWidget {
                             child: const Text('Yenile'),
                           ),
                         ),
-                      NextPrayerCountdownCard(
+                      _EDiyanetSplitPrayerCard(
                         day: value.day,
                         tomorrow: value.tomorrow,
                         snapshot: value.snapshot(now),
                         now: now,
                         use24Hour: settings.use24Hour,
                         locationLabel: value.locationLabel,
-                        sourceLabel: value.snapshot(now).activeDay.sourceLabel,
                         onRefresh: () =>
                             ref.read(prayerTimesProvider.notifier).refresh(),
                       ),
+                      _EDiyanetHutbeBanner(now: now),
+                      const SizedBox(height: AppSpacing.sm),
+                      const _QuickActions(),
                       _TodayTimesCard(
                         times_: value,
                         now: now,
@@ -145,7 +95,6 @@ class HomeScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-              const SliverToBoxAdapter(child: _QuickActions()),
               const SliverToBoxAdapter(child: _DailyVerseCard()),
               const SliverToBoxAdapter(child: _DailyHadithCard()),
               const SliverToBoxAdapter(child: _DailyDuaCard()),
@@ -321,24 +270,26 @@ class _QuickActions extends ConsumerWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      child: GridView.count(
-        crossAxisCount: 3,
+      child: GridView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        mainAxisSpacing: AppSpacing.md,
-        crossAxisSpacing: AppSpacing.md,
-        childAspectRatio: 1.15,
-        children: <Widget>[
-          for (final ({Color color, IconData icon, String label, String route})
-              action
-              in actions)
-            _QuickActionTile(
-              icon: action.icon,
-              label: action.label,
-              color: action.color,
-              onTap: () => context.push(action.route),
-            ),
-        ],
+        itemCount: actions.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 4,
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
+          mainAxisExtent: 86,
+        ),
+        itemBuilder: (BuildContext context, int index) {
+          final ({Color color, IconData icon, String label, String route})
+          action = actions[index];
+          return _QuickActionTile(
+            icon: action.icon,
+            label: action.label,
+            color: action.color,
+            onTap: () => context.push(action.route),
+          );
+        },
       ),
     );
   }
@@ -361,64 +312,808 @@ class _QuickActionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final bool isDark = theme.brightness == Brightness.dark;
-    return Material(
-      color: isDark ? theme.colorScheme.surface : Colors.white,
-      borderRadius: BorderRadius.circular(18),
-      elevation: 0,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(18),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(
-              color: isDark
-                  ? theme.colorScheme.outlineVariant
-                  : const Color(0xFFE1ECF2),
-            ),
-            boxShadow: isDark
-                ? const <BoxShadow>[]
-                : <BoxShadow>[
-                    BoxShadow(
-                      color: const Color(0xFF00838F).withValues(alpha: 0.06),
-                      blurRadius: 10,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                width: 42,
-                height: 42,
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? color.withValues(alpha: 0.18)
-                      : const Color(0xFFEAF4F8),
-                  borderRadius: BorderRadius.circular(13),
-                ),
-                alignment: Alignment.center,
-                child: Icon(icon, size: 22, color: const Color(0xFF0097A7)),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: isDark
+                    ? <Color>[
+                        color.withValues(alpha: 0.35),
+                        const Color(0xFF0A2229),
+                      ]
+                    : <Color>[
+                        color.withValues(alpha: 0.88),
+                        const Color(0xFF005B6A),
+                      ],
               ),
-              const SizedBox(height: 6),
-              Flexible(
+              border: Border.all(
+                color: isDark
+                    ? theme.colorScheme.outlineVariant
+                    : Colors.white,
+                width: 2.5,
+              ),
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.10),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            alignment: Alignment.center,
+            child: Icon(icon, size: 24, color: Colors.white),
+          ),
+          const SizedBox(height: 5),
+          Flexible(
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.labelSmall?.copyWith(
+                fontWeight: FontWeight.w800,
+                fontSize: 11.5,
+                letterSpacing: -0.2,
+                color: isDark
+                    ? theme.colorScheme.onSurface
+                    : const Color(0xFF1E2D38),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// e-Diyanet tarzı üst başlık + Radyo oynatıcı + Miladi | Hicri tarih şeridi.
+class _EDiyanetTopHeader extends ConsumerWidget {
+  const _EDiyanetTopHeader({required this.now, required this.hijri});
+
+  final DateTime now;
+  final HijriDate hijri;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ThemeData theme = Theme.of(context);
+    final bool isDark = theme.brightness == Brightness.dark;
+    final AppFeatures features = ref.watch(appFeaturesProvider);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.sm,
+        AppSpacing.lg,
+        AppSpacing.xs,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          // 1. Üst marka çubuğu: Logo + Ezan Vaktim Pro + sağ aksiyon ikonları
+          Row(
+            children: <Widget>[
+              const BrandMark(size: 30),
+              const SizedBox(width: 8),
+              Expanded(
                 child: Text(
-                  label,
+                  AppConstants.appName,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.labelMedium?.copyWith(
+                  style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w800,
-                    letterSpacing: -0.1,
-                    color: isDark
-                        ? theme.colorScheme.onSurface
-                        : const Color(0xFF1E353D),
+                    letterSpacing: -0.3,
+                    color: isDark ? Colors.white : const Color(0xFF1F2D3A),
                   ),
                 ),
               ),
+              IconButton(
+                tooltip: 'Hakkında',
+                visualDensity: VisualDensity.compact,
+                constraints: const BoxConstraints(minWidth: 34, minHeight: 34),
+                padding: const EdgeInsets.all(4),
+                onPressed: () => context.push(AppRoutes.about),
+                icon: const Icon(Icons.info_outline_rounded, size: 21),
+              ),
+              IconButton(
+                tooltip: 'Bildirim Ayarları',
+                visualDensity: VisualDensity.compact,
+                constraints: const BoxConstraints(minWidth: 34, minHeight: 34),
+                padding: const EdgeInsets.all(4),
+                onPressed: () => context.push(AppRoutes.notificationSettings),
+                icon: const Icon(Icons.notifications_none_rounded, size: 21),
+              ),
+              IconButton(
+                tooltip: 'Kıble Pusulası',
+                visualDensity: VisualDensity.compact,
+                constraints: const BoxConstraints(minWidth: 34, minHeight: 34),
+                padding: const EdgeInsets.all(4),
+                onPressed: () => context.push(AppRoutes.qibla),
+                icon: const Icon(Icons.explore_outlined, size: 21),
+              ),
+              IconButton(
+                tooltip: 'Ayarlar',
+                visualDensity: VisualDensity.compact,
+                constraints: const BoxConstraints(minWidth: 34, minHeight: 34),
+                padding: const EdgeInsets.all(4),
+                onPressed: () => context.push(AppRoutes.settings),
+                icon: const Icon(Icons.settings_outlined, size: 21),
+              ),
             ],
+          ),
+          const SizedBox(height: 6),
+          // 2. e-Diyanet Radyo / Tilavet Kartı
+          Material(
+            color: isDark ? const Color(0xFF15262E) : Colors.white,
+            borderRadius: BorderRadius.circular(14),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(14),
+              onTap: () => context.push(
+                features.ilahi ? AppRoutes.ilahi : AppRoutes.adhanSounds,
+              ),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: isDark
+                        ? theme.colorScheme.outlineVariant
+                        : const Color(0xFFE3EBF0),
+                  ),
+                  boxShadow: isDark
+                      ? const <BoxShadow>[]
+                      : <BoxShadow>[
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.04),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                ),
+                child: Row(
+                  children: <Widget>[
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        gradient: const LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: <Color>[Color(0xFF142838), Color(0xFF2C5364)],
+                        ),
+                      ),
+                      alignment: Alignment.center,
+                      child: const Icon(
+                        Icons.mosque_rounded,
+                        color: Color(0xFFFFD54F),
+                        size: 22,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            AppConstants.appName,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            'Kur\'an & İlahi Radyo',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w800,
+                              color: isDark
+                                  ? Colors.white
+                                  : const Color(0xFF1E2D38),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: 38,
+                      height: 38,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: isDark
+                            ? const Color(0xFF1F3842)
+                            : const Color(0xFFF3F7FA),
+                        border: Border.all(
+                          color: isDark
+                              ? Colors.white24
+                              : const Color(0xFFD5E1E8),
+                          width: 1.5,
+                        ),
+                      ),
+                      alignment: Alignment.center,
+                      child: Icon(
+                        Icons.play_arrow_rounded,
+                        size: 24,
+                        color: isDark ? Colors.white : const Color(0xFF263846),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          // 3. Miladi | Hicri Tarih Şeridi
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+            decoration: BoxDecoration(
+              border: Border(
+                top: BorderSide(
+                  color: isDark ? Colors.white12 : const Color(0xFFE2E8EC),
+                ),
+                bottom: BorderSide(
+                  color: isDark ? Colors.white12 : const Color(0xFFE2E8EC),
+                ),
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Flexible(
+                  child: Text(
+                    AppTime.formatDateLong(now),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: isDark ? Colors.white : const Color(0xFF253542),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Container(
+                    width: 1.2,
+                    height: 13,
+                    color: isDark ? Colors.white30 : const Color(0xFF90A4AE),
+                  ),
+                ),
+                Flexible(
+                  child: Text(
+                    hijri.longFormatted,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: isDark ? Colors.white : const Color(0xFF253542),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// e-Diyanet tarzı İkili Ana Vakit Izgarası (Sol) & Cami Silüetli Geri Sayım Kartı (Sağ).
+class _EDiyanetSplitPrayerCard extends StatelessWidget {
+  const _EDiyanetSplitPrayerCard({
+    required this.day,
+    required this.now,
+    required this.use24Hour,
+    required this.locationLabel,
+    this.tomorrow,
+    this.snapshot,
+    this.onRefresh,
+  });
+
+  final PrayerTimesDay day;
+  final PrayerTimesDay? tomorrow;
+  final PrayerScheduleSnapshot? snapshot;
+  final DateTime now;
+  final bool use24Hour;
+  final String locationLabel;
+  final VoidCallback? onRefresh;
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final bool isDark = theme.brightness == Brightness.dark;
+    final PrayerScheduleSnapshot snap =
+        snapshot ??
+        PrayerScheduleSnapshot.resolve(now: now, today: day, tomorrow: tomorrow);
+    final PrayerTimesDay activeDay = snap.activeDay;
+    final Prayer current = snap.currentPrayer;
+    final PrayerTime? next = snap.nextPrayer;
+    final Duration remaining = next != null
+        ? next.remainingFrom(now)
+        : Duration.zero;
+
+    final List<String> locParts = locationLabel
+        .split(RegExp(r'[,/·-]'))
+        .map((String s) => s.trim())
+        .where((String s) => s.isNotEmpty)
+        .toList();
+    final String cityMain = (locParts.isNotEmpty ? locParts.first : locationLabel)
+        .toUpperCase();
+    final String districtSub = locParts.length > 1
+        ? locParts.sublist(1).join(' / ')
+        : locationLabel;
+
+    const List<List<Prayer>> rows = <List<Prayer>>[
+      <Prayer>[Prayer.imsak, Prayer.ogle, Prayer.aksam],
+      <Prayer>[Prayer.gunes, Prayer.ikindi, Prayer.yatsi],
+    ];
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.xs,
+        AppSpacing.lg,
+        AppSpacing.sm,
+      ),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            // SOL SÜTUN: Şehir Başlığı + İlçe Seçici + 3x2 Vakit Izgarası
+            Expanded(
+              flex: 11,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Container(
+                        width: 22,
+                        height: 22,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFF2ECC71),
+                          shape: BoxShape.circle,
+                        ),
+                        alignment: Alignment.center,
+                        child: const Icon(
+                          Icons.location_on_rounded,
+                          size: 14,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          cityMain,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 0.2,
+                            color: isDark
+                                ? Colors.white
+                                : const Color(0xFF263846),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  InkWell(
+                    onTap: () => context.push(AppRoutes.cities),
+                    borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? const Color(0xFF15262E)
+                            : Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: isDark
+                              ? Colors.white24
+                              : const Color(0xFFDCE5EC),
+                        ),
+                      ),
+                      child: Row(
+                        children: <Widget>[
+                          const Icon(
+                            Icons.my_location_rounded,
+                            size: 13,
+                            color: Color(0xFF0097A7),
+                          ),
+                          const SizedBox(width: 5),
+                          Expanded(
+                            child: Text(
+                              districtSub,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                fontWeight: FontWeight.w700,
+                                color: isDark
+                                    ? Colors.white70
+                                    : const Color(0xFF34495E),
+                              ),
+                            ),
+                          ),
+                          const Icon(
+                            Icons.keyboard_arrow_down_rounded,
+                            size: 15,
+                            color: Color(0xFF0097A7),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  for (final List<Prayer> row in rows) ...<Widget>[
+                    Row(
+                      children: <Widget>[
+                        for (final Prayer p in row)
+                          Expanded(
+                            child: _EDiyanetPrayerTicket(
+                              prayer: p,
+                              timeText: AppTime.formatClock(
+                                activeDay.timeOf(p),
+                                use24h: use24Hour,
+                              ),
+                              isActive: current == p,
+                              isDark: isDark,
+                            ),
+                          ),
+                      ],
+                    ),
+                    if (row != rows.last) const SizedBox(height: 5),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            // SAĞ SÜTUN: Cami Silüetli Gökyüzü ve Geri Sayım Kartı
+            Expanded(
+              flex: 9,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(18),
+                child: SizedBox(
+                  height: 172,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: <Widget>[
+                      const CustomPaint(painter: _EDiyanetMosqueSkyPainter()),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 12, 8, 44),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.72),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  next != null
+                                      ? '${next.prayer.turkishName} Vaktine Kalan'
+                                      : 'Vakit Geri Sayımı',
+                                  style: const TextStyle(
+                                    color: Color(0xFF1F2D3A),
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 11.5,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.78),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  AppTime.formatCountdown(remaining),
+                                  style: AppTheme.countdownTypography(
+                                    color: const Color(0xFF1B2836),
+                                    size: 24,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _EDiyanetPrayerTicket extends StatelessWidget {
+  const _EDiyanetPrayerTicket({
+    required this.prayer,
+    required this.timeText,
+    required this.isActive,
+    required this.isDark,
+  });
+
+  final Prayer prayer;
+  final String timeText;
+  final bool isActive;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
+    final Color bg = isActive
+        ? const Color(0xFFECA013)
+        : (isDark ? const Color(0xFF15262E) : Colors.white);
+    final Color fg = isActive
+        ? Colors.white
+        : (isDark ? Colors.white : const Color(0xFF263846));
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 2.5),
+      padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 3),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: isActive
+              ? const Color(0xFFD68C06)
+              : (isDark ? Colors.white12 : const Color(0xFFE3ECF2)),
+        ),
+        boxShadow: isDark
+            ? const <BoxShadow>[]
+            : <BoxShadow>[
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.03),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              prayer.turkishName,
+              style: TextStyle(
+                color: fg.withValues(alpha: isActive ? 0.96 : 0.78),
+                fontWeight: FontWeight.w700,
+                fontSize: 11,
+              ),
+            ),
+          ),
+          const SizedBox(height: 2),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              timeText,
+              style: TextStyle(
+                color: fg,
+                fontWeight: FontWeight.w900,
+                fontSize: 13,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _EDiyanetMosqueSkyPainter extends CustomPainter {
+  const _EDiyanetMosqueSkyPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Rect rect = Offset.zero & size;
+    final Paint skyPaint = Paint()
+      ..shader = const LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: <Color>[
+          Color(0xFF5FA8D3),
+          Color(0xFF8ECAE6),
+          Color(0xFFD8EEFA),
+        ],
+      ).createShader(rect);
+    canvas.drawRect(rect, skyPaint);
+
+    // Yumuşak bulut halkaları
+    final Paint cloudPaint = Paint()
+      ..color = Colors.white.withValues(alpha: 0.28);
+    canvas.drawCircle(Offset(size.width * 0.22, size.height * 0.25), 26, cloudPaint);
+    canvas.drawCircle(Offset(size.width * 0.78, size.height * 0.18), 32, cloudPaint);
+
+    // Alt kısımda cami kubbe ve minare silüeti
+    final Paint mosquePaint = Paint()
+      ..color = const Color(0xFF284B63).withValues(alpha: 0.85);
+    final double baseY = size.height;
+    // Taban
+    canvas.drawRect(
+      Rect.fromLTWH(0, baseY - 18, size.width, 18),
+      mosquePaint,
+    );
+    // Ana kubbe
+    canvas.drawArc(
+      Rect.fromCenter(
+        center: Offset(size.width * 0.50, baseY - 16),
+        width: size.width * 0.52,
+        height: 44,
+      ),
+      3.14159,
+      3.14159,
+      true,
+      mosquePaint,
+    );
+    // Yan kubbeler
+    canvas.drawArc(
+      Rect.fromCenter(
+        center: Offset(size.width * 0.22, baseY - 14),
+        width: size.width * 0.24,
+        height: 24,
+      ),
+      3.14159,
+      3.14159,
+      true,
+      mosquePaint,
+    );
+    canvas.drawArc(
+      Rect.fromCenter(
+        center: Offset(size.width * 0.78, baseY - 14),
+        width: size.width * 0.24,
+        height: 24,
+      ),
+      3.14159,
+      3.14159,
+      true,
+      mosquePaint,
+    );
+    // İki minare
+    final double m1X = size.width * 0.12;
+    final double m2X = size.width * 0.88;
+    canvas.drawRect(Rect.fromLTWH(m1X - 3, baseY - 58, 6, 44), mosquePaint);
+    canvas.drawRect(Rect.fromLTWH(m2X - 3, baseY - 58, 6, 44), mosquePaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+/// e-Diyanet tarzı Hayırlı Cumalar / Günün Hutbesi manşet kartı.
+class _EDiyanetHutbeBanner extends StatelessWidget {
+  const _EDiyanetHutbeBanner({required this.now});
+
+  final DateTime now;
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isFriday = now.weekday == DateTime.friday;
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.xs,
+      ),
+      child: Material(
+        borderRadius: BorderRadius.circular(18),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: () => context.push(AppRoutes.kazaTracker),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: <Color>[
+                  Color(0xFF8B6B4A),
+                  Color(0xFF5D7A68),
+                  Color(0xFF2B5876),
+                ],
+              ),
+            ),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        isFriday ? 'Hayırlı Cumalar' : 'Günün Hikmeti & Hutbe',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 15,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        isFriday
+                            ? 'Cumanız mübarek olsun.'
+                            : 'Haftalık hutbe ve ibadet rehberi.',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.90),
+                          fontWeight: FontWeight.w500,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 7,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.45),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.white38),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        'Cuma Hutbesi',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 11.5,
+                        ),
+                      ),
+                      SizedBox(width: 4),
+                      Icon(
+                        Icons.chevron_right_rounded,
+                        size: 16,
+                        color: Colors.white,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
