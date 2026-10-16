@@ -16,6 +16,7 @@ import '../../data/models/zikir_models.dart';
 import '../../data/repositories/daily_content_repository.dart';
 import '../../design/app_colors.dart';
 import '../../design/app_spacing.dart';
+import '../../design/app_theme.dart';
 import '../../router/app_router.dart';
 import '../../state/content_providers.dart';
 import '../../state/providers.dart';
