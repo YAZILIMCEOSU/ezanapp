@@ -1,4 +1,4 @@
-# CI raporu (2026-10-16 11:42 UTC)
+# CI raporu (2026-10-16 11:51 UTC)
 
 | adım | sonuç |
 |---|---|
@@ -218,83 +218,113 @@ Computing fixes in ezanapp...
 Nothing to fix!
 == dart format ==
 Formatted lib/features/home/home_screen.dart
-Formatted 111 files (1 changed) in 0.70 seconds.
+Formatted 111 files (1 changed) in 1.25 seconds.
 ```
 
 ## analyze
 ```
 Analyzing ezanapp...                                            
 
-  error • The named parameter 'day' is required, but there's no corresponding argument. Try adding the required argument • lib/features/home/home_screen.dart:640:32 • missing_required_argument
-  error • The named parameter 'today' isn't defined. Try correcting the name to an existing named parameter's name, or defining a named parameter with the name 'today' • lib/features/home/home_screen.dart:642:11 • undefined_named_parameter
-  error • The method 'remainingFrom' isn't defined for the type 'PrayerTime'. Try correcting the name to the name of an existing method, or defining a method named 'remainingFrom' • lib/features/home/home_screen.dart:649:16 • undefined_method
-  error • The argument type 'DateTime?' can't be assigned to the parameter type 'Duration'.  • lib/features/home/home_screen.dart:776:33 • argument_type_not_assignable
-  error • The named parameter 'use24h' isn't defined. Try correcting the name to an existing named parameter's name, or defining a named parameter with the name 'use24h' • lib/features/home/home_screen.dart:777:33 • undefined_named_parameter
-  error • The getter 'turkishName' isn't defined for the type 'Prayer'. Try importing the library that defines 'turkishName', correcting the name to the name of an existing getter, or defining a getter or field named 'turkishName' • lib/features/home/home_screen.dart:820:56 • undefined_getter
-  error • The method 'countdownTypography' isn't defined for the type 'AppTheme'. Try correcting the name to the name of an existing method, or defining a method named 'countdownTypography' • lib/features/home/home_screen.dart:844:51 • undefined_method
-  error • The getter 'turkishName' isn't defined for the type 'Prayer'. Try importing the library that defines 'turkishName', correcting the name to the name of an existing getter, or defining a getter or field named 'turkishName' • lib/features/home/home_screen.dart:915:22 • undefined_getter
+  error • Undefined name 'AppTheme'. Try correcting the name to one that is defined, or defining the name • lib/features/home/home_screen.dart:1193:22 • undefined_identifier
 
-8 issues found. (ran in 13.2s)
+1 issue found. (ran in 21.6s)
 ```
 
 ## test
 ```
-                                ^^^^^^
-lib/core/utils/app_time.dart:82:17: Context: Found this candidate, but the arguments don't match.
-  static String formatClock(Duration duration) {
-                ^^^^^^^^^^^
-lib/features/home/home_screen.dart:844:51: Error: Member not found: 'AppTheme.countdownTypography'.
-                                  style: AppTheme.countdownTypography(
-                                                  ^^^^^^^^^^^^^^^^^^^
-lib/features/home/home_screen.dart:649:16: Error: The method 'remainingFrom' isn't defined for the type 'PrayerTime'.
- - 'PrayerTime' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-Try correcting the name to the name of an existing method, or defining a method named 'remainingFrom'.
-        ? next.remainingFrom(now)
-               ^^^^^^^^^^^^^
-lib/features/home/home_screen.dart:820:56: Error: The getter 'turkishName' isn't defined for the type 'Prayer'.
- - 'Prayer' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'turkishName'.
-                                      ? '${next.prayer.turkishName} Vaktine Kalan'
-                                                       ^^^^^^^^^^^
-lib/features/home/home_screen.dart:915:22: Error: The getter 'turkishName' isn't defined for the type 'Prayer'.
- - 'Prayer' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'turkishName'.
-              prayer.turkishName,
-                     ^^^^^^^^^^^
-00:08 +32 ~6 -2: loading /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart [E]
+00:00 +0: loading /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart
+lib/features/home/home_screen.dart:1193:22: Error: The getter 'AppTheme' isn't defined for the type '_DailyVerseCard'.
+ - '_DailyVerseCard' is from 'package:ezanai/features/home/home_screen.dart' ('lib/features/home/home_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTheme'.
+              style: AppTheme.arabic(Theme.of(context).textTheme, size: 26),
+                     ^^^^^^^^
+00:00 +0 -1: loading /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart [E]
+  Failed to load "/home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart":
+  Compilation failed for testPath=/home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: lib/features/home/home_screen.dart:1193:22: Error: The getter 'AppTheme' isn't defined for the type '_DailyVerseCard'.
+   - '_DailyVerseCard' is from 'package:ezanai/features/home/home_screen.dart' ('lib/features/home/home_screen.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTheme'.
+                style: AppTheme.arabic(Theme.of(context).textTheme, size: 26),
+                       ^^^^^^^^
+  .
+  Error: The Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 1024:11   DefaultResidentCompiler._compile.<fn>
+  dart:async/zone_root.dart 48:47                  _rootRunUnary
+  dart:async/zone.dart 816:35                      _CustomZone.runUnary
+  dart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 977:13               Future._propagateToListeners
+  dart:async/future_impl.dart 862:9                Future._propagateToListeners
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 810:35                      _CustomZone.run
+  dart:async/zone.dart 702:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 743:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+00:00 +0 -1: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli JSON ayrıştırma tüm alanları okur
+00:00 +1 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında soru yerel bilgi tabanından kaynaklı yanıtlanır
+00:00 +2 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında soru yerel bilgi tabanından kaynaklı yanıtlanır
+00:00 +3 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında soru yerel bilgi tabanından kaynaklı yanıtlanır
+00:00 +4 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında soru yerel bilgi tabanından kaynaklı yanıtlanır
+00:00 +5 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında soru yerel bilgi tabanından kaynaklı yanıtlanır
+00:00 +6 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında soru yerel bilgi tabanından kaynaklı yanıtlanır
+00:00 +7 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında soru yerel bilgi tabanından kaynaklı yanıtlanır
+00:00 +8 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında soru yerel bilgi tabanından kaynaklı yanıtlanır
+00:00 +9 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında soru yerel bilgi tabanından kaynaklı yanıtlanır
+00:00 +10 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında soru yerel bilgi tabanından kaynaklı yanıtlanır
+00:00 +11 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında soru yerel bilgi tabanından kaynaklı yanıtlanır
+00:00 +12 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında soru yerel bilgi tabanından kaynaklı yanıtlanır
+00:00 +13 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında bilinmeyen soruda dürüst "bilmiyorum" cevabı döner
+00:00 +14 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında kaynaklı uzak yanıt kabul edilir
+  Skip: EZANAI_API_BASE tanımlı değil
+00:00 +14 ~1 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında kaynaksız uzak yanıt reddedilir, yerel tabana düşülür
+  Skip: EZANAI_API_BASE tanımlı değil
+00:00 +14 ~2 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında sunucu hatasında (500) uygulama çökmez
+  Skip: EZANAI_API_BASE tanımlı değil
+00:00 +14 ~3 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında bozuk JSON yanıtında uygulama çökmez
+  Skip: EZANAI_API_BASE tanımlı değil
+00:00 +14 ~4 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında bilinmeyen soruda uzaktan kaynaksız yanıt gelirse dürüst cevap
+  Skip: EZANAI_API_BASE tanımlı değil
+00:00 +14 ~5 -1: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında uzak yanıtlara da öneri soruları eklenir
+  Skip: EZANAI_API_BASE tanımlı değil
+00:00 +14 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings varsayılan ayarlar Diyanet yöntemini kullanır
+00:00 +15 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings JSON gidiş-dönüşü değerleri korur
+00:00 +16 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings bozuk yedek varsayılanlara döner
+00:00 +17 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings Hanefî ikindi yalnızca desteklenen yöntemlerde uygulanır
+00:00 +18 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: AppSettings manuel düzeltmeler her yöntemde aktarılır
+00:00 +19 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: CalculationMethod bilinmeyen kimlik Diyanet'e döner
+00:00 +20 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: CalculationMethod tüm yöntemler geçerli açılara sahip
+00:00 +21 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils Kâbe yönü Türkiye için güneydoğuyu gösterir
+00:00 +22 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils Kâbe koordinatında mesafe sıfıra yakındır
+00:00 +23 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: GeoUtils İstanbul-Kâbe mesafesi ~2400 km
+00:00 +24 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar (setUpAll)
+00:00 +24 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar bugünü hicri tarihe çevirir
+00:00 +25 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar gün farkı hesabı ve geri dönüş tutarlı
+00:00 +26 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar ay uzunluğu 29 veya 30 gündür
+00:00 +27 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar Ramazan başlangıcı hicri 9. ayın 1. günüdür
+00:00 +28 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: HijriCalendar (tearDownAll)
+00:00 +28 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay sıralı veri sağlıklı kabul edilir
+00:00 +29 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay sonraki vakit ve içinde bulunulan vakit doğru bulunur
+00:00 +30 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay bozuk veri sağlıksız kabul edilir
+00:00 +31 ~6 -1: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay JSON gidiş-dönüşü vakitleri korur
+lib/features/home/home_screen.dart:1193:22: Error: The getter 'AppTheme' isn't defined for the type '_DailyVerseCard'.
+ - '_DailyVerseCard' is from 'package:ezanai/features/home/home_screen.dart' ('lib/features/home/home_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTheme'.
+              style: AppTheme.arabic(Theme.of(context).textTheme, size: 26),
+                     ^^^^^^^^
+00:13 +32 ~6 -2: loading /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart [E]
   Failed to load "/home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart":
-  Compilation failed for testPath=/home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: lib/features/home/home_screen.dart:642:11: Error: No named parameter with the name 'today'.
-            today: day,
-            ^^^^^
-  lib/data/models/prayer_times_day.dart:45:33: Context: Found this candidate, but the arguments don't match.
-    static PrayerScheduleSnapshot resolve({
-                                  ^^^^^^^
-  lib/features/home/home_screen.dart:777:33: Error: No named parameter with the name 'use24h'.
-                                  use24h: use24Hour,
-                                  ^^^^^^
-  lib/core/utils/app_time.dart:82:17: Context: Found this candidate, but the arguments don't match.
-    static String formatClock(Duration duration) {
-                  ^^^^^^^^^^^
-  lib/features/home/home_screen.dart:844:51: Error: Member not found: 'AppTheme.countdownTypography'.
-                                    style: AppTheme.countdownTypography(
-                                                    ^^^^^^^^^^^^^^^^^^^
-  lib/features/home/home_screen.dart:649:16: Error: The method 'remainingFrom' isn't defined for the type 'PrayerTime'.
-   - 'PrayerTime' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-  Try correcting the name to the name of an existing method, or defining a method named 'remainingFrom'.
-          ? next.remainingFrom(now)
-                 ^^^^^^^^^^^^^
-  lib/features/home/home_screen.dart:820:56: Error: The getter 'turkishName' isn't defined for the type 'Prayer'.
-   - 'Prayer' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-  Try correcting the name to the name of an existing getter, or defining a getter or field named 'turkishName'.
-                                        ? '${next.prayer.turkishName} Vaktine Kalan'
-                                                         ^^^^^^^^^^^
-  lib/features/home/home_screen.dart:915:22: Error: The getter 'turkishName' isn't defined for the type 'Prayer'.
-   - 'Prayer' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-  Try correcting the name to the name of an existing getter, or defining a getter or field named 'turkishName'.
-                prayer.turkishName,
-                       ^^^^^^^^^^^
+  Compilation failed for testPath=/home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: lib/features/home/home_screen.dart:1193:22: Error: The getter 'AppTheme' isn't defined for the type '_DailyVerseCard'.
+   - '_DailyVerseCard' is from 'package:ezanai/features/home/home_screen.dart' ('lib/features/home/home_screen.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTheme'.
+                style: AppTheme.arabic(Theme.of(context).textTheme, size: 26),
+                       ^^^^^^^^
   .
-00:08 +32 ~6 -2: loading /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart [E]
+00:13 +32 ~6 -2: loading /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart [E]
   Error: The Dart compiler exited unexpectedly.
   package:flutter_tools/src/base/common.dart 34:3  throwToolExit
   package:flutter_tools/src/compile.dart 1024:11   DefaultResidentCompiler._compile.<fn>
@@ -314,70 +344,20 @@ Try correcting the name to the name of an existing getter, or defining a getter 
   dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
   dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
   
-lib/features/home/home_screen.dart:642:11: Error: No named parameter with the name 'today'.
-          today: day,
-          ^^^^^
-lib/data/models/prayer_times_day.dart:45:33: Context: Found this candidate, but the arguments don't match.
-  static PrayerScheduleSnapshot resolve({
-                                ^^^^^^^
-lib/features/home/home_screen.dart:777:33: Error: No named parameter with the name 'use24h'.
-                                use24h: use24Hour,
-                                ^^^^^^
-lib/core/utils/app_time.dart:82:17: Context: Found this candidate, but the arguments don't match.
-  static String formatClock(Duration duration) {
-                ^^^^^^^^^^^
-lib/features/home/home_screen.dart:844:51: Error: Member not found: 'AppTheme.countdownTypography'.
-                                  style: AppTheme.countdownTypography(
-                                                  ^^^^^^^^^^^^^^^^^^^
-lib/features/home/home_screen.dart:649:16: Error: The method 'remainingFrom' isn't defined for the type 'PrayerTime'.
- - 'PrayerTime' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-Try correcting the name to the name of an existing method, or defining a method named 'remainingFrom'.
-        ? next.remainingFrom(now)
-               ^^^^^^^^^^^^^
-lib/features/home/home_screen.dart:820:56: Error: The getter 'turkishName' isn't defined for the type 'Prayer'.
- - 'Prayer' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'turkishName'.
-                                      ? '${next.prayer.turkishName} Vaktine Kalan'
-                                                       ^^^^^^^^^^^
-lib/features/home/home_screen.dart:915:22: Error: The getter 'turkishName' isn't defined for the type 'Prayer'.
- - 'Prayer' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'turkishName'.
-              prayer.turkishName,
-                     ^^^^^^^^^^^
-00:17 +32 ~6 -3: loading /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart [E]
+lib/features/home/home_screen.dart:1193:22: Error: The getter 'AppTheme' isn't defined for the type '_DailyVerseCard'.
+ - '_DailyVerseCard' is from 'package:ezanai/features/home/home_screen.dart' ('lib/features/home/home_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTheme'.
+              style: AppTheme.arabic(Theme.of(context).textTheme, size: 26),
+                     ^^^^^^^^
+00:26 +32 ~6 -3: loading /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart [E]
   Failed to load "/home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart":
-  Compilation failed for testPath=/home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: lib/features/home/home_screen.dart:642:11: Error: No named parameter with the name 'today'.
-            today: day,
-            ^^^^^
-  lib/data/models/prayer_times_day.dart:45:33: Context: Found this candidate, but the arguments don't match.
-    static PrayerScheduleSnapshot resolve({
-                                  ^^^^^^^
-  lib/features/home/home_screen.dart:777:33: Error: No named parameter with the name 'use24h'.
-                                  use24h: use24Hour,
-                                  ^^^^^^
-  lib/core/utils/app_time.dart:82:17: Context: Found this candidate, but the arguments don't match.
-    static String formatClock(Duration duration) {
-                  ^^^^^^^^^^^
-  lib/features/home/home_screen.dart:844:51: Error: Member not found: 'AppTheme.countdownTypography'.
-                                    style: AppTheme.countdownTypography(
-                                                    ^^^^^^^^^^^^^^^^^^^
-  lib/features/home/home_screen.dart:649:16: Error: The method 'remainingFrom' isn't defined for the type 'PrayerTime'.
-   - 'PrayerTime' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-  Try correcting the name to the name of an existing method, or defining a method named 'remainingFrom'.
-          ? next.remainingFrom(now)
-                 ^^^^^^^^^^^^^
-  lib/features/home/home_screen.dart:820:56: Error: The getter 'turkishName' isn't defined for the type 'Prayer'.
-   - 'Prayer' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-  Try correcting the name to the name of an existing getter, or defining a getter or field named 'turkishName'.
-                                        ? '${next.prayer.turkishName} Vaktine Kalan'
-                                                         ^^^^^^^^^^^
-  lib/features/home/home_screen.dart:915:22: Error: The getter 'turkishName' isn't defined for the type 'Prayer'.
-   - 'Prayer' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-  Try correcting the name to the name of an existing getter, or defining a getter or field named 'turkishName'.
-                prayer.turkishName,
-                       ^^^^^^^^^^^
+  Compilation failed for testPath=/home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: lib/features/home/home_screen.dart:1193:22: Error: The getter 'AppTheme' isn't defined for the type '_DailyVerseCard'.
+   - '_DailyVerseCard' is from 'package:ezanai/features/home/home_screen.dart' ('lib/features/home/home_screen.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTheme'.
+                style: AppTheme.arabic(Theme.of(context).textTheme, size: 26),
+                       ^^^^^^^^
   .
-00:17 +32 ~6 -3: loading /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart [E]
+00:26 +32 ~6 -3: loading /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart [E]
   Error: The Dart compiler exited unexpectedly.
   package:flutter_tools/src/base/common.dart 34:3  throwToolExit
   package:flutter_tools/src/compile.dart 1024:11   DefaultResidentCompiler._compile.<fn>
@@ -397,131 +377,80 @@ Try correcting the name to the name of an existing getter, or defining a getter 
   dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
   dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
   
-00:18 +32 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: (setUpAll)
-00:18 +32 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: kategoriler tanımlı ve benzersiz
-00:18 +33 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: en az 30 dua var ve kimlikler benzersiz
-00:18 +34 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duada ad, okunuş, meal ve kategori dolu
-00:18 +35 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duada kaynak künyesi var
-00:18 +36 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: kaynak künyeleri ya Kur'an ya muteber hadis kaynağına dayanır
-00:18 +37 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duanın kategorisi kategori listesinde tanımlı
-00:18 +38 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her kategoride en az bir dua var (boş sekme olmasın)
-00:18 +39 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: Kur'an kaynaklı duaların künyesi sure/ayet içerir
-00:18 +40 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: Arapça metin içeren dualar Arapça alfabede
-00:18 +41 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: katalogda arama ve kategori süzme çalışıyor
-00:18 +42 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: (tearDownAll)
-00:18 +42 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı en az 20 kayıt ve benzersiz kimlikler
-00:18 +43 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı her kayıtta başlık, cevap, anahtar kelime ve kaynak var
-00:18 +44 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı anahtar kelimeler küçük harf ve ASCII (arama uyumu)
-00:18 +45 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı anahtar kelimeler yeterince ayırt edici
-00:18 +46 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı ilişkili kayıt kimlikleri geçerli
-00:18 +47 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı mezhep farkı notları en az birkaç kayıtta bulunur
-00:18 +48 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı kaynak künyeleri kaynak türüne ayrılabiliyor
-00:18 +49 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi namaz rekatı sorusu doğru kayda gider
-00:18 +50 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi abdest sorusu doğru kayda gider
-00:18 +51 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi zekât sorusu doğru kayda gider
-00:18 +52 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi kıble sorusu doğru kayda gider
-00:18 +53 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi Türkçe karakter ve büyük harf farkı eşleşmeyi bozmaz
-00:18 +54 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi her yerel cevap kaynak, uyarı ve mezhep bilgisi taşır
-00:18 +55 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi konu kelimesi genel kelimelere üstün gelir (vitir/teravih)
-00:18 +56 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi ayırt edici kelime puanı, genel kelimelerden yüksektir
-00:18 +57 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi harf düşmesi olan sorular da eşleşir (hatim → hatmi)
-00:18 +58 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi Kâbe yönü sorusu kıble kaydına gider
-00:18 +59 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi önerilen sorular kimlik değil, okunabilir başlık olarak döner
-00:18 +60 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi kayda uymayan soru için uydurma cevap üretilmez
-00:18 +61 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi soru boşsa eşleşme yapılmaz
-00:18 +62 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi paylaşım metni kaynakları ve mezhep notlarını içerir
-00:18 +63 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi İslam'ın şartları sorusuna beş şartı doğru sırayla ve kaynaklı cevaplar
-00:18 +64 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi İmanın şartları sorusuna altı iman esasını doğru sırayla ve kaynaklı cevaplar
-00:18 +65 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi birleşik sorularda RAG yaklaşımıyla her iki doğrulanmış kayıt birleştirilir
-00:19 +66 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri yedi gün × altı vakit için kimlikler benzersiz
-00:19 +67 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri kimlikler ilgili aralıkta kalır
-00:19 +68 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri vakit kimlikleri tekil bildirim kimlikleriyle çakışmaz
-00:19 +69 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim yönlendirme yükü her hedef kendi yüküyle ayrışır
-00:19 +70 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim yönlendirme yükü ayrıntılı yükler ve tanımsız yükler güvenli
-00:19 +71 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları varsayılan olarak güneş vakti bildirilmez
-00:19 +72 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları kullanıcı bir vakti kapatabilir
-00:19 +73 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları bildirimler tümden kapatılınca hiçbir vakit bildirilmez
-00:19 +74 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları eksik ayar güvenli tarafta kalır (kapalı sayılır)
-00:19 +75 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu varsayılan sessiz saat kapalı
-00:19 +76 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu sessiz saat aralığı gece yarısını aşabilir
-00:19 +77 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu uyku modu 22:00–07:00 arasını kapsar
-00:19 +78 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu öğle vakti sessiz saate girmez
-00:19 +79 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı ön hatırlatma varsayılan olarak kapalı
-00:19 +80 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı ön hatırlatma dakikası ayarlanabilir
-00:19 +81 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı zamanlanan gün sayısı makul aralıkta
-00:19 +82 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Türkçe karakterleri sadeleştirir
-00:19 +83 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer kelimelere ayırır ve kısa kelimeleri atar
-00:19 +84 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer ekleri kaba biçimde kırpar
-00:19 +85 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer eşleştirme aksan ve ek farklarını tolere eder
-00:19 +86 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Arapça harekeleri kaldırır
-00:19 +87 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer yüzde biçimi
-00:19 +88 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime geri sayım ve dijital sayaç biçimi
-00:19 +89 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime 24 saat ve 12 saat biçimi
-00:19 +90 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime gün karşılaştırması
-lib/features/home/home_screen.dart:642:11: Error: No named parameter with the name 'today'.
-          today: day,
-          ^^^^^
-lib/data/models/prayer_times_day.dart:45:33: Context: Found this candidate, but the arguments don't match.
-  static PrayerScheduleSnapshot resolve({
-                                ^^^^^^^
-lib/features/home/home_screen.dart:777:33: Error: No named parameter with the name 'use24h'.
-                                use24h: use24Hour,
-                                ^^^^^^
-lib/core/utils/app_time.dart:82:17: Context: Found this candidate, but the arguments don't match.
-  static String formatClock(Duration duration) {
-                ^^^^^^^^^^^
-lib/features/home/home_screen.dart:844:51: Error: Member not found: 'AppTheme.countdownTypography'.
-                                  style: AppTheme.countdownTypography(
-                                                  ^^^^^^^^^^^^^^^^^^^
-lib/features/home/home_screen.dart:649:16: Error: The method 'remainingFrom' isn't defined for the type 'PrayerTime'.
- - 'PrayerTime' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-Try correcting the name to the name of an existing method, or defining a method named 'remainingFrom'.
-        ? next.remainingFrom(now)
-               ^^^^^^^^^^^^^
-lib/features/home/home_screen.dart:820:56: Error: The getter 'turkishName' isn't defined for the type 'Prayer'.
- - 'Prayer' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'turkishName'.
-                                      ? '${next.prayer.turkishName} Vaktine Kalan'
-                                                       ^^^^^^^^^^^
-lib/features/home/home_screen.dart:915:22: Error: The getter 'turkishName' isn't defined for the type 'Prayer'.
- - 'Prayer' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'turkishName'.
-              prayer.turkishName,
-                     ^^^^^^^^^^^
-00:27 +91 ~6 -4: loading /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart [E]
+00:27 +32 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: (setUpAll)
+00:27 +32 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: kategoriler tanımlı ve benzersiz
+00:27 +33 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: en az 30 dua var ve kimlikler benzersiz
+00:27 +34 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duada ad, okunuş, meal ve kategori dolu
+00:27 +35 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duada kaynak künyesi var
+00:27 +36 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: kaynak künyeleri ya Kur'an ya muteber hadis kaynağına dayanır
+00:27 +37 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her duanın kategorisi kategori listesinde tanımlı
+00:27 +38 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: her kategoride en az bir dua var (boş sekme olmasın)
+00:27 +39 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: Kur'an kaynaklı duaların künyesi sure/ayet içerir
+00:27 +40 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: Arapça metin içeren dualar Arapça alfabede
+00:27 +41 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/dua_assets_test.dart: katalogda arama ve kategori süzme çalışıyor
+00:27 +42 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı en az 20 kayıt ve benzersiz kimlikler
+00:27 +43 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı her kayıtta başlık, cevap, anahtar kelime ve kaynak var
+00:27 +44 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı anahtar kelimeler küçük harf ve ASCII (arama uyumu)
+00:27 +45 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı anahtar kelimeler yeterince ayırt edici
+00:27 +46 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı ilişkili kayıt kimlikleri geçerli
+00:27 +47 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı mezhep farkı notları en az birkaç kayıtta bulunur
+00:27 +48 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı kaynak künyeleri kaynak türüne ayrılabiliyor
+00:27 +49 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi namaz rekatı sorusu doğru kayda gider
+00:27 +50 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi abdest sorusu doğru kayda gider
+00:27 +51 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi zekât sorusu doğru kayda gider
+00:27 +52 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi kıble sorusu doğru kayda gider
+00:27 +53 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi Türkçe karakter ve büyük harf farkı eşleşmeyi bozmaz
+00:27 +54 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi her yerel cevap kaynak, uyarı ve mezhep bilgisi taşır
+00:28 +55 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi konu kelimesi genel kelimelere üstün gelir (vitir/teravih)
+00:28 +56 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi ayırt edici kelime puanı, genel kelimelerden yüksektir
+00:28 +57 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi harf düşmesi olan sorular da eşleşir (hatim → hatmi)
+00:28 +58 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi Kâbe yönü sorusu kıble kaydına gider
+00:28 +59 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi önerilen sorular kimlik değil, okunabilir başlık olarak döner
+00:28 +60 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi kayda uymayan soru için uydurma cevap üretilmez
+00:28 +61 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi soru boşsa eşleşme yapılmaz
+00:28 +62 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi paylaşım metni kaynakları ve mezhep notlarını içerir
+00:28 +63 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi İslam'ın şartları sorusuna beş şartı doğru sırayla ve kaynaklı cevaplar
+00:28 +64 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi İmanın şartları sorusuna altı iman esasını doğru sırayla ve kaynaklı cevaplar
+00:28 +65 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi birleşik sorularda RAG yaklaşımıyla her iki doğrulanmış kayıt birleştirilir
+00:29 +66 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri yedi gün × altı vakit için kimlikler benzersiz
+00:29 +67 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri kimlikler ilgili aralıkta kalır
+00:29 +68 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim kimlikleri vakit kimlikleri tekil bildirim kimlikleriyle çakışmaz
+00:29 +69 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim yönlendirme yükü her hedef kendi yüküyle ayrışır
+00:29 +70 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: bildirim yönlendirme yükü ayrıntılı yükler ve tanımsız yükler güvenli
+00:29 +71 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları varsayılan olarak güneş vakti bildirilmez
+00:29 +72 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları kullanıcı bir vakti kapatabilir
+00:29 +73 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları bildirimler tümden kapatılınca hiçbir vakit bildirilmez
+00:29 +74 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: vakit bildirimi kararları eksik ayar güvenli tarafta kalır (kapalı sayılır)
+00:29 +75 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu varsayılan sessiz saat kapalı
+00:29 +76 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu sessiz saat aralığı gece yarısını aşabilir
+00:29 +77 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu uyku modu 22:00–07:00 arasını kapsar
+00:29 +78 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu öğle vakti sessiz saate girmez
+00:29 +79 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı ön hatırlatma varsayılan olarak kapalı
+00:29 +80 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı ön hatırlatma dakikası ayarlanabilir
+00:29 +81 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ön hatırlatma ve gün sayısı zamanlanan gün sayısı makul aralıkta
+00:29 +82 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Türkçe karakterleri sadeleştirir
+00:29 +83 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer kelimelere ayırır ve kısa kelimeleri atar
+00:29 +84 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer ekleri kaba biçimde kırpar
+00:29 +85 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer eşleştirme aksan ve ek farklarını tolere eder
+00:29 +86 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer Arapça harekeleri kaldırır
+00:29 +87 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer yüzde biçimi
+00:29 +88 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime geri sayım ve dijital sayaç biçimi
+00:29 +89 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime 24 saat ve 12 saat biçimi
+00:29 +90 ~6 -3: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: AppTime gün karşılaştırması
+lib/features/home/home_screen.dart:1193:22: Error: The getter 'AppTheme' isn't defined for the type '_DailyVerseCard'.
+ - '_DailyVerseCard' is from 'package:ezanai/features/home/home_screen.dart' ('lib/features/home/home_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTheme'.
+              style: AppTheme.arabic(Theme.of(context).textTheme, size: 26),
+                     ^^^^^^^^
+00:40 +91 ~6 -4: loading /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart [E]
   Failed to load "/home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart":
-  Compilation failed for testPath=/home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: lib/features/home/home_screen.dart:642:11: Error: No named parameter with the name 'today'.
-            today: day,
-            ^^^^^
-  lib/data/models/prayer_times_day.dart:45:33: Context: Found this candidate, but the arguments don't match.
-    static PrayerScheduleSnapshot resolve({
-                                  ^^^^^^^
-  lib/features/home/home_screen.dart:777:33: Error: No named parameter with the name 'use24h'.
-                                  use24h: use24Hour,
-                                  ^^^^^^
-  lib/core/utils/app_time.dart:82:17: Context: Found this candidate, but the arguments don't match.
-    static String formatClock(Duration duration) {
-                  ^^^^^^^^^^^
-  lib/features/home/home_screen.dart:844:51: Error: Member not found: 'AppTheme.countdownTypography'.
-                                    style: AppTheme.countdownTypography(
-                                                    ^^^^^^^^^^^^^^^^^^^
-  lib/features/home/home_screen.dart:649:16: Error: The method 'remainingFrom' isn't defined for the type 'PrayerTime'.
-   - 'PrayerTime' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-  Try correcting the name to the name of an existing method, or defining a method named 'remainingFrom'.
-          ? next.remainingFrom(now)
-                 ^^^^^^^^^^^^^
-  lib/features/home/home_screen.dart:820:56: Error: The getter 'turkishName' isn't defined for the type 'Prayer'.
-   - 'Prayer' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-  Try correcting the name to the name of an existing getter, or defining a getter or field named 'turkishName'.
-                                        ? '${next.prayer.turkishName} Vaktine Kalan'
-                                                         ^^^^^^^^^^^
-  lib/features/home/home_screen.dart:915:22: Error: The getter 'turkishName' isn't defined for the type 'Prayer'.
-   - 'Prayer' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-  Try correcting the name to the name of an existing getter, or defining a getter or field named 'turkishName'.
-                prayer.turkishName,
-                       ^^^^^^^^^^^
+  Compilation failed for testPath=/home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: lib/features/home/home_screen.dart:1193:22: Error: The getter 'AppTheme' isn't defined for the type '_DailyVerseCard'.
+   - '_DailyVerseCard' is from 'package:ezanai/features/home/home_screen.dart' ('lib/features/home/home_screen.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTheme'.
+                style: AppTheme.arabic(Theme.of(context).textTheme, size: 26),
+                       ^^^^^^^^
   .
-00:27 +91 ~6 -4: loading /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart [E]
+00:40 +91 ~6 -4: loading /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart [E]
   Error: The Dart compiler exited unexpectedly.
   package:flutter_tools/src/base/common.dart 34:3  throwToolExit
   package:flutter_tools/src/compile.dart 1024:11   DefaultResidentCompiler._compile.<fn>
@@ -541,70 +470,20 @@ Try correcting the name to the name of an existing getter, or defining a getter 
   dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
   dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
   
-lib/features/home/home_screen.dart:642:11: Error: No named parameter with the name 'today'.
-          today: day,
-          ^^^^^
-lib/data/models/prayer_times_day.dart:45:33: Context: Found this candidate, but the arguments don't match.
-  static PrayerScheduleSnapshot resolve({
-                                ^^^^^^^
-lib/features/home/home_screen.dart:777:33: Error: No named parameter with the name 'use24h'.
-                                use24h: use24Hour,
-                                ^^^^^^
-lib/core/utils/app_time.dart:82:17: Context: Found this candidate, but the arguments don't match.
-  static String formatClock(Duration duration) {
-                ^^^^^^^^^^^
-lib/features/home/home_screen.dart:844:51: Error: Member not found: 'AppTheme.countdownTypography'.
-                                  style: AppTheme.countdownTypography(
-                                                  ^^^^^^^^^^^^^^^^^^^
-lib/features/home/home_screen.dart:649:16: Error: The method 'remainingFrom' isn't defined for the type 'PrayerTime'.
- - 'PrayerTime' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-Try correcting the name to the name of an existing method, or defining a method named 'remainingFrom'.
-        ? next.remainingFrom(now)
-               ^^^^^^^^^^^^^
-lib/features/home/home_screen.dart:820:56: Error: The getter 'turkishName' isn't defined for the type 'Prayer'.
- - 'Prayer' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'turkishName'.
-                                      ? '${next.prayer.turkishName} Vaktine Kalan'
-                                                       ^^^^^^^^^^^
-lib/features/home/home_screen.dart:915:22: Error: The getter 'turkishName' isn't defined for the type 'Prayer'.
- - 'Prayer' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'turkishName'.
-              prayer.turkishName,
-                     ^^^^^^^^^^^
-00:34 +91 ~6 -5: loading /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart [E]
+lib/features/home/home_screen.dart:1193:22: Error: The getter 'AppTheme' isn't defined for the type '_DailyVerseCard'.
+ - '_DailyVerseCard' is from 'package:ezanai/features/home/home_screen.dart' ('lib/features/home/home_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTheme'.
+              style: AppTheme.arabic(Theme.of(context).textTheme, size: 26),
+                     ^^^^^^^^
+00:53 +91 ~6 -5: loading /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart [E]
   Failed to load "/home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart":
-  Compilation failed for testPath=/home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: lib/features/home/home_screen.dart:642:11: Error: No named parameter with the name 'today'.
-            today: day,
-            ^^^^^
-  lib/data/models/prayer_times_day.dart:45:33: Context: Found this candidate, but the arguments don't match.
-    static PrayerScheduleSnapshot resolve({
-                                  ^^^^^^^
-  lib/features/home/home_screen.dart:777:33: Error: No named parameter with the name 'use24h'.
-                                  use24h: use24Hour,
-                                  ^^^^^^
-  lib/core/utils/app_time.dart:82:17: Context: Found this candidate, but the arguments don't match.
-    static String formatClock(Duration duration) {
-                  ^^^^^^^^^^^
-  lib/features/home/home_screen.dart:844:51: Error: Member not found: 'AppTheme.countdownTypography'.
-                                    style: AppTheme.countdownTypography(
-                                                    ^^^^^^^^^^^^^^^^^^^
-  lib/features/home/home_screen.dart:649:16: Error: The method 'remainingFrom' isn't defined for the type 'PrayerTime'.
-   - 'PrayerTime' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-  Try correcting the name to the name of an existing method, or defining a method named 'remainingFrom'.
-          ? next.remainingFrom(now)
-                 ^^^^^^^^^^^^^
-  lib/features/home/home_screen.dart:820:56: Error: The getter 'turkishName' isn't defined for the type 'Prayer'.
-   - 'Prayer' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-  Try correcting the name to the name of an existing getter, or defining a getter or field named 'turkishName'.
-                                        ? '${next.prayer.turkishName} Vaktine Kalan'
-                                                         ^^^^^^^^^^^
-  lib/features/home/home_screen.dart:915:22: Error: The getter 'turkishName' isn't defined for the type 'Prayer'.
-   - 'Prayer' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-  Try correcting the name to the name of an existing getter, or defining a getter or field named 'turkishName'.
-                prayer.turkishName,
-                       ^^^^^^^^^^^
+  Compilation failed for testPath=/home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: lib/features/home/home_screen.dart:1193:22: Error: The getter 'AppTheme' isn't defined for the type '_DailyVerseCard'.
+   - '_DailyVerseCard' is from 'package:ezanai/features/home/home_screen.dart' ('lib/features/home/home_screen.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTheme'.
+                style: AppTheme.arabic(Theme.of(context).textTheme, size: 26),
+                       ^^^^^^^^
   .
-00:35 +91 ~6 -5: loading /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart [E]
+00:53 +91 ~6 -5: loading /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart [E]
   Error: The Dart compiler exited unexpectedly.
   package:flutter_tools/src/base/common.dart 34:3  throwToolExit
   package:flutter_tools/src/compile.dart 1024:11   DefaultResidentCompiler._compile.<fn>
@@ -624,14 +503,14 @@ Try correcting the name to the name of an existing getter, or defining a getter 
   dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
   dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
   
-00:36 +91 ~6 -5: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: (setUpAll)
-00:36 +91 ~6 -5: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: doğrulama verisi yüklendi
-00:36 +92 ~6 -5: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: yerel hesap, Diyanet vakitlerine ±3 dakika içinde kalır
-00:36 +93 ~6 -5: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: vakitler gün içinde artan sırada
-00:36 +94 ~6 -5: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: Hanefî ikindi vakti Şâfiî'den sonra olur
-00:36 +95 ~6 -5: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: yüksek enlemlerde gece ortası kuralı vakit üretir
-00:36 +96 ~6 -5: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: (tearDownAll)
-00:36 +96 ~6 -5: Some tests failed.
+00:54 +91 ~6 -5: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: (setUpAll)
+00:54 +91 ~6 -5: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: doğrulama verisi yüklendi
+00:54 +92 ~6 -5: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: yerel hesap, Diyanet vakitlerine ±3 dakika içinde kalır
+00:54 +93 ~6 -5: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: vakitler gün içinde artan sırada
+00:54 +94 ~6 -5: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: Hanefî ikindi vakti Şâfiî'den sonra olur
+00:54 +95 ~6 -5: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: yüksek enlemlerde gece ortası kuralı vakit üretir
+00:54 +96 ~6 -5: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: (tearDownAll)
+00:54 +96 ~6 -5: Some tests failed.
 
 Failing tests:
   /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: loading /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart
@@ -659,6 +538,29 @@ Failing tests:
 
 ## build
 ```
+[=================                      ] 45% Unzipping... android-ndk-r28c/tool
+[==================                     ] 45% Unzipping... android-ndk-r28c/tool
+[==================                     ] 46% Unzipping... android-ndk-r28c/tool
+[==================                     ] 47% Unzipping... android-ndk-r28c/tool
+[===================                    ] 48% Unzipping... android-ndk-r28c/tool
+[===================                    ] 49% Unzipping... android-ndk-r28c/tool
+[===================                    ] 50% Unzipping... android-ndk-r28c/tool
+[====================                   ] 50% Unzipping... android-ndk-r28c/tool
+[====================                   ] 51% Unzipping... android-ndk-r28c/tool
+[====================                   ] 52% Unzipping... android-ndk-r28c/tool
+[=====================                  ] 53% Unzipping... android-ndk-r28c/tool
+[=====================                  ] 54% Unzipping... android-ndk-r28c/tool
+[=====================                  ] 54% Unzipping... android-ndk-r28c/buil
+[=====================                  ] 54% Unzipping... android-ndk-r28c/sour
+[=====================                  ] 54% Unzipping... android-ndk-r28c/NOTI
+[=====================                  ] 54% Unzipping... android-ndk-r28c/ndk-
+[=====================                  ] 54% Unzipping... android-ndk-r28c/NOTI
+[=====================                  ] 54% Unzipping... android-ndk-r28c/pyth
+[=====================                  ] 54% Unzipping... android-ndk-r28c/preb
+[=====================                  ] 54% Unzipping... android-ndk-r28c/ndk-
+[=====================                  ] 54% Unzipping... android-ndk-r28c/sour
+[=====================                  ] 54% Unzipping... android-ndk-r28c/simp
+[=====================                  ] 55% Unzipping... android-ndk-r28c/simp
 [=====================                  ] 55% Unzipping... android-ndk-r28c/CHAN
 [=======================================] 100% Unzipping... android-ndk-r28c/CHA
 
@@ -669,40 +571,17 @@ Preparing "Install CMake 3.22.1 v.3.22.1".
 Installing CMake 3.22.1 in /usr/local/lib/android/sdk/cmake/3.22.1
 "Install CMake 3.22.1 v.3.22.1" complete.
 "Install CMake 3.22.1 v.3.22.1" finished.
-lib/features/home/home_screen.dart:642:11: Error: No named parameter with the name 'today'.
-          today: day,
-          ^^^^^
-lib/data/models/prayer_times_day.dart:45:33: Context: Found this candidate, but the arguments don't match.
-  static PrayerScheduleSnapshot resolve({
-                                ^^^^^^^
-lib/features/home/home_screen.dart:777:33: Error: No named parameter with the name 'use24h'.
-                                use24h: use24Hour,
-                                ^^^^^^
-lib/core/utils/app_time.dart:82:17: Context: Found this candidate, but the arguments don't match.
-  static String formatClock(Duration duration) {
-                ^^^^^^^^^^^
-lib/features/home/home_screen.dart:844:51: Error: Member not found: 'AppTheme.countdownTypography'.
-                                  style: AppTheme.countdownTypography(
-                                                  ^^^^^^^^^^^^^^^^^^^
-lib/features/home/home_screen.dart:649:16: Error: The method 'remainingFrom' isn't defined for the type 'PrayerTime'.
- - 'PrayerTime' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-Try correcting the name to the name of an existing method, or defining a method named 'remainingFrom'.
-        ? next.remainingFrom(now)
-               ^^^^^^^^^^^^^
-lib/features/home/home_screen.dart:820:56: Error: The getter 'turkishName' isn't defined for the type 'Prayer'.
- - 'Prayer' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'turkishName'.
-                                      ? '${next.prayer.turkishName} Vaktine Kalan'
-                                                       ^^^^^^^^^^^
-lib/features/home/home_screen.dart:915:22: Error: The getter 'turkishName' isn't defined for the type 'Prayer'.
- - 'Prayer' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'turkishName'.
-              prayer.turkishName,
-                     ^^^^^^^^^^^
-Target kernel_snapshot_program failed: Exception
-
+lib/features/home/home_screen.dart:1193:22: Error: The getter 'AppTheme' isn't defined for the type '_DailyVerseCard'.
+ - '_DailyVerseCard' is from 'package:ezanai/features/home/home_screen.dart' ('lib/features/home/home_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTheme'.
+              style: AppTheme.arabic(Theme.of(context).textTheme, size: 26),
+                     ^^^^^^^^
 Note: /home/runner/.pub-cache/hosted/pub.dev/geolocator_android-5.1.1+1/android/src/main/java/com/baseflow/geolocator/location/LocationMapper.java uses or overrides a deprecated API.
 Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Target kernel_snapshot_program failed: Exception
+
 
 FAILURE: Build failed with an exception.
 
@@ -716,8 +595,8 @@ Execution failed for task ':app:compileFlutterBuildRelease'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 2m 43s
-Running Gradle task 'assembleRelease'...                          163.7s
+BUILD FAILED in 3m 39s
+Running Gradle task 'assembleRelease'...                          219.8s
 Gradle task assembleRelease failed with exit code 1
 ```
 
@@ -744,38 +623,11 @@ If you don't see a plugins block, your project was likely created with an older 
 
 Note: Some input files use or override a deprecated API.
 Note: Recompile with -Xlint:deprecation for details.
-Note: Some input files use or override a deprecated API.
-Note: Recompile with -Xlint:deprecation for details.
-lib/features/home/home_screen.dart:642:11: Error: No named parameter with the name 'today'.
-          today: day,
-          ^^^^^
-lib/data/models/prayer_times_day.dart:45:33: Context: Found this candidate, but the arguments don't match.
-  static PrayerScheduleSnapshot resolve({
-                                ^^^^^^^
-lib/features/home/home_screen.dart:777:33: Error: No named parameter with the name 'use24h'.
-                                use24h: use24Hour,
-                                ^^^^^^
-lib/core/utils/app_time.dart:82:17: Context: Found this candidate, but the arguments don't match.
-  static String formatClock(Duration duration) {
-                ^^^^^^^^^^^
-lib/features/home/home_screen.dart:844:51: Error: Member not found: 'AppTheme.countdownTypography'.
-                                  style: AppTheme.countdownTypography(
-                                                  ^^^^^^^^^^^^^^^^^^^
-lib/features/home/home_screen.dart:649:16: Error: The method 'remainingFrom' isn't defined for the type 'PrayerTime'.
- - 'PrayerTime' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-Try correcting the name to the name of an existing method, or defining a method named 'remainingFrom'.
-        ? next.remainingFrom(now)
-               ^^^^^^^^^^^^^
-lib/features/home/home_screen.dart:820:56: Error: The getter 'turkishName' isn't defined for the type 'Prayer'.
- - 'Prayer' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'turkishName'.
-                                      ? '${next.prayer.turkishName} Vaktine Kalan'
-                                                       ^^^^^^^^^^^
-lib/features/home/home_screen.dart:915:22: Error: The getter 'turkishName' isn't defined for the type 'Prayer'.
- - 'Prayer' is from 'package:ezanai/data/models/prayer.dart' ('lib/data/models/prayer.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'turkishName'.
-              prayer.turkishName,
-                     ^^^^^^^^^^^
+lib/features/home/home_screen.dart:1193:22: Error: The getter 'AppTheme' isn't defined for the type '_DailyVerseCard'.
+ - '_DailyVerseCard' is from 'package:ezanai/features/home/home_screen.dart' ('lib/features/home/home_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTheme'.
+              style: AppTheme.arabic(Theme.of(context).textTheme, size: 26),
+                     ^^^^^^^^
 Target kernel_snapshot_program failed: Exception
 
 
@@ -791,7 +643,7 @@ Execution failed for task ':app:compileFlutterBuildRelease'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 47s
-Running Gradle task 'bundleRelease'...                             47.3s
+BUILD FAILED in 1m 8s
+Running Gradle task 'bundleRelease'...                             69.0s
 Gradle task bundleRelease failed with exit code 1
 ```
