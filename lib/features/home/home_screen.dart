@@ -337,9 +337,7 @@ class _QuickActionTile extends StatelessWidget {
                       ],
               ),
               border: Border.all(
-                color: isDark
-                    ? theme.colorScheme.outlineVariant
-                    : Colors.white,
+                color: isDark ? theme.colorScheme.outlineVariant : Colors.white,
                 width: 2.5,
               ),
               boxShadow: <BoxShadow>[
@@ -639,7 +637,11 @@ class _EDiyanetSplitPrayerCard extends StatelessWidget {
     final bool isDark = theme.brightness == Brightness.dark;
     final PrayerScheduleSnapshot snap =
         snapshot ??
-        PrayerScheduleSnapshot.resolve(now: now, today: day, tomorrow: tomorrow);
+        PrayerScheduleSnapshot.resolve(
+          now: now,
+          today: day,
+          tomorrow: tomorrow,
+        );
     final PrayerTimesDay activeDay = snap.activeDay;
     final Prayer current = snap.currentPrayer;
     final PrayerTime? next = snap.nextPrayer;
@@ -652,8 +654,8 @@ class _EDiyanetSplitPrayerCard extends StatelessWidget {
         .map((String s) => s.trim())
         .where((String s) => s.isNotEmpty)
         .toList();
-    final String cityMain = (locParts.isNotEmpty ? locParts.first : locationLabel)
-        .toUpperCase();
+    final String cityMain =
+        (locParts.isNotEmpty ? locParts.first : locationLabel).toUpperCase();
     final String districtSub = locParts.length > 1
         ? locParts.sublist(1).join(' / ')
         : locationLabel;
@@ -724,9 +726,7 @@ class _EDiyanetSplitPrayerCard extends StatelessWidget {
                         vertical: 5,
                       ),
                       decoration: BoxDecoration(
-                        color: isDark
-                            ? const Color(0xFF15262E)
-                            : Colors.white,
+                        color: isDark ? const Color(0xFF15262E) : Colors.white,
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
                           color: isDark
@@ -959,18 +959,23 @@ class _EDiyanetMosqueSkyPainter extends CustomPainter {
     // Yumuşak bulut halkaları
     final Paint cloudPaint = Paint()
       ..color = Colors.white.withValues(alpha: 0.28);
-    canvas.drawCircle(Offset(size.width * 0.22, size.height * 0.25), 26, cloudPaint);
-    canvas.drawCircle(Offset(size.width * 0.78, size.height * 0.18), 32, cloudPaint);
+    canvas.drawCircle(
+      Offset(size.width * 0.22, size.height * 0.25),
+      26,
+      cloudPaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.78, size.height * 0.18),
+      32,
+      cloudPaint,
+    );
 
     // Alt kısımda cami kubbe ve minare silüeti
     final Paint mosquePaint = Paint()
       ..color = const Color(0xFF284B63).withValues(alpha: 0.85);
     final double baseY = size.height;
     // Taban
-    canvas.drawRect(
-      Rect.fromLTWH(0, baseY - 18, size.width, 18),
-      mosquePaint,
-    );
+    canvas.drawRect(Rect.fromLTWH(0, baseY - 18, size.width, 18), mosquePaint);
     // Ana kubbe
     canvas.drawArc(
       Rect.fromCenter(
