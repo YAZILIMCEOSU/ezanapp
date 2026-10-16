@@ -16,7 +16,6 @@ import '../../data/models/zikir_models.dart';
 import '../../data/repositories/daily_content_repository.dart';
 import '../../design/app_colors.dart';
 import '../../design/app_spacing.dart';
-import '../../design/app_theme.dart';
 import '../../router/app_router.dart';
 import '../../state/content_providers.dart';
 import '../../state/providers.dart';
@@ -638,16 +637,14 @@ class _EDiyanetSplitPrayerCard extends StatelessWidget {
     final PrayerScheduleSnapshot snap =
         snapshot ??
         PrayerScheduleSnapshot.resolve(
-          now: now,
-          today: day,
+          day: day,
           tomorrow: tomorrow,
+          now: now,
         );
     final PrayerTimesDay activeDay = snap.activeDay;
     final Prayer current = snap.currentPrayer;
     final PrayerTime? next = snap.nextPrayer;
-    final Duration remaining = next != null
-        ? next.remainingFrom(now)
-        : Duration.zero;
+    final Duration remaining = snap.remaining;
 
     final List<String> locParts = locationLabel
         .split(RegExp(r'[,/·-]'))
@@ -772,10 +769,12 @@ class _EDiyanetSplitPrayerCard extends StatelessWidget {
                           Expanded(
                             child: _EDiyanetPrayerTicket(
                               prayer: p,
-                              timeText: AppTime.formatClock(
-                                activeDay.timeOf(p),
-                                use24h: use24Hour,
-                              ),
+                              timeText: activeDay.timeOf(p) == null
+                                  ? '--:--'
+                                  : AppTime.formatTime(
+                                      activeDay.timeOf(p)!,
+                                      use24Hour: use24Hour,
+                                    ),
                               isActive: current == p,
                               isDark: isDark,
                             ),
@@ -817,7 +816,7 @@ class _EDiyanetSplitPrayerCard extends StatelessWidget {
                                 fit: BoxFit.scaleDown,
                                 child: Text(
                                   next != null
-                                      ? '${next.prayer.turkishName} Vaktine Kalan'
+                                      ? '${next.prayer.label} Vaktine Kalan'
                                       : 'Vakit Geri Sayımı',
                                   style: const TextStyle(
                                     color: Color(0xFF1F2D3A),
@@ -840,10 +839,16 @@ class _EDiyanetSplitPrayerCard extends StatelessWidget {
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: Text(
-                                  AppTime.formatCountdown(remaining),
-                                  style: AppTheme.countdownTypography(
-                                    color: const Color(0xFF1B2836),
-                                    size: 24,
+                                  next == null
+                                      ? '--:--'
+                                      : AppTime.formatClock(remaining),
+                                  style: const TextStyle(
+                                    color: Color(0xFF1B2836),
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 22,
+                                    fontFeatures: <FontFeature>[
+                                      FontFeature.tabularFigures(),
+                                    ],
                                   ),
                                 ),
                               ),
@@ -912,7 +917,7 @@ class _EDiyanetPrayerTicket extends StatelessWidget {
           FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
-              prayer.turkishName,
+              prayer.label,
               style: TextStyle(
                 color: fg.withValues(alpha: isActive ? 0.96 : 0.78),
                 fontWeight: FontWeight.w700,
