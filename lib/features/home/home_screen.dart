@@ -636,11 +636,7 @@ class _EDiyanetSplitPrayerCard extends StatelessWidget {
     final bool isDark = theme.brightness == Brightness.dark;
     final PrayerScheduleSnapshot snap =
         snapshot ??
-        PrayerScheduleSnapshot.resolve(
-          day: day,
-          tomorrow: tomorrow,
-          now: now,
-        );
+        PrayerScheduleSnapshot.resolve(day: day, tomorrow: tomorrow, now: now);
     final PrayerTimesDay activeDay = snap.activeDay;
     final Prayer current = snap.currentPrayer;
     final PrayerTime? next = snap.nextPrayer;
