@@ -3,12 +3,11 @@ name: analyze
 on:
   workflow_dispatch:
   push:
-    branches: [ arena/01a1057d-ezanapp ]
+    branches: [ arena/01a1057d-ezanapp, main ]
     paths-ignore: [ 'tools/**', 'store/**', '.ci/**', '**.md' ]
-  pull_request:
 
 concurrency:
-  group: analyze-${{ github.ref }}
+  group: analyze-${{ github.ref_name }}
   cancel-in-progress: true
 
 jobs:

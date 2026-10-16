@@ -113,10 +113,23 @@ Google Play Console sol menüsünde **Politika ve programlar > Uygulama içeriğ
 
 ---
 
-### ADIM 4 — İmzalı Yayın Paketini (`.aab`) Üretme ve Yükleme
-1. Eğer henüz imza anahtarınız (`upload.jks`) yoksa `docs/BASLA.md` içindeki **Bölüm 5**'te anlatıldığı gibi tek komutla oluşturup GitHub **Settings > Secrets and variables > Actions** altına `UPLOAD_KEYSTORE_BASE64`, `KEY_STORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` olarak ekleyin.
-2. GitHub'da **Actions > Release Build** iş akışını çalıştırarak Google Play'e yüklenecek imzalı **`app-release.aab`** dosyasını indirin.
-3. Google Play Console > **Test ve yayın > Üretim** (veya Bireysel hesapta önce **Kapalı test > Alpha**) > **Yeni sürüm oluştur** ekranına `app-release.aab` dosyasını sürükleyip bırakın.
+### ADIM 4 — İmzalı Yayın Paketini (`.aab`) Üretme ve Yükleme (Bilgisayara Hiçbir Şey Kurmadan)
+1. **İmza Parolasını Kaydedin:** GitHub'da **Settings > Secrets and variables > Actions > New repository secret** ekranına girin:
+   - **Name:** `KEYSTORE_PASSWORD`
+   - **Secret:** Kendi belirlediğiniz güçlü bir parola yazıp kaydedin.
+2. **İmza Anahtarını Tek Tıkla Üretin (Yalnızca 1 Kez Yapılır):**
+   - GitHub üst menüden **Actions** sekmesine tıklayın.
+   - Soldan **`1) İmzalama anahtarı oluştur (bir kez)`** iş akışını seçip sağdaki **Run workflow** düğmesine basın.
+   - 1 dakika içinde işlem yeşile döner; sayfanın altındaki **Artifacts** kısmından **`imzalama-anahtari`** dosyasını indirin. İçindeki `keystore.base64.txt` dosyasını açıp içindeki uzun metni kopyalayın.
+   - Tekrar **Settings > Secrets and variables > Actions > New repository secret** ekranına girip:
+     - **Name:** `KEYSTORE_BASE64`
+     - **Secret:** Kopyaladığınız uzun metni yapıştırıp kaydedin.
+3. **Play Store'a Yüklenecek İmzalı `.aab` Dosyasını İndirin:**
+   - GitHub **Actions** sekmesinde soldan **`2) Play'e yüklenecek dosyayı üret (imzalı AAB)`** iş akışını seçin.
+   - Sağdaki **Run workflow** düğmesine tıklayın (**Kapsam:** `tam` seçili gelir) ve yeşil **Run workflow** butonuna basın.
+   - İşlem tamamlandığında sayfanın altındaki **Artifacts** bölümünden **`play-yukleme-dosyasi`** paketini indirin (içinden **`app-release.aab`** çıkar).
+4. **Google Play Console'a Yükleyin:**
+   - Google Play Console > **Test ve yayın > Üretim** (veya Bireysel hesapta önce **Kapalı test > Alpha**) > **Yeni sürüm oluştur** ekranına `app-release.aab` dosyasını sürükleyip bırakın.
 
 ---
 

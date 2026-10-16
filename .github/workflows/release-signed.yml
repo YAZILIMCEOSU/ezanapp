@@ -16,13 +16,13 @@ on:
   workflow_dispatch:
     inputs:
       kapsam:
-        description: 'Kapsam: mvp = yalnız temel özellikler, tam = tüm özellikler'
+        description: 'Kapsam: tam = tüm özellikler (önerilen), mvp = yalnız temel özellikler'
         required: true
-        default: mvp
+        default: tam
         type: choice
         options:
-          - mvp
           - tam
+          - mvp
 
 jobs:
   build:
