@@ -224,20 +224,20 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
       for (final String qTerm in const <String>['camii', 'cami']) {
         if (collected.length >= 25) break;
         try {
-          final Uri nomUri = Uri.https(
-            'nominatim.openstreetmap.org',
-            '/search',
-            <String, String>{
-              'format': 'jsonv2',
-              'q': qTerm,
-              'viewbox':
-                  '${loc.longitude - d},${loc.latitude + d},${loc.longitude + d},${loc.latitude - d}',
-              'bounded': '1',
-              'limit': '40',
-              'accept-language': 'tr',
-              'addressdetails': '1',
-            },
-          );
+          final Uri
+          nomUri = Uri.https('nominatim.openstreetmap.org', '/search', <
+            String,
+            String
+          >{
+            'format': 'jsonv2',
+            'q': qTerm,
+            'viewbox':
+                '${loc.longitude - d},${loc.latitude + d},${loc.longitude + d},${loc.latitude - d}',
+            'bounded': '1',
+            'limit': '40',
+            'accept-language': 'tr',
+            'addressdetails': '1',
+          });
           final http.Response nomRes = await http
               .get(
                 nomUri,
@@ -1471,7 +1471,7 @@ class _LiveMosquesInteractiveMapState
     }).addTo(map);
     marker.bindPopup(
       '<div style="text-align:center;"><b>' + m.n + '</b><br/><span style="font-size:11px;color:#555;">Mesafe: ' + m.d + '</span><br/>' +
-      '<button class="m-btn" onclick="window.MosqueBridge.postMessage(\'' + m.i + '\')">Yol Tarifi Başlat</button></div>'
+      '<button class="m-btn" onclick="window.MosqueBridge.postMessage('' + m.i + '')">Yol Tarifi Başlat</button></div>'
     );
   });
 </script>

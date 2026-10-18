@@ -1300,8 +1300,16 @@ class _CompassPainter extends CustomPainter {
     // Kadran halkası üzerinde tam Kıble derecesi altın işareti
     final double qAngle = (qiblaDegrees - 90) * math.pi / 180;
     canvas.drawLine(
-      center + Offset(math.cos(qAngle) * (radius - 22), math.sin(qAngle) * (radius - 22)),
-      center + Offset(math.cos(qAngle) * (radius - 2), math.sin(qAngle) * (radius - 2)),
+      center +
+          Offset(
+            math.cos(qAngle) * (radius - 22),
+            math.sin(qAngle) * (radius - 22),
+          ),
+      center +
+          Offset(
+            math.cos(qAngle) * (radius - 2),
+            math.sin(qAngle) * (radius - 2),
+          ),
       Paint()
         ..strokeWidth = 3.2
         ..strokeCap = StrokeCap.round
@@ -1422,15 +1430,17 @@ class _LiveQiblaInteractiveMapState extends State<_LiveQiblaInteractiveMap> {
     final double? h = widget.headingDegrees;
     if (h == null || _controller == null) return;
     try {
-      _controller!.runJavaScript('window.updateHeading && window.updateHeading(${h.toStringAsFixed(1)});');
+      _controller!.runJavaScript(
+        'window.updateHeading && window.updateHeading(${h.toStringAsFixed(1)});',
+      );
     } catch (_) {}
   }
 
   String _buildHtml() {
     final double lat = widget.latitude;
     final double lon = widget.longitude;
-    final double kaabaLat = AppConstants.kaabaLat;
-    final double kaabaLon = AppConstants.kaabaLng;
+    const double kaabaLat = AppConstants.kaabaLat;
+    const double kaabaLon = AppConstants.kaabaLng;
     final double qibla = widget.trueQiblaDegrees;
     return '''
 <!DOCTYPE html>
