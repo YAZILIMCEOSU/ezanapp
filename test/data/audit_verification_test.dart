@@ -659,7 +659,7 @@ void main() {
       final AppRuntime runtime = await createTestRuntime();
       addTearDown(runtime.dispose);
 
-      final allCities = await runtime.cities.all();
+      final allCities = await runtime.cities.turkishCities();
       expect(allCities.length, greaterThanOrEqualTo(950));
 
       // Bağcılar meydan ve Güneşli koordinatları Küçükçekmece yerine Bağcılar dönmeli
@@ -667,7 +667,7 @@ void main() {
       expect(bagcilar, isNotNull);
       expect(bagcilar!.name, 'Bağcılar');
       expect(bagcilar.province, 'İstanbul');
-      expect(bagcilar.displayLabel, 'Bağcılar, İstanbul');
+      expect(bagcilar.displayName, 'Bağcılar, İstanbul');
 
       // Küçükçekmece koordinatı Küçükçekmece dönmeli
       final kucukcekmece = await runtime.cities.nearest(41.0002, 28.7800);
