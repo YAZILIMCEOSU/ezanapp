@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../core/constants/app_constants.dart';
 import '../../core/services/compass_service.dart';
 import '../../core/utils/geo.dart';
 import '../../core/utils/logger.dart';

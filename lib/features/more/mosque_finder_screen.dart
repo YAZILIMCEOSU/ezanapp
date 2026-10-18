@@ -208,21 +208,21 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
       }
 
       // Overpass erişilemezse Nominatim viewbox ile yakın camileri çek.
-      final double d = 0.045; // ~5 km yarıçap
-      final Uri fallbackUri = Uri.https(
-        'nominatim.openstreetmap.org',
-        '/search',
-        <String, String>{
-          'format': 'jsonv2',
-          'q': 'camii',
-          'viewbox':
-              '${loc.longitude - d},${loc.latitude + d},${loc.longitude + d},${loc.latitude - d}',
-          'bounded': '1',
-          'limit': '25',
-          'accept-language': 'tr',
-          'addressdetails': '1',
-        },
-      );
+      const double d = 0.045; // ~5 km yarıçap
+      final Uri
+      fallbackUri = Uri.https('nominatim.openstreetmap.org', '/search', <
+        String,
+        String
+      >{
+        'format': 'jsonv2',
+        'q': 'camii',
+        'viewbox':
+            '${loc.longitude - d},${loc.latitude + d},${loc.longitude + d},${loc.latitude - d}',
+        'bounded': '1',
+        'limit': '25',
+        'accept-language': 'tr',
+        'addressdetails': '1',
+      });
       final http.Response nomRes = await http
           .get(
             fallbackUri,
