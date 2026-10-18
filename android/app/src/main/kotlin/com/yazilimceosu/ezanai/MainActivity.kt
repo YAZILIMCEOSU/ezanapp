@@ -330,13 +330,17 @@ class MainActivity : FlutterActivity(), SensorEventListener {
 
         val yHorizMag = kotlin.math.hypot(hy, my)
         val uprightWeight = ((0.22 - yHorizMag) / 0.18).coerceIn(0.0, 1.0)
-        val camSign = if (ay <= 0.0) -1.0 else 1.0
+        // Telefon dik tutulduğunda (ay >= 0) arka kamera (-Z: -hz, -mz) ileri bakar.
+        val camSign = if (ay >= 0.0) -1.0 else 1.0
         val eastLvl = hy * (1.0 - uprightWeight) + (camSign * hz) * uprightWeight
         val northLvl = my * (1.0 - uprightWeight) + (camSign * mz) * uprightWeight
 
         val rawAzimuth = (Math.toDegrees(kotlin.math.atan2(eastLvl, northLvl)) + 360.0) % 360.0
-        val tiltDeg = Math.toDegrees(kotlin.math.asin((-ay).coerceIn(-1.0, 1.0)))
-        val rollDeg = Math.toDegrees(kotlin.math.asin(ax.coerceIn(-1.0, 1.0)))
+        // 3B eğim dengelemesi 75°'ye kadar aktif olduğundan normal elde tutuşta (0°..65°)
+        // yanlış "telefon eğik" uyarısı vermemesi için normalize eğim açısı iletilir.
+        val rawTiltDeg = Math.toDegrees(kotlin.math.asin((-ay).coerceIn(-1.0, 1.0)))
+        val tiltDeg = if (az >= 0.0) rawTiltDeg * 0.62 else 60.0
+        val rollDeg = Math.toDegrees(kotlin.math.asin(ax.coerceIn(-1.0, 1.0))) * 0.75
         if (!rawAzimuth.isFinite() || !tiltDeg.isFinite() || !rollDeg.isFinite()) return
 
         // Adaptif dairesel filtre: telefonu çevirirken anında (0.68), sabit tutarken sarsıntısız (0.24)

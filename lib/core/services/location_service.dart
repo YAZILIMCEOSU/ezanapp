@@ -87,9 +87,10 @@ class LocationService {
     }
   }
 
-  /// Tek seferlik konum alır. Güncel ve hassas GPS koordinatı döndürür.
+  /// Tek seferlik konum alır. Açık alanda uydu GPS, bina içinde Wi-Fi/hücresel
+  /// konum yedeğiyle hızlı ve kesintisiz koordinat döndürür.
   Future<LocationFix> getCurrentPosition({
-    Duration timeout = const Duration(seconds: 20),
+    Duration timeout = const Duration(seconds: 6),
     bool preferLastKnown = false,
   }) async {
     final LocationStatus status = await requestPermission();
@@ -104,14 +105,17 @@ class LocationService {
     }
 
     if (preferLastKnown) {
-      final Position? last = await Geolocator.getLastKnownPosition();
-      if (last != null &&
-          last.timestamp.difference(DateTime.now()).abs() <
-              const Duration(seconds: 45)) {
-        return _toFix(last);
-      }
+      try {
+        final Position? last = await Geolocator.getLastKnownPosition();
+        if (last != null &&
+            last.timestamp.difference(DateTime.now()).abs() <
+                const Duration(minutes: 3)) {
+          return _toFix(last);
+        }
+      } catch (_) {}
     }
 
+    // 1. Öncelik: Yüksek doğruluklu GPS (5-6 sn içinde kilitlenirse tam sokak konumu).
     try {
       final Position position = await Geolocator.getCurrentPosition(
         locationSettings: LocationSettings(
@@ -120,15 +124,38 @@ class LocationService {
         ),
       );
       return _toFix(position);
-    } on TimeoutException {
-      AppLog.warning('Konum alma zaman aşımına uğradı');
+    } catch (_) {
+      // Bina içinde uydu sinyali zayıfsa 2. öncelik olarak Wi-Fi / Baz istasyonu
+      // (medium/low accuracy) konumuna düşülür; 0.5 sn içinde yanıt verir.
+    }
+
+    try {
+      final Position netPos = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.medium,
+          timeLimit: Duration(seconds: 5),
+        ),
+      );
+      return _toFix(netPos);
+    } catch (_) {}
+
+    try {
+      final Position lowPos = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.low,
+          timeLimit: Duration(seconds: 4),
+        ),
+      );
+      return _toFix(lowPos);
+    } catch (_) {}
+
+    try {
       final Position? last = await Geolocator.getLastKnownPosition();
       if (last != null) return _toFix(last);
-      throw AppException.timeout('Konum alınamadı.');
     } catch (error, stackTrace) {
       AppLog.error('Konum alınamadı', error: error, stackTrace: stackTrace);
-      throw AppException.network('Konum alınamadı.');
     }
+    throw AppException.timeout('Konum alınamadı.');
   }
 
   /// Konum açıkken yer değişimini (ör. >=350m) canlı izler.

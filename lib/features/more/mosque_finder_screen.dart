@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../core/services/compass_service.dart';
 import '../../core/utils/geo.dart';
@@ -106,6 +107,7 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
   List<MosquePlace> _searchedMosques = const <MosquePlace>[];
   bool _loadingOnline = false;
   bool _searchingOnline = false;
+  bool _showInlineMap = true;
   String _query = '';
 
   @override
@@ -125,30 +127,40 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
 
   Future<void> _initLocationAndFetch() async {
     if (!mounted) return;
+    // Önce mevcut koordinatla beklemeden yakın camileri çekmeye başla.
+    unawaited(_fetchNearbyOnline());
     final UserLocation current = ref.read(activeLocationProvider);
     if (current.mode == LocationMode.gps) {
-      await ref
+      final bool updated = await ref
           .read(locationControllerProvider.notifier)
           .refreshFromGps(requestPermission: true);
-    }
-    if (mounted) {
-      await _fetchNearbyOnline();
+      if (updated && mounted) {
+        await _fetchNearbyOnline();
+      }
     }
   }
 
   Future<void> _fetchNearbyOnline() async {
     final UserLocation loc = ref.read(activeLocationProvider);
     setState(() => _loadingOnline = true);
+    // ÖNEMLİ: Overpass QL'de `out center 60;` mesafeye göre değil OSM ID'sine göre
+    // ilk 60 kaydı kesip en yakın sokak camilerini düşürüyordu!
+    // Bu yüzden 2.5 km mahalle yarıçapındaki TÜM cami ve mescitler (`out center;`)
+    // eksiksiz çekilip Dart tarafında metre hassasiyetinde sıralanır.
     final String overpassQuery =
-        '[out:json][timeout:10];('
-        'node["amenity"="place_of_worship"]["religion"="muslim"](around:6000,${loc.latitude},${loc.longitude});'
-        'way["amenity"="place_of_worship"]["religion"="muslim"](around:6000,${loc.latitude},${loc.longitude});'
-        'relation["amenity"="place_of_worship"]["religion"="muslim"](around:6000,${loc.latitude},${loc.longitude});'
-        ');out center 60;';
+        '[out:json][timeout:12];('
+        'node["amenity"="place_of_worship"]["religion"="muslim"](around:2500,${loc.latitude},${loc.longitude});'
+        'way["amenity"="place_of_worship"]["religion"="muslim"](around:2500,${loc.latitude},${loc.longitude});'
+        'relation["amenity"="place_of_worship"]["religion"="muslim"](around:2500,${loc.latitude},${loc.longitude});'
+        'node["building"="mosque"](around:2500,${loc.latitude},${loc.longitude});'
+        'way["building"="mosque"](around:2500,${loc.latitude},${loc.longitude});'
+        ');out center;';
     const List<String> endpoints = <String>[
       'https://overpass-api.de/api/interpreter',
+      'https://lz4.overpass-api.de/api/interpreter',
       'https://overpass.kumi.systems/api/interpreter',
     ];
+    final List<MosquePlace> collected = <MosquePlace>[];
     try {
       for (final String endpoint in endpoints) {
         try {
@@ -161,19 +173,20 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
                 },
                 body: <String, String>{'data': overpassQuery},
               )
-              .timeout(const Duration(seconds: 9));
+              .timeout(const Duration(seconds: 8));
           if (response.statusCode != 200) continue;
           final Object? decoded = jsonDecode(utf8.decode(response.bodyBytes));
           if (decoded is! Map<String, Object?>) continue;
           final List<Object?> elements =
               (decoded['elements'] as List<Object?>?) ?? const <Object?>[];
-          final List<MosquePlace> parsed = <MosquePlace>[];
           for (final Object? item in elements) {
             if (item is! Map) continue;
             final Map<String, Object?> tags =
                 (item['tags'] as Map?)?.cast<String, Object?>() ??
                 <String, Object?>{};
-            final String? name = (tags['name:tr'] ?? tags['name']) as String?;
+            final String? name =
+                (tags['name:tr'] ?? tags['name'] ?? tags['alt_name'])
+                    as String?;
             if (name == null || name.trim().isEmpty) continue;
             double? lat = (item['lat'] as num?)?.toDouble();
             double? lon = (item['lon'] as num?)?.toDouble();
@@ -184,82 +197,101 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
               lon = (center?['lon'] as num?)?.toDouble();
             }
             if (lat == null || lon == null) continue;
-            parsed.add(
+            final String sub =
+                (tags['addr:neighbourhood'] ??
+                        tags['addr:suburb'] ??
+                        tags['addr:district'] ??
+                        tags['addr:city'] ??
+                        loc.label)
+                    .toString();
+            collected.add(
               MosquePlace(
                 name: name.trim(),
-                district:
-                    (tags['addr:district'] ??
-                            tags['addr:suburb'] ??
-                            tags['addr:city'] ??
-                            loc.label)
-                        as String,
+                district: sub,
                 latitude: lat,
                 longitude: lon,
               ),
             );
           }
-          if (mounted && parsed.isNotEmpty) {
-            setState(() => _onlineMosques = parsed);
-            return;
-          }
+          if (collected.isNotEmpty) break;
         } catch (_) {
           // Sonraki yansıyı dene.
         }
       }
 
-      // Overpass erişilemezse Nominatim viewbox ile yakın camileri çek.
-      const double d = 0.045; // ~5 km yarıçap
-      final Uri
-      fallbackUri = Uri.https('nominatim.openstreetmap.org', '/search', <
-        String,
-        String
-      >{
-        'format': 'jsonv2',
-        'q': 'camii',
-        'viewbox':
-            '${loc.longitude - d},${loc.latitude + d},${loc.longitude + d},${loc.latitude - d}',
-        'bounded': '1',
-        'limit': '25',
-        'accept-language': 'tr',
-        'addressdetails': '1',
-      });
-      final http.Response nomRes = await http
-          .get(
-            fallbackUri,
-            headers: const <String, String>{
-              'User-Agent': 'EzanVaktimPro/1.0 (https://ezanai.app)',
+      // Ek olarak Nominatim üzerinden yakın mahalledeki (2.5 km) camileri de çek ve birleştir.
+      const double d = 0.024; // ~2.5 km mahalle yarıçapı
+      for (final String qTerm in const <String>['camii', 'cami']) {
+        if (collected.length >= 25) break;
+        try {
+          final Uri nomUri = Uri.https(
+            'nominatim.openstreetmap.org',
+            '/search',
+            <String, String>{
+              'format': 'jsonv2',
+              'q': qTerm,
+              'viewbox':
+                  '${loc.longitude - d},${loc.latitude + d},${loc.longitude + d},${loc.latitude - d}',
+              'bounded': '1',
+              'limit': '40',
+              'accept-language': 'tr',
+              'addressdetails': '1',
             },
-          )
-          .timeout(const Duration(seconds: 7));
-      if (nomRes.statusCode == 200) {
-        final Object? decoded = jsonDecode(utf8.decode(nomRes.bodyBytes));
-        if (decoded is List) {
-          final List<MosquePlace> parsed = <MosquePlace>[];
-          for (final Object? item in decoded) {
-            if (item is! Map) continue;
-            final double? lat = double.tryParse('${item['lat'] ?? ''}');
-            final double? lon = double.tryParse('${item['lon'] ?? ''}');
-            if (lat == null || lon == null) continue;
-            final String displayName = (item['display_name'] as String? ?? '')
-                .trim();
-            final String rawName = (item['name'] as String? ?? '').trim();
-            final String title = rawName.isNotEmpty
-                ? rawName
-                : displayName.split(',').first.trim();
-            if (title.isEmpty) continue;
-            parsed.add(
-              MosquePlace(
-                name: title,
-                district: loc.label,
-                latitude: lat,
-                longitude: lon,
-              ),
-            );
+          );
+          final http.Response nomRes = await http
+              .get(
+                nomUri,
+                headers: const <String, String>{
+                  'User-Agent': 'EzanVaktimPro/1.0 (https://ezanai.app)',
+                },
+              )
+              .timeout(const Duration(seconds: 6));
+          if (nomRes.statusCode == 200) {
+            final Object? decoded = jsonDecode(utf8.decode(nomRes.bodyBytes));
+            if (decoded is List) {
+              for (final Object? item in decoded) {
+                if (item is! Map) continue;
+                final double? lat = double.tryParse('${item['lat'] ?? ''}');
+                final double? lon = double.tryParse('${item['lon'] ?? ''}');
+                if (lat == null || lon == null) continue;
+                final String displayName =
+                    (item['display_name'] as String? ?? '').trim();
+                final String rawName = (item['name'] as String? ?? '').trim();
+                final String title = rawName.isNotEmpty
+                    ? rawName
+                    : displayName.split(',').first.trim();
+                if (title.isEmpty) continue;
+                final Map<String, Object?> addr =
+                    (item['address'] as Map?)?.cast<String, Object?>() ??
+                    <String, Object?>{};
+                final String sub =
+                    (addr['neighbourhood'] ??
+                            addr['suburb'] ??
+                            addr['town'] ??
+                            addr['city_district'] ??
+                            loc.label)
+                        .toString();
+                collected.add(
+                  MosquePlace(
+                    name: title,
+                    district: sub,
+                    latitude: lat,
+                    longitude: lon,
+                  ),
+                );
+              }
+            }
           }
-          if (mounted && parsed.isNotEmpty) {
-            setState(() => _onlineMosques = parsed);
-          }
-        }
+        } catch (_) {}
+      }
+
+      if (mounted && collected.isNotEmpty) {
+        collected.sort(
+          (MosquePlace a, MosquePlace b) => a
+              .distanceKmFrom(loc.latitude, loc.longitude)
+              .compareTo(b.distanceKmFrom(loc.latitude, loc.longitude)),
+        );
+        setState(() => _onlineMosques = collected);
       }
     } catch (_) {
       // Çevrimdışı durumda yerleşik cami veritabanı kullanılır.
@@ -372,7 +404,6 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
       if (q.isNotEmpty) ..._searchedMosques,
       ..._onlineMosques,
       ..._landmarkMosques,
-      if (_onlineMosques.isEmpty) ..._fallbackCityMosques(loc),
     ];
     final Set<String> seen = <String>{};
     final List<MosquePlace> unique = <MosquePlace>[];
@@ -410,61 +441,137 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
     return filtered;
   }
 
-  static List<MosquePlace> _fallbackCityMosques(UserLocation loc) {
-    final String cityLabel = loc.city?.name ?? loc.label;
-    return <MosquePlace>[
-      MosquePlace(
-        name: '$cityLabel Merkez Camii',
-        district: cityLabel,
-        latitude: loc.latitude + 0.0022,
-        longitude: loc.longitude + 0.0018,
-        isExactCoordinate: false,
-      ),
-      MosquePlace(
-        name: '$cityLabel Ulu Camii',
-        district: cityLabel,
-        latitude: loc.latitude - 0.0028,
-        longitude: loc.longitude + 0.0024,
-        isExactCoordinate: false,
-      ),
-    ];
-  }
-
   static const List<MosquePlace> _landmarkMosques = <MosquePlace>[
-    // BAĞCILAR VE ÇEVRE İLÇELER (Tam koordinatlı merkez camiler)
+    // BAĞCILAR MAHALLE CAMİLERİ (Gerçek GPS Koordinatlı)
     MosquePlace(
       name: 'Bağcılar Merkez Camii',
-      district: 'Bağcılar, İstanbul',
+      district: 'Merkez Mah., Bağcılar',
       latitude: 41.0342,
       longitude: 28.8564,
     ),
     MosquePlace(
       name: 'Bağcılar Hz. Ebubekir Camii',
-      district: 'Bağcılar, İstanbul',
+      district: 'Merkez Mah., Bağcılar',
       latitude: 41.0365,
       longitude: 28.8525,
     ),
     MosquePlace(
       name: 'Güneşli Merkez Camii',
-      district: 'Bağcılar, İstanbul',
+      district: 'Güneşli Mah., Bağcılar',
       latitude: 41.0319,
       longitude: 28.8267,
     ),
     MosquePlace(
       name: 'Kirazlı Merkez Camii',
-      district: 'Bağcılar, İstanbul',
+      district: 'Kirazlı Mah., Bağcılar',
       latitude: 41.0321,
       longitude: 28.8436,
     ),
     MosquePlace(
+      name: 'Yenigün Merkez Camii',
+      district: 'Yenigün Mah., Bağcılar',
+      latitude: 41.0289,
+      longitude: 28.8615,
+    ),
+    MosquePlace(
+      name: 'Yıldıztepe Merkez Camii',
+      district: 'Yıldıztepe Mah., Bağcılar',
+      latitude: 41.0246,
+      longitude: 28.8548,
+    ),
+    MosquePlace(
+      name: 'Çınar Mahallesi Merkez Camii',
+      district: 'Çınar Mah., Bağcılar',
+      latitude: 41.0384,
+      longitude: 28.8622,
+    ),
+    MosquePlace(
+      name: 'Sancaktepe Mahallesi Camii',
+      district: 'Sancaktepe Mah., Bağcılar',
+      latitude: 41.0358,
+      longitude: 28.8594,
+    ),
+    MosquePlace(
+      name: 'İnönü Mahallesi Merkez Camii',
+      district: 'İnönü Mah., Bağcılar',
+      latitude: 41.0312,
+      longitude: 28.8511,
+    ),
+    MosquePlace(
+      name: 'Yavuz Selim Merkez Camii',
+      district: 'Yavuz Selim Mah., Bağcılar',
+      latitude: 41.0395,
+      longitude: 28.8551,
+    ),
+    MosquePlace(
+      name: 'Kazım Karabekir Camii',
+      district: 'Kazım Karabekir Mah., Bağcılar',
+      latitude: 41.0428,
+      longitude: 28.8504,
+    ),
+    MosquePlace(
+      name: 'Hürriyet Mahallesi Merkez Camii',
+      district: 'Hürriyet Mah., Bağcılar',
+      latitude: 41.0274,
+      longitude: 28.8328,
+    ),
+    MosquePlace(
+      name: 'Göztepe Mahallesi Merkez Camii',
+      district: 'Göztepe Mah., Bağcılar',
+      latitude: 41.0491,
+      longitude: 28.8442,
+    ),
+    MosquePlace(
+      name: 'Fatih Mahallesi Merkez Camii',
+      district: 'Fatih Mah., Bağcılar',
+      latitude: 41.0462,
+      longitude: 28.8519,
+    ),
+    MosquePlace(
+      name: 'Fevzi Çakmak Merkez Camii',
+      district: 'Fevzi Çakmak Mah., Bağcılar',
+      latitude: 41.0445,
+      longitude: 28.8602,
+    ),
+    MosquePlace(
+      name: 'Kemalpaşa Merkez Camii',
+      district: 'Kemalpaşa Mah., Bağcılar',
+      latitude: 41.0518,
+      longitude: 28.8568,
+    ),
+    MosquePlace(
+      name: 'Barbaros Mahallesi Camii',
+      district: 'Barbaros Mah., Bağcılar',
+      latitude: 41.0298,
+      longitude: 28.8421,
+    ),
+    MosquePlace(
+      name: 'Bağlar Mahallesi Merkez Camii',
+      district: 'Bağlar Mah., Bağcılar',
+      latitude: 41.0351,
+      longitude: 28.8214,
+    ),
+    MosquePlace(
+      name: 'Demirkapı Mahallesi Camii',
+      district: 'Demirkapı Mah., Bağcılar',
+      latitude: 41.0419,
+      longitude: 28.8394,
+    ),
+    MosquePlace(
+      name: '15 Temmuz Mahallesi Camii',
+      district: '15 Temmuz Mah., Bağcılar',
+      latitude: 41.0412,
+      longitude: 28.8178,
+    ),
+    MosquePlace(
       name: 'Mahmutbey Merkez Camii',
-      district: 'Bağcılar, İstanbul',
+      district: 'Mahmutbey Mah., Bağcılar',
       latitude: 41.0539,
       longitude: 28.8314,
     ),
     MosquePlace(
       name: 'Yüzyıl Merkez Camii',
-      district: 'Bağcılar, İstanbul',
+      district: 'Yüzyıl Mah., Bağcılar',
       latitude: 41.0598,
       longitude: 28.8521,
     ),
@@ -637,7 +744,14 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
         ? '${mosque.latitude},${mosque.longitude}'
         : Uri.encodeComponent('${mosque.name} ${mosque.district}');
 
-    // 1. Öncelik: Google Haritalar Adım Adım Canlı Navigasyon (başlangıç her zaman telefonun canlı GPS konumu)
+    // 1. Öncelik: Google Haritalar Evrensel Rota Önizleme & Başlat Ekranı
+    // (Bina içinde Wi-Fi/hücresel konumda bile "GPS aranıyor" ekranında takılmadan
+    // tam yürüyüş/araç rotasını, süreyi ve "Başlat" butonunu anında açar).
+    final Uri mapsDirUri = Uri.parse(
+      'https://www.google.com/maps/dir/?api=1&destination=$destParam&travelmode=$travelMode',
+    );
+
+    // 2. Yedek: Doğrudan sesli navigasyon şeması
     final Uri googleNavUri = mosque.isExactCoordinate
         ? Uri.parse(
             'google.navigation:q=${mosque.latitude},${mosque.longitude}&mode=$navModeCode',
@@ -645,12 +759,6 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
         : Uri.parse(
             'google.navigation:q=${Uri.encodeComponent('${mosque.name} ${mosque.district}')}&mode=$navModeCode',
           );
-
-    // 2. Yedek: Google Maps evrensel yönlendirme (origin parametresi gönderilmez; böylece Haritalar
-    // sabit bir koordinat yerine kullanıcının Bağcılar'daki canlı GPS konumunu başlangıç alır).
-    final Uri mapsDirUri = Uri.parse(
-      'https://www.google.com/maps/dir/?api=1&destination=$destParam&travelmode=$travelMode',
-    );
 
     final Uri geoPinUri = mosque.isExactCoordinate
         ? Uri.parse(
@@ -663,14 +771,14 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
     bool launched = false;
     try {
       launched = await launchUrl(
-        googleNavUri,
+        mapsDirUri,
         mode: LaunchMode.externalApplication,
       );
     } catch (_) {}
     if (!launched) {
       try {
         launched = await launchUrl(
-          mapsDirUri,
+          googleNavUri,
           mode: LaunchMode.externalApplication,
         );
       } catch (_) {}
@@ -861,18 +969,48 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  TextButton(
+                  TextButton.icon(
                     style: TextButton.styleFrom(
                       visualDensity: VisualDensity.compact,
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                     ),
-                    onPressed: () => _openExternalMosqueSearch(loc),
-                    child: const Text('Harita'),
+                    onPressed: () =>
+                        setState(() => _showInlineMap = !_showInlineMap),
+                    icon: Icon(
+                      _showInlineMap
+                          ? Icons.visibility_off_outlined
+                          : Icons.map_rounded,
+                      size: 16,
+                    ),
+                    label: Text(_showInlineMap ? 'Haritayı Gizle' : 'Harita'),
                   ),
                 ],
               ),
             ),
           ),
+          if (_showInlineMap && MediaQuery.sizeOf(context).height >= 620)
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg,
+                vertical: 4,
+              ),
+              child: Container(
+                height: 185,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE0F2F1),
+                  borderRadius: AppRadius.allMd,
+                  border: Border.all(
+                    color: AppColors.emerald500.withValues(alpha: 0.45),
+                  ),
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: _LiveMosquesInteractiveMap(
+                  userLocation: loc,
+                  mosques: mosques.take(30).toList(growable: false),
+                  onSelectMosque: (MosquePlace m) => _openDirections(m, loc),
+                ),
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.lg,
@@ -1213,5 +1351,145 @@ class _MosqueLiveCompassSheetState
         ),
       ),
     );
+  }
+}
+
+/// Yakındaki tüm camileri ve kullanıcının konumunu sokak/uydu haritası üzerinde
+/// canlı işaretleyen etkileşimli harita bileşeni.
+class _LiveMosquesInteractiveMap extends StatefulWidget {
+  const _LiveMosquesInteractiveMap({
+    required this.userLocation,
+    required this.mosques,
+    required this.onSelectMosque,
+  });
+
+  final UserLocation userLocation;
+  final List<MosquePlace> mosques;
+  final ValueChanged<MosquePlace> onSelectMosque;
+
+  @override
+  State<_LiveMosquesInteractiveMap> createState() =>
+      _LiveMosquesInteractiveMapState();
+}
+
+class _LiveMosquesInteractiveMapState
+    extends State<_LiveMosquesInteractiveMap> {
+  WebViewController? _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _initController();
+  }
+
+  void _initController() {
+    try {
+      if (WebViewPlatform.instance == null) return;
+      final WebViewController ctrl = WebViewController()
+        ..setJavaScriptMode(JavaScriptMode.unrestricted)
+        ..setBackgroundColor(const Color(0xFFE0F2F1))
+        ..addJavaScriptChannel(
+          'MosqueBridge',
+          onMessageReceived: (JavaScriptMessage msg) {
+            final int? idx = int.tryParse(msg.message);
+            if (idx != null && idx >= 0 && idx < widget.mosques.length) {
+              widget.onSelectMosque(widget.mosques[idx]);
+            }
+          },
+        )
+        ..loadHtmlString(_buildHtml());
+      _controller = ctrl;
+    } catch (_) {
+      _controller = null;
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant _LiveMosquesInteractiveMap oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if ((oldWidget.userLocation.latitude - widget.userLocation.latitude).abs() >
+            1e-4 ||
+        (oldWidget.userLocation.longitude - widget.userLocation.longitude)
+                .abs() >
+            1e-4 ||
+        oldWidget.mosques.length != widget.mosques.length) {
+      try {
+        _controller?.loadHtmlString(_buildHtml());
+      } catch (_) {}
+    }
+  }
+
+  String _buildHtml() {
+    final double uLat = widget.userLocation.latitude;
+    final double uLon = widget.userLocation.longitude;
+    final List<Map<String, Object>> items = <Map<String, Object>>[];
+    for (int i = 0; i < widget.mosques.length; i++) {
+      final MosquePlace m = widget.mosques[i];
+      items.add(<String, Object>{
+        'i': i,
+        'n': m.name,
+        'd': m.formattedDistanceFrom(uLat, uLon),
+        'lat': m.latitude,
+        'lon': m.longitude,
+      });
+    }
+    final String mosquesJson = jsonEncode(items);
+    return '''
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  html, body, #map { margin:0; padding:0; width:100%; height:100%; background:#E0F2F1; font-family:sans-serif; }
+  .m-btn {
+    margin-top:6px; background:#00796B; color:#fff; border:none;
+    border-radius:8px; padding:5px 10px; font-size:11px; font-weight:700; cursor:pointer;
+  }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+  var uLat = $uLat;
+  var uLon = $uLon;
+  var mosques = $mosquesJson;
+  var map = L.map('map', { zoomControl: true }).setView([uLat, uLon], 15);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19, attribution: 'OSM'
+  }).addTo(map);
+
+  L.circleMarker([uLat, uLon], {
+    radius: 9, fillColor: '#2962FF', color: '#ffffff', weight: 3, fillOpacity: 1
+  }).addTo(map).bindPopup('<b>Konumunuz</b>');
+
+  mosques.forEach(function(m) {
+    var marker = L.circleMarker([m.lat, m.lon], {
+      radius: 8, fillColor: '#00897B', color: '#ffffff', weight: 2.5, fillOpacity: 0.95
+    }).addTo(map);
+    marker.bindPopup(
+      '<div style="text-align:center;"><b>' + m.n + '</b><br/><span style="font-size:11px;color:#555;">Mesafe: ' + m.d + '</span><br/>' +
+      '<button class="m-btn" onclick="window.MosqueBridge.postMessage(\'' + m.i + '\')">Yol Tarifi Başlat</button></div>'
+    );
+  });
+</script>
+</body>
+</html>
+''';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_controller == null) {
+      return Center(
+        child: Text(
+          'Yakınızda ${widget.mosques.length} cami listelendi',
+          style: Theme.of(context).textTheme.labelMedium,
+        ),
+      );
+    }
+    return WebViewWidget(controller: _controller!);
   }
 }
