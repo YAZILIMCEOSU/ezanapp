@@ -192,8 +192,10 @@ class CityRepository {
     double longitude, {
     double maxDistanceKm = 25,
   }) async {
-    City? best;
-    double bestDistance = double.infinity;
+    City? bestDistrict;
+    double bestDistrictDistance = double.infinity;
+    City? bestAny;
+    double bestAnyDistance = double.infinity;
     for (final City city in await turkishCities()) {
       final double distance = _haversine(
         latitude,
@@ -201,12 +203,21 @@ class CityRepository {
         city.latitude,
         city.longitude,
       );
-      if (distance < bestDistance) {
-        bestDistance = distance;
-        best = city;
+      if (distance < bestAnyDistance) {
+        bestAnyDistance = distance;
+        bestAny = city;
+      }
+      if (city.province != null &&
+          city.province != city.name &&
+          distance < bestDistrictDistance) {
+        bestDistrictDistance = distance;
+        bestDistrict = city;
       }
     }
-    if (best != null && bestDistance <= maxDistanceKm) return best;
+    if (bestDistrict != null && bestDistrictDistance <= 18) {
+      return bestDistrict;
+    }
+    if (bestAny != null && bestAnyDistance <= maxDistanceKm) return bestAny;
 
     for (final City city in await worldCities()) {
       final double distance = _haversine(
@@ -215,12 +226,12 @@ class CityRepository {
         city.latitude,
         city.longitude,
       );
-      if (distance < bestDistance) {
-        bestDistance = distance;
-        best = city;
+      if (distance < bestAnyDistance) {
+        bestAnyDistance = distance;
+        bestAny = city;
       }
     }
-    return bestDistance <= maxDistanceKm ? best : null;
+    return bestAnyDistance <= maxDistanceKm ? bestAny : null;
   }
 
   /// Kullanıcının gösterilecek konum adı: şehir yoksa "En yakın şehir (x km)".

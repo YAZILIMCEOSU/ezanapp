@@ -29,6 +29,23 @@
     <uses-feature android:name="android.hardware.location.gps" android:required="false" />
     <uses-feature android:name="android.hardware.sensor.compass" android:required="false" />
 
+    <!-- Android 11+ (API 30-36) Harita ve Adım Adım Navigasyon görünürlüğü -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="geo" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="google.navigation" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+        <package android:name="com.google.android.apps.maps" />
+    </queries>
+
     <application
         android:label="Ezan Vaktim Pro"
         android:name="${applicationName}"

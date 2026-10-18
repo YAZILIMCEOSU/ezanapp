@@ -111,15 +111,20 @@ abstract final class GeoUtils {
     return (dipoleDeclination + regionalEastAnomaly).clamp(-35.0, 35.0);
   }
 
-  /// Diyanet Kıble Pusulası uyumlu pusula kıble açısı (derece, 0-360°).
+  /// Dijital Kıble Pusulası açısı (derece, 0-360°).
   ///
-  /// Coğrafi büyük daire kıble açısı ([qiblaBearing]) ile yerel jeomanyetik
-  /// sapma açısını ([magneticDeclination]) birleştirerek doğrudan telefonun
-  /// pusula sensörü (`magneticHeading`) ile karşılaştırılan Diyanet Kıble
-  /// Pusulası açısını döner (ör. Maltepe/İstanbul için 151.95° + 5.80° = 157.7°).
+  /// Uygulamadaki `CompassReading.heading` değeri yerel manyetik sapma
+  /// ([magneticDeclination]) ile düzeltilerek gerçek kuzeye hizalandığından,
+  /// pusula kadranında hizalanan hedef açı doğrudan [qiblaBearing] ile birebir
+  /// aynıdır (ör. Bağcılar/İstanbul için 151.4°).
   static double compassQiblaBearing(double latitude, double longitude) {
+    return qiblaBearing(latitude, longitude);
+  }
+
+  /// Fiziksel (mıknatıslı iğneli) pusula için manyetik kuzeye göre Kıble açısı.
+  static double magneticNeedleQiblaBearing(double latitude, double longitude) {
     return normalizeDegrees(
-      qiblaBearing(latitude, longitude) +
+      qiblaBearing(latitude, longitude) -
           magneticDeclination(latitude, longitude),
     );
   }

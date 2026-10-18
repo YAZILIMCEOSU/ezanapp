@@ -283,11 +283,20 @@ class _QuickActions extends ConsumerWidget {
         itemBuilder: (BuildContext context, int index) {
           final ({Color color, IconData icon, String label, String route})
           action = actions[index];
+          const Set<String> shellRoutes = <String>{
+            AppRoutes.home,
+            AppRoutes.prayers,
+            AppRoutes.quran,
+            AppRoutes.ilahi,
+            AppRoutes.more,
+          };
           return _QuickActionTile(
             icon: action.icon,
             label: action.label,
             color: action.color,
-            onTap: () => context.push(action.route),
+            onTap: () => shellRoutes.contains(action.route)
+                ? context.go(action.route)
+                : context.push(action.route),
           );
         },
       ),
@@ -455,9 +464,9 @@ class _EDiyanetTopHeader extends ConsumerWidget {
             borderRadius: BorderRadius.circular(14),
             child: InkWell(
               borderRadius: BorderRadius.circular(14),
-              onTap: () => context.push(
-                features.ilahi ? AppRoutes.ilahi : AppRoutes.adhanSounds,
-              ),
+              onTap: () => features.ilahi
+                  ? context.go(AppRoutes.ilahi)
+                  : context.push(AppRoutes.adhanSounds),
               child: Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 10,
@@ -648,10 +657,14 @@ class _EDiyanetSplitPrayerCard extends StatelessWidget {
         .map((String s) => s.trim())
         .where((String s) => s.isNotEmpty)
         .toList();
+    // "Bağcılar, İstanbul" -> üstte İSTANBUL, altta Bağcılar / İstanbul
     final String cityMain =
-        (locParts.isNotEmpty ? locParts.first : locationLabel).toUpperCase();
-    final String districtSub = locParts.length > 1
-        ? locParts.sublist(1).join(' / ')
+        (locParts.length > 1
+                ? locParts.last
+                : (locParts.isNotEmpty ? locParts.first : locationLabel))
+            .toUpperCase();
+    final String districtSub = locParts.isNotEmpty
+        ? locParts.first
         : locationLabel;
 
     const List<List<Prayer>> rows = <List<Prayer>>[

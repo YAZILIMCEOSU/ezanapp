@@ -653,5 +653,34 @@ void main() {
         expect(answer!.sources, isNotEmpty, reason: 'Kaynaksız yanıt: $q');
       }
     });
+
+    test('Bağcılar dahil tüm büyükşehir merkez ilçeleri GPS koordinatıyla doğru tespit edilir', () async {
+      if (skipWithoutDatabase(databaseProblem)) return;
+      final AppRuntime runtime = await createTestRuntime();
+      addTearDown(runtime.dispose);
+
+      final allCities = await runtime.cities.all();
+      expect(allCities.length, greaterThanOrEqualTo(950));
+
+      // Bağcılar meydan ve Güneşli koordinatları Küçükçekmece yerine Bağcılar dönmeli
+      final bagcilar = await runtime.cities.nearest(41.0339, 28.8567);
+      expect(bagcilar, isNotNull);
+      expect(bagcilar!.name, 'Bağcılar');
+      expect(bagcilar.province, 'İstanbul');
+      expect(bagcilar.displayLabel, 'Bağcılar, İstanbul');
+
+      // Küçükçekmece koordinatı Küçükçekmece dönmeli
+      final kucukcekmece = await runtime.cities.nearest(41.0002, 28.7800);
+      expect(kucukcekmece, isNotNull);
+      expect(kucukcekmece!.name, 'Küçükçekmece');
+
+      // Dijital Kıble pusulası açısı gerçek kuzey Kıble açısıyla birebir uyumlu olmalı
+      final double trueQibla = GeoUtils.qiblaBearing(41.0339, 28.8567);
+      final double digitalQibla = GeoUtils.compassQiblaBearing(
+        41.0339,
+        28.8567,
+      );
+      expect(digitalQibla, closeTo(trueQibla, 0.001));
+    });
   });
 }

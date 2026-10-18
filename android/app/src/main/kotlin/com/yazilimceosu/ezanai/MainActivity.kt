@@ -314,7 +314,10 @@ class MainActivity : FlutterActivity(), SensorEventListener {
         }
         SensorManager.remapCoordinateSystem(rotationMatrix, axisX, axisY, displayAdjusted)
 
-        // Shortest-Arc 3B Eğim Dengeleme (0°..90° tüm tutuş açılarında gimbal-lock olmadan gerçek azimut)
+        // Roll-Invariant 3B Eğim Dengeleme:
+        // Telefon elde eğik (pitch 0°..78°) ve yana yatık (roll -45°..+45°) tutulurken
+        // cihazın +Y ekseninin yatay düzlem iz düşümü (hy, my) sıfır burulma (0.00° torsion) hatası verir.
+        // Yalnızca telefon tamamen dik (pitch > 78°) tutulduğunda arka kamera yönü (-hz, -mz) ile yumuşak birleşir.
         val hx = displayAdjusted[0].toDouble()
         val hy = displayAdjusted[1].toDouble()
         val hz = displayAdjusted[2].toDouble()
@@ -325,12 +328,11 @@ class MainActivity : FlutterActivity(), SensorEventListener {
         val ay = displayAdjusted[7].toDouble()
         val az = displayAdjusted[8].toDouble()
 
-        val denom = (1.0 + az).coerceAtLeast(0.05)
-        val yx = -ax * ay / denom
-        val yy = 1.0 - (ay * ay) / denom
-        val yz = -ay
-        val eastLvl = hx * yx + hy * yy + hz * yz
-        val northLvl = mx * yx + my * yy + mz * yz
+        val yHorizMag = kotlin.math.hypot(hy, my)
+        val uprightWeight = ((0.22 - yHorizMag) / 0.18).coerceIn(0.0, 1.0)
+        val camSign = if (ay <= 0.0) -1.0 else 1.0
+        val eastLvl = hy * (1.0 - uprightWeight) + (camSign * hz) * uprightWeight
+        val northLvl = my * (1.0 - uprightWeight) + (camSign * mz) * uprightWeight
 
         val rawAzimuth = (Math.toDegrees(kotlin.math.atan2(eastLvl, northLvl)) + 360.0) % 360.0
         val tiltDeg = Math.toDegrees(kotlin.math.asin((-ay).coerceIn(-1.0, 1.0)))

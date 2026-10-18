@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/services/compass_service.dart';
 import '../../core/utils/geo.dart';
 import '../../data/models/city.dart';
 import '../../design/app_colors.dart';
@@ -128,7 +129,7 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
     if (current.mode == LocationMode.gps) {
       await ref
           .read(locationControllerProvider.notifier)
-          .refreshFromGps(requestPermission: false);
+          .refreshFromGps(requestPermission: true);
     }
     if (mounted) {
       await _fetchNearbyOnline();
@@ -154,6 +155,10 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
           final http.Response response = await http
               .post(
                 Uri.parse(endpoint),
+                headers: const <String, String>{
+                  'User-Agent': 'EzanVaktimPro/1.0 (https://ezanai.app)',
+                  'Accept': 'application/json',
+                },
                 body: <String, String>{'data': overpassQuery},
               )
               .timeout(const Duration(seconds: 9));
@@ -195,12 +200,69 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
           }
           if (mounted && parsed.isNotEmpty) {
             setState(() => _onlineMosques = parsed);
-            break;
+            return;
           }
         } catch (_) {
           // Sonraki yansıyı dene.
         }
       }
+
+      // Overpass erişilemezse Nominatim viewbox ile yakın camileri çek.
+      final double d = 0.045; // ~5 km yarıçap
+      final Uri fallbackUri = Uri.https(
+        'nominatim.openstreetmap.org',
+        '/search',
+        <String, String>{
+          'format': 'jsonv2',
+          'q': 'camii',
+          'viewbox':
+              '${loc.longitude - d},${loc.latitude + d},${loc.longitude + d},${loc.latitude - d}',
+          'bounded': '1',
+          'limit': '25',
+          'accept-language': 'tr',
+          'addressdetails': '1',
+        },
+      );
+      final http.Response nomRes = await http
+          .get(
+            fallbackUri,
+            headers: const <String, String>{
+              'User-Agent': 'EzanVaktimPro/1.0 (https://ezanai.app)',
+            },
+          )
+          .timeout(const Duration(seconds: 7));
+      if (nomRes.statusCode == 200) {
+        final Object? decoded = jsonDecode(utf8.decode(nomRes.bodyBytes));
+        if (decoded is List) {
+          final List<MosquePlace> parsed = <MosquePlace>[];
+          for (final Object? item in decoded) {
+            if (item is! Map) continue;
+            final double? lat = double.tryParse('${item['lat'] ?? ''}');
+            final double? lon = double.tryParse('${item['lon'] ?? ''}');
+            if (lat == null || lon == null) continue;
+            final String displayName = (item['display_name'] as String? ?? '')
+                .trim();
+            final String rawName = (item['name'] as String? ?? '').trim();
+            final String title = rawName.isNotEmpty
+                ? rawName
+                : displayName.split(',').first.trim();
+            if (title.isEmpty) continue;
+            parsed.add(
+              MosquePlace(
+                name: title,
+                district: loc.label,
+                latitude: lat,
+                longitude: lon,
+              ),
+            );
+          }
+          if (mounted && parsed.isNotEmpty) {
+            setState(() => _onlineMosques = parsed);
+          }
+        }
+      }
+    } catch (_) {
+      // Çevrimdışı durumda yerleşik cami veritabanı kullanılır.
     } finally {
       if (mounted) {
         setState(() => _loadingOnline = false);
@@ -354,21 +416,100 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
       MosquePlace(
         name: '$cityLabel Merkez Camii',
         district: cityLabel,
-        latitude: loc.latitude,
-        longitude: loc.longitude,
+        latitude: loc.latitude + 0.0022,
+        longitude: loc.longitude + 0.0018,
         isExactCoordinate: false,
       ),
       MosquePlace(
         name: '$cityLabel Ulu Camii',
         district: cityLabel,
-        latitude: loc.latitude,
-        longitude: loc.longitude,
+        latitude: loc.latitude - 0.0028,
+        longitude: loc.longitude + 0.0024,
         isExactCoordinate: false,
       ),
     ];
   }
 
   static const List<MosquePlace> _landmarkMosques = <MosquePlace>[
+    // BAĞCILAR VE ÇEVRE İLÇELER (Tam koordinatlı merkez camiler)
+    MosquePlace(
+      name: 'Bağcılar Merkez Camii',
+      district: 'Bağcılar, İstanbul',
+      latitude: 41.0342,
+      longitude: 28.8564,
+    ),
+    MosquePlace(
+      name: 'Bağcılar Hz. Ebubekir Camii',
+      district: 'Bağcılar, İstanbul',
+      latitude: 41.0365,
+      longitude: 28.8525,
+    ),
+    MosquePlace(
+      name: 'Güneşli Merkez Camii',
+      district: 'Bağcılar, İstanbul',
+      latitude: 41.0319,
+      longitude: 28.8267,
+    ),
+    MosquePlace(
+      name: 'Kirazlı Merkez Camii',
+      district: 'Bağcılar, İstanbul',
+      latitude: 41.0321,
+      longitude: 28.8436,
+    ),
+    MosquePlace(
+      name: 'Mahmutbey Merkez Camii',
+      district: 'Bağcılar, İstanbul',
+      latitude: 41.0539,
+      longitude: 28.8314,
+    ),
+    MosquePlace(
+      name: 'Yüzyıl Merkez Camii',
+      district: 'Bağcılar, İstanbul',
+      latitude: 41.0598,
+      longitude: 28.8521,
+    ),
+    MosquePlace(
+      name: 'Şirinevler Ulu Camii',
+      district: 'Bahçelievler, İstanbul',
+      latitude: 40.9998,
+      longitude: 28.8492,
+    ),
+    MosquePlace(
+      name: 'Bahçelievler Merkez Camii',
+      district: 'Bahçelievler, İstanbul',
+      latitude: 41.0019,
+      longitude: 28.8604,
+    ),
+    MosquePlace(
+      name: 'Güngören Merkez Camii',
+      district: 'Güngören, İstanbul',
+      latitude: 41.0197,
+      longitude: 28.8762,
+    ),
+    MosquePlace(
+      name: 'Esenler Dörtyol Merkez Camii',
+      district: 'Esenler, İstanbul',
+      latitude: 41.0432,
+      longitude: 28.8758,
+    ),
+    MosquePlace(
+      name: 'Bakırköy Çarşı Camii',
+      district: 'Bakırköy, İstanbul',
+      latitude: 40.9792,
+      longitude: 28.8739,
+    ),
+    MosquePlace(
+      name: 'Küçükçekmece Merkez Fatih Camii',
+      district: 'Küçükçekmece, İstanbul',
+      latitude: 41.0014,
+      longitude: 28.7742,
+    ),
+    MosquePlace(
+      name: 'Başakşehir Merkez Camii',
+      district: 'Başakşehir, İstanbul',
+      latitude: 41.1062,
+      longitude: 28.8024,
+    ),
     MosquePlace(
       name: 'Ayasofya-i Kebîr Cami-i Şerifi',
       district: 'Fatih, İstanbul',
@@ -485,15 +626,32 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
     ),
   ];
 
-  /// Kullanıcının tam konumundan seçilen caminin tam koordinatına yol tarifi açar.
-  Future<void> _openDirections(MosquePlace mosque, UserLocation userLoc) async {
-    final String originParam = '${userLoc.latitude},${userLoc.longitude}';
+  /// Kullanıcının canlı GPS konumundan seçilen caminin tam koordinatına adım adım navigasyon açar.
+  Future<void> _openDirections(
+    MosquePlace mosque,
+    UserLocation userLoc, {
+    String travelMode = 'walking',
+  }) async {
+    final String navModeCode = travelMode == 'driving' ? 'd' : 'w';
     final String destParam = mosque.isExactCoordinate
         ? '${mosque.latitude},${mosque.longitude}'
         : Uri.encodeComponent('${mosque.name} ${mosque.district}');
+
+    // 1. Öncelik: Google Haritalar Adım Adım Canlı Navigasyon (başlangıç her zaman telefonun canlı GPS konumu)
+    final Uri googleNavUri = mosque.isExactCoordinate
+        ? Uri.parse(
+            'google.navigation:q=${mosque.latitude},${mosque.longitude}&mode=$navModeCode',
+          )
+        : Uri.parse(
+            'google.navigation:q=${Uri.encodeComponent('${mosque.name} ${mosque.district}')}&mode=$navModeCode',
+          );
+
+    // 2. Yedek: Google Maps evrensel yönlendirme (origin parametresi gönderilmez; böylece Haritalar
+    // sabit bir koordinat yerine kullanıcının Bağcılar'daki canlı GPS konumunu başlangıç alır).
     final Uri mapsDirUri = Uri.parse(
-      'https://www.google.com/maps/dir/?api=1&origin=$originParam&destination=$destParam&travelmode=walking',
+      'https://www.google.com/maps/dir/?api=1&destination=$destParam&travelmode=$travelMode',
     );
+
     final Uri geoPinUri = mosque.isExactCoordinate
         ? Uri.parse(
             'geo:${mosque.latitude},${mosque.longitude}?q=${mosque.latitude},${mosque.longitude}(${Uri.encodeComponent(mosque.name)})',
@@ -505,10 +663,18 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
     bool launched = false;
     try {
       launched = await launchUrl(
-        mapsDirUri,
+        googleNavUri,
         mode: LaunchMode.externalApplication,
       );
     } catch (_) {}
+    if (!launched) {
+      try {
+        launched = await launchUrl(
+          mapsDirUri,
+          mode: LaunchMode.externalApplication,
+        );
+      } catch (_) {}
+    }
     if (!launched) {
       try {
         launched = await launchUrl(
@@ -534,6 +700,33 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
         ),
       );
     }
+  }
+
+  /// Seçilen camiye uygulama içi canlı pusula yönünü ve navigasyon seçeneklerini açar.
+  void _showMosqueCompassSheet(MosquePlace mosque, UserLocation userLoc) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (BuildContext sheetContext) {
+        return _MosqueLiveCompassSheet(
+          mosque: mosque,
+          userLocation: userLoc,
+          onStartWalking: () {
+            Navigator.of(sheetContext).pop();
+            _openDirections(mosque, userLoc, travelMode: 'walking');
+          },
+          onStartDriving: () {
+            Navigator.of(sheetContext).pop();
+            _openDirections(mosque, userLoc, travelMode: 'driving');
+          },
+          onOpenPin: () {
+            Navigator.of(sheetContext).pop();
+            _openExactMapPin(mosque);
+          },
+        );
+      },
+    );
   }
 
   /// Haritada caminin veya kullanıcının tam noktasını işaretler (pin).
@@ -610,6 +803,11 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
       appBar: AppBar(
         title: const Text('Cami Bul & Navigasyon'),
         actions: <Widget>[
+          IconButton(
+            tooltip: 'Kıble Pusulası',
+            onPressed: () => context.push(AppRoutes.qibla),
+            icon: const Icon(Icons.explore_outlined, size: 20),
+          ),
           IconButton(
             tooltip: 'GPS ile tam konumumu güncelle',
             onPressed: _loadingOnline ? null : _refreshGpsAndFetch,
@@ -787,6 +985,17 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
                                 ],
                               ),
                             ),
+                            IconButton(
+                              visualDensity: VisualDensity.compact,
+                              tooltip: 'Camiye Canlı Pusula ve Yön',
+                              onPressed: () =>
+                                  _showMosqueCompassSheet(mosque, loc),
+                              icon: const Icon(
+                                Icons.explore_rounded,
+                                color: AppColors.emerald500,
+                                size: 20,
+                              ),
+                            ),
                             if (mosque.isExactCoordinate)
                               IconButton(
                                 visualDensity: VisualDensity.compact,
@@ -839,6 +1048,169 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Seçilen camiye uygulama içi canlı pusula yönü ve adım adım navigasyon başlatma paneli.
+class _MosqueLiveCompassSheet extends ConsumerStatefulWidget {
+  const _MosqueLiveCompassSheet({
+    required this.mosque,
+    required this.userLocation,
+    required this.onStartWalking,
+    required this.onStartDriving,
+    required this.onOpenPin,
+  });
+
+  final MosquePlace mosque;
+  final UserLocation userLocation;
+  final VoidCallback onStartWalking;
+  final VoidCallback onStartDriving;
+  final VoidCallback onOpenPin;
+
+  @override
+  ConsumerState<_MosqueLiveCompassSheet> createState() =>
+      _MosqueLiveCompassSheetState();
+}
+
+class _MosqueLiveCompassSheetState
+    extends ConsumerState<_MosqueLiveCompassSheet> {
+  StreamSubscription<CompassReading?>? _sub;
+  CompassReading? _reading;
+
+  @override
+  void initState() {
+    super.initState();
+    final CompassService service = ref.read(compassServiceProvider);
+    final double targetBearing = widget.mosque.bearingFrom(
+      widget.userLocation.latitude,
+      widget.userLocation.longitude,
+    );
+    final double decl = GeoUtils.magneticDeclination(
+      widget.userLocation.latitude,
+      widget.userLocation.longitude,
+    );
+    _sub = service.readings.listen((CompassReading? r) {
+      if (!mounted) return;
+      setState(() {
+        _reading = r?.withQibla(targetBearing, declination: decl);
+      });
+    });
+    service.start(qiblaDirection: targetBearing, declination: decl);
+  }
+
+  @override
+  void dispose() {
+    _sub?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final double bearing = widget.mosque.bearingFrom(
+      widget.userLocation.latitude,
+      widget.userLocation.longitude,
+    );
+    final String dist = widget.mosque.formattedDistanceFrom(
+      widget.userLocation.latitude,
+      widget.userLocation.longitude,
+    );
+    final String dirLabel = widget.mosque.compassLabelFrom(
+      widget.userLocation.latitude,
+      widget.userLocation.longitude,
+    );
+    final double heading = _reading?.heading ?? 0;
+    final double diff = GeoUtils.normalizeSigned(bearing - heading);
+    final bool aligned = diff.abs() <= 8;
+
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.xl,
+          AppSpacing.sm,
+          AppSpacing.xl,
+          AppSpacing.xl,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Text(
+              widget.mosque.name,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              '${widget.mosque.district} · Mesafe: $dist · Yön: ${bearing.toStringAsFixed(0)}° ($dirLabel)',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            Center(
+              child: Container(
+                width: 132,
+                height: 132,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: (aligned ? AppColors.success : AppColors.emerald500)
+                      .withValues(alpha: 0.12),
+                  border: Border.all(
+                    color: aligned ? AppColors.success : AppColors.emerald500,
+                    width: 2.2,
+                  ),
+                ),
+                alignment: Alignment.center,
+                child: Transform.rotate(
+                  angle: diff * math.pi / 180.0,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Icon(
+                        Icons.navigation_rounded,
+                        size: 48,
+                        color: aligned
+                            ? AppColors.success
+                            : AppColors.emerald500,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        aligned ? 'TAM KARŞIDA' : '${diff.abs().round()}°',
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            FilledButton.icon(
+              onPressed: widget.onStartWalking,
+              icon: const Icon(Icons.directions_walk_rounded),
+              label: const Text('Yürüyerek Canlı Navigasyon Başlat'),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            FilledButton.tonalIcon(
+              onPressed: widget.onStartDriving,
+              icon: const Icon(Icons.directions_car_rounded),
+              label: const Text('Araçla Canlı Navigasyon Başlat'),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            OutlinedButton.icon(
+              onPressed: widget.onOpenPin,
+              icon: const Icon(Icons.location_on_outlined),
+              label: const Text('Haritada Tam Konumunu İşaretle'),
+            ),
+          ],
+        ),
       ),
     );
   }

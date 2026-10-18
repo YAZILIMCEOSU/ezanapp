@@ -165,14 +165,14 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
             icon: const Icon(Icons.my_location_rounded, size: 20),
           ),
           IconButton(
+            tooltip: 'Yakındaki Camiler ve Navigasyon',
+            onPressed: () => context.push(AppRoutes.mosques),
+            icon: const Icon(Icons.mosque_outlined, size: 20),
+          ),
+          IconButton(
             tooltip: 'Haritada tam konumumu işaretle',
             onPressed: () => _openExactPin(location, compassQibla),
             icon: const Icon(Icons.location_on_outlined, size: 20),
-          ),
-          IconButton(
-            tooltip: 'Kâbe rotası ile haritada aç',
-            onPressed: () => _openMap(location),
-            icon: const Icon(Icons.map_outlined, size: 20),
           ),
         ],
       ),
@@ -373,6 +373,19 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
                   '${activeReading.heading.toStringAsFixed(1)}° · '
                   'Kıble farkı ${activeReading.differenceToQibla!.abs().toStringAsFixed(1)}°',
             ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.xl,
+              AppSpacing.md,
+              AppSpacing.xl,
+              0,
+            ),
+            child: FilledButton.tonalIcon(
+              onPressed: () => context.push(AppRoutes.mosques),
+              icon: const Icon(Icons.mosque_rounded, size: 18),
+              label: const Text('Yakındaki Camileri Bul & Yol Tarifi Al'),
+            ),
+          ),
           const SectionHeader(title: 'Kıble nasıl bulunur? (Diyanet Yöntemi)'),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
@@ -410,32 +423,13 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
   }
 
   Future<void> _openMap(UserLocation location) async {
-    // Kâbe yönünü haritada göstermek için kullanıcının konumu ve Kâbe'yi
-    // içeren bir yol tarifi bağlantısı açılır.
-    final Uri uri = Uri.parse(
-      'https://www.google.com/maps/dir/?api=1'
-      '&origin=${location.latitude},${location.longitude}'
-      '&destination=${AppConstants.kaabaLat},${AppConstants.kaabaLng}'
-      '&travelmode=driving',
+    // Araba yolu (otoyol) yerine kullanıcının tam konumunu ve Kıble açısını
+    // harita üzerinde doğrudan işaretler.
+    final double qibla = GeoUtils.qiblaBearing(
+      location.latitude,
+      location.longitude,
     );
-    try {
-      final bool opened = await launchUrl(
-        uri,
-        mode: LaunchMode.externalApplication,
-      );
-      if (!opened && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Harita uygulaması açılamadı.')),
-        );
-      }
-    } catch (error) {
-      AppLog.warning('Harita açılamadı: $error');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Harita uygulaması açılamadı.')),
-        );
-      }
-    }
+    await _openExactPin(location, qibla);
   }
 }
 

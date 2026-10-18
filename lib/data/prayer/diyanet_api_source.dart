@@ -102,7 +102,8 @@ class DiyanetApiSource implements PrayerTimesSource {
   }
 
   Future<List<PrayerTimesDay>> _fetch(String districtId, String period) async {
-    final Uri uri = Uri.parse('$baseUrl/prayer-times/$districtId/$period');
+    final String apiDistrictId = districtId.split('_').first;
+    final Uri uri = Uri.parse('$baseUrl/prayer-times/$apiDistrictId/$period');
     try {
       final http.Response response = await _client
           .get(

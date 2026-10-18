@@ -278,9 +278,35 @@ class LocationController extends Notifier<LocationState> {
     _positionSub = null;
     if (state.location.mode != LocationMode.gps) return;
     final AppRuntime runtime = ref.read(runtimeProvider);
+    // Kayıtlı GPS koordinatı varsa 960 ilçelik güncel veritabanından tam ilçeyi doğrula
+    // (ör. eski sürümde Bağcılar koordinatı Küçükçekmece'ye eşleşmişse anında Bağcılar'a düzelt).
+    if (state.location.city != null) {
+      try {
+        final City? rematched = await runtime.cities.nearest(
+          state.location.latitude,
+          state.location.longitude,
+        );
+        if (state.location.mode == LocationMode.gps &&
+            rematched != null &&
+            rematched.id != state.location.city?.id) {
+          await _persist(
+            UserLocation(
+              mode: LocationMode.gps,
+              latitude: state.location.latitude,
+              longitude: state.location.longitude,
+              city: rematched,
+              updatedAt: state.location.updatedAt ?? DateTime.now(),
+              gpsAccuracyMeters: state.location.gpsAccuracyMeters,
+            ),
+            restartWatch: false,
+          );
+        }
+      } catch (_) {}
+    }
+
     try {
       _positionSub = runtime.location
-          .watchPosition(distanceFilterMeters: 350)
+          .watchPosition(distanceFilterMeters: 150)
           .listen((LocationFix fix) async {
             if (state.location.mode != LocationMode.gps) return;
             final double movedKm = LocationService.distanceKm(
@@ -289,7 +315,6 @@ class LocationController extends Notifier<LocationState> {
               fix.latitude,
               fix.longitude,
             );
-            if (movedKm < 0.3) return;
             City? matched;
             try {
               matched = await runtime.cities.nearest(
@@ -297,6 +322,9 @@ class LocationController extends Notifier<LocationState> {
                 fix.longitude,
               );
             } catch (_) {}
+            if (movedKm < 0.15 && matched?.id == state.location.city?.id) {
+              return;
+            }
             await _persist(
               UserLocation(
                 mode: LocationMode.gps,
@@ -306,6 +334,7 @@ class LocationController extends Notifier<LocationState> {
                 updatedAt: DateTime.now(),
                 gpsAccuracyMeters: fix.accuracyMeters,
               ),
+              restartWatch: false,
             );
           }, onError: (_) {});
     } catch (_) {}
@@ -391,10 +420,15 @@ class LocationController extends Notifier<LocationState> {
 
   void clearError() => state = state.copyWith(error: null);
 
-  Future<void> _persist(UserLocation location) async {
+  Future<void> _persist(
+    UserLocation location, {
+    bool restartWatch = true,
+  }) async {
     state = state.copyWith(location: location, busy: false, error: null);
     if (location.mode == LocationMode.gps) {
-      unawaited(_ensureAutoWatch());
+      if (restartWatch) {
+        unawaited(_ensureAutoWatch());
+      }
     } else {
       await _positionSub?.cancel();
       _positionSub = null;
