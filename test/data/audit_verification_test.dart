@@ -21,6 +21,7 @@ import 'package:ezanai/data/models/quran_models.dart';
 import 'package:ezanai/data/models/zikir_models.dart';
 import 'package:ezanai/data/prayer/prayer_calculator.dart';
 import 'package:ezanai/data/repositories/ai_repository.dart';
+import 'package:ezanai/data/repositories/city_repository.dart';
 import 'package:ezanai/features/more/esmaul_husna_screen.dart';
 import 'package:ezanai/state/content_providers.dart';
 import 'package:ezanai/state/providers.dart';
@@ -655,22 +656,20 @@ void main() {
     });
 
     test('Bağcılar dahil tüm büyükşehir merkez ilçeleri GPS koordinatıyla doğru tespit edilir', () async {
-      if (skipWithoutDatabase(databaseProblem)) return;
-      final AppRuntime runtime = await createTestRuntime();
-      addTearDown(runtime.dispose);
+      final CityRepository cities = CityRepository(bundle: TestAssets());
 
-      final allCities = await runtime.cities.turkishCities();
+      final List<City> allCities = await cities.turkishCities();
       expect(allCities.length, greaterThanOrEqualTo(950));
 
       // Bağcılar meydan ve Güneşli koordinatları Küçükçekmece yerine Bağcılar dönmeli
-      final bagcilar = await runtime.cities.nearest(41.0339, 28.8567);
+      final City? bagcilar = await cities.nearest(41.0339, 28.8567);
       expect(bagcilar, isNotNull);
       expect(bagcilar!.name, 'Bağcılar');
       expect(bagcilar.province, 'İstanbul');
       expect(bagcilar.displayName, 'Bağcılar, İstanbul');
 
       // Küçükçekmece koordinatı Küçükçekmece dönmeli
-      final kucukcekmece = await runtime.cities.nearest(41.0002, 28.7800);
+      final City? kucukcekmece = await cities.nearest(41.0002, 28.7800);
       expect(kucukcekmece, isNotNull);
       expect(kucukcekmece!.name, 'Küçükçekmece');
 
