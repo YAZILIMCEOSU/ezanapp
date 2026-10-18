@@ -7,6 +7,7 @@ import 'package:ezanai/core/constants/app_constants.dart';
 import 'package:ezanai/core/l10n/app_strings.dart';
 import 'package:ezanai/core/services/billing_service.dart';
 import 'package:ezanai/core/services/compass_service.dart';
+import 'package:ezanai/core/services/preferences_service.dart';
 import 'package:ezanai/core/utils/geo.dart';
 import 'package:ezanai/core/utils/logger.dart';
 import 'package:ezanai/data/ai/ai_service.dart';
@@ -680,6 +681,13 @@ void main() {
         28.8567,
       );
       expect(digitalQibla, closeTo(trueQibla, 0.001));
+
+      // SharedPreferences platform kanalı hata verse bile PreferencesService(null) çökmez
+      final PreferencesService fallbackPrefs = PreferencesService(null);
+      await fallbackPrefs.setBool('onboarding_done', true);
+      expect(fallbackPrefs.getBool('onboarding_done'), isTrue);
+      await fallbackPrefs.setJson('loc', <String, Object?>{'city': 'Bağcılar'});
+      expect(fallbackPrefs.getJson('loc')?['city'], 'Bağcılar');
     });
   });
 }

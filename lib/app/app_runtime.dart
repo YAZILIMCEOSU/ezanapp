@@ -88,7 +88,9 @@ class AppRuntime {
     bool initializePlatformServices = true,
   }) async {
     final AppDatabase database = await AppDatabase.open();
-    final PreferencesService preferences = await PreferencesService.create();
+    final PreferencesService preferences = await PreferencesService.create(
+      database: database,
+    );
     final AppSettings settings = AppSettings.fromPrefs(
       preferences.getJson(PrefKeys.appSettings) ?? const <String, Object?>{},
     );

@@ -80,7 +80,7 @@ class _StartupFailureApp extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 Text(
-                  'EzanAI başlatılamadı',
+                  'Ezan Vaktim Pro başlatılamadı',
                   style: theme.textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),

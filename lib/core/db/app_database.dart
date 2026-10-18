@@ -63,6 +63,14 @@ class AppDatabase {
           } catch (_) {
             // WAL desteklenmiyorsa varsayılan günlük kipinde devam edilir.
           }
+          try {
+            await db.execute('''
+              CREATE TABLE IF NOT EXISTS app_kv_store (
+                k TEXT PRIMARY KEY,
+                v TEXT NOT NULL
+              )
+            ''');
+          } catch (_) {}
         },
       ),
     );

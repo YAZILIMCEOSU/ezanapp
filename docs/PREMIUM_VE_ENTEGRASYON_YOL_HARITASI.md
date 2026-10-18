@@ -46,15 +46,27 @@ Kullanıcıların uygulama içinden **"Aylık Premium"** veya **"Yıllık Premiu
 #### Tıklama Düzeyinde Yapacağınız Adımlar (Kod Yazmadan):
 1. Google Play Console'da uygulamanızı açın.
 2. Sol menüden **Para Kazanma (Monetize) -> Ürünler (Products) -> Abonelikler (Subscriptions)** bölümüne tıklayın.
-3. **"Abonelik Oluştur" (Create subscription)** butonuna basın ve **birebir şu iki Ürün Kimliğini (Product ID)** girin *(uygulama kodu bu iki kimliği otomatik tanır)*:
-   - **1. Abonelik Kimliği:** `ezanai_premium_monthly`
+3. **"Abonelik Oluştur" (Create subscription)** butonuna basın ve **birebir şu Ürün Kimliklerini (Product ID)** girin *(uygulama kodu bu 3 kimliği de otomatik tanır)*:
+   - **1. Aylık Abonelik Kimliği:** `ezanai_premium_monthly`
      - Adı: `Ezan Vaktim Pro — Aylık Premium`
-     - Önerilen Fiyat: `49,99 TL / Ay`
-   - **2. Abonelik Kimliği:** `ezanai_premium_yearly`
-     - Adı: `Ezan Vaktim Pro — Yıllık Premium`
-     - Önerilen Fiyat: `349,99 TL / Yıl` *(İsterseniz 7 gün ücretsiz deneme açabilirsiniz)*
-4. Her iki aboneliği **"Etkinleştir" (Activate)** butonuna basarak aktif edin.
+     - **Önerilen 2026 Fiyatı:** **149,99 TL / Ay** *(Avrupa/ABD için: **4,99 $ / 4,99 €**)*
+   - **2. Yıllık Abonelik Kimliği (En Çok Satan):** `ezanai_premium_yearly`
+     - Adı: `Ezan Vaktim Pro — Yıllık Premium (%45 Avantajlı)`
+     - **Önerilen 2026 Fiyatı:** **999,99 TL / Yıl** *(Aylığa böldüğünüzde ~83 TL/ay'a gelir; Avrupa/ABD için: **29,99 $ / 29,99 €** — 7 gün ücretsiz deneme açmanız dönüşümü 3 kat artırır)*
+   - **3. Ömür Boyu VIP Paket Kimliği (Uygulama İçi Ürünler / In-app products menüsünden açılır):** `ezanai_premium_lifetime`
+     - Adı: `Ezan Vaktim Pro — Ömür Boyu VIP (Tek Seferlik)`
+     - **Önerilen 2026 Fiyatı:** **2.499,99 TL** *(Lansman kampanyası: **1.999,99 TL**; Avrupa/ABD için: **69,99 $ / 69,99 €**)*
+4. Ürünleri **"Etkinleştir" (Activate)** butonuna basarak aktif edin.
 5. `docs/PLAY_STORE_YAYIN_REHBERI.md` dosyasındaki adımlarla GitHub'dan imzalı `.aab` dosyasını indirip Play Console'a yükleyin. **Ekstra hiçbir kod değişikliği yapmanıza gerek kalmadan** uygulama içindeki Premium satın alma butonları gerçek Google Play ödeme penceresini açacaktır.
+
+#### 2026 Net Kazanç ve Maliyet Tablosu (Neden Bu Fiyatlar Doğru?)
+Google Play üzerinden yapılan satışlarda **%20 KDV** ve Google'ın **%15 hizmet komisyonu** düşüldükten sonra cebinize giren net tutar ve yapay zekâ maliyeti şöyledir:
+
+| Paket | Ürün Kimliği (Kodda Hazır) | Mağaza Satış Fiyatı (TR / Global) | Vergi ve Google (%15) Sonrası **Size Kalan Net** | Ortalama AI Maliyeti | **Kişi Başı Net Kârınız** |
+|---|---|---|---|---|---|
+| **Aylık Premium** | `ezanai_premium_monthly` | **149,99 TL** (`$4.99`) | ~106 TL / ay | ~4–6 TL / ay | **~100 TL / ay** |
+| **Yıllık Premium** | `ezanai_premium_yearly` | **999,99 TL** (`$29.99`) | ~708 TL / yıl | ~45–60 TL / yıl | **~650 TL / yıl** |
+| **Ömür Boyu VIP** | `ezanai_premium_lifetime` | **2.499,99 TL** (`$69.99`) | ~1.770 TL (peşin) | ~120 TL | **~1.650 TL (peşin)** |
 
 ---
 
