@@ -14,9 +14,9 @@ import '../utils/logger.dart';
 class PreferencesService {
   PreferencesService(
     this._prefs, {
-    AppDatabase? database,
+    this._database,
     Map<String, Object?>? initialFallback,
-  }) : _database = database {
+  }) {
     if (initialFallback != null) {
       _fallback.addAll(initialFallback);
     }
