@@ -6,6 +6,7 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.media.RingtoneManager
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.PowerManager
@@ -42,9 +43,15 @@ class MainActivity : FlutterActivity(), SensorEventListener {
     private var hasGeomagnetic = false
     private var lastFieldStrengthMicroTesla: Double? = null
     private var lastMagAccuracy: Int = SensorManager.SENSOR_STATUS_ACCURACY_HIGH
+    private var lastMagAzimuth: Double? = null
+    private var lastRotVecAzimuth: Double? = null
+    private var gyroYawOffset: Double = 0.0
+    private var hasGyroYawOffset: Boolean = false
     private var smoothedSin: Double = 0.0
     private var smoothedCos: Double = 1.0
     private var hasSmoothedHeading: Boolean = false
+    private var lastEmittedHeading: Double = 0.0
+    private var activeSensorSource: String = "initializing"
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -71,16 +78,40 @@ class MainActivity : FlutterActivity(), SensorEventListener {
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "$channelName/methods")
             .setMethodCallHandler { call, result ->
                 when (call.method) {
-                    "hasCompass" -> result.success(magnetometer != null || rotationSensor != null)
+                    "hasCompass" -> result.success(
+                        magnetometer != null || geomagneticRotationSensor != null || rotationSensor != null,
+                    )
                     "hasAccelerometer" -> result.success(accelerometer != null)
                     "resetCompass" -> {
                         hasGravity = false
                         hasGeomagnetic = false
+                        lastMagAzimuth = null
+                        lastRotVecAzimuth = null
+                        hasGyroYawOffset = false
                         hasSmoothedHeading = false
                         if (eventSink != null) {
                             startListening()
                         }
                         result.success(true)
+                    }
+                    "playSystemNotificationSound" -> {
+                        val played = playSystemDefaultNotificationRingtone()
+                        result.success(played)
+                    }
+                    "getSensorDiagnostics" -> {
+                        result.success(
+                            mapOf(
+                                "hasMagnetometer" to (magnetometer != null),
+                                "hasAccelerometer" to (accelerometer != null),
+                                "hasRotationVector" to (rotationSensor != null),
+                                "hasGeomagneticVector" to (geomagneticRotationSensor != null),
+                                "lastMagAzimuth" to lastMagAzimuth,
+                                "lastFusedHeading" to lastEmittedHeading,
+                                "fieldStrengthMicroTesla" to lastFieldStrengthMicroTesla,
+                                "magAccuracy" to lastMagAccuracy,
+                                "sensorSource" to activeSensorSource,
+                            ),
+                        )
                     }
                     "getIntegrityInfo" -> result.success(buildIntegrityInfo())
                     "setAudioWakeLock" -> {
@@ -91,6 +122,22 @@ class MainActivity : FlutterActivity(), SensorEventListener {
                     else -> result.notImplemented()
                 }
             }
+    }
+
+    private fun playSystemDefaultNotificationRingtone(): Boolean {
+        return try {
+            val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+                ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+            if (uri != null) {
+                val ringtone = RingtoneManager.getRingtone(applicationContext, uri)
+                ringtone?.play()
+                true
+            } else {
+                false
+            }
+        } catch (_: Throwable) {
+            false
+        }
     }
 
     private fun updateAudioWakeLock(enabled: Boolean) {
@@ -191,35 +238,22 @@ class MainActivity : FlutterActivity(), SensorEventListener {
     private fun startListening() {
         stopListening()
         hasSmoothedHeading = false
-        // e-Diyanet & Android Sensor Fusion standardı:
-        // 1) TYPE_ROTATION_VECTOR tek başına birincil yön sensörüdür (jiroskop el ivmesini filtreler).
-        // 2) Yoksa TYPE_GEOMAGNETIC_ROTATION_VECTOR, o da yoksa ACCELEROMETER + MAGNETIC_FIELD kullanılır.
-        // 3) MAGNETIC_FIELD ayrıca yalnızca alan şiddeti (µT) ve doğruluk (accuracy) ölçümü için dinlenir.
-        when {
-            rotationSensor != null -> {
-                sensorManager?.registerListener(this, rotationSensor, SensorManager.SENSOR_DELAY_GAME)
-                magnetometer?.let {
-                    sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_UI)
-                }
-            }
-            geomagneticRotationSensor != null -> {
-                sensorManager?.registerListener(
-                    this,
-                    geomagneticRotationSensor,
-                    SensorManager.SENSOR_DELAY_GAME,
-                )
-                magnetometer?.let {
-                    sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_UI)
-                }
-            }
-            else -> {
-                accelerometer?.let {
-                    sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_GAME)
-                }
-                magnetometer?.let {
-                    sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_GAME)
-                }
-            }
+        hasGyroYawOffset = false
+        // Gerçek Manyetik Kuzey referansı için ACCELEROMETER + MAGNETIC_FIELD her zaman dinlenir
+        // (bina içinde TYPE_ROTATION_VECTOR manyetometreyi reddettiğinde veya jiroskopsuz cihazlarda
+        // pusulanın yanlış yöne kilitlenmesini %100 önler). Jiroskop/Rotasyon vektörü varsa
+        // yalnızca sarsıntısız açısal hız yumuşatması için manyetik kuzeye kilitli olarak kullanılır.
+        accelerometer?.let {
+            sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_GAME)
+        }
+        magnetometer?.let {
+            sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_GAME)
+        }
+        geomagneticRotationSensor?.let {
+            sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_GAME)
+        }
+        rotationSensor?.let {
+            sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_GAME)
         }
     }
 
@@ -227,17 +261,50 @@ class MainActivity : FlutterActivity(), SensorEventListener {
         sensorManager?.unregisterListener(this)
     }
 
+    private var lastRotationVectorTimeMs = 0L
+
+    private fun normalizeDegrees(deg: Double): Double = ((deg % 360.0) + 360.0) % 360.0
+
+    private fun normalizeSigned(deg: Double): Double = ((deg + 540.0) % 360.0) - 180.0
+
+    private fun extractAnglesFromMatrix(rotationMatrix: FloatArray): Triple<Double, Double, Double>? {
+        val displayAdjusted = FloatArray(9)
+        val (axisX, axisY) = when (currentSurfaceRotation()) {
+            Surface.ROTATION_90 -> Pair(SensorManager.AXIS_Y, SensorManager.AXIS_MINUS_X)
+            Surface.ROTATION_180 -> Pair(SensorManager.AXIS_MINUS_X, SensorManager.AXIS_MINUS_Y)
+            Surface.ROTATION_270 -> Pair(SensorManager.AXIS_MINUS_Y, SensorManager.AXIS_X)
+            else -> Pair(SensorManager.AXIS_X, SensorManager.AXIS_Y)
+        }
+        SensorManager.remapCoordinateSystem(rotationMatrix, axisX, axisY, displayAdjusted)
+
+        val hx = displayAdjusted[0].toDouble()
+        val hy = displayAdjusted[1].toDouble()
+        val hz = displayAdjusted[2].toDouble()
+        val mx = displayAdjusted[3].toDouble()
+        val my = displayAdjusted[4].toDouble()
+        val mz = displayAdjusted[5].toDouble()
+        val ax = displayAdjusted[6].toDouble()
+        val ay = displayAdjusted[7].toDouble()
+        val az = displayAdjusted[8].toDouble()
+
+        val yHorizMag = kotlin.math.hypot(hy, my)
+        val uprightWeight = ((0.14 - yHorizMag) / 0.10).coerceIn(0.0, 1.0)
+        val camSign = if (ay >= 0.0) -1.0 else 1.0
+        val eastLvl = hy * (1.0 - uprightWeight) + (camSign * hz) * uprightWeight
+        val northLvl = my * (1.0 - uprightWeight) + (camSign * mz) * uprightWeight
+
+        val rawAzimuth = normalizeDegrees(Math.toDegrees(kotlin.math.atan2(eastLvl, northLvl)))
+        val rawTiltDeg = Math.toDegrees(kotlin.math.asin((-ay).coerceIn(-1.0, 1.0)))
+        val tiltDeg = if (az >= 0.0) rawTiltDeg * 0.62 else 60.0
+        val rollDeg = Math.toDegrees(kotlin.math.asin(ax.coerceIn(-1.0, 1.0))) * 0.75
+        if (!rawAzimuth.isFinite() || !tiltDeg.isFinite() || !rollDeg.isFinite()) return null
+        return Triple(rawAzimuth, tiltDeg, rollDeg)
+    }
+
     override fun onSensorChanged(event: SensorEvent) {
         when (event.sensor.type) {
-            Sensor.TYPE_ROTATION_VECTOR, Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR -> {
-                val rotationMatrix = FloatArray(9)
-                val vec = if (event.values.size > 4) event.values.copyOfRange(0, 4) else event.values
-                SensorManager.getRotationMatrixFromVector(rotationMatrix, vec)
-                val effectiveAcc = if (event.accuracy > 0) event.accuracy else lastMagAccuracy
-                emitOrientation(rotationMatrix, effectiveAcc)
-            }
             Sensor.TYPE_ACCELEROMETER -> {
-                val alpha = 0.25f
+                val alpha = 0.22f
                 if (!hasGravity) {
                     System.arraycopy(event.values, 0, gravity, 0, 3)
                     hasGravity = true
@@ -246,9 +313,7 @@ class MainActivity : FlutterActivity(), SensorEventListener {
                     gravity[1] += alpha * (event.values[1] - gravity[1])
                     gravity[2] += alpha * (event.values[2] - gravity[2])
                 }
-                if (rotationSensor == null && geomagneticRotationSensor == null) {
-                    emitFromGravityMagnetic()
-                }
+                updateTrueMagneticReference()
             }
             Sensor.TYPE_MAGNETIC_FIELD -> {
                 if (event.accuracy > 0) {
@@ -261,29 +326,80 @@ class MainActivity : FlutterActivity(), SensorEventListener {
                 if (magnitude.isFinite()) {
                     lastFieldStrengthMicroTesla = magnitude
                 }
-                if (rotationSensor == null && geomagneticRotationSensor == null) {
-                    val alpha = 0.25f
-                    if (!hasGeomagnetic) {
-                        System.arraycopy(event.values, 0, geomagnetic, 0, 3)
-                        hasGeomagnetic = true
-                    } else {
-                        geomagnetic[0] += alpha * (event.values[0] - geomagnetic[0])
-                        geomagnetic[1] += alpha * (event.values[1] - geomagnetic[1])
-                        geomagnetic[2] += alpha * (event.values[2] - geomagnetic[2])
-                    }
-                    emitFromGravityMagnetic()
+                val alpha = 0.22f
+                if (!hasGeomagnetic) {
+                    System.arraycopy(event.values, 0, geomagnetic, 0, 3)
+                    hasGeomagnetic = true
+                } else {
+                    geomagnetic[0] += alpha * (event.values[0] - geomagnetic[0])
+                    geomagnetic[1] += alpha * (event.values[1] - geomagnetic[1])
+                    geomagnetic[2] += alpha * (event.values[2] - geomagnetic[2])
                 }
+                updateTrueMagneticReference()
+            }
+            Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR -> {
+                val rotationMatrix = FloatArray(9)
+                val vec = if (event.values.size > 4) event.values.copyOfRange(0, 4) else event.values
+                SensorManager.getRotationMatrixFromVector(rotationMatrix, vec)
+                val angles = extractAnglesFromMatrix(rotationMatrix) ?: return
+                lastMagAzimuth = angles.first
+                val now = System.currentTimeMillis()
+                if (now - lastRotationVectorTimeMs > 60) {
+                    activeSensorSource = "geomagnetic_vector"
+                    emitAngles(angles.first, angles.second, angles.third, lastMagAccuracy)
+                }
+            }
+            Sensor.TYPE_ROTATION_VECTOR -> {
+                val rotationMatrix = FloatArray(9)
+                val vec = if (event.values.size > 4) event.values.copyOfRange(0, 4) else event.values
+                SensorManager.getRotationMatrixFromVector(rotationMatrix, vec)
+                val angles = extractAnglesFromMatrix(rotationMatrix) ?: return
+                val rotAz = angles.first
+                lastRotVecAzimuth = rotAz
+                lastRotationVectorTimeMs = System.currentTimeMillis()
+
+                // Bina içinde TYPE_ROTATION_VECTOR'un manyetometreyi reddedip rastgele
+                // bir jiroskop açısına kilitlenmesini önlemek için gerçek manyetik kuzeye (lastMagAzimuth) çapala.
+                val magAz = lastMagAzimuth
+                val anchoredAzimuth = if (magAz != null) {
+                    val targetOffset = normalizeSigned(magAz - rotAz)
+                    if (!hasGyroYawOffset) {
+                        gyroYawOffset = targetOffset
+                        hasGyroYawOffset = true
+                    } else {
+                        val offsetErr = normalizeSigned(targetOffset - gyroYawOffset)
+                        if (kotlin.math.abs(offsetErr) > 12.0) {
+                            gyroYawOffset = targetOffset
+                        } else {
+                            gyroYawOffset = normalizeSigned(gyroYawOffset + 0.22 * offsetErr)
+                        }
+                    }
+                    activeSensorSource = "fusion_mag_anchored"
+                    normalizeDegrees(rotAz + gyroYawOffset)
+                } else {
+                    activeSensorSource = "rotation_vector"
+                    rotAz
+                }
+                val effectiveAcc = if (event.accuracy > 0) event.accuracy else lastMagAccuracy
+                emitAngles(anchoredAzimuth, angles.second, angles.third, effectiveAcc)
             }
         }
     }
 
     private var lastEmit = 0L
 
-    private fun emitFromGravityMagnetic() {
+    private fun updateTrueMagneticReference() {
         if (!hasGravity || !hasGeomagnetic) return
         val rotationMatrix = FloatArray(9)
         if (!SensorManager.getRotationMatrix(rotationMatrix, null, gravity, geomagnetic)) return
-        emitOrientation(rotationMatrix, lastMagAccuracy)
+        val angles = extractAnglesFromMatrix(rotationMatrix) ?: return
+        lastMagAzimuth = angles.first
+        val now = System.currentTimeMillis()
+        // Eğer TYPE_ROTATION_VECTOR son 60 ms içinde tetiklenmediyse doğrudan gerçek manyetik matrisi yayınla
+        if (now - lastRotationVectorTimeMs > 60) {
+            activeSensorSource = "geomagnetic_matrix"
+            emitAngles(angles.first, angles.second, angles.third, lastMagAccuracy)
+        }
     }
 
     @Suppress("DEPRECATION")
@@ -299,49 +415,10 @@ class MainActivity : FlutterActivity(), SensorEventListener {
         }
     }
 
-    private fun emitOrientation(rotationMatrix: FloatArray, accuracy: Int) {
+    private fun emitAngles(rawAzimuth: Double, tiltDeg: Double, rollDeg: Double, accuracy: Int) {
         val now = System.currentTimeMillis()
         if (now - lastEmit < 16) return // ~60 Hz anlık hassas pusula
         lastEmit = now
-
-        // Ekran yönüne (portre/yatay) göre koordinat sistemini eşle
-        val displayAdjusted = FloatArray(9)
-        val (axisX, axisY) = when (currentSurfaceRotation()) {
-            Surface.ROTATION_90 -> Pair(SensorManager.AXIS_Y, SensorManager.AXIS_MINUS_X)
-            Surface.ROTATION_180 -> Pair(SensorManager.AXIS_MINUS_X, SensorManager.AXIS_MINUS_Y)
-            Surface.ROTATION_270 -> Pair(SensorManager.AXIS_MINUS_Y, SensorManager.AXIS_X)
-            else -> Pair(SensorManager.AXIS_X, SensorManager.AXIS_Y)
-        }
-        SensorManager.remapCoordinateSystem(rotationMatrix, axisX, axisY, displayAdjusted)
-
-        // Roll-Invariant 3B Eğim Dengeleme:
-        // Telefon elde eğik (pitch 0°..78°) ve yana yatık (roll -45°..+45°) tutulurken
-        // cihazın +Y ekseninin yatay düzlem iz düşümü (hy, my) sıfır burulma (0.00° torsion) hatası verir.
-        // Yalnızca telefon tamamen dik (pitch > 78°) tutulduğunda arka kamera yönü (-hz, -mz) ile yumuşak birleşir.
-        val hx = displayAdjusted[0].toDouble()
-        val hy = displayAdjusted[1].toDouble()
-        val hz = displayAdjusted[2].toDouble()
-        val mx = displayAdjusted[3].toDouble()
-        val my = displayAdjusted[4].toDouble()
-        val mz = displayAdjusted[5].toDouble()
-        val ax = displayAdjusted[6].toDouble()
-        val ay = displayAdjusted[7].toDouble()
-        val az = displayAdjusted[8].toDouble()
-
-        val yHorizMag = kotlin.math.hypot(hy, my)
-        val uprightWeight = ((0.22 - yHorizMag) / 0.18).coerceIn(0.0, 1.0)
-        // Telefon dik tutulduğunda (ay >= 0) arka kamera (-Z: -hz, -mz) ileri bakar.
-        val camSign = if (ay >= 0.0) -1.0 else 1.0
-        val eastLvl = hy * (1.0 - uprightWeight) + (camSign * hz) * uprightWeight
-        val northLvl = my * (1.0 - uprightWeight) + (camSign * mz) * uprightWeight
-
-        val rawAzimuth = (Math.toDegrees(kotlin.math.atan2(eastLvl, northLvl)) + 360.0) % 360.0
-        // 3B eğim dengelemesi 75°'ye kadar aktif olduğundan normal elde tutuşta (0°..65°)
-        // yanlış "telefon eğik" uyarısı vermemesi için normalize eğim açısı iletilir.
-        val rawTiltDeg = Math.toDegrees(kotlin.math.asin((-ay).coerceIn(-1.0, 1.0)))
-        val tiltDeg = if (az >= 0.0) rawTiltDeg * 0.62 else 60.0
-        val rollDeg = Math.toDegrees(kotlin.math.asin(ax.coerceIn(-1.0, 1.0))) * 0.75
-        if (!rawAzimuth.isFinite() || !tiltDeg.isFinite() || !rollDeg.isFinite()) return
 
         // Adaptif dairesel filtre: telefonu çevirirken anında (0.68), sabit tutarken sarsıntısız (0.24)
         val rad = Math.toRadians(rawAzimuth)
@@ -352,14 +429,15 @@ class MainActivity : FlutterActivity(), SensorEventListener {
             smoothedCos = c
             hasSmoothedHeading = true
         } else {
-            val prevDeg = (Math.toDegrees(kotlin.math.atan2(smoothedSin, smoothedCos)) + 360.0) % 360.0
-            val delta = kotlin.math.abs(((rawAzimuth - prevDeg + 540.0) % 360.0) - 180.0)
+            val prevDeg = normalizeDegrees(Math.toDegrees(kotlin.math.atan2(smoothedSin, smoothedCos)))
+            val delta = kotlin.math.abs(normalizeSigned(rawAzimuth - prevDeg))
             val smoothFactor = if (delta > 3.5) 0.68 else 0.24
             smoothedSin += smoothFactor * (s - smoothedSin)
             smoothedCos += smoothFactor * (c - smoothedCos)
         }
         val smoothedDeg = Math.toDegrees(kotlin.math.atan2(smoothedSin, smoothedCos))
-        val azimuthDegrees = ((smoothedDeg + 360.0) % 360.0).toFloat()
+        val azimuthDegrees = normalizeDegrees(smoothedDeg).toFloat()
+        lastEmittedHeading = azimuthDegrees.toDouble()
 
         val accuracyDegrees = when (accuracy) {
             SensorManager.SENSOR_STATUS_ACCURACY_HIGH -> 3.0
@@ -372,7 +450,9 @@ class MainActivity : FlutterActivity(), SensorEventListener {
             "accuracy" to accuracyDegrees,
             "tilt" to tiltDeg,
             "roll" to rollDeg,
+            "sensorSource" to activeSensorSource,
         )
+        lastMagAzimuth?.let { payload["rawMagHeading"] = it }
         lastFieldStrengthMicroTesla?.let { payload["fieldStrength"] = it }
         eventSink?.success(payload)
     }

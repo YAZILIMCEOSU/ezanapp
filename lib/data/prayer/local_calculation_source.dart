@@ -31,8 +31,15 @@ class LocalCalculationSource implements PrayerTimesSource {
     required DateTime date,
     required CalculationMethod method,
   }) async {
-    return _calculate(location, date, method);
+    return calculateSync(location: location, date: date, method: method);
   }
+
+  /// İlk açılışta ağ/önbellek beklenirken 0 ms içinde anlık vakit hesabı üretir.
+  PrayerTimesDay calculateSync({
+    required UserLocation location,
+    required DateTime date,
+    required CalculationMethod method,
+  }) => _calculate(location, date, method);
 
   @override
   Future<List<PrayerTimesDay>> fetchRange({

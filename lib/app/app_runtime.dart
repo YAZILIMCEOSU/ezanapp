@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 
@@ -87,7 +89,10 @@ class AppRuntime {
   static Future<AppRuntime> create({
     bool initializePlatformServices = true,
   }) async {
-    final AppDatabase database = await AppDatabase.open();
+    final (AppDatabase database, HijriCalendar hijri) = await (
+      AppDatabase.open(),
+      HijriCalendar.load(),
+    ).wait;
     final PreferencesService preferences = await PreferencesService.create(
       database: database,
     );
@@ -95,7 +100,6 @@ class AppRuntime {
       preferences.getJson(PrefKeys.appSettings) ?? const <String, Object?>{},
     );
 
-    final HijriCalendar hijri = await HijriCalendar.load();
     final ConnectivityService connectivity = ConnectivityService(
       Connectivity(),
     );
@@ -142,29 +146,29 @@ class AppRuntime {
     );
 
     if (initializePlatformServices) {
-      await runtime._warmUp();
+      // İlk ekran karesini (first frame) bekletmemek için platform servisleri
+      // arka planda paralel olarak ısıtılır.
+      unawaited(runtime._warmUp());
     }
     AppLog.info('EzanAI hazır (${settings.calculationMethodId} yöntemi).');
     return runtime;
   }
 
   Future<void> _warmUp() async {
-    await _safely(
-      'bağlantı izleme',
-      () => connectivity.start((bool online) {
-        AppLog.debug(
-          online ? 'Ağ bağlantısı kuruldu.' : 'Ağ bağlantısı kesildi.',
-        );
-      }),
-    );
-    await _safely('bildirimler', () => notifications.initialize());
-    await _safely(
-      'ses motoru',
-      () => audio.initialize(ducking: initialSettings.adhanPlaybackDucking),
-    );
-    await _safely('faturalandırma', () => billing.initialize());
-    await _safely('bildirim köprüsü', push.initialize);
     ads.setPremium(false);
+    await Future.wait(<Future<void>>[
+      _safely(
+        'bağlantı izleme',
+        () => connectivity.start((bool online) {
+          AppLog.debug(
+            online ? 'Ağ bağlantısı kuruldu.' : 'Ağ bağlantısı kesildi.',
+          );
+        }),
+      ),
+      _safely('bildirimler', () => notifications.initialize()),
+      _safely('faturalandırma', () => billing.initialize()),
+      _safely('bildirim köprüsü', push.initialize),
+    ]);
   }
 
   Future<void> _safely(String label, Future<Object?> Function() action) async {

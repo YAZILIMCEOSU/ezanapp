@@ -12,7 +12,9 @@ import '../../core/constants/app_constants.dart';
 import '../../core/services/compass_service.dart';
 import '../../core/utils/geo.dart';
 import '../../core/utils/logger.dart';
+import '../../data/models/app_settings.dart';
 import '../../data/models/city.dart';
+import '../../data/models/prayer.dart';
 import '../../design/app_colors.dart';
 import '../../design/app_spacing.dart';
 import '../../router/app_router.dart';
@@ -387,6 +389,25 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
               label: const Text('Yakındaki Camileri Bul & Yol Tarifi Al'),
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.xl,
+              AppSpacing.sm,
+              AppSpacing.xl,
+              0,
+            ),
+            child: OutlinedButton.icon(
+              onPressed: () => _showSensorTestSheet(
+                context,
+                location: location,
+                trueQibla: trueQibla,
+                declination: declination,
+                reading: activeReading,
+              ),
+              icon: const Icon(Icons.fact_check_outlined, size: 18),
+              label: const Text('Hata & Sensör Test Modu (Canlı Tanılama)'),
+            ),
+          ),
           const SectionHeader(title: 'Kıble nasıl bulunur? (Diyanet Yöntemi)'),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
@@ -431,6 +452,156 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
       location.longitude,
     );
     await _openExactPin(location, qibla);
+  }
+
+  Future<void> _showSensorTestSheet(
+    BuildContext context, {
+    required UserLocation location,
+    required double trueQibla,
+    required double declination,
+    required CompassReading? reading,
+  }) async {
+    final Map<String, Object?> diag = await ref
+        .read(compassServiceProvider)
+        .getDiagnostics();
+    if (!context.mounted) return;
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (BuildContext sheetContext) {
+        final ThemeData theme = Theme.of(sheetContext);
+        final NotificationSettings notif = ref
+            .watch(settingsProvider)
+            .notifications;
+        final String sourceLabel = switch (reading?.sensorSource ??
+            diag['sensorSource']) {
+          'fusion_mag_anchored' =>
+            'Gerçek Manyetik Kuzeye Çapalı Jiroskop (Hibrit 60 Hz)',
+          'geomagnetic_matrix' =>
+            'Doğrudan İvmeölçer + Manyetometre Matrisi (Gerçek Kuzey)',
+          'geomagnetic_vector' => 'Jeomanyetik Rotasyon Vektörü',
+          'rotation_vector' => 'Rotasyon Vektörü',
+          _ => 'Aktif Pusula Sensörü',
+        };
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.xl,
+              0,
+              AppSpacing.xl,
+              AppSpacing.xl,
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Text(
+                    'Hata & Sensör Test Modu (Canlı Kontrol)',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Kıble sensörü, GPS ilçe eşleşmesi ve bildirim/ezan sesi kanallarının canlı doğrulama raporu:',
+                    style: theme.textTheme.bodySmall,
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  _InfoRow(
+                    icon: Icons.sensors_rounded,
+                    label: 'Sensör Motoru',
+                    value: sourceLabel,
+                  ),
+                  _InfoRow(
+                    icon: Icons.explore_rounded,
+                    label: 'Ham Manyetik Kuzey',
+                    value: reading?.magneticHeading != null
+                        ? '${reading!.magneticHeading!.toStringAsFixed(1)}°'
+                        : 'Okunuyor…',
+                  ),
+                  _InfoRow(
+                    icon: Icons.navigation_rounded,
+                    label: 'Gerçek Kuzey (Sapma +${declination.toStringAsFixed(1)}°)',
+                    value: reading != null
+                        ? '${reading.heading.toStringAsFixed(1)}°'
+                        : 'Okunuyor…',
+                  ),
+                  _InfoRow(
+                    icon: Icons.mosque_rounded,
+                    label: 'Hedef Kıble Açısı (${location.label})',
+                    value: '${trueQibla.toStringAsFixed(1)}°',
+                  ),
+                  _InfoRow(
+                    icon: Icons.bolt_rounded,
+                    label: 'Manyetik Alan Şiddeti',
+                    value: reading?.fieldStrengthMicroTesla != null
+                        ? '${reading!.fieldStrengthMicroTesla!.toStringAsFixed(1)} µT'
+                        : 'Normal (25–65 µT)',
+                  ),
+                  _InfoRow(
+                    icon: Icons.notifications_active_outlined,
+                    label: 'Aktif Bildirim / Ezan Modu',
+                    value: notif.adhanSound == AdhanSound.systemDefault
+                        ? 'Telefon Bildirim Sesi (Ezan Okunmaz)'
+                        : notif.adhanSound.label,
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  FilledButton.icon(
+                    onPressed: () async {
+                      await ref.read(compassServiceProvider).resetCompass();
+                      await ref
+                          .read(locationControllerProvider.notifier)
+                          .refreshFromGps(requestPermission: true);
+                      if (sheetContext.mounted) {
+                        Navigator.of(sheetContext).pop();
+                      }
+                    },
+                    icon: const Icon(Icons.compass_calibration_rounded),
+                    label: const Text(
+                      'Pusulayı Sıfırla & GPS Konumunu Yenile',
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  OutlinedButton.icon(
+                    onPressed: () async {
+                      await ref.read(runtimeProvider).audio.stop();
+                      await ref
+                          .read(settingsControllerProvider.notifier)
+                          .updateNotifications(
+                            notif.copyWith(
+                              adhanSound: AdhanSound.systemDefault,
+                              perPrayerSound: const <Prayer, AdhanSound>{},
+                              inAppAdhanEnabled: false,
+                            ),
+                          );
+                      await ref
+                          .read(compassServiceProvider)
+                          .playSystemNotificationSound();
+                      if (sheetContext.mounted) {
+                        Navigator.of(sheetContext).pop();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Tüm vakitler "Telefon Bildirim Sesi (Ezan Okunmaz)" moduna alındı.',
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                    icon: const Icon(Icons.notifications_outlined),
+                    label: const Text(
+                      'Sadece Telefon Bildirim Sesine Geç (Ezan Okumasın)',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }
 
@@ -1168,7 +1339,7 @@ class _QiblaGeodesicMapPainter extends CustomPainter {
       oldDelegate.headingDegrees != headingDegrees;
 }
 
-/// Merkezden doğrudan Kâbe rozetine uzanan zarif Diyanet Kıble Oku.
+/// Merkezden doğrudan Kâbe rozetine uzanan zarif Diyanet & Ezan Vakti Pro Kıble Oku.
 class _QiblaNeedlePainter extends CustomPainter {
   const _QiblaNeedlePainter({required this.needleColor, required this.aligned});
 
@@ -1178,23 +1349,35 @@ class _QiblaNeedlePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final Offset center = Offset(size.width / 2, size.height / 2);
-    const double tipY = 64.0;
+    const double tipY = 58.0;
+    final double tailY = center.dy + 54.0;
 
-    // İnce ok gövdesi (merkezden Kâbe rozetine)
+    // Arka denge kuyruğu (altın-gri pusula kuyruğu)
     canvas.drawLine(
       center,
-      Offset(center.dx, tipY + 10),
+      Offset(center.dx, tailY),
       Paint()
-        ..strokeWidth = 2.6
+        ..strokeWidth = 2.4
+        ..strokeCap = StrokeCap.round
+        ..color = AppColors.gold500.withValues(alpha: 0.65),
+    );
+
+    // Ana Kıble ok gövdesi (merkezden Kâbe rozetine)
+    canvas.drawLine(
+      center,
+      Offset(center.dx, tipY + 12),
+      Paint()
+        ..strokeWidth = 3.4
         ..strokeCap = StrokeCap.round
         ..color = needleColor,
     );
 
-    // Ok ucu (üçgen)
+    // Belirgin ok ucu (Kâbe yönü üçgeni)
     final Path arrowHead = Path()
       ..moveTo(center.dx, tipY)
-      ..lineTo(center.dx - 7, tipY + 14)
-      ..lineTo(center.dx + 7, tipY + 14)
+      ..lineTo(center.dx - 9, tipY + 18)
+      ..lineTo(center.dx, tipY + 14)
+      ..lineTo(center.dx + 9, tipY + 18)
       ..close();
     canvas.drawPath(
       arrowHead,
@@ -1203,8 +1386,9 @@ class _QiblaNeedlePainter extends CustomPainter {
         ..color = needleColor,
     );
 
-    // Merkez nokta (Diyanet yeşil/turkuvaz pivot noktası)
-    canvas.drawCircle(center, 6.0, Paint()..color = needleColor);
+    // Merkez nokta (Diyanet yeşil/turkuvaz + altın halka pivot noktası)
+    canvas.drawCircle(center, 7.5, Paint()..color = needleColor);
+    canvas.drawCircle(center, 3.2, Paint()..color = Colors.white);
   }
 
   @override
@@ -1316,6 +1500,19 @@ class _CompassPainter extends CustomPainter {
         ..color = AppColors.gold500,
     );
 
+    // Kuzey (0° / K) kırmızı pusula üçgeni — kullanıcının gerçek Kuzeyi anında doğrulayabilmesi için
+    final Path northTriangle = Path()
+      ..moveTo(center.dx, center.dy - radius + 3)
+      ..lineTo(center.dx - 6, center.dy - radius + 16)
+      ..lineTo(center.dx + 6, center.dy - radius + 16)
+      ..close();
+    canvas.drawPath(
+      northTriangle,
+      Paint()
+        ..style = PaintingStyle.fill
+        ..color = const Color(0xFFE53935),
+    );
+
     const List<String> labels = <String>['K', 'D', 'G', 'B'];
     for (int i = 0; i < 4; i++) {
       final double angle = (i * 90 - 90) * math.pi / 180;
@@ -1323,7 +1520,7 @@ class _CompassPainter extends CustomPainter {
         text: TextSpan(
           text: labels[i],
           style: TextStyle(
-            color: i == 0 ? const Color(0xFF00897B) : textColor,
+            color: i == 0 ? const Color(0xFFE53935) : textColor,
             fontSize: 16,
             fontWeight: FontWeight.w800,
           ),

@@ -20,6 +20,7 @@ import 'package:ezanai/data/models/prayer.dart';
 import 'package:ezanai/data/models/prayer_times_day.dart';
 import 'package:ezanai/data/models/quran_models.dart';
 import 'package:ezanai/data/models/zikir_models.dart';
+import 'package:ezanai/data/prayer/local_calculation_source.dart';
 import 'package:ezanai/data/prayer/prayer_calculator.dart';
 import 'package:ezanai/data/repositories/ai_repository.dart';
 import 'package:ezanai/data/repositories/city_repository.dart';
@@ -688,6 +689,49 @@ void main() {
       expect(fallbackPrefs.getBool('onboarding_done'), isTrue);
       await fallbackPrefs.setJson('loc', <String, Object?>{'city': 'Bağcılar'});
       expect(fallbackPrefs.getJson('loc')?['city'], 'Bağcılar');
+
+      // 1) Telefon bildirim sesi (systemDefault) seçildiğinde hiçbir vakit ezan sesine düşmez
+      expect(BundledSounds.assetFor(AdhanSound.systemDefault), isNull);
+      const NotificationSettings systemToneSettings = NotificationSettings(
+        adhanSound: AdhanSound.systemDefault,
+        perPrayerSound: <Prayer, AdhanSound>{},
+        inAppAdhanEnabled: false,
+      );
+      for (final Prayer p in Prayer.values) {
+        expect(systemToneSettings.soundFor(p), AdhanSound.systemDefault);
+        expect(BundledSounds.assetFor(systemToneSettings.soundFor(p)), isNull);
+      }
+
+      // 2) Kıble manyetik kuzeye çapalı hibrit okuma doğrulaması (Bağcılar 151.6°)
+      const CompassReading rawReading = CompassReading(
+        heading: 145.8,
+        magneticHeading: 145.8,
+        accuracy: 3.0,
+        sensorSource: 'fusion_mag_anchored',
+      );
+      final CompassReading calibrated = rawReading.withQibla(
+        trueQibla,
+        declination: GeoUtils.magneticDeclination(41.0339, 28.8567),
+      );
+      expect(calibrated.sensorSource, 'fusion_mag_anchored');
+      expect(calibrated.heading, closeTo(trueQibla, 0.2));
+      expect(calibrated.isAligned, isTrue);
+
+      // 3) İlk açılışta 0 ms senkron vakit hesabı (HomeScreen anlık açılış)
+      final Stopwatch sw = Stopwatch()..start();
+      final PrayerTimesDay syncDay = const LocalCalculationSource()
+          .calculateSync(
+            location: const UserLocation(
+              mode: LocationMode.gps,
+              latitude: 41.0339,
+              longitude: 28.8567,
+            ),
+            date: DateTime(2026, 10, 19),
+            method: CalculationMethod.diyanet,
+          );
+      sw.stop();
+      expect(syncDay.isSane, isTrue);
+      expect(sw.elapsedMilliseconds, lessThan(50));
     });
   });
 }

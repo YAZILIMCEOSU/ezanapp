@@ -362,6 +362,32 @@ class LocationController extends Notifier<LocationState> {
         return false;
       }
 
+      // İlk açılışta uydu kilidi beklenirken işletim sisteminin son bilinen
+      // konumunu (<10 ms) hemen uygula; böylece ilçe (ör. Bağcılar) anında görünür.
+      if (state.location.city == null) {
+        try {
+          final LocationFix? fastFix = await runtime.location
+              .getLastKnownFastPosition();
+          if (fastFix != null) {
+            final City? fastCity = await runtime.cities.nearest(
+              fastFix.latitude,
+              fastFix.longitude,
+            );
+            await _persist(
+              UserLocation(
+                mode: LocationMode.gps,
+                latitude: fastFix.latitude,
+                longitude: fastFix.longitude,
+                city: fastCity,
+                updatedAt: DateTime.now(),
+                gpsAccuracyMeters: fastFix.accuracyMeters,
+              ),
+              restartWatch: false,
+            );
+          }
+        } catch (_) {}
+      }
+
       final LocationFix fix = await runtime.location.getCurrentPosition();
       City? matched;
       try {

@@ -101,18 +101,6 @@ class NotificationService {
       settings: const InitializationSettings(android: android, iOS: ios),
       onDidReceiveNotificationResponse: (NotificationResponse response) {
         final String? payload = response.payload;
-        if (payload != null &&
-            payload.startsWith('${NotificationRoute.adhan.value}:')) {
-          final String key = payload.substring(
-            NotificationRoute.adhan.value.length + 1,
-          );
-          for (final Prayer p in Prayer.values) {
-            if (p.key == key) {
-              emitAdhanNow(p);
-              break;
-            }
-          }
-        }
         _routeController.add(NotificationRoute.fromPayload(payload));
       },
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
@@ -182,6 +170,9 @@ class NotificationService {
 
   static String _adhanChannelId(AdhanSound sound) {
     if (sound.isSilent) return NotificationChannels.prayer;
+    if (sound == AdhanSound.systemDefault) {
+      return '${NotificationChannels.adhan}_v5_system_default';
+    }
     return '${NotificationChannels.adhan}_v4_${sound.name}';
   }
 
@@ -202,29 +193,48 @@ class NotificationService {
         >();
     if (android == null) return;
 
-    // Eski kanalları temizle; böylece güncelleme yükleyen cihazlarda da
-    // yeni gerçek müezzin ezan MP3 sesleri anında devreye girer.
+    // Eski kanalları temizle; paralel çalışarak açılış süresini geciktirmez.
+    final List<Future<void>> cleanups = <Future<void>>[];
     for (final AdhanSound sound in AdhanSound.values) {
-      try {
-        await android.deleteNotificationChannel(
-          channelId: '${NotificationChannels.adhan}_${sound.name}',
-        );
-        await android.deleteNotificationChannel(
-          channelId: '${NotificationChannels.adhan}_v2_${sound.name}',
-        );
-        await android.deleteNotificationChannel(
-          channelId: '${NotificationChannels.adhan}_v3_${sound.name}',
-        );
-      } catch (_) {}
+      cleanups.add(
+        android
+            .deleteNotificationChannel(
+              channelId: '${NotificationChannels.adhan}_${sound.name}',
+            )
+            .catchError((_) {}),
+      );
+      cleanups.add(
+        android
+            .deleteNotificationChannel(
+              channelId: '${NotificationChannels.adhan}_v2_${sound.name}',
+            )
+            .catchError((_) {}),
+      );
+      cleanups.add(
+        android
+            .deleteNotificationChannel(
+              channelId: '${NotificationChannels.adhan}_v3_${sound.name}',
+            )
+            .catchError((_) {}),
+      );
     }
+    cleanups.add(
+      android
+          .deleteNotificationChannel(
+            channelId:
+                '${NotificationChannels.adhan}_v4_${AdhanSound.systemDefault.name}',
+          )
+          .catchError((_) {}),
+    );
+    await Future.wait(cleanups);
 
     Future<void> channel(
       String id,
       String name,
       String description, {
       bool silent = false,
-      AndroidNotificationSound? customSound =
-          const RawResourceAndroidNotificationSound('ezan_melodi'),
+      bool useNotificationStream = false,
+      AndroidNotificationSound? customSound,
     }) async {
       await android.createNotificationChannel(
         AndroidNotificationChannel(
@@ -235,56 +245,63 @@ class NotificationService {
           playSound: !silent,
           sound: silent ? null : customSound,
           enableVibration: !silent,
-          audioAttributesUsage: silent
+          audioAttributesUsage: (silent || useNotificationStream)
               ? AudioAttributesUsage.notification
               : AudioAttributesUsage.alarm,
         ),
       );
     }
 
-    await channel(
-      NotificationChannels.adhan,
-      'Ezan ve vakit bildirimleri',
-      'Namaz vakti girdiğinde ve ezan öncesi hatırlatmalarda gösterilir.',
-    );
-    for (final AdhanSound sound in AdhanSound.values) {
-      if (sound.isSilent) continue;
-      await channel(
-        _adhanChannelId(sound),
-        'Ezan bildirimi (${sound.label})',
-        sound.description,
-        customSound: _rawSoundFor(sound),
-      );
-    }
-    await channel(
-      NotificationChannels.prayer,
-      'Namaz vakti hatırlatmaları',
-      'Vakit girdiğinde sessiz bilgilendirme.',
-      silent: true,
-    );
-    await channel(
-      NotificationChannels.ramadan,
-      'Ramazan bildirimleri',
-      'Sahur ve iftar hatırlatmaları.',
-    );
-    await channel(
-      NotificationChannels.daily,
-      'Günün ayeti ve hadisi',
-      'Her gün seçtiğiniz saatte günün içeriği.',
-      silent: true,
-    );
-    await channel(
-      NotificationChannels.zikir,
-      'Zikir ve hatim hatırlatmaları',
-      'Günlük zikir ve hatim hedefleri için nazik hatırlatmalar.',
-      silent: true,
-    );
-    await channel(
-      NotificationChannels.system,
-      'Uygulama bildirimleri',
-      'Güncellemeler ve önemli duyurular.',
-      silent: true,
-    );
+    final List<Future<void>> creations = <Future<void>>[
+      channel(
+        NotificationChannels.adhan,
+        'Ezan ve vakit bildirimleri',
+        'Namaz vakti girdiğinde ve ezan öncesi hatırlatmalarda gösterilir.',
+        customSound: const RawResourceAndroidNotificationSound('ezan_melodi'),
+      ),
+      for (final AdhanSound sound in AdhanSound.values)
+        if (!sound.isSilent)
+          channel(
+            _adhanChannelId(sound),
+            sound == AdhanSound.systemDefault
+                ? 'Vakit bildirimi (Telefonun bildirim sesi)'
+                : 'Ezan bildirimi (${sound.label})',
+            sound.description,
+            useNotificationStream: sound == AdhanSound.systemDefault,
+            customSound: _rawSoundFor(sound),
+          ),
+      channel(
+        NotificationChannels.prayer,
+        'Namaz vakti hatırlatmaları',
+        'Vakit girdiğinde sessiz bilgilendirme.',
+        silent: true,
+      ),
+      channel(
+        NotificationChannels.ramadan,
+        'Ramazan bildirimleri',
+        'Sahur ve iftar hatırlatmaları.',
+        useNotificationStream: true,
+      ),
+      channel(
+        NotificationChannels.daily,
+        'Günün ayeti ve hadisi',
+        'Her gün seçtiğiniz saatte günün içeriği.',
+        silent: true,
+      ),
+      channel(
+        NotificationChannels.zikir,
+        'Zikir ve hatim hatırlatmaları',
+        'Günlük zikir ve hatim hedefleri için nazik hatırlatmalar.',
+        silent: true,
+      ),
+      channel(
+        NotificationChannels.system,
+        'Uygulama bildirimleri',
+        'Güncellemeler ve önemli duyurular.',
+        silent: true,
+      ),
+    ];
+    await Future.wait(creations);
   }
 
   /// Bildirim izinlerini ister (Android 13+ / iOS).
@@ -762,6 +779,29 @@ class NotificationService {
     );
   }
 
+  /// Telefonun varsayılan bildirim sesiyle (ezan okumadan) anında bildirim gösterir.
+  Future<void> showSystemDefaultNow({
+    required String title,
+    required String body,
+    String? payload,
+    int id = NotificationIds.test,
+  }) async {
+    await initialize();
+    final String channelId = _adhanChannelId(AdhanSound.systemDefault);
+    await _plugin.show(
+      id: id,
+      title: title,
+      body: body,
+      notificationDetails: _details(
+        channelId,
+        const NotificationSettings(adhanSound: AdhanSound.systemDefault),
+        silent: false,
+        soundOverride: AdhanSound.systemDefault,
+      ),
+      payload: payload,
+    );
+  }
+
   Future<void> cancelPrayerNotifications() async {
     await initialize();
     for (int day = 0; day < 14; day++) {
@@ -871,6 +911,7 @@ class NotificationService {
     final AdhanSound sound = silent
         ? AdhanSound.silent
         : (soundOverride ?? settings.adhanSound);
+    final bool isSystemTone = sound == AdhanSound.systemDefault;
     final AndroidNotificationSound? androidSound = _rawSoundFor(sound);
     return NotificationDetails(
       android: AndroidNotificationDetails(
@@ -880,11 +921,15 @@ class NotificationService {
         importance: silent ? Importance.defaultImportance : Importance.max,
         priority: silent ? Priority.defaultPriority : Priority.max,
         playSound: !sound.isSilent,
-        sound: androidSound,
-        audioAttributesUsage: AudioAttributesUsage.alarm,
-        fullScreenIntent: !silent,
+        sound: isSystemTone ? null : androidSound,
+        audioAttributesUsage: (silent || isSystemTone)
+            ? AudioAttributesUsage.notification
+            : AudioAttributesUsage.alarm,
+        fullScreenIntent: !silent && !isSystemTone,
         enableVibration: settings.vibrationEnabled && !silent,
-        category: AndroidNotificationCategory.alarm,
+        category: isSystemTone
+            ? AndroidNotificationCategory.reminder
+            : AndroidNotificationCategory.alarm,
         visibility: NotificationVisibility.public,
         color: const Color(0xFF0E4A3F),
         ticker: 'Ezan Vaktim Pro',

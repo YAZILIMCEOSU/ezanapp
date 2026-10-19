@@ -186,7 +186,26 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp>
     final runtime = ref.read(runtimeProvider);
     final NotificationSettings notif = settings.notifications;
     final AdhanSound sound = notif.soundFor(prayer);
-    if (sound.isSilent) return;
+    if (sound.isSilent) {
+      await runtime.audio.stop();
+      return;
+    }
+    if (sound == AdhanSound.systemDefault) {
+      // Kullanıcı "Telefonun bildirim sesi" seçtiyse kesinlikle ezan okuma;
+      // yalnızca telefonun standart bildirim sesini çal.
+      await runtime.audio.stop();
+      await ref.read(compassServiceProvider).playSystemNotificationSound();
+      if (!mounted) return;
+      final ScaffoldMessengerState? messenger = _messengerKey.currentState;
+      messenger?.hideCurrentSnackBar();
+      messenger?.showSnackBar(
+        SnackBar(
+          content: Text('${prayer.label} vakti girdi • Telefon bildirim sesi'),
+          duration: const Duration(seconds: 6),
+        ),
+      );
+      return;
+    }
 
     await runtime.audio.initialize(ducking: settings.adhanPlaybackDucking);
     final double targetVolume = notif.adhanVolume.clamp(0.1, 1.0);
@@ -204,9 +223,10 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp>
         volume: initialVolume,
       );
     } else {
-      final String asset =
-          BundledSounds.assetFor(sound) ?? BundledSounds.ezanMelodi;
-      started = await runtime.audio.playAsset(asset, volume: initialVolume);
+      final String? asset = BundledSounds.assetFor(sound);
+      if (asset != null) {
+        started = await runtime.audio.playAsset(asset, volume: initialVolume);
+      }
     }
 
     if (!started || !mounted) return;

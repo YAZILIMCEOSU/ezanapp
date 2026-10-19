@@ -165,16 +165,39 @@ class _NotificationSettingsScreenState
           SwitchListTile(
             secondary: const Icon(Icons.volume_up_outlined),
             title: const Text('Uygulama açıkken ezan sesi çal'),
-            subtitle: const Text('Kapalıysa yalnızca bildirim gösterilir'),
-            value: settings.inAppAdhanEnabled,
-            onChanged: (bool value) => _update(
-              (NotificationSettings s) => s.copyWith(inAppAdhanEnabled: value),
+            subtitle: const Text(
+              'Kapatırsanız ezan okunmaz; yalnızca telefonun standart bildirim sesi kullanılır',
             ),
+            value: settings.inAppAdhanEnabled,
+            onChanged: (bool value) async {
+              if (!value) {
+                await ref.read(runtimeProvider).audio.stop();
+              }
+              await _update(
+                (NotificationSettings s) => s.copyWith(
+                  inAppAdhanEnabled: value,
+                  adhanSound: !value &&
+                          s.adhanSound != AdhanSound.silent &&
+                          s.adhanSound != AdhanSound.systemDefault
+                      ? AdhanSound.systemDefault
+                      : (value && s.adhanSound == AdhanSound.systemDefault
+                            ? AdhanSound.ezanMelodi
+                            : s.adhanSound),
+                  perPrayerSound: !value
+                      ? const <Prayer, AdhanSound>{}
+                      : s.perPrayerSound,
+                ),
+              );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.music_note_outlined),
-            title: const Text('Ezan sesi'),
-            subtitle: Text(settings.adhanSound.label),
+            title: const Text('Ezan ve bildirim sesi seçimi'),
+            subtitle: Text(
+              settings.adhanSound == AdhanSound.systemDefault
+                  ? 'Telefon bildirim sesi (Ezan okunmaz)'
+                  : settings.adhanSound.label,
+            ),
             trailing: const Icon(Icons.chevron_right_rounded),
             onTap: () => context.push(AppRoutes.adhanSounds),
           ),

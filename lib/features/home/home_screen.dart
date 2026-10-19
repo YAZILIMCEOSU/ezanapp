@@ -13,6 +13,7 @@ import '../../data/models/hijri_date.dart';
 import '../../data/models/prayer.dart';
 import '../../data/models/prayer_times_day.dart';
 import '../../data/models/zikir_models.dart';
+import '../../data/prayer/local_calculation_source.dart';
 import '../../data/repositories/daily_content_repository.dart';
 import '../../design/app_colors.dart';
 import '../../design/app_spacing.dart';
@@ -36,6 +37,59 @@ class HomeScreen extends ConsumerWidget {
     final AppSettings settings = ref.watch(settingsProvider);
     final HijriDate hijri = ref.watch(hijriTodayProvider);
     final bool isRamadan = ref.watch(runtimeProvider).ramadan.isRamadan;
+    final location = ref.watch(activeLocationProvider);
+    final method = ref.watch(calculationMethodProvider);
+
+    TodayTimes buildInstantFallback() {
+      const LocalCalculationSource local = LocalCalculationSource();
+      return TodayTimes(
+        day: local.calculateSync(
+          location: location,
+          date: now,
+          method: method,
+        ),
+        tomorrow: local.calculateSync(
+          location: location,
+          date: now.add(const Duration(days: 1)),
+          method: method,
+        ),
+        warning: null,
+        locationLabel: location.label,
+      );
+    }
+
+    Widget buildTimesContent(TodayTimes value) => Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        if (value.warning != null)
+          StatusBanner(
+            message: value.warning!,
+            action: TextButton(
+              onPressed: () => ref.read(prayerTimesProvider.notifier).refresh(),
+              child: const Text('Yenile'),
+            ),
+          ),
+        _EDiyanetSplitPrayerCard(
+          day: value.day,
+          tomorrow: value.tomorrow,
+          snapshot: value.snapshot(now),
+          now: now,
+          use24Hour: settings.use24Hour,
+          locationLabel: value.locationLabel,
+          onRefresh: () => ref.read(prayerTimesProvider.notifier).refresh(),
+        ),
+        _EDiyanetHutbeBanner(now: now),
+        const SizedBox(height: AppSpacing.sm),
+        const _QuickActions(),
+        _TodayTimesCard(
+          times_: value,
+          now: now,
+          use24Hour: settings.use24Hour,
+          notifications: settings.notifications,
+        ),
+        if (isRamadan) const _RamadanCard(),
+      ],
+    );
 
     return Scaffold(
       body: SafeArea(
@@ -50,49 +104,12 @@ class HomeScreen extends ConsumerWidget {
               ),
               SliverToBoxAdapter(
                 child: times.when(
-                  loading: () => const Padding(
-                    padding: EdgeInsets.symmetric(vertical: AppSpacing.huge),
-                    child: LoadingView(message: 'Vakitler hazırlanıyor…'),
-                  ),
+                  loading: () => buildTimesContent(buildInstantFallback()),
                   error: (Object error, StackTrace stackTrace) => ErrorView(
                     error: error,
                     onRetry: () => ref.invalidate(prayerTimesProvider),
                   ),
-                  data: (TodayTimes value) => Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      if (value.warning != null)
-                        StatusBanner(
-                          message: value.warning!,
-                          action: TextButton(
-                            onPressed: () => ref
-                                .read(prayerTimesProvider.notifier)
-                                .refresh(),
-                            child: const Text('Yenile'),
-                          ),
-                        ),
-                      _EDiyanetSplitPrayerCard(
-                        day: value.day,
-                        tomorrow: value.tomorrow,
-                        snapshot: value.snapshot(now),
-                        now: now,
-                        use24Hour: settings.use24Hour,
-                        locationLabel: value.locationLabel,
-                        onRefresh: () =>
-                            ref.read(prayerTimesProvider.notifier).refresh(),
-                      ),
-                      _EDiyanetHutbeBanner(now: now),
-                      const SizedBox(height: AppSpacing.sm),
-                      const _QuickActions(),
-                      _TodayTimesCard(
-                        times_: value,
-                        now: now,
-                        use24Hour: settings.use24Hour,
-                        notifications: settings.notifications,
-                      ),
-                      if (isRamadan) const _RamadanCard(),
-                    ],
-                  ),
+                  data: buildTimesContent,
                 ),
               ),
               const SliverToBoxAdapter(child: _DailyVerseCard()),

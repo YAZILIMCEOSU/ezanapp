@@ -80,16 +80,93 @@ class _AdhanSoundScreenState extends ConsumerState<AdhanSoundScreen> {
               AppSpacing.lg,
               AppSpacing.md,
               AppSpacing.lg,
+              AppSpacing.xs,
+            ),
+            child: Container(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceContainerHighest.withValues(
+                  alpha: 0.55,
+                ),
+                borderRadius: AppRadius.allMd,
+                border: Border.all(color: theme.colorScheme.outlineVariant),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Text(
+                    'Hızlı Bildirim Modu Seçimi',
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: <Widget>[
+                      ChoiceChip(
+                        avatar: const Icon(
+                          Icons.notifications_active_rounded,
+                          size: 16,
+                        ),
+                        label: const Text(
+                          'Telefon Bildirim Sesi (Ezan Okumasın)',
+                        ),
+                        selected:
+                            notifications.adhanSound ==
+                                AdhanSound.systemDefault &&
+                            notifications.perPrayerSound.isEmpty &&
+                            !notifications.inAppAdhanEnabled,
+                        onSelected: (_) => _applyGlobalSoundMode(
+                          AdhanSound.systemDefault,
+                          notifications,
+                        ),
+                      ),
+                      ChoiceChip(
+                        avatar: const Icon(Icons.mosque_rounded, size: 16),
+                        label: const Text('Tam Ezan Oku'),
+                        selected:
+                            notifications.adhanSound !=
+                                AdhanSound.systemDefault &&
+                            !notifications.adhanSound.isSilent,
+                        onSelected: (_) => _applyGlobalSoundMode(
+                          notifications.adhanSound ==
+                                      AdhanSound.systemDefault ||
+                                  notifications.adhanSound.isSilent
+                              ? AdhanSound.ezanMelodi
+                              : notifications.adhanSound,
+                          notifications,
+                        ),
+                      ),
+                      ChoiceChip(
+                        avatar: const Icon(
+                          Icons.notifications_off_rounded,
+                          size: 16,
+                        ),
+                        label: const Text('Sessiz Bildirim'),
+                        selected: notifications.adhanSound.isSilent,
+                        onSelected: (_) => _applyGlobalSoundMode(
+                          AdhanSound.silent,
+                          notifications,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              AppSpacing.sm,
+              AppSpacing.lg,
               AppSpacing.sm,
             ),
             child: FilledButton.icon(
-              onPressed: () {
-                final AdhanSound target =
-                    _canPreview(notifications.adhanSound, notifications)
-                    ? notifications.adhanSound
-                    : AdhanSound.ezanMelodi;
-                _preview(target, notifications, forcePlay: true);
-              },
+              onPressed: () =>
+                  _preview(notifications.adhanSound, notifications, forcePlay: true),
               icon: const Icon(Icons.volume_up_rounded, size: 20),
               label: const Text('Vakit Girmiş Gibi Şimdi Test Et'),
             ),
@@ -144,17 +221,7 @@ class _AdhanSoundScreenState extends ConsumerState<AdhanSoundScreen> {
                   await _pickCustomAdhanFile(context);
                   return;
                 }
-                await ref
-                    .read(settingsControllerProvider.notifier)
-                    .updateNotifications(
-                      notifications.copyWith(adhanSound: sound),
-                    );
-                if (_canPreview(sound, notifications)) {
-                  await _preview(sound, notifications, forcePlay: true);
-                } else {
-                  await ref.read(runtimeProvider).audio.stop();
-                  if (mounted) setState(() => _previewingSound = null);
-                }
+                await _applyGlobalSoundMode(sound, notifications);
               },
             ),
           Padding(
@@ -283,7 +350,29 @@ class _AdhanSoundScreenState extends ConsumerState<AdhanSoundScreen> {
     );
   }
 
+  Future<void> _applyGlobalSoundMode(
+    AdhanSound sound,
+    NotificationSettings notifications,
+  ) async {
+    final bool isSystemOrSilent =
+        sound.isSilent || sound == AdhanSound.systemDefault;
+    // Ana ses seçildiğinde tüm vakitlerin özel (perPrayerSound) istisnalarını
+    // temizle ki "Telefonun bildirim sesi" seçildiğinde hiçbir vakitte gizlice
+    // eski ezan sesi kalmasın.
+    await ref
+        .read(settingsControllerProvider.notifier)
+        .updateNotifications(
+          notifications.copyWith(
+            adhanSound: sound,
+            perPrayerSound: const <Prayer, AdhanSound>{},
+            inAppAdhanEnabled: !isSystemOrSilent,
+          ),
+        );
+    await _preview(sound, notifications, forcePlay: true);
+  }
+
   bool _canPreview(AdhanSound sound, NotificationSettings notifications) {
+    if (sound == AdhanSound.systemDefault) return true;
     if (BundledSounds.assetFor(sound) != null) return true;
     if (sound == AdhanSound.downloaded &&
         notifications.customAdhanPath != null &&
@@ -299,6 +388,53 @@ class _AdhanSoundScreenState extends ConsumerState<AdhanSoundScreen> {
     bool forcePlay = false,
   }) async {
     final AppAudioService audio = ref.read(runtimeProvider).audio;
+    if (sound.isSilent) {
+      await audio.stop();
+      if (mounted) {
+        setState(() => _previewingSound = null);
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Sessiz mod aktif: Vakit girdiğinde ezan veya ses çalınmaz.',
+              ),
+              duration: Duration(seconds: 3),
+            ),
+          );
+      }
+      return;
+    }
+    if (sound == AdhanSound.systemDefault) {
+      // Kesinlikle ezan MP3 çalma; çalışan ezanı durdur ve telefonun kendi
+      // bildirim sesini + örnek bildirimini tetikle.
+      await audio.stop();
+      if (mounted) setState(() => _previewingSound = null);
+      await ref.read(compassServiceProvider).playSystemNotificationSound();
+      try {
+        await ref
+            .read(runtimeProvider)
+            .notifications
+            .showSystemDefaultNow(
+              title: 'Vakit Bildirimi (Telefon Bildirim Sesi)',
+              body:
+                  'Ezan okunmadan yalnızca telefonunuzun standart bildirim sesi çalınır.',
+            );
+      } catch (_) {}
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Telefon bildirim sesi seçildi: Ezan okunmaz, yalnızca telefonun standart bildirim sesi çalar.',
+            ),
+            duration: Duration(seconds: 4),
+          ),
+        );
+      return;
+    }
+
     if (!forcePlay && _previewingSound == sound) {
       await audio.stop();
       if (mounted) setState(() => _previewingSound = null);

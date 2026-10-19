@@ -23,7 +23,7 @@ class AladhanApiSource implements PrayerTimesSource {
   final http.Client _client;
   final String baseUrl;
 
-  static const Duration _timeout = Duration(seconds: 12);
+  static const Duration _timeout = Duration(seconds: 4);
 
   @override
   String get id => 'aladhan';

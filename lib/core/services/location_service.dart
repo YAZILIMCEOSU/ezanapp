@@ -87,10 +87,21 @@ class LocationService {
     }
   }
 
+  /// Sistem önbelleğindeki son bilinen konumu beklemeden (<10 ms) döndürür.
+  Future<LocationFix?> getLastKnownFastPosition() async {
+    try {
+      final LocationStatus status = await checkStatus();
+      if (status != LocationStatus.granted) return null;
+      final Position? last = await Geolocator.getLastKnownPosition();
+      if (last != null) return _toFix(last);
+    } catch (_) {}
+    return null;
+  }
+
   /// Tek seferlik konum alır. Açık alanda uydu GPS, bina içinde Wi-Fi/hücresel
   /// konum yedeğiyle hızlı ve kesintisiz koordinat döndürür.
   Future<LocationFix> getCurrentPosition({
-    Duration timeout = const Duration(seconds: 6),
+    Duration timeout = const Duration(seconds: 3),
     bool preferLastKnown = false,
   }) async {
     final LocationStatus status = await requestPermission();

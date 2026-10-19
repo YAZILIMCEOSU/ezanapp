@@ -25,6 +25,7 @@ class CompassReading {
     this.stabilityDegrees = 0,
     this.qiblaDirection,
     this.differenceToQibla,
+    this.sensorSource,
   });
 
   /// Gerçek kuzeye (veya sapma 0 ise manyetik kuzeye) göre yön (0-360°).
@@ -56,6 +57,9 @@ class CompassReading {
 
   /// Kıbleye göre sapma (-180..180°).
   final double? differenceToQibla;
+
+  /// Aktif sensör füzyon kaynağı (ör. fusion_mag_anchored, geomagnetic_matrix).
+  final String? sensorSource;
 
   /// Sensör değerleri sayısal olarak geçerli mi?
   bool get isValid =>
@@ -123,6 +127,7 @@ class CompassReading {
       stabilityDegrees: stabilityDegrees,
       qiblaDirection: qiblaDirection,
       differenceToQibla: difference,
+      sensorSource: sensorSource,
     );
   }
 }
@@ -219,6 +224,7 @@ class CompassService {
             final double roll = (map['roll'] as num?)?.toDouble() ?? 0;
             final double? fieldStrength = (map['fieldStrength'] as num?)
                 ?.toDouble();
+            final String? sensorSource = map['sensorSource'] as String?;
 
             _recentHeadings.add(rawHeading);
             if (_recentHeadings.length > 8) {
@@ -244,6 +250,7 @@ class CompassService {
                   ? fieldStrength
                   : null,
               stabilityDegrees: stability,
+              sensorSource: sensorSource,
             );
             if (_qiblaDirection != null) {
               reading = reading.withQibla(
@@ -275,6 +282,42 @@ class CompassService {
     try {
       await _methods.invokeMethod<bool>('resetCompass');
     } catch (_) {}
+  }
+
+  /// Telefonun varsayılan bildirim sesini (ezan okumadan) çalar.
+  Future<bool> playSystemNotificationSound() async {
+    try {
+      final bool? played = await _methods.invokeMethod<bool>(
+        'playSystemNotificationSound',
+      );
+      if (played == true) return true;
+    } catch (_) {}
+    try {
+      await SystemSound.play(SystemSoundType.alert);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Donanım pusula / sensör tanılama bilgilerini döndürür.
+  Future<Map<String, Object?>> getDiagnostics() async {
+    try {
+      final Map<Object?, Object?>? raw = await _methods
+          .invokeMethod<Map<Object?, Object?>>('getSensorDiagnostics');
+      if (raw != null) {
+        return <String, Object?>{
+          for (final MapEntry<Object?, Object?> e in raw.entries)
+            if (e.key is String) e.key as String: e.value,
+        };
+      }
+    } catch (_) {}
+    return <String, Object?>{
+      'hasMagnetometer': _isSupported,
+      'lastFusedHeading': _lastReading?.heading,
+      'fieldStrengthMicroTesla': _lastReading?.fieldStrengthMicroTesla,
+      'sensorSource': _lastReading?.sensorSource ?? 'simulated_or_fallback',
+    };
   }
 
   Future<void> stop() async {
