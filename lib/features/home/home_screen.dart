@@ -43,11 +43,7 @@ class HomeScreen extends ConsumerWidget {
     TodayTimes buildInstantFallback() {
       const LocalCalculationSource local = LocalCalculationSource();
       return TodayTimes(
-        day: local.calculateSync(
-          location: location,
-          date: now,
-          method: method,
-        ),
+        day: local.calculateSync(location: location, date: now, method: method),
         tomorrow: local.calculateSync(
           location: location,
           date: now.add(const Duration(days: 1)),

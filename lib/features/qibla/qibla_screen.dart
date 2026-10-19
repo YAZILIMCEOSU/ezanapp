@@ -523,7 +523,8 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
                   ),
                   _InfoRow(
                     icon: Icons.navigation_rounded,
-                    label: 'Gerçek Kuzey (Sapma +${declination.toStringAsFixed(1)}°)',
+                    label:
+                        'Gerçek Kuzey (Sapma +${declination.toStringAsFixed(1)}°)',
                     value: reading != null
                         ? '${reading.heading.toStringAsFixed(1)}°'
                         : 'Okunuyor…',
@@ -559,9 +560,7 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
                       }
                     },
                     icon: const Icon(Icons.compass_calibration_rounded),
-                    label: const Text(
-                      'Pusulayı Sıfırla & GPS Konumunu Yenile',
-                    ),
+                    label: const Text('Pusulayı Sıfırla & GPS Konumunu Yenile'),
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   OutlinedButton.icon(

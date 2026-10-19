@@ -176,7 +176,8 @@ class _NotificationSettingsScreenState
               await _update(
                 (NotificationSettings s) => s.copyWith(
                   inAppAdhanEnabled: value,
-                  adhanSound: !value &&
+                  adhanSound:
+                      !value &&
                           s.adhanSound != AdhanSound.silent &&
                           s.adhanSound != AdhanSound.systemDefault
                       ? AdhanSound.systemDefault

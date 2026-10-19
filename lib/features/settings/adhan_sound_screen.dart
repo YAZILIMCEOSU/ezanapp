@@ -165,8 +165,11 @@ class _AdhanSoundScreenState extends ConsumerState<AdhanSoundScreen> {
               AppSpacing.sm,
             ),
             child: FilledButton.icon(
-              onPressed: () =>
-                  _preview(notifications.adhanSound, notifications, forcePlay: true),
+              onPressed: () => _preview(
+                notifications.adhanSound,
+                notifications,
+                forcePlay: true,
+              ),
               icon: const Icon(Icons.volume_up_rounded, size: 20),
               label: const Text('Vakit Girmiş Gibi Şimdi Test Et'),
             ),
@@ -417,8 +420,7 @@ class _AdhanSoundScreenState extends ConsumerState<AdhanSoundScreen> {
             .notifications
             .showSystemDefaultNow(
               title: 'Vakit Bildirimi (Telefon Bildirim Sesi)',
-              body:
-                  'Ezan okunmadan yalnızca telefonunuzun standart bildirim sesi çalınır.',
+              body: 'Ezan okunmadan yalnızca telefonunuzun standart bildirim sesi çalınır.',
             );
       } catch (_) {}
       if (!mounted) return;
