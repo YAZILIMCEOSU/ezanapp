@@ -702,19 +702,24 @@ void main() {
         expect(BundledSounds.assetFor(systemToneSettings.soundFor(p)), isNull);
       }
 
-      // 2) Kıble manyetik kuzeye çapalı hibrit okuma doğrulaması (Bağcılar 151.6°)
-      const CompassReading rawReading = CompassReading(
-        heading: 145.8,
-        magneticHeading: 145.8,
+      // 2) Kıble manyetik kuzeye çapalı hibrit okuma doğrulaması (Bağcılar 151.4°)
+      final double bagcilarDeclination = GeoUtils.magneticDeclination(
+        41.0339,
+        28.8567,
+      );
+      final double expectedMag = trueQibla - bagcilarDeclination;
+      final CompassReading rawReading = CompassReading(
+        heading: expectedMag,
+        magneticHeading: expectedMag,
         accuracy: 3.0,
         sensorSource: 'fusion_mag_anchored',
       );
       final CompassReading calibrated = rawReading.withQibla(
         trueQibla,
-        declination: GeoUtils.magneticDeclination(41.0339, 28.8567),
+        declination: bagcilarDeclination,
       );
       expect(calibrated.sensorSource, 'fusion_mag_anchored');
-      expect(calibrated.heading, closeTo(trueQibla, 0.2));
+      expect(calibrated.heading, closeTo(trueQibla, 0.01));
       expect(calibrated.isAligned, isTrue);
 
       // 3) İlk açılışta 0 ms senkron vakit hesabı (HomeScreen anlık açılış)
