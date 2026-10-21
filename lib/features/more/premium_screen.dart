@@ -174,32 +174,27 @@ class _PremiumScreenState extends ConsumerState<PremiumScreen> {
                   String title,
                   String subtitle,
                   String badge,
-                }) plan
-                in const <({
-                  String id,
-                  String title,
-                  String subtitle,
-                  String badge,
-                })>[
+                })
+                plan
+                in const <
+                  ({String id, String title, String subtitle, String badge})
+                >[
                   (
                     id: 'ezanai_premium_monthly',
                     title: 'Aylık Premium Abonelik',
-                    subtitle:
-                        'Reklamsız kullanım, sınırsız AI soru ve tüm özellikler • Ürün kodu: ezanai_premium_monthly',
+                    subtitle: 'Reklamsız kullanım, sınırsız AI soru ve tüm özellikler • Ürün kodu: ezanai_premium_monthly',
                     badge: 'Aylık Plan',
                   ),
                   (
                     id: 'ezanai_premium_yearly',
                     title: 'Yıllık Premium Abonelik (%40 Avantajlı)',
-                    subtitle:
-                        '12 ay kesintisiz reklamsız deneyim ve bulut yedekleme • Ürün kodu: ezanai_premium_yearly',
+                    subtitle: '12 ay kesintisiz reklamsız deneyim ve bulut yedekleme • Ürün kodu: ezanai_premium_yearly',
                     badge: 'En Popüler',
                   ),
                   (
                     id: 'ezanai_premium_lifetime',
                     title: 'Ömür Boyu Premium (Tek Ödeme)',
-                    subtitle:
-                        'Tek seferlik ödeme ile süresiz tüm Pro özellikler • Ürün kodu: ezanai_premium_lifetime',
+                    subtitle: 'Tek seferlik ödeme ile süresiz tüm Pro özellikler • Ürün kodu: ezanai_premium_lifetime',
                     badge: 'Süresiz',
                   ),
                 ])
@@ -247,12 +242,12 @@ class _PremiumScreenState extends ConsumerState<PremiumScreen> {
           const SectionHeader(
             title: 'Uygulama Güvenliği & Kopya Koruması Kalkanı',
           ),
-          Card(
-            margin: const EdgeInsets.symmetric(
+          const Card(
+            margin: EdgeInsets.symmetric(
               horizontal: AppSpacing.lg,
               vertical: AppSpacing.xs,
             ),
-            child: const Padding(
+            child: Padding(
               padding: EdgeInsets.all(AppSpacing.md),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

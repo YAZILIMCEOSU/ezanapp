@@ -199,223 +199,234 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
                     ],
                   ),
                 ),
-          // Diyanet Kıble Pusulası tarzı Pusula | Harita sekme seçici
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.xl,
-              vertical: AppSpacing.xs,
-            ),
-            child: Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.surfaceContainerHighest,
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(10),
-                      onTap: () => setState(() => _showMapTab = false),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        decoration: BoxDecoration(
-                          color: !_showMapTab
-                              ? theme.colorScheme.primary
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Icon(
-                              Icons.explore_rounded,
-                              size: 18,
-                              color: !_showMapTab
-                                  ? theme.colorScheme.onPrimary
-                                  : theme.colorScheme.onSurfaceVariant,
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              'Pusula',
-                              style: theme.textTheme.labelLarge?.copyWith(
-                                fontWeight: FontWeight.w800,
+                // Diyanet Kıble Pusulası tarzı Pusula | Harita sekme seçici
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.xl,
+                    vertical: AppSpacing.xs,
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(10),
+                            onTap: () => setState(() => _showMapTab = false),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              decoration: BoxDecoration(
                                 color: !_showMapTab
-                                    ? theme.colorScheme.onPrimary
-                                    : theme.colorScheme.onSurfaceVariant,
+                                    ? theme.colorScheme.primary
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.explore_rounded,
+                                    size: 18,
+                                    color: !_showMapTab
+                                        ? theme.colorScheme.onPrimary
+                                        : theme.colorScheme.onSurfaceVariant,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    'Pusula',
+                                    style: theme.textTheme.labelLarge?.copyWith(
+                                      fontWeight: FontWeight.w800,
+                                      color: !_showMapTab
+                                          ? theme.colorScheme.onPrimary
+                                          : theme.colorScheme.onSurfaceVariant,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
+                          ),
                         ),
-                      ),
+                        Expanded(
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(10),
+                            onTap: () => setState(() => _showMapTab = true),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              decoration: BoxDecoration(
+                                color: _showMapTab
+                                    ? theme.colorScheme.primary
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.map_outlined,
+                                    size: 18,
+                                    color: _showMapTab
+                                        ? theme.colorScheme.onPrimary
+                                        : theme.colorScheme.onSurfaceVariant,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    'Harita',
+                                    style: theme.textTheme.labelLarge?.copyWith(
+                                      fontWeight: FontWeight.w800,
+                                      color: _showMapTab
+                                          ? theme.colorScheme.onPrimary
+                                          : theme.colorScheme.onSurfaceVariant,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  Expanded(
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(10),
-                      onTap: () => setState(() => _showMapTab = true),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        decoration: BoxDecoration(
-                          color: _showMapTab
-                              ? theme.colorScheme.primary
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Icon(
-                              Icons.map_outlined,
-                              size: 18,
-                              color: _showMapTab
-                                  ? theme.colorScheme.onPrimary
-                                  : theme.colorScheme.onSurfaceVariant,
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              'Harita',
-                              style: theme.textTheme.labelLarge?.copyWith(
-                                fontWeight: FontWeight.w800,
-                                color: _showMapTab
-                                    ? theme.colorScheme.onPrimary
-                                    : theme.colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                ),
+                if (_error != null)
+                  StatusBanner(
+                    icon: Icons.warning_amber_rounded,
+                    message: _error!,
+                  ),
+                if (activeReading?.needsCalibration ?? false)
+                  StatusBanner(
+                    icon: Icons.screen_rotation_alt_rounded,
+                    message: activeReading!.calibrationMessage,
+                  ),
+                if (!_supported)
+                  const StatusBanner(
+                    icon: Icons.sensors_off_rounded,
+                    message:
+                        'Cihazınızda pusula sensörü bulunamadı. Aşağıdaki dereceyi '
+                        'kullanarak yönünüzü ayarlayabilirsiniz.',
+                  ),
+                if (_showMapTab)
+                  Padding(
+                    padding: const EdgeInsets.all(AppSpacing.xl),
+                    child: _QiblaMapViewCard(
+                      location: location,
+                      compassQibla: compassQibla,
+                      trueQibla: trueQibla,
+                      distanceKm: distance,
+                      heading: activeReading?.heading,
+                      onOpenPin: () => _openExactPin(location, compassQibla),
+                      onOpenRoute: () => _openMap(location),
+                    ),
+                  )
+                else ...<Widget>[
+                  const SizedBox(height: AppSpacing.xs),
+                  Center(
+                    child: _CompassDial(
+                      reading: activeReading,
+                      qibla: trueQibla,
+                      displayQibla: compassQibla,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.xl,
+                    ),
+                    child: _QiblaDirectionBanner(
+                      reading: activeReading,
+                      qibla: compassQibla,
                     ),
                   ),
                 ],
-              ),
+                const SizedBox(height: AppSpacing.lg),
+                _InfoRow(
+                  icon: Icons.mosque_rounded,
+                  label: 'Diyanet Kıble Pusulası Açısı',
+                  value: '${compassQibla.toStringAsFixed(1)}°',
+                ),
+                _InfoRow(
+                  icon: Icons.explore_outlined,
+                  label: 'Coğrafi Kıble Açısı (Gerçek Kuzey)',
+                  value: '${trueQibla.toStringAsFixed(1)}°',
+                ),
+                _InfoRow(
+                  icon: Icons.straighten_rounded,
+                  label: 'Kâbe\'ye mesafe',
+                  value: '${distance.toStringAsFixed(0)} km',
+                ),
+                _InfoRow(
+                  icon: Icons.location_city_rounded,
+                  label: 'Bulunduğunuz koordinat',
+                  value: location.coordinates,
+                ),
+                _InfoRow(
+                  icon: Icons.compass_calibration_outlined,
+                  label: 'Manyetik sapma (WMM)',
+                  value:
+                      '${declination >= 0 ? '+' : ''}${declination.toStringAsFixed(1)}°',
+                ),
+                if (activeReading != null)
+                  _InfoRow(
+                    icon: Icons.screen_lock_rotation_rounded,
+                    label: 'Telefonun baktığı yön',
+                    value:
+                        '${activeReading.heading.toStringAsFixed(1)}° · '
+                        'Kıble farkı ${activeReading.differenceToQibla!.abs().toStringAsFixed(1)}°',
+                  ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.xl,
+                    AppSpacing.md,
+                    AppSpacing.xl,
+                    0,
+                  ),
+                  child: FilledButton.tonalIcon(
+                    onPressed: () => context.push(AppRoutes.mosques),
+                    icon: const Icon(Icons.mosque_rounded, size: 18),
+                    label: const Text('Yakındaki Camileri Bul & Yol Tarifi Al'),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.xl,
+                    AppSpacing.sm,
+                    AppSpacing.xl,
+                    0,
+                  ),
+                  child: OutlinedButton.icon(
+                    onPressed: () => _showSensorTestSheet(
+                      context,
+                      location: location,
+                      trueQibla: trueQibla,
+                      declination: declination,
+                      reading: activeReading,
+                    ),
+                    icon: const Icon(Icons.fact_check_outlined, size: 18),
+                    label: const Text(
+                      'Hata & Sensör Test Modu (Canlı Tanılama)',
+                    ),
+                  ),
+                ),
+                const SectionHeader(
+                  title: 'Kıble nasıl bulunur? (Diyanet Yöntemi)',
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.xl,
+                  ),
+                  child: Text(
+                    '1. Telefonu yere paralel (avuç içinde veya masada düz) tutun.\n'
+                    '2. Üstteki Kıble kutusunda (${compassQibla.toStringAsFixed(1)}°) ve çember üzerindeki Kâbe simgesinde tam Kıble yönü görünür.\n'
+                    '3. Ortadaki ibre ve Kâbe simgesi en üst noktaya (12 yönüne) geldiğinde "✓ Kıble" onayını görürsünüz.\n'
+                    '4. Mıknatıs, mıknatıslı kılıf ve elektronik parazitlerden uzak durun.',
+                    style: const TextStyle(height: 1.6),
+                  ),
+                ),
+              ],
             ),
-          ),
-          if (_error != null)
-            StatusBanner(icon: Icons.warning_amber_rounded, message: _error!),
-          if (activeReading?.needsCalibration ?? false)
-            StatusBanner(
-              icon: Icons.screen_rotation_alt_rounded,
-              message: activeReading!.calibrationMessage,
-            ),
-          if (!_supported)
-            const StatusBanner(
-              icon: Icons.sensors_off_rounded,
-              message:
-                  'Cihazınızda pusula sensörü bulunamadı. Aşağıdaki dereceyi '
-                  'kullanarak yönünüzü ayarlayabilirsiniz.',
-            ),
-          if (_showMapTab)
-            Padding(
-              padding: const EdgeInsets.all(AppSpacing.xl),
-              child: _QiblaMapViewCard(
-                location: location,
-                compassQibla: compassQibla,
-                trueQibla: trueQibla,
-                distanceKm: distance,
-                heading: activeReading?.heading,
-                onOpenPin: () => _openExactPin(location, compassQibla),
-                onOpenRoute: () => _openMap(location),
-              ),
-            )
-          else ...<Widget>[
-            const SizedBox(height: AppSpacing.xs),
-            Center(
-              child: _CompassDial(
-                reading: activeReading,
-                qibla: trueQibla,
-                displayQibla: compassQibla,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-              child: _QiblaDirectionBanner(
-                reading: activeReading,
-                qibla: compassQibla,
-              ),
-            ),
-          ],
-          const SizedBox(height: AppSpacing.lg),
-          _InfoRow(
-            icon: Icons.mosque_rounded,
-            label: 'Diyanet Kıble Pusulası Açısı',
-            value: '${compassQibla.toStringAsFixed(1)}°',
-          ),
-          _InfoRow(
-            icon: Icons.explore_outlined,
-            label: 'Coğrafi Kıble Açısı (Gerçek Kuzey)',
-            value: '${trueQibla.toStringAsFixed(1)}°',
-          ),
-          _InfoRow(
-            icon: Icons.straighten_rounded,
-            label: 'Kâbe\'ye mesafe',
-            value: '${distance.toStringAsFixed(0)} km',
-          ),
-          _InfoRow(
-            icon: Icons.location_city_rounded,
-            label: 'Bulunduğunuz koordinat',
-            value: location.coordinates,
-          ),
-          _InfoRow(
-            icon: Icons.compass_calibration_outlined,
-            label: 'Manyetik sapma (WMM)',
-            value:
-                '${declination >= 0 ? '+' : ''}${declination.toStringAsFixed(1)}°',
-          ),
-          if (activeReading != null)
-            _InfoRow(
-              icon: Icons.screen_lock_rotation_rounded,
-              label: 'Telefonun baktığı yön',
-              value:
-                  '${activeReading.heading.toStringAsFixed(1)}° · '
-                  'Kıble farkı ${activeReading.differenceToQibla!.abs().toStringAsFixed(1)}°',
-            ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.xl,
-              AppSpacing.md,
-              AppSpacing.xl,
-              0,
-            ),
-            child: FilledButton.tonalIcon(
-              onPressed: () => context.push(AppRoutes.mosques),
-              icon: const Icon(Icons.mosque_rounded, size: 18),
-              label: const Text('Yakındaki Camileri Bul & Yol Tarifi Al'),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.xl,
-              AppSpacing.sm,
-              AppSpacing.xl,
-              0,
-            ),
-            child: OutlinedButton.icon(
-              onPressed: () => _showSensorTestSheet(
-                context,
-                location: location,
-                trueQibla: trueQibla,
-                declination: declination,
-                reading: activeReading,
-              ),
-              icon: const Icon(Icons.fact_check_outlined, size: 18),
-              label: const Text('Hata & Sensör Test Modu (Canlı Tanılama)'),
-            ),
-          ),
-          const SectionHeader(title: 'Kıble nasıl bulunur? (Diyanet Yöntemi)'),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-            child: Text(
-              '1. Telefonu yere paralel (avuç içinde veya masada düz) tutun.\n'
-              '2. Üstteki Kıble kutusunda (${compassQibla.toStringAsFixed(1)}°) ve çember üzerindeki Kâbe simgesinde tam Kıble yönü görünür.\n'
-              '3. Ortadaki ibre ve Kâbe simgesi en üst noktaya (12 yönüne) geldiğinde "✓ Kıble" onayını görürsünüz.\n'
-              '4. Mıknatıs, mıknatıslı kılıf ve elektronik parazitlerden uzak durun.',
-              style: const TextStyle(height: 1.6),
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -644,8 +655,7 @@ class _DiyanetCalibrationGuideView extends StatelessWidget {
             const SizedBox(height: AppSpacing.md),
             const _CalibrationStepRow(
               icon: Icons.phonelink_ring_rounded,
-              text:
-                  'Manyetik alanlardan uzak durun (bilgisayar, hoparlör vb.)',
+              text: 'Manyetik alanlardan uzak durun (bilgisayar, hoparlör vb.)',
             ),
             const SizedBox(height: AppSpacing.md),
             const _CalibrationStepRow(
@@ -724,14 +734,20 @@ class _InfinityPhoneCalibrationPainter extends CustomPainter {
       ..strokeWidth = 10.0
       ..color = const Color(0xFF00796B);
     canvas.drawArc(
-      Rect.fromCircle(center: leftCenter + const Offset(0, 3), radius: loopRadius),
+      Rect.fromCircle(
+        center: leftCenter + const Offset(0, 3),
+        radius: loopRadius,
+      ),
       0.2,
       math.pi * 1.3,
       false,
       tealPaint,
     );
     canvas.drawArc(
-      Rect.fromCircle(center: rightCenter + const Offset(0, -3), radius: loopRadius),
+      Rect.fromCircle(
+        center: rightCenter + const Offset(0, -3),
+        radius: loopRadius,
+      ),
       math.pi + 0.2,
       math.pi * 1.3,
       false,
@@ -979,9 +995,7 @@ class _CompassDial extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: 14),
           padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
           decoration: BoxDecoration(
-            color: aligned
-                ? const Color(0xFFB9E4C9)
-                : const Color(0xFFE0F2F1),
+            color: aligned ? const Color(0xFFB9E4C9) : const Color(0xFFE0F2F1),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: aligned
