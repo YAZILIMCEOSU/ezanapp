@@ -37,6 +37,7 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
   bool _wasAligned = false;
   bool _supported = true;
   bool _showMapTab = false;
+  bool _showCalibrationGuide = WebViewPlatform.instance != null;
   String? _error;
 
   @override
@@ -137,73 +138,67 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text('Kıble Pusulası'),
         actions: <Widget>[
           IconButton(
-            tooltip: 'Pusulayı kalibre et ve sıfırla',
-            onPressed: () async {
-              await ref.read(compassServiceProvider).resetCompass();
-              unawaited(
-                ref
-                    .read(locationControllerProvider.notifier)
-                    .refreshFromGps(requestPermission: true),
-              );
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      'Pusula sensörü sıfırlandı ve GPS konumu güncelleniyor.',
-                    ),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-              }
+            tooltip: 'Pusula Kalibrasyonu',
+            onPressed: () {
+              setState(() => _showCalibrationGuide = true);
             },
-            icon: const Icon(Icons.compass_calibration_rounded, size: 20),
-          ),
-          IconButton(
-            tooltip: 'GPS ile tam konumumu güncelle',
-            onPressed: () =>
-                ref.read(locationControllerProvider.notifier).refreshFromGps(),
-            icon: const Icon(Icons.my_location_rounded, size: 20),
+            icon: const Icon(Icons.compass_calibration_rounded, size: 22),
           ),
           IconButton(
             tooltip: 'Yakındaki Camiler ve Navigasyon',
             onPressed: () => context.push(AppRoutes.mosques),
-            icon: const Icon(Icons.mosque_outlined, size: 20),
-          ),
-          IconButton(
-            tooltip: 'Haritada tam konumumu işaretle',
-            onPressed: () => _openExactPin(location, compassQibla),
-            icon: const Icon(Icons.location_on_outlined, size: 20),
+            icon: const Icon(Icons.mosque_outlined, size: 22),
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.only(bottom: AppSpacing.xxl),
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.xl,
-              vertical: AppSpacing.xs,
-            ),
-            child: Row(
+      body: _showCalibrationGuide
+          ? _DiyanetCalibrationGuideView(
+              onContinue: () async {
+                setState(() => _showCalibrationGuide = false);
+                await ref.read(compassServiceProvider).resetCompass();
+                unawaited(
+                  ref
+                      .read(locationControllerProvider.notifier)
+                      .refreshFromGps(requestPermission: true),
+                );
+              },
+            )
+          : ListView(
+              padding: const EdgeInsets.only(bottom: AppSpacing.xxl),
               children: <Widget>[
-                const Icon(Icons.place_outlined, size: 16),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: Text(
-                    location.city?.displayName ?? 'Mevcut konum',
-                    style: theme.textTheme.labelLarge,
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.xl,
+                    vertical: AppSpacing.xs,
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      const Icon(Icons.place_outlined, size: 16),
+                      const SizedBox(width: AppSpacing.sm),
+                      Expanded(
+                        child: Text(
+                          location.city?.displayName ?? 'Mevcut konum',
+                          style: theme.textTheme.labelLarge,
+                        ),
+                      ),
+                      IconButton(
+                        tooltip: 'GPS ile tam konumumu güncelle',
+                        onPressed: () => ref
+                            .read(locationControllerProvider.notifier)
+                            .refreshFromGps(),
+                        icon: const Icon(Icons.my_location_rounded, size: 18),
+                      ),
+                      TextButton(
+                        onPressed: () => context.push(AppRoutes.cities),
+                        child: const Text('Değiştir'),
+                      ),
+                    ],
                   ),
                 ),
-                TextButton(
-                  onPressed: () => context.push(AppRoutes.cities),
-                  child: const Text('Değiştir'),
-                ),
-              ],
-            ),
-          ),
           // Diyanet Kıble Pusulası tarzı Pusula | Harita sekme seçici
           Padding(
             padding: const EdgeInsets.symmetric(
@@ -604,7 +599,278 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
   }
 }
 
-/// Canlı sağ/sol yönlendirme bandı — Diyanet Kıble Pusulası tarzı.
+/// e-Diyanet Kıble Pusulası "Pusula Kalibrasyonu" tam ekran rehberi (8 rakamı çizimi).
+class _DiyanetCalibrationGuideView extends StatelessWidget {
+  const _DiyanetCalibrationGuideView({required this.onContinue});
+
+  final VoidCallback onContinue;
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.xl,
+          vertical: AppSpacing.xl,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(
+              width: 190,
+              height: 110,
+              child: CustomPaint(painter: _InfinityPhoneCalibrationPainter()),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            Text(
+              'Pusula Kalibrasyonu',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              'Doğru yönü bulmak için telefonunuzu kalibre\nedin:',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium?.copyWith(height: 1.45),
+            ),
+            const SizedBox(height: AppSpacing.xl),
+            const _CalibrationStepRow(
+              icon: Icons.gesture_rounded,
+              text: 'Telefonunuzu 8 rakamı çizer gibi döndürün',
+            ),
+            const SizedBox(height: AppSpacing.md),
+            const _CalibrationStepRow(
+              icon: Icons.phonelink_ring_rounded,
+              text:
+                  'Manyetik alanlardan uzak durun (bilgisayar, hoparlör vb.)',
+            ),
+            const SizedBox(height: AppSpacing.md),
+            const _CalibrationStepRow(
+              icon: Icons.rotate_right_rounded,
+              text: 'Telefonu yavaşça farklı yönlere doğru hareket ettirin',
+            ),
+            const SizedBox(height: AppSpacing.xl),
+            SizedBox(
+              width: 220,
+              height: 48,
+              child: FilledButton(
+                style: FilledButton.styleFrom(
+                  backgroundColor: const Color(0xFF455A64),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                ),
+                onPressed: onContinue,
+                child: const Text(
+                  'Anladım, Devam Et',
+                  style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CalibrationStepRow extends StatelessWidget {
+  const _CalibrationStepRow({required this.icon, required this.text});
+
+  final IconData icon;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Icon(icon, size: 26, color: const Color(0xFF455A64)),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Text(
+              text,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                height: 1.38,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// e-Diyanet tarzı 8 (sonsuzluk) halkası ve elde telefon kalibrasyon ikonu.
+class _InfinityPhoneCalibrationPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Offset center = Offset(size.width / 2, size.height / 2);
+    const double loopRadius = 32.0;
+    final Offset leftCenter = Offset(center.dx - 34, center.dy + 4);
+    final Offset rightCenter = Offset(center.dx + 34, center.dy + 4);
+
+    // Turkuvaz alt gölge halkalar
+    final Paint tealPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 10.0
+      ..color = const Color(0xFF00796B);
+    canvas.drawArc(
+      Rect.fromCircle(center: leftCenter + const Offset(0, 3), radius: loopRadius),
+      0.2,
+      math.pi * 1.3,
+      false,
+      tealPaint,
+    );
+    canvas.drawArc(
+      Rect.fromCircle(center: rightCenter + const Offset(0, -3), radius: loopRadius),
+      math.pi + 0.2,
+      math.pi * 1.3,
+      false,
+      tealPaint,
+    );
+
+    // Siyah ana 8 (sonsuzluk) halkaları
+    final Paint blackPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 10.5
+      ..color = const Color(0xFF111111);
+    canvas.drawCircle(leftCenter, loopRadius, blackPaint);
+    canvas.drawCircle(rightCenter, loopRadius, blackPaint);
+
+    // Yön oku (yeşil üçgen)
+    final Path arrow = Path()
+      ..moveTo(center.dx - 16, center.dy - 22)
+      ..lineTo(center.dx - 2, center.dy - 14)
+      ..lineTo(center.dx - 14, center.dy - 6)
+      ..close();
+    canvas.drawPath(arrow, Paint()..color = const Color(0xFF00796B));
+
+    // Ortada telefon çerçevesi
+    final RRect phoneRect = RRect.fromRectAndRadius(
+      Rect.fromCenter(center: center, width: 26, height: 48),
+      const Radius.circular(5),
+    );
+    canvas.drawRRect(phoneRect, Paint()..color = Colors.white);
+    canvas.drawRRect(
+      phoneRect,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2.2
+        ..color = const Color(0xFF00796B),
+    );
+    // Telefon ekran içi çapraz çizgiler
+    canvas.drawLine(
+      center + const Offset(-7, -10),
+      center + const Offset(7, -2),
+      Paint()
+        ..strokeWidth = 1.6
+        ..color = const Color(0xFF00796B),
+    );
+    canvas.drawLine(
+      center + const Offset(-7, 2),
+      center + const Offset(7, 10),
+      Paint()
+        ..strokeWidth = 1.6
+        ..color = const Color(0xFF00796B),
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+/// e-Diyanet minareli yuvarlak Kâbe rozeti.
+class _DiyanetKaabaBadge extends StatelessWidget {
+  const _DiyanetKaabaBadge({this.size = 46});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: <Color>[Color(0xFF81D4FA), Color(0xFFB3E5FC)],
+        ),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.12),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: <Widget>[
+          // Sol ve sağ minareler
+          Positioned(
+            left: size * 0.22,
+            top: size * 0.14,
+            child: Container(
+              width: 3,
+              height: size * 0.45,
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFD54F),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+          Positioned(
+            right: size * 0.22,
+            top: size * 0.14,
+            child: Container(
+              width: 3,
+              height: size * 0.45,
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFD54F),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+          // Kâbe-i Muazzama siyah küp + altın kuşak
+          Positioned(
+            bottom: size * 0.12,
+            child: Container(
+              width: size * 0.48,
+              height: size * 0.42,
+              decoration: BoxDecoration(
+                color: const Color(0xFF1A233A),
+                borderRadius: BorderRadius.circular(3),
+              ),
+              child: Column(
+                children: <Widget>[
+                  SizedBox(height: size * 0.10),
+                  Container(
+                    height: 3.5,
+                    width: double.infinity,
+                    color: const Color(0xFFFFD54F),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Canlı sağ/sol yönlendirme bandı — e-Diyanet Kıble Pusulası birebir onay çubuğu.
 class _QiblaDirectionBanner extends StatelessWidget {
   const _QiblaDirectionBanner({required this.reading, required this.qibla});
 
@@ -618,21 +884,24 @@ class _QiblaDirectionBanner extends StatelessWidget {
     final bool aligned = reading?.isAligned ?? false;
     final bool close = reading?.isClose ?? false;
 
-    final Color bannerColor = aligned
-        ? AppColors.success
+    final Color borderColor = aligned
+        ? const Color(0xFF2E7D32)
         : close
         ? AppColors.warning
-        : AppColors.gold500;
+        : const Color(0xFF00897B);
+    final Color fillColor = aligned
+        ? const Color(0xFFDCEEDC)
+        : borderColor.withValues(alpha: 0.12);
 
     final String instruction;
     final IconData icon;
     if (diff == null) {
       instruction =
-          'Kıble Açısı: ${qibla.toStringAsFixed(0)}° — Pusula bekleniyor';
+          'Kıble Açısı: ${qibla.toStringAsFixed(1)}° — Pusula bekleniyor';
       icon = Icons.explore_outlined;
     } else if (aligned) {
-      instruction = '✓ KIBLE YÖNÜ DOĞRU — Kâbe Tam Karşınızda';
-      icon = Icons.check_circle_rounded;
+      instruction = 'Kıble';
+      icon = Icons.check_circle_outline_rounded;
     } else if (diff > 0) {
       instruction = 'Telefonu ${diff.abs().round()}° SAĞA çevirin ▶';
       icon = Icons.turn_right_rounded;
@@ -642,31 +911,29 @@ class _QiblaDirectionBanner extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.lg,
-        vertical: AppSpacing.md,
-      ),
+      height: 54,
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       decoration: BoxDecoration(
-        color: bannerColor.withValues(alpha: 0.14),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: bannerColor.withValues(alpha: 0.55),
-          width: 1.5,
-        ),
+        color: fillColor,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: borderColor, width: 1.4),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Stack(
+        alignment: Alignment.center,
         children: <Widget>[
-          Icon(icon, color: bannerColor, size: 22),
-          const SizedBox(width: AppSpacing.sm),
-          Flexible(
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Icon(icon, color: borderColor, size: 26),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 34),
             child: Text(
               instruction,
               textAlign: TextAlign.center,
-              style: theme.textTheme.titleSmall?.copyWith(
+              style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w800,
                 color: aligned
-                    ? AppColors.success
+                    ? const Color(0xFF1B5E20)
                     : theme.colorScheme.onSurface,
               ),
             ),
@@ -677,7 +944,7 @@ class _QiblaDirectionBanner extends StatelessWidget {
   }
 }
 
-/// Pusula kadranı — Diyanet Kıble Pusulası birebir beyaz kadran & Kâbe oku tasarımı.
+/// Pusula kadranı — e-Diyanet Kıble Pusulası birebir beyaz kadran & Kâbe oku tasarımı.
 class _CompassDial extends StatelessWidget {
   const _CompassDial({
     required this.reading,
@@ -697,196 +964,84 @@ class _CompassDial extends StatelessWidget {
     final double qiblaRelative =
         reading?.differenceToQibla ?? GeoUtils.normalizeSigned(qibla - heading);
     final bool aligned = reading?.isAligned ?? false;
-    final bool close = reading?.isClose ?? false;
-    final Color accent = aligned
-        ? AppColors.success
-        : close
-        ? const Color(0xFF00897B)
-        : const Color(0xFF26A69A);
-    final double tilt = reading?.tilt ?? 0;
-    final double roll = reading?.roll ?? 0;
+    // e-Diyanet davranışı: Kıbleye hizalandığında (±5°) Kâbe rozeti ve yeşil ok
+    // çift halka kayması yapmadan tam 12 yönüne (0°) pürüzsüzce oturur.
+    final double visualQiblaAngle = aligned ? 0.0 : qiblaRelative;
+    final double shownTopDegree = aligned && reading != null
+        ? reading!.heading
+        : displayQibla;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        // e-Diyanet & Ezan Vakti Pro tarzı canlı Kıble Açısı / Telefon Yönü / Kalan Fark kartı
+        // e-Diyanet üst yeşil Kıble kutusu (Kâbe rozeti + Kıble + Derece)
         Container(
-          margin: const EdgeInsets.only(bottom: 8),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          margin: const EdgeInsets.only(bottom: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
           decoration: BoxDecoration(
-            color: (aligned ? AppColors.success : const Color(0xFF26A69A))
-                .withValues(alpha: 0.14),
+            color: aligned
+                ? const Color(0xFFB9E4C9)
+                : const Color(0xFFE0F2F1),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: (aligned ? AppColors.success : const Color(0xFF26A69A))
-                  .withValues(alpha: 0.55),
+              color: aligned
+                  ? const Color(0xFF4CAF50)
+                  : const Color(0xFF26A69A),
               width: 1.4,
             ),
-          ),
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Container(
-                  width: 30,
-                  height: 30,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFE0F2F1),
-                    shape: BoxShape.circle,
-                  ),
-                  alignment: Alignment.center,
-                  child: const Icon(
-                    Icons.mosque_rounded,
-                    size: 18,
-                    color: Color(0xFF00796B),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      'Kıble Açısı',
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                    Text(
-                      '${displayQibla.toStringAsFixed(1)}°',
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w900,
-                        color: const Color(0xFF00796B),
-                      ),
-                    ),
-                  ],
-                ),
-                Container(
-                  width: 1,
-                  height: 28,
-                  margin: const EdgeInsets.symmetric(horizontal: 12),
-                  color: const Color(0xFF26A69A).withValues(alpha: 0.35),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      'Baktığınız Yön',
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                    Text(
-                      '${heading.toStringAsFixed(0)}°',
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w900,
-                        color: aligned
-                            ? AppColors.success
-                            : theme.colorScheme.onSurface,
-                      ),
-                    ),
-                  ],
-                ),
-                Container(
-                  width: 1,
-                  height: 28,
-                  margin: const EdgeInsets.symmetric(horizontal: 12),
-                  color: const Color(0xFF26A69A).withValues(alpha: 0.35),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      'Hiza Durumu',
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                    Text(
-                      aligned
-                          ? 'TAM KIBLE ✓'
-                          : '${qiblaRelative > 0 ? 'Sağa' : 'Sola'} ${qiblaRelative.abs().toStringAsFixed(0)}°',
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w900,
-                        color: aligned
-                            ? AppColors.success
-                            : const Color(0xFF00796B),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-        // Sabit üst nişangâh (12 yönü — Kâbe rozeti buraya hizalanır)
-        Container(
-          margin: const EdgeInsets.only(bottom: 4),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
-          decoration: BoxDecoration(
-            color: aligned ? AppColors.success : accent.withValues(alpha: 0.14),
-            borderRadius: BorderRadius.circular(999),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Icon(
-                aligned
-                    ? Icons.check_circle_rounded
-                    : Icons.arrow_downward_rounded,
-                size: 14,
-                color: aligned ? Colors.white : accent,
-              ),
-              const SizedBox(width: 4),
-              Text(
-                aligned
-                    ? 'KIBLE HİZALANDI (0°)'
-                    : 'KÂBE SİMGESİNİ BURAYA GETİRİN (${qiblaRelative.abs().toStringAsFixed(0)}°)',
-                style: theme.textTheme.labelSmall?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  fontSize: 10.5,
-                  color: aligned ? Colors.white : const Color(0xFF00796B),
-                ),
+              const _DiyanetKaabaBadge(size: 42),
+              const SizedBox(width: 14),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    'Kıble',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF37474F),
+                    ),
+                  ),
+                  Text(
+                    '${shownTopDegree.toStringAsFixed(1)}°',
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w900,
+                      color: const Color(0xFF1B5E20),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
         ),
         SizedBox(
-          width: 300,
-          height: 300,
+          width: 310,
+          height: 310,
           child: Stack(
             alignment: Alignment.center,
             children: <Widget>[
-              // Beyaz/Açık Diyanet dairesel kadran zemini
+              // e-Diyanet beyaz dairesel kadran zemini ve açık yeşil dış çember
               AnimatedContainer(
-                duration: const Duration(milliseconds: 220),
+                duration: const Duration(milliseconds: 200),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: isDark ? theme.colorScheme.surface : Colors.white,
                   border: Border.all(
                     color: aligned
-                        ? AppColors.success
-                        : theme.colorScheme.outlineVariant,
-                    width: aligned ? 3.2 : 1.6,
+                        ? const Color(0xFF81C784)
+                        : const Color(0xFFB2DFDB),
+                    width: 2.4,
                   ),
-                  boxShadow: <BoxShadow>[
-                    BoxShadow(
-                      color: (aligned ? AppColors.success : Colors.black)
-                          .withValues(alpha: aligned ? 0.22 : 0.06),
-                      blurRadius: 18,
-                      offset: const Offset(0, 6),
-                    ),
-                  ],
                 ),
               ),
-              // Dış derece, artı (+) eksen çizgisi ve yön (N/E/S/W) halkası
+              // Dış derece çizgileri, artı (+) eksen çizgisi ve N/E/S/W yön harfleri
               Transform.rotate(
                 angle: -heading * math.pi / 180,
                 child: CustomPaint(
-                  size: const Size(300, 300),
+                  size: const Size(310, 310),
                   painter: _CompassPainter(
                     color: theme.colorScheme.onSurfaceVariant,
                     textColor: theme.colorScheme.onSurface,
@@ -895,72 +1050,24 @@ class _CompassDial extends StatelessWidget {
                   ),
                 ),
               ),
-              // Sabit Telefon Hiza Çizgisi (12 yönü) + Dönüş Yönü Yayı + Su Terazisi
-              CustomPaint(
-                size: const Size(300, 300),
-                painter: _FixedSightlineAndLevelPainter(
-                  qiblaRelativeDegrees: qiblaRelative,
-                  tiltDegrees: tilt,
-                  rollDegrees: roll,
-                  aligned: aligned,
-                  accentColor: accent,
-                ),
-              ),
-              // Kâbe yuvarlak rozeti — çember üzerinde tam Kıble açısında (qibla - heading) durur
+              // Kâbe yuvarlak rozeti (çift halka olmadan tek ve net e-Diyanet rozeti)
               Transform.rotate(
-                angle: qiblaRelative * math.pi / 180,
-                child: Align(
+                angle: visualQiblaAngle * math.pi / 180,
+                child: const Align(
                   alignment: Alignment.topCenter,
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Container(
-                      width: 44,
-                      height: 44,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: const LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: <Color>[Color(0xFF81D4FA), Color(0xFFE1F5FE)],
-                        ),
-                        border: Border.all(color: accent, width: 2.2),
-                        boxShadow: <BoxShadow>[
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.15),
-                            blurRadius: 6,
-                          ),
-                        ],
-                      ),
-                      alignment: Alignment.center,
-                      child: Container(
-                        width: 22,
-                        height: 20,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF1C1C1C),
-                          borderRadius: BorderRadius.circular(3),
-                        ),
-                        child: Column(
-                          children: <Widget>[
-                            const SizedBox(height: 4),
-                            Container(
-                              height: 3.5,
-                              width: double.infinity,
-                              color: const Color(0xFFFFD54F),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                    padding: EdgeInsets.only(top: 10),
+                    child: _DiyanetKaabaBadge(size: 52),
                   ),
                 ),
               ),
-              // Merkezden Kâbe rozetine uzanan ince Diyanet Kıble Oku
+              // Merkezdeki yeşil noktadan Kâbe rozetine uzanan net yeşil Kıble Oku
               Transform.rotate(
-                angle: qiblaRelative * math.pi / 180,
+                angle: visualQiblaAngle * math.pi / 180,
                 child: CustomPaint(
-                  size: const Size(300, 300),
+                  size: const Size(310, 310),
                   painter: _QiblaNeedlePainter(
-                    needleColor: accent,
+                    needleColor: const Color(0xFF2E7D32),
                     aligned: aligned,
                   ),
                 ),
@@ -971,101 +1078,6 @@ class _CompassDial extends StatelessWidget {
       ],
     );
   }
-}
-
-/// Sabit telefon üst nişangâh çizgisi (12 yönü), dönüş yayı ve merkez su terazisi.
-class _FixedSightlineAndLevelPainter extends CustomPainter {
-  const _FixedSightlineAndLevelPainter({
-    required this.qiblaRelativeDegrees,
-    required this.tiltDegrees,
-    required this.rollDegrees,
-    required this.aligned,
-    required this.accentColor,
-  });
-
-  final double qiblaRelativeDegrees;
-  final double tiltDegrees;
-  final double rollDegrees;
-  final bool aligned;
-  final Color accentColor;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final Offset center = Offset(size.width / 2, size.height / 2);
-
-    // 1. 12 yönünde sabit hedef halkası (Kâbe rozetinin içine oturacağı yuva)
-    final Offset targetCenter = Offset(center.dx, 32);
-    canvas.drawCircle(
-      targetCenter,
-      24,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = aligned ? 2.6 : 1.5
-        ..color = aligned
-            ? AppColors.success
-            : accentColor.withValues(alpha: 0.45),
-    );
-
-    // 2. Merkezden 12 yönüne (telefonun üst ucuna) sabit referans nişangâh çizgisi
-    final Paint sightPaint = Paint()
-      ..strokeWidth = 1.6
-      ..color = aligned
-          ? AppColors.success.withValues(alpha: 0.7)
-          : accentColor.withValues(alpha: 0.32);
-    for (double y = center.dy - 26; y > 60; y -= 10) {
-      canvas.drawLine(
-        Offset(center.dx, y),
-        Offset(center.dx, math.max(60, y - 5)),
-        sightPaint,
-      );
-    }
-
-    // 3. Eğer Kıble hizalı değilse, Kıble ibresinden 12 yönüne dönüş yayını çiz
-    if (!aligned && qiblaRelativeDegrees.abs() > 5) {
-      final Rect arcRect = Rect.fromCircle(center: center, radius: 92);
-      const double startAngle = -math.pi / 2;
-      final double sweepAngle = qiblaRelativeDegrees * math.pi / 180;
-      canvas.drawArc(
-        arcRect,
-        startAngle,
-        sweepAngle,
-        false,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 3.0
-          ..strokeCap = StrokeCap.round
-          ..color = AppColors.gold500.withValues(alpha: 0.55),
-      );
-    }
-
-    // 4. Merkez Su Terazisi (Bubble Level) halkası
-    canvas.drawCircle(
-      center,
-      20,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.2
-        ..color = accentColor.withValues(alpha: 0.35),
-    );
-    final double bx = (rollDegrees / 45.0).clamp(-1.0, 1.0) * 14.0;
-    final double by = (tiltDegrees / 45.0).clamp(-1.0, 1.0) * 14.0;
-    canvas.drawCircle(
-      center + Offset(bx, by),
-      5.0,
-      Paint()
-        ..style = PaintingStyle.fill
-        ..color = (tiltDegrees.abs() < 15 && rollDegrees.abs() < 15)
-            ? AppColors.success.withValues(alpha: 0.45)
-            : AppColors.warning.withValues(alpha: 0.55),
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant _FixedSightlineAndLevelPainter oldDelegate) =>
-      oldDelegate.qiblaRelativeDegrees != qiblaRelativeDegrees ||
-      oldDelegate.tiltDegrees != tiltDegrees ||
-      oldDelegate.rollDegrees != rollDegrees ||
-      oldDelegate.aligned != aligned;
 }
 
 /// Kıble Harita Sekmesi — Konumdan Kâbe'ye direkt açı ve görsel coğrafi Kâbe hattı.
@@ -1338,7 +1350,7 @@ class _QiblaGeodesicMapPainter extends CustomPainter {
       oldDelegate.headingDegrees != headingDegrees;
 }
 
-/// Merkezden doğrudan Kâbe rozetine uzanan zarif Diyanet & Ezan Vakti Pro Kıble Oku.
+/// Merkezden doğrudan Kâbe rozetine uzanan e-Diyanet Kıble Oku.
 class _QiblaNeedlePainter extends CustomPainter {
   const _QiblaNeedlePainter({required this.needleColor, required this.aligned});
 
@@ -1348,35 +1360,23 @@ class _QiblaNeedlePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final Offset center = Offset(size.width / 2, size.height / 2);
-    const double tipY = 58.0;
-    final double tailY = center.dy + 54.0;
+    const double tipY = 74.0;
 
-    // Arka denge kuyruğu (altın-gri pusula kuyruğu)
-    canvas.drawLine(
-      center,
-      Offset(center.dx, tailY),
-      Paint()
-        ..strokeWidth = 2.4
-        ..strokeCap = StrokeCap.round
-        ..color = AppColors.gold500.withValues(alpha: 0.65),
-    );
-
-    // Ana Kıble ok gövdesi (merkezden Kâbe rozetine)
+    // Ana Kıble ok gövdesi (merkez yeşil noktadan Kâbe rozetine)
     canvas.drawLine(
       center,
       Offset(center.dx, tipY + 12),
       Paint()
-        ..strokeWidth = 3.4
+        ..strokeWidth = 3.6
         ..strokeCap = StrokeCap.round
         ..color = needleColor,
     );
 
-    // Belirgin ok ucu (Kâbe yönü üçgeni)
+    // Belirgin yeşil ok ucu (Kâbe yönü üçgeni)
     final Path arrowHead = Path()
       ..moveTo(center.dx, tipY)
-      ..lineTo(center.dx - 9, tipY + 18)
-      ..lineTo(center.dx, tipY + 14)
-      ..lineTo(center.dx + 9, tipY + 18)
+      ..lineTo(center.dx - 7.5, tipY + 15)
+      ..lineTo(center.dx + 7.5, tipY + 15)
       ..close();
     canvas.drawPath(
       arrowHead,
@@ -1385,9 +1385,8 @@ class _QiblaNeedlePainter extends CustomPainter {
         ..color = needleColor,
     );
 
-    // Merkez nokta (Diyanet yeşil/turkuvaz + altın halka pivot noktası)
-    canvas.drawCircle(center, 7.5, Paint()..color = needleColor);
-    canvas.drawCircle(center, 3.2, Paint()..color = Colors.white);
+    // Merkez yeşil pivot noktası (e-Diyanet birebir görünümü)
+    canvas.drawCircle(center, 8.5, Paint()..color = needleColor);
   }
 
   @override
@@ -1411,117 +1410,55 @@ class _CompassPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final Offset center = Offset(size.width / 2, size.height / 2);
-    final double radius = size.width / 2 - 14;
+    final double radius = size.width / 2 - 8;
 
-    // İnce dış çember
-    final Paint ring = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.2
-      ..color = color.withValues(alpha: 0.28);
-    canvas.drawCircle(center, radius, ring);
-
-    // Diyanet tarzı merkez artı (+) eksen çizgileri (N-S ve E-W)
+    // e-Diyanet tarzı merkez artı (+) eksen çizgileri (N-S ve E-W)
     final Paint crossPaint = Paint()
-      ..strokeWidth = 0.9
-      ..color = color.withValues(alpha: 0.22);
+      ..strokeWidth = 1.0
+      ..color = color.withValues(alpha: 0.35);
     canvas.drawLine(
-      Offset(center.dx, center.dy - radius + 48),
-      Offset(center.dx, center.dy + radius - 48),
+      Offset(center.dx, center.dy - radius + 72),
+      Offset(center.dx, center.dy + radius - 72),
       crossPaint,
     );
     canvas.drawLine(
-      Offset(center.dx - radius + 48, center.dy),
-      Offset(center.dx + radius - 48, center.dy),
+      Offset(center.dx - radius + 72, center.dy),
+      Offset(center.dx + radius - 72, center.dy),
       crossPaint,
     );
 
-    // 15° ve 30° kadran çizgileri + 30° açı sayıları
+    // 15° (ince gri), 30° (siyah) ve 90° (kalın yeşil) kadran çizgileri
     for (int degree = 0; degree < 360; degree += 15) {
       final bool major = degree % 30 == 0;
       final bool cardinal = degree % 90 == 0;
       final double angle = (degree - 90) * math.pi / 180;
       final double outer = radius - 4;
-      final double inner = outer - (cardinal ? 18 : (major ? 14 : 8));
+      final double inner = outer - (cardinal ? 28 : (major ? 22 : 12));
       canvas.drawLine(
         center + Offset(math.cos(angle) * inner, math.sin(angle) * inner),
         center + Offset(math.cos(angle) * outer, math.sin(angle) * outer),
         Paint()
-          ..strokeWidth = cardinal ? 2.0 : (major ? 1.4 : 1.0)
+          ..strokeWidth = cardinal ? 2.8 : (major ? 1.5 : 1.0)
           ..color = cardinal
-              ? const Color(0xFF00897B)
-              : color.withValues(alpha: major ? 0.65 : 0.35),
+              ? const Color(0xFF2E7D32)
+              : major
+              ? textColor.withValues(alpha: 0.85)
+              : color.withValues(alpha: 0.38),
       );
-      if (major && !cardinal) {
-        final TextPainter degPainter = TextPainter(
-          text: TextSpan(
-            text: '$degree°',
-            style: TextStyle(
-              color: color.withValues(alpha: 0.72),
-              fontSize: 10,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          textDirection: TextDirection.ltr,
-        )..layout();
-        final Offset degPos =
-            center +
-            Offset(
-              math.cos(angle) * (radius - 31),
-              math.sin(angle) * (radius - 31),
-            );
-        canvas.save();
-        canvas.translate(degPos.dx, degPos.dy);
-        canvas.rotate(headingDegrees * math.pi / 180);
-        degPainter.paint(
-          canvas,
-          Offset(-degPainter.width / 2, -degPainter.height / 2),
-        );
-        canvas.restore();
-      }
     }
 
-    // Kadran halkası üzerinde tam Kıble derecesi altın işareti
-    final double qAngle = (qiblaDegrees - 90) * math.pi / 180;
-    canvas.drawLine(
-      center +
-          Offset(
-            math.cos(qAngle) * (radius - 22),
-            math.sin(qAngle) * (radius - 22),
-          ),
-      center +
-          Offset(
-            math.cos(qAngle) * (radius - 2),
-            math.sin(qAngle) * (radius - 2),
-          ),
-      Paint()
-        ..strokeWidth = 3.2
-        ..strokeCap = StrokeCap.round
-        ..color = AppColors.gold500,
-    );
-
-    // Kuzey (0° / K) kırmızı pusula üçgeni — kullanıcının gerçek Kuzeyi anında doğrulayabilmesi için
-    final Path northTriangle = Path()
-      ..moveTo(center.dx, center.dy - radius + 3)
-      ..lineTo(center.dx - 6, center.dy - radius + 16)
-      ..lineTo(center.dx + 6, center.dy - radius + 16)
-      ..close();
-    canvas.drawPath(
-      northTriangle,
-      Paint()
-        ..style = PaintingStyle.fill
-        ..color = const Color(0xFFE53935),
-    );
-
-    const List<String> labels = <String>['K', 'D', 'G', 'B'];
+    // e-Diyanet N / E / S / W yön harfleri
+    const List<String> labels = <String>['N', 'E', 'S', 'W'];
     for (int i = 0; i < 4; i++) {
       final double angle = (i * 90 - 90) * math.pi / 180;
+      final bool isNorth = i == 0;
       final TextPainter painter = TextPainter(
         text: TextSpan(
           text: labels[i],
           style: TextStyle(
-            color: i == 0 ? const Color(0xFFE53935) : textColor,
-            fontSize: 16,
-            fontWeight: FontWeight.w800,
+            color: isNorth ? const Color(0xFF2E7D32) : textColor,
+            fontSize: isNorth ? 22 : 16,
+            fontWeight: FontWeight.w900,
           ),
         ),
         textDirection: TextDirection.ltr,
@@ -1529,13 +1466,12 @@ class _CompassPainter extends CustomPainter {
       final Offset labelCenter =
           center +
           Offset(
-            math.cos(angle) * (radius - 36),
-            math.sin(angle) * (radius - 36),
+            math.cos(angle) * (radius - 50),
+            math.sin(angle) * (radius - 50),
           );
-      // Harfleri cihaz açısı kadar ters döndürerek her zaman dik ve okunaklı tut.
       canvas.save();
       canvas.translate(labelCenter.dx, labelCenter.dy);
-      canvas.rotate(headingDegrees * math.pi / 180);
+      canvas.rotate(i * math.pi / 2);
       painter.paint(canvas, Offset(-painter.width / 2, -painter.height / 2));
       canvas.restore();
     }

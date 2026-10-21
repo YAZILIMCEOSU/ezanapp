@@ -9,6 +9,7 @@ import '../../data/models/prayer.dart';
 import '../../design/app_spacing.dart';
 import '../../router/app_router.dart';
 import '../../state/providers.dart';
+import '../home/home_screen.dart';
 import '../widgets/app_shell.dart';
 import '../widgets/state_views.dart';
 
@@ -131,6 +132,15 @@ class _NotificationSettingsScreenState
             value: settings.enabled,
             onChanged: (bool value) =>
                 _update((NotificationSettings s) => s.copyWith(enabled: value)),
+          ),
+          ListTile(
+            leading: const Icon(Icons.battery_saver_rounded),
+            title: const Text('Pil Optimizasyonu İstisnası'),
+            subtitle: const Text(
+              'Uygulama kapalıyken vakit bildirimlerinin gecikmemesi için pil kısıtlamasını kaldırın',
+            ),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () => showBatteryOptimizationDialog(context, ref),
           ),
           const SectionHeader(title: 'Vakit bildirimleri'),
           for (final Prayer prayer in Prayer.values)

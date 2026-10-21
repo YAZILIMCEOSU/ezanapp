@@ -146,51 +146,144 @@ class _PremiumScreenState extends ConsumerState<PremiumScreen> {
               subtitle: Text(benefit.description),
             ),
           const SectionHeader(title: 'Abonelik seçenekleri'),
-          if (!storeAvailable)
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-              child: Text(
-                'Google Play Hizmetleri bu cihazda kullanılamıyor. Play Store yüklü '
-                've güncel olduğunda satın alma seçenekleri görünür.',
-              ),
-            ),
-          if (storeAvailable && products.isEmpty)
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-              child: Text(
-                'Ürünler yükleniyor… Play Console\'da ürünler yayınlandığında burada '
-                'listelenir.',
-              ),
-            ),
-          for (final PremiumProduct product in products)
-            Card(
-              margin: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.lg,
-                vertical: AppSpacing.sm,
-              ),
-              child: ListTile(
-                title: Text(product.title),
-                subtitle: Text(product.description),
-                trailing: Text(
-                  product.price,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
+          if (products.isNotEmpty)
+            for (final PremiumProduct product in products)
+              Card(
+                margin: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.lg,
+                  vertical: AppSpacing.sm,
+                ),
+                child: ListTile(
+                  title: Text(product.title),
+                  subtitle: Text(product.description),
+                  trailing: Text(
+                    product.price,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.emerald500,
+                    ),
+                  ),
+                  onTap: _busy || status == PremiumStatus.premium
+                      ? null
+                      : () => _purchase(product),
+                ),
+              )
+          else ...<Widget>[
+            for (final ({
+                  String id,
+                  String title,
+                  String subtitle,
+                  String badge,
+                }) plan
+                in const <({
+                  String id,
+                  String title,
+                  String subtitle,
+                  String badge,
+                })>[
+                  (
+                    id: 'ezanai_premium_monthly',
+                    title: 'Aylık Premium Abonelik',
+                    subtitle:
+                        'Reklamsız kullanım, sınırsız AI soru ve tüm özellikler • Ürün kodu: ezanai_premium_monthly',
+                    badge: 'Aylık Plan',
+                  ),
+                  (
+                    id: 'ezanai_premium_yearly',
+                    title: 'Yıllık Premium Abonelik (%40 Avantajlı)',
+                    subtitle:
+                        '12 ay kesintisiz reklamsız deneyim ve bulut yedekleme • Ürün kodu: ezanai_premium_yearly',
+                    badge: 'En Popüler',
+                  ),
+                  (
+                    id: 'ezanai_premium_lifetime',
+                    title: 'Ömür Boyu Premium (Tek Ödeme)',
+                    subtitle:
+                        'Tek seferlik ödeme ile süresiz tüm Pro özellikler • Ürün kodu: ezanai_premium_lifetime',
+                    badge: 'Süresiz',
+                  ),
+                ])
+              Card(
+                margin: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.lg,
+                  vertical: AppSpacing.xs,
+                ),
+                child: ListTile(
+                  leading: const Icon(
+                    Icons.workspace_premium_rounded,
                     color: AppColors.emerald500,
                   ),
+                  title: Text(
+                    plan.title,
+                    style: const TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                  subtitle: Text(plan.subtitle),
+                  trailing: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.emerald500.withValues(alpha: 0.14),
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: Text(
+                      plan.badge,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.emerald700,
+                      ),
+                    ),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _message =
+                          'Google Play Console > Ürünler bölümünde "${plan.id}" kodu etkinleştirildiğinde Play Store ödeme ekranı otomatik açılır.';
+                    });
+                  },
                 ),
-                onTap: _busy || status == PremiumStatus.premium
-                    ? null
-                    : () => _purchase(product),
+              ),
+          ],
+          const SectionHeader(
+            title: 'Uygulama Güvenliği & Kopya Koruması Kalkanı',
+          ),
+          Card(
+            margin: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.lg,
+              vertical: AppSpacing.xs,
+            ),
+            child: const Padding(
+              padding: EdgeInsets.all(AppSpacing.md),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Icon(
+                        Icons.verified_user_rounded,
+                        color: AppColors.success,
+                        size: 20,
+                      ),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Play Integrity, İmza Kilidi ve Modlama Koruması Aktif',
+                          style: TextStyle(fontWeight: FontWeight.w800),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 6),
+                  Text(
+                    '• X.509 SHA-256 sertifika imzası ve paket adı (com.yazilimceosu.ezanai) çalışma zamanında doğrulanır.\n'
+                    '• APK yeniden paketleme (repackaging), klonlama ve sahte ödeme (Lucky Patcher / Xposed) girişimleri otomatik reddedilir.\n'
+                    '• Kaynak kodları R8 ve Dart makine kodu karartma (obfuscation) ile korunmaktadır.',
+                    style: TextStyle(fontSize: 12, height: 1.5),
+                  ),
+                ],
               ),
             ),
-          if (products.isEmpty && storeAvailable)
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-              child: Text(
-                'Fiyatlar Play Store\'dan alınır ve ülkenize göre değişebilir.',
-                style: TextStyle(fontSize: 12),
-              ),
-            ),
+          ),
           const SizedBox(height: AppSpacing.lg),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),

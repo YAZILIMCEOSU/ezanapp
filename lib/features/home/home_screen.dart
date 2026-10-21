@@ -27,11 +27,37 @@ import '../widgets/prayer_widgets.dart';
 import '../widgets/state_views.dart';
 
 /// Ana ekran: vakit özeti, geri sayım, günün içerikleri ve hızlı erişim.
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  static bool _batteryCheckedThisSession = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkBatteryOpt());
+  }
+
+  Future<void> _checkBatteryOpt() async {
+    if (_batteryCheckedThisSession || !mounted) return;
+    _batteryCheckedThisSession = true;
+    final runtime = ref.read(runtimeProvider);
+    if (runtime.preferences.getBool('battery_opt_never_ask')) return;
+    final bool ignoring = await ref
+        .read(compassServiceProvider)
+        .isIgnoringBatteryOptimizations();
+    if (!ignoring && mounted) {
+      await showBatteryOptimizationDialog(context, ref);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final AsyncValue<TodayTimes> times = ref.watch(prayerTimesProvider);
     final DateTime now = ref.watch(clockProvider).value ?? DateTime.now();
     final AppSettings settings = ref.watch(settingsProvider);
@@ -121,6 +147,151 @@ class HomeScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// e-Diyanet "Pil Optimizasyonu İstisnası" izin penceresi.
+Future<void> showBatteryOptimizationDialog(
+  BuildContext context,
+  WidgetRef ref,
+) async {
+  await showDialog<void>(
+    context: context,
+    builder: (BuildContext dialogContext) {
+      final ThemeData theme = Theme.of(dialogContext);
+      return Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(22, 22, 22, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFDDE2EA),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    alignment: Alignment.center,
+                    child: const Icon(
+                      Icons.battery_saver_rounded,
+                      color: Color(0xFF37474F),
+                      size: 26,
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Text(
+                      'Pil Optimizasyonu\nİstisnası',
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w900,
+                        height: 1.2,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 14),
+              Padding(
+                padding: const EdgeInsets.only(left: 4),
+                child: Text(
+                  'Namaz vakti bildirimlerinin zamanında gelmesi ve widget için uygulamanın pil optimizasyonundan muaf tutulması gerekmektedir.',
+                  style: theme.textTheme.bodyMedium?.copyWith(height: 1.45),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: theme.colorScheme.outlineVariant,
+                    width: 1.2,
+                  ),
+                ),
+                child: Text(
+                  'Bir sonraki ekranda "Kısıtlama yok" veya "İzin ver" seçeneğini seçin.',
+                  style: theme.textTheme.bodySmall?.copyWith(height: 1.4),
+                ),
+              ),
+              const SizedBox(height: 18),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: SizedBox(
+                      height: 46,
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: () => Navigator.of(dialogContext).pop(),
+                        child: const Text(
+                          'Daha Sonra',
+                          style: TextStyle(fontWeight: FontWeight.w700),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: SizedBox(
+                      height: 46,
+                      child: FilledButton(
+                        style: FilledButton.styleFrom(
+                          backgroundColor: const Color(0xFF455A64),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: () async {
+                          Navigator.of(dialogContext).pop();
+                          await ref
+                              .read(compassServiceProvider)
+                              .requestIgnoreBatteryOptimizations();
+                        },
+                        child: const Text(
+                          'İzin Ver',
+                          style: TextStyle(fontWeight: FontWeight.w800),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Center(
+                child: TextButton(
+                  onPressed: () async {
+                    await ref
+                        .read(runtimeProvider)
+                        .preferences
+                        .setBool('battery_opt_never_ask', true);
+                    if (dialogContext.mounted) {
+                      Navigator.of(dialogContext).pop();
+                    }
+                  },
+                  child: Text(
+                    'Bir daha gösterme',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      decoration: TextDecoration.underline,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }
 
 /// Bugünün altı vakti.

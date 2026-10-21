@@ -1,15 +1,21 @@
 package com.yazilimceosu.ezanai
 
 import android.content.Context
+import android.content.Intent
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.hardware.GeomagneticField
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.media.RingtoneManager
+import android.net.Uri
 import android.net.wifi.WifiManager
 import android.os.Build
+import android.os.Debug
 import android.os.PowerManager
+import android.provider.Settings
 import android.view.Surface
 import android.view.WindowManager
 import io.flutter.embedding.android.FlutterActivity
@@ -114,6 +120,23 @@ class MainActivity : FlutterActivity(), SensorEventListener {
                         )
                     }
                     "getIntegrityInfo" -> result.success(buildIntegrityInfo())
+                    "isIgnoringBatteryOptimizations" -> {
+                        result.success(checkIgnoringBatteryOptimizations())
+                    }
+                    "requestIgnoreBatteryOptimizations" -> {
+                        result.success(launchBatteryOptimizationExemption())
+                    }
+                    "getGeomagneticDeclination" -> {
+                        val lat = (call.argument<Number>("lat")?.toFloat()) ?: 41.0082f
+                        val lon = (call.argument<Number>("lon")?.toFloat()) ?: 28.9784f
+                        val field = GeomagneticField(lat, lon, 0f, System.currentTimeMillis())
+                        result.success(field.declination.toDouble())
+                    }
+                    "setSecureScreen" -> {
+                        val enabled = call.argument<Boolean>("enabled") ?: false
+                        setSecureScreenFlag(enabled)
+                        result.success(true)
+                    }
                     "setAudioWakeLock" -> {
                         val enabled = call.argument<Boolean>("enabled") ?: false
                         updateAudioWakeLock(enabled)
@@ -122,6 +145,52 @@ class MainActivity : FlutterActivity(), SensorEventListener {
                     else -> result.notImplemented()
                 }
             }
+    }
+
+    private fun checkIgnoringBatteryOptimizations(): Boolean {
+        return try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val pm = applicationContext.getSystemService(Context.POWER_SERVICE) as? PowerManager
+                pm?.isIgnoringBatteryOptimizations(applicationContext.packageName) ?: true
+            } else {
+                true
+            }
+        } catch (_: Throwable) {
+            true
+        }
+    }
+
+    @Suppress("BatteryLife")
+    private fun launchBatteryOptimizationExemption(): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return true
+        val pkg = applicationContext.packageName
+        try {
+            val directIntent = Intent(
+                Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                Uri.parse("package:$pkg"),
+            )
+            startActivity(directIntent)
+            return true
+        } catch (_: Throwable) {}
+        return try {
+            val listIntent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+            startActivity(listIntent)
+            true
+        } catch (_: Throwable) {
+            false
+        }
+    }
+
+    private fun setSecureScreenFlag(enabled: Boolean) {
+        runOnUiThread {
+            try {
+                if (enabled) {
+                    window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+                } else {
+                    window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+                }
+            } catch (_: Throwable) {}
+        }
     }
 
     private fun playSystemDefaultNotificationRingtone(): Boolean {
@@ -227,11 +296,54 @@ class MainActivity : FlutterActivity(), SensorEventListener {
         } catch (_: Throwable) {
             null
         }
+        val filesPath = try {
+            applicationContext.filesDir.absolutePath.lowercase()
+        } catch (_: Throwable) {
+            ""
+        }
+        val cloneTokens = listOf("999", "parallel", "virtual", "dual", "multiapp", "shelter", "island")
+        val isCloned = cloneTokens.any { token -> filesPath.contains(token) }
+
+        val suspiciousPackages = listOf(
+            "com.chelpus.lackypatch",
+            "com.dimonvideo.luckypatcher",
+            "com.forpda.lp",
+            "com.android.vending.billing.InAppBillingService.COIN",
+            "com.android.vending.billing.InAppBillingService.LUCK",
+            "com.android.vending.billing.InAppBillingService.CRAC",
+            "com.gmail.heagoo.apkeditor",
+            "com.gmail.heagoo.apkeditor.pro",
+            "de.robv.android.xposed.installer",
+            "org.meowcat.edxposed.manager",
+        )
+        val hasPatcherApp = suspiciousPackages.any { target ->
+            try {
+                packageManager.getPackageInfo(target, 0)
+                true
+            } catch (_: Throwable) {
+                false
+            }
+        }
+        val hasXposedHook = try {
+            Class.forName("de.robv.android.xposed.XposedBridge")
+            true
+        } catch (_: Throwable) {
+            false
+        }
+        val isDebugBuild = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
+        val isDebuggerAttached = Debug.isDebuggerConnected() || Debug.waitingForDebugger()
+        val hasTamper = hasPatcherApp || hasXposedHook || (!isDebugBuild && isDebuggerAttached)
+        val isPlayInstall = installer == "com.android.vending" || installer == "com.google.android.feedback"
+
         return mapOf(
             "packageName" to pkg,
-            "isOfficialPackage" to isOfficial,
+            "isOfficialPackage" to (isOfficial && !isCloned && !hasTamper),
             "installerPackage" to installer,
             "signingSha256" to sha256,
+            "isClonedEnvironment" to isCloned,
+            "hasTamperTools" to hasTamper,
+            "isDebuggerAttached" to isDebuggerAttached,
+            "isPlayStoreInstall" to isPlayInstall,
         )
     }
 
@@ -358,24 +470,28 @@ class MainActivity : FlutterActivity(), SensorEventListener {
                 lastRotVecAzimuth = rotAz
                 lastRotationVectorTimeMs = System.currentTimeMillis()
 
-                // Bina içinde TYPE_ROTATION_VECTOR'un manyetometreyi reddedip rastgele
-                // bir jiroskop açısına kilitlenmesini önlemek için gerçek manyetik kuzeye (lastMagAzimuth) çapala.
+                // TYPE_ROTATION_VECTOR donanım sensör hub'ında kalibre edilmiş manyetometre + jiroskop kullanır.
+                // Yalnızca TYPE_ROTATION_VECTOR gerçek manyetik kuzeyden >25° koptuysa (bina içi filtre kopması)
+                // yumuşak düzeltme uygula; normal çalışmada (<25°) ham ivmeölçer titreşimini karıştırma.
                 val magAz = lastMagAzimuth
                 val anchoredAzimuth = if (magAz != null) {
                     val targetOffset = normalizeSigned(magAz - rotAz)
-                    if (!hasGyroYawOffset) {
-                        gyroYawOffset = targetOffset
+                    if (kotlin.math.abs(targetOffset) <= 25.0) {
+                        gyroYawOffset = 0.0
                         hasGyroYawOffset = true
+                        activeSensorSource = "fusion_mag_anchored"
+                        rotAz
                     } else {
-                        val offsetErr = normalizeSigned(targetOffset - gyroYawOffset)
-                        if (kotlin.math.abs(offsetErr) > 12.0) {
+                        if (!hasGyroYawOffset) {
                             gyroYawOffset = targetOffset
+                            hasGyroYawOffset = true
                         } else {
-                            gyroYawOffset = normalizeSigned(gyroYawOffset + 0.22 * offsetErr)
+                            val offsetErr = normalizeSigned(targetOffset - gyroYawOffset)
+                            gyroYawOffset = normalizeSigned(gyroYawOffset + 0.18 * offsetErr)
                         }
+                        activeSensorSource = "fusion_mag_anchored"
+                        normalizeDegrees(rotAz + gyroYawOffset)
                     }
-                    activeSensorSource = "fusion_mag_anchored"
-                    normalizeDegrees(rotAz + gyroYawOffset)
                 } else {
                     activeSensorSource = "rotation_vector"
                     rotAz

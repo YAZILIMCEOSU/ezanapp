@@ -320,6 +320,51 @@ class CompassService {
     };
   }
 
+  /// Uygulamanın Android pil optimizasyonundan muaf olup olmadığını kontrol eder.
+  Future<bool> isIgnoringBatteryOptimizations() async {
+    try {
+      final bool? res = await _methods.invokeMethod<bool>(
+        'isIgnoringBatteryOptimizations',
+      );
+      return res ?? true;
+    } catch (_) {
+      return true;
+    }
+  }
+
+  /// Android pil optimizasyonu istisnası (Kısıtlama Yok / İzin Ver) penceresini açar.
+  Future<bool> requestIgnoreBatteryOptimizations() async {
+    try {
+      final bool? res = await _methods.invokeMethod<bool>(
+        'requestIgnoreBatteryOptimizations',
+      );
+      return res ?? false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// APK paket bütünlüğü, imza SHA-256 ve kopya/yama koruma raporunu döndürür.
+  Future<Map<String, Object?>> getIntegrityInfo() async {
+    try {
+      final Map<Object?, Object?>? raw = await _methods
+          .invokeMethod<Map<Object?, Object?>>('getIntegrityInfo');
+      if (raw != null) {
+        return <String, Object?>{
+          for (final MapEntry<Object?, Object?> e in raw.entries)
+            if (e.key is String) e.key as String: e.value,
+        };
+      }
+    } catch (_) {}
+    return const <String, Object?>{
+      'packageName': 'com.yazilimceosu.ezanai',
+      'isOfficialPackage': true,
+      'isClonedEnvironment': false,
+      'hasTamperTools': false,
+      'isDebuggerAttached': false,
+    };
+  }
+
   Future<void> stop() async {
     final StreamSubscription<Object?>? sub = _subscription;
     _subscription = null;

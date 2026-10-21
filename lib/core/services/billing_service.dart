@@ -367,9 +367,11 @@ class BillingService {
     final Map<String, Object?>? integrity = await _readNativeIntegrityInfo();
     final String? activePkg = integrity?['packageName'] as String?;
     final bool? isOfficial = integrity?['isOfficialPackage'] as bool?;
-    if (isOfficial == false) {
+    final bool? isCloned = integrity?['isClonedEnvironment'] as bool?;
+    final bool? hasTamper = integrity?['hasTamperTools'] as bool?;
+    if (isOfficial == false || isCloned == true || hasTamper == true) {
       AppLog.warning(
-        'Resmi olmayan / klonlanmış paket tespit edildi: $activePkg',
+        'Resmi olmayan / klonlanmış / modlanmış paket tespit edildi: $activePkg',
       );
       return false;
     }
