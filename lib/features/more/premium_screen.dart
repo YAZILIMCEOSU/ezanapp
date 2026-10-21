@@ -76,7 +76,6 @@ class _PremiumScreenState extends ConsumerState<PremiumScreen> {
     final PremiumStatus status = ref.watch(premiumProvider);
     final BillingService billing = ref.read(runtimeProvider).billing;
     final List<PremiumProduct> products = billing.products;
-    final bool storeAvailable = billing.storeAvailable;
     final ThemeData theme = Theme.of(context);
 
     return Scaffold(
