@@ -863,7 +863,7 @@ class _KazaTrackerScreenState extends ConsumerState<KazaTrackerScreen>
                           child: const Text(
                             'HAFTANIN ÖNE ÇIKAN HUTBESİ',
                             style: TextStyle(
-                              color: AppColors.gold300,
+                              color: AppColors.gold400,
                               fontSize: 11,
                               fontWeight: FontWeight.w800,
                             ),
@@ -1077,10 +1077,10 @@ class _KhutbahCard extends StatelessWidget {
                     khutbah.arabicHeader,
                     textAlign: TextAlign.right,
                     textDirection: TextDirection.rtl,
-                    style: AppTheme.arabicStyle(
-                      fontSize: 19,
+                    style: AppTheme.arabic(
+                      theme.textTheme,
+                      size: 19,
                       color: theme.colorScheme.onSurface,
-                      height: 1.75,
                     ),
                   ),
                   const SizedBox(height: 6),
