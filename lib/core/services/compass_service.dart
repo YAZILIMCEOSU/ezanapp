@@ -320,6 +320,27 @@ class CompassService {
     };
   }
 
+  /// Android donanım GeomagneticField modelinden gerçek manyetik sapma açısını döndürür.
+  Future<double> getGeomagneticDeclination(
+    double latitude,
+    double longitude,
+  ) async {
+    try {
+      final double? decl = await _methods.invokeMethod<double>(
+        'getGeomagneticDeclination',
+        <String, Object?>{
+          'latitude': latitude,
+          'longitude': longitude,
+          'altitude': 0.0,
+        },
+      );
+      if (decl != null && decl.isFinite) {
+        return decl;
+      }
+    } catch (_) {}
+    return GeoUtils.magneticDeclination(latitude, longitude);
+  }
+
   /// Uygulamanın Android pil optimizasyonundan muaf olup olmadığını kontrol eder.
   Future<bool> isIgnoringBatteryOptimizations() async {
     try {

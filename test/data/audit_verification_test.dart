@@ -25,6 +25,7 @@ import 'package:ezanai/data/prayer/prayer_calculator.dart';
 import 'package:ezanai/data/repositories/ai_repository.dart';
 import 'package:ezanai/data/repositories/city_repository.dart';
 import 'package:ezanai/features/more/esmaul_husna_screen.dart';
+import 'package:ezanai/features/more/kaza_tracker_screen.dart';
 import 'package:ezanai/state/content_providers.dart';
 import 'package:ezanai/state/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -737,6 +738,19 @@ void main() {
       sw.stop();
       expect(syncDay.isSane, isTrue);
       expect(sw.elapsedMilliseconds, lessThan(50));
+
+      // 4) Cuma, Bayram ve Kandil Hutbeleri kataloğu zenginlik doğrulaması (32 hutbe, 8 kategori)
+      expect(KazaTrackerScreen.khutbahCatalog.length, greaterThanOrEqualTo(30));
+      expect(KazaTrackerScreen.categories.length, greaterThanOrEqualTo(8));
+      for (final KhutbahItem item in KazaTrackerScreen.khutbahCatalog) {
+        expect(item.title, isNotEmpty);
+        expect(item.arabicHeader, isNotEmpty);
+        expect(item.verseOrHadith, isNotEmpty);
+        expect(item.summary, isNotEmpty);
+        expect(item.fullText.length, greaterThan(180));
+        expect(item.source, isNotEmpty);
+        expect(KazaTrackerScreen.categories.contains(item.category), isTrue);
+      }
     });
   });
 }

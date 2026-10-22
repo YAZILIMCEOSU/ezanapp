@@ -1239,7 +1239,7 @@ class _EDiyanetHutbeBanner extends StatelessWidget {
         borderRadius: BorderRadius.circular(18),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
-          onTap: () => context.push(AppRoutes.kazaTracker),
+          onTap: () => context.push('${AppRoutes.kazaTracker}?sekme=hutbe'),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             decoration: const BoxDecoration(

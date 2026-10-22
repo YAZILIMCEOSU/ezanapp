@@ -34,10 +34,11 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
   StreamSubscription<CompassReading?>? _subscription;
   CompassService? _compassService;
   CompassReading? _reading;
+  double? _hardwareDeclination;
   bool _wasAligned = false;
   bool _supported = true;
   bool _showMapTab = false;
-  bool _showCalibrationGuide = WebViewPlatform.instance != null;
+  bool _showCalibrationGuide = false;
   String? _error;
 
   @override
@@ -49,6 +50,13 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
   Future<void> _start() async {
     final CompassService service = ref.read(compassServiceProvider);
     _compassService = service;
+    final bool calibrationSeen = ref
+        .read(runtimeProvider)
+        .preferences
+        .getBool('qibla_calibration_seen_v1');
+    if (!calibrationSeen && WebViewPlatform.instance != null && mounted) {
+      setState(() => _showCalibrationGuide = true);
+    }
     final UserLocation initialLoc = ref.read(activeLocationProvider);
     if (initialLoc.mode == LocationMode.gps) {
       unawaited(
@@ -62,10 +70,13 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
       location.latitude,
       location.longitude,
     );
-    final double declination = GeoUtils.magneticDeclination(
+    final double declination = await service.getGeomagneticDeclination(
       location.latitude,
       location.longitude,
     );
+    if (mounted) {
+      setState(() => _hardwareDeclination = declination);
+    }
 
     final bool supported = await service.checkSupport();
     if (!mounted) return;
@@ -82,10 +93,12 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
           currentLocation.latitude,
           currentLocation.longitude,
         );
-        final double currentDeclination = GeoUtils.magneticDeclination(
-          currentLocation.latitude,
-          currentLocation.longitude,
-        );
+        final double currentDeclination =
+            _hardwareDeclination ??
+            GeoUtils.magneticDeclination(
+              currentLocation.latitude,
+              currentLocation.longitude,
+            );
         final CompassReading? updated = reading?.withQibla(
           currentTrueQibla,
           declination: currentDeclination,
@@ -122,10 +135,9 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
     final double trueQibla = ref.watch(qiblaDirectionProvider);
     final double distance = ref.watch(qiblaDistanceProvider);
     final UserLocation location = ref.watch(activeLocationProvider);
-    final double declination = GeoUtils.magneticDeclination(
-      location.latitude,
-      location.longitude,
-    );
+    final double declination =
+        _hardwareDeclination ??
+        GeoUtils.magneticDeclination(location.latitude, location.longitude);
     final double compassQibla = GeoUtils.compassQiblaBearing(
       location.latitude,
       location.longitude,
@@ -159,6 +171,10 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
           ? _DiyanetCalibrationGuideView(
               onContinue: () async {
                 setState(() => _showCalibrationGuide = false);
+                await ref
+                    .read(runtimeProvider)
+                    .preferences
+                    .setBool('qibla_calibration_seen_v1', true);
                 await ref.read(compassServiceProvider).resetCompass();
                 unawaited(
                   ref
@@ -980,20 +996,18 @@ class _CompassDial extends StatelessWidget {
     final double qiblaRelative =
         reading?.differenceToQibla ?? GeoUtils.normalizeSigned(qibla - heading);
     final bool aligned = reading?.isAligned ?? false;
-    // e-Diyanet davranışı: Kıbleye hizalandığında (±5°) Kâbe rozeti ve yeşil ok
-    // çift halka kayması yapmadan tam 12 yönüne (0°) pürüzsüzce oturur.
-    final double visualQiblaAngle = aligned ? 0.0 : qiblaRelative;
-    final double shownTopDegree = aligned && reading != null
+    // e-Diyanet üst kutu: Canlı pusula derecesi (ör. 153.7°) 60 FPS güncellenir
+    final double shownTopDegree = reading != null
         ? reading!.heading
         : displayQibla;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        // e-Diyanet üst yeşil Kıble kutusu (Kâbe rozeti + Kıble + Derece)
+        // e-Diyanet üst yeşil Kıble kutusu (Kâbe rozeti + Kıble + Canlı Derece)
         Container(
           margin: const EdgeInsets.only(bottom: 14),
-          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
           decoration: BoxDecoration(
             color: aligned ? const Color(0xFFB9E4C9) : const Color(0xFFE0F2F1),
             borderRadius: BorderRadius.circular(16),
@@ -1013,9 +1027,9 @@ class _CompassDial extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    'Kıble',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
+                    'Kıble (${displayQibla.toStringAsFixed(1)}°)',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      fontWeight: FontWeight.w700,
                       color: const Color(0xFF37474F),
                     ),
                   ),
@@ -1023,7 +1037,9 @@ class _CompassDial extends StatelessWidget {
                     '${shownTopDegree.toStringAsFixed(1)}°',
                     style: theme.textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.w900,
-                      color: const Color(0xFF1B5E20),
+                      color: aligned
+                          ? const Color(0xFF1B5E20)
+                          : const Color(0xFF263238),
                     ),
                   ),
                 ],
@@ -1039,7 +1055,7 @@ class _CompassDial extends StatelessWidget {
             children: <Widget>[
               // e-Diyanet beyaz dairesel kadran zemini ve açık yeşil dış çember
               AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
+                duration: const Duration(milliseconds: 120),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: isDark ? theme.colorScheme.surface : Colors.white,
@@ -1064,9 +1080,9 @@ class _CompassDial extends StatelessWidget {
                   ),
                 ),
               ),
-              // Kâbe yuvarlak rozeti (çift halka olmadan tek ve net e-Diyanet rozeti)
+              // Kâbe yuvarlak rozeti: Pusula kadranı üzerinde Kıble açısına (151.4°) bağlı döner
               Transform.rotate(
-                angle: visualQiblaAngle * math.pi / 180,
+                angle: qiblaRelative * math.pi / 180,
                 child: const Align(
                   alignment: Alignment.topCenter,
                   child: Padding(
@@ -1075,15 +1091,16 @@ class _CompassDial extends StatelessWidget {
                   ),
                 ),
               ),
-              // Merkezdeki yeşil noktadan Kâbe rozetine uzanan net yeşil Kıble Oku
-              Transform.rotate(
-                angle: visualQiblaAngle * math.pi / 180,
-                child: CustomPaint(
-                  size: const Size(310, 310),
-                  painter: _QiblaNeedlePainter(
-                    needleColor: const Color(0xFF2E7D32),
-                    aligned: aligned,
-                  ),
+              // e-Diyanet sabit telefon üst yön oku (12 yönü) + Kâbe rozeti hiza rehberi:
+              // Telefonu çevirdikçe Kâbe rozeti 12 yönündeki bu sabit okun ucuna gelir.
+              CustomPaint(
+                size: const Size(310, 310),
+                painter: _QiblaNeedlePainter(
+                  needleColor: aligned
+                      ? const Color(0xFF2E7D32)
+                      : const Color(0xFF2E7D32).withValues(alpha: 0.85),
+                  aligned: aligned,
+                  qiblaRelativeDegrees: qiblaRelative,
                 ),
               ),
             ],
@@ -1364,19 +1381,45 @@ class _QiblaGeodesicMapPainter extends CustomPainter {
       oldDelegate.headingDegrees != headingDegrees;
 }
 
-/// Merkezden doğrudan Kâbe rozetine uzanan e-Diyanet Kıble Oku.
+/// Merkezden 12 yönüne (telefonun baktığı yöne) uzanan e-Diyanet Kıble Oku.
 class _QiblaNeedlePainter extends CustomPainter {
-  const _QiblaNeedlePainter({required this.needleColor, required this.aligned});
+  const _QiblaNeedlePainter({
+    required this.needleColor,
+    required this.aligned,
+    required this.qiblaRelativeDegrees,
+  });
 
   final Color needleColor;
   final bool aligned;
+  final double qiblaRelativeDegrees;
 
   @override
   void paint(Canvas canvas, Size size) {
     final Offset center = Offset(size.width / 2, size.height / 2);
     const double tipY = 74.0;
 
-    // Ana Kıble ok gövdesi (merkez yeşil noktadan Kâbe rozetine)
+    // Kıble henüz hizalı değilse, Kâbe rozetinin olduğu yöne ince kesikli rehber çizgi
+    // ve 12 yönüne dönüş yayını çiz ki kullanıcı Kâbe rozetini okun ucuna nasıl getireceğini anında görsün.
+    if (!aligned && qiblaRelativeDegrees.abs() > 3.0) {
+      final double rad = (qiblaRelativeDegrees - 90.0) * math.pi / 180.0;
+      final Paint guidePaint = Paint()
+        ..strokeWidth = 1.8
+        ..strokeCap = StrokeCap.round
+        ..color = const Color(0xFF2E7D32).withValues(alpha: 0.32);
+      for (double r = 22.0; r < 92.0; r += 10.0) {
+        final Offset p1 =
+            center + Offset(math.cos(rad) * r, math.sin(rad) * r);
+        final Offset p2 =
+            center +
+            Offset(
+              math.cos(rad) * math.min(r + 5.0, 92.0),
+              math.sin(rad) * math.min(r + 5.0, 92.0),
+            );
+        canvas.drawLine(p1, p2, guidePaint);
+      }
+    }
+
+    // Ana Kıble ok gövdesi (e-Diyanet birebir: merkez yeşil noktadan 12 yönüne sabit dikey ok)
     canvas.drawLine(
       center,
       Offset(center.dx, tipY + 12),
@@ -1386,7 +1429,7 @@ class _QiblaNeedlePainter extends CustomPainter {
         ..color = needleColor,
     );
 
-    // Belirgin yeşil ok ucu (Kâbe yönü üçgeni)
+    // Belirgin yeşil ok ucu (12 yönü üçgeni)
     final Path arrowHead = Path()
       ..moveTo(center.dx, tipY)
       ..lineTo(center.dx - 7.5, tipY + 15)
@@ -1405,7 +1448,9 @@ class _QiblaNeedlePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _QiblaNeedlePainter oldDelegate) =>
-      oldDelegate.needleColor != needleColor || oldDelegate.aligned != aligned;
+      oldDelegate.needleColor != needleColor ||
+      oldDelegate.aligned != aligned ||
+      oldDelegate.qiblaRelativeDegrees != qiblaRelativeDegrees;
 }
 
 class _CompassPainter extends CustomPainter {

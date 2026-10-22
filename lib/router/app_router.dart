@@ -301,8 +301,9 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.kazaTracker,
-      builder: (BuildContext context, GoRouterState state) =>
-          const KazaTrackerScreen(),
+      builder: (BuildContext context, GoRouterState state) => KazaTrackerScreen(
+        initialTab: state.uri.queryParameters['sekme'] == 'hutbe' ? 1 : 0,
+      ),
     ),
     GoRoute(
       path: AppRoutes.ilahiPlaylists,
