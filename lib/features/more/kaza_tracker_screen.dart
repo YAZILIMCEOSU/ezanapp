@@ -59,10 +59,8 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       category: 'İbadet & Namaz',
       title: 'Cuma Hutbesi: Namaz — Müminin Miracı ve Huzur Kaynağı',
       arabicHeader: 'إِنَّ الصَّلَاةَ تَنْهَىٰ عَنِ الْفَحْشَاءِ وَالْمُنكَرِ',
-      verseOrHadith:
-          '“Şüphesiz namaz, insanı hayasızlıktan ve kötülükten alıkoyar.” (Ankebût, 29/45) · “Namaz dinin direğidir.” (Tirmizî, Îmân, 8)',
-      summary:
-          'Namaz, kulun Rabbiyle günde beş vakit buluşması, ruhun dinlenmesi ve kötülüklerden arınmasıdır.',
+      verseOrHadith: '“Şüphesiz namaz, insanı hayasızlıktan ve kötülükten alıkoyar.” (Ankebût, 29/45) · “Namaz dinin direğidir.” (Tirmizî, Îmân, 8)',
+      summary: 'Namaz, kulun Rabbiyle günde beş vakit buluşması, ruhun dinlenmesi ve kötülüklerden arınmasıdır.',
       fullText:
           'Muhterem Müslümanlar!\n'
           'Okuduğum âyet-i kerîmede Yüce Rabbimiz, namazın mümini her türlü kötülükten ve çirkinlikten koruyan bir kalkan olduğunu haber vermektedir. Sevgili Peygamberimiz (s.a.v.) ise namazı gözünün nuru ve dinin direği olarak nitelendirmiştir.\n\n'
@@ -76,12 +74,9 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       id: 'ibadet_cuma_fazileti',
       category: 'İbadet & Namaz',
       title: 'Cuma Hutbesi: Cuma Gününün Bereketi ve Cemaat Şuuru',
-      arabicHeader:
-          'يَا أَيُّهَا الَّذِينَ آمَنُوا إِذَا نُودِيَ لِلصَّلَاةِ مِن يَوْمِ الْجُمُعَةِ فَاسْعَوْا إِلَىٰ ذِكْرِ اللَّهِ',
-      verseOrHadith:
-          '“Ey iman edenler! Cuma günü namaz için çağrı yapıldığı zaman, hemen Allah’ın zikrine koşun ve alışverişi bırakın.” (Cum’a, 62/9)',
-      summary:
-          'Cuma, müminlerin haftalık bayramı, duaların kabul olduğu icâbet saatinin bulunduğu mübarek toplanma günüdür.',
+      arabicHeader: 'يَا أَيُّهَا الَّذِينَ آمَنُوا إِذَا نُودِيَ لِلصَّلَاةِ مِن يَوْمِ الْجُمُعَةِ فَاسْعَوْا إِلَىٰ ذِكْرِ اللَّهِ',
+      verseOrHadith: '“Ey iman edenler! Cuma günü namaz için çağrı yapıldığı zaman, hemen Allah’ın zikrine koşun ve alışverişi bırakın.” (Cum’a, 62/9)',
+      summary: 'Cuma, müminlerin haftalık bayramı, duaların kabul olduğu icâbet saatinin bulunduğu mübarek toplanma günüdür.',
       fullText:
           'Muhterem Müslümanlar!\n'
           'Üzerine güneşin doğduğu en hayırlı gün olan Cuma gününe bizleri bir kez daha kavuşturan Yüce Rabbimize hamdolsun. Cuma; müminlerin omuz omuza saf tuttuğu, gönüllerin birleştiği haftalık bayramımızdır.\n\n'
@@ -95,10 +90,8 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       category: 'İbadet & Namaz',
       title: 'Cuma Hutbesi: Camilerimiz — Şehrin Kalbi ve Kardeşlik Ocağı',
       arabicHeader: 'إِنَّمَا يَعْمُرُ مَسَاجِدَ اللَّهِ مَنْ آمَنَ بِاللَّهِ وَالْيَوْمِ الْآخِرِ',
-      verseOrHadith:
-          '“Allah’ın mescitlerini ancak Allah’a ve ahiret gününe iman eden, namazı dosdoğru kılan, zekâtı veren ve Allah’tan başkasından korkmayan kimseler imar eder.” (Tevbe, 9/18)',
-      summary:
-          'Camiler sadece taş ve tuğladan ibaret yapılar değil; cemaatle ve çocuk sesleriyle şenlenen ilim ve kardeşlik merkezleridir.',
+      verseOrHadith: '“Allah’ın mescitlerini ancak Allah’a ve ahiret gününe iman eden, namazı dosdoğru kılan, zekâtı veren ve Allah’tan başkasından korkmayan kimseler imar eder.” (Tevbe, 9/18)',
+      summary: 'Camiler sadece taş ve tuğladan ibaret yapılar değil; cemaatle ve çocuk sesleriyle şenlenen ilim ve kardeşlik merkezleridir.',
       fullText:
           'Aziz Müminler!\n'
           'Mescitler ve camiler, yeryüzünde Allah’a en sevimli mekânlar, Kâbe-i Muazzama’nın birer şubesidir. Bir beldede yükselen minareler ve okunan ezanlar, o beldenin İslam yurdu olduğunun en gür şahididir.\n\n'
@@ -111,10 +104,8 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       category: 'İbadet & Namaz',
       title: 'Cuma Hutbesi: Zekât ve İnfak — Malı Arındıran Bereket Köprüsü',
       arabicHeader: 'وَأَقِيمُوا الصَّلَاةَ وَآتُوا الزَّكَاةَ وَأَقْرِضُوا اللَّهَ قَرْضًا حَسَنًا',
-      verseOrHadith:
-          '“Mallarını Allah yolunda harcayanların durumu, yedi başak bitiren ve her başakta yüz dane bulunan bir tohum gibidir.” (Bakara, 2/261)',
-      summary:
-          'Zekât ve sadaka malı eksiltmez; bilakis bereketlendirir, toplumdaki sevgi ve dayanışmayı güçlendirir.',
+      verseOrHadith: '“Mallarını Allah yolunda harcayanların durumu, yedi başak bitiren ve her başakta yüz dane bulunan bir tohum gibidir.” (Bakara, 2/261)',
+      summary: 'Zekât ve sadaka malı eksiltmez; bilakis bereketlendirir, toplumdaki sevgi ve dayanışmayı güçlendirir.',
       fullText:
           'Muhterem Müslümanlar!\n'
           'İslam’ın beş temel esasından biri olan zekât, zenginlerin mallarında yoksul ve muhtaçların ilahi olarak belirlenmiş hakkıdır. İnfak ise müminin cömertlik ahlakının tezahürüdür.\n\n'
@@ -127,10 +118,8 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       category: 'İbadet & Namaz',
       title: 'Cuma Hutbesi: Dua ve Zikir — Kalplerin Huzur Bulduğu İlahi Kapı',
       arabicHeader: 'أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ',
-      verseOrHadith:
-          '“Bilesiniz ki, kalpler ancak Allah’ı anmakla huzur bulur.” (Ra’d, 13/28) · “Dua, ibadetin özüdür.” (Tirmizî, Deavât, 1)',
-      summary:
-          'Darlıkta ve bollukta Rabbini zikreden ve O\'na el açıp dua eden kul, yalnızlık ve çaresizlikten kurtulur.',
+      verseOrHadith: '“Bilesiniz ki, kalpler ancak Allah’ı anmakla huzur bulur.” (Ra’d, 13/28) · “Dua, ibadetin özüdür.” (Tirmizî, Deavât, 1)',
+      summary: 'Darlıkta ve bollukta Rabbini zikreden ve O\'na el açıp dua eden kul, yalnızlık ve çaresizlikten kurtulur.',
       fullText:
           'Muhterem Müslümanlar!\n'
           'Yüce Rabbimiz Bakara Suresi’nde, “Kullarım sana beni sorduklarında söyle onlara: Ben çok yakınım; bana dua ettiği vakit dua edenin dileğine karşılık veririm” (Bakara, 2/186) buyurmaktadır.\n\n'
@@ -145,10 +134,8 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       category: 'Ahlak & Takva',
       title: 'Cuma Hutbesi: İhlas, Takva ve Güzel Ahlak',
       arabicHeader: 'إِنَّ أَكْرَمَكُمْ عِندَ اللَّهِ أَتْقَاكُمْ',
-      verseOrHadith:
-          '“Allah katında en değerli olanınız, O’na karşı en çok takva sahibi olanınızdır.” (Hucurât, 49/13) · “Ameller niyetlere göredir.” (Buhârî, Bed’ü’l-Vahy, 1)',
-      summary:
-          'Amelleri Allah katında değerli kılan ihlastır; müminin en büyük sermayesi takva ve güzel ahlaktır.',
+      verseOrHadith: '“Allah katında en değerli olanınız, O’na karşı en çok takva sahibi olanınızdır.” (Hucurât, 49/13) · “Ameller niyetlere göredir.” (Buhârî, Bed’ü’l-Vahy, 1)',
+      summary: 'Amelleri Allah katında değerli kılan ihlastır; müminin en büyük sermayesi takva ve güzel ahlaktır.',
       fullText:
           'Muhterem Müslümanlar!\n'
           'İhlas; ibadet ve iyiliklerimizi gösterişten, riyadan ve dünyevi çıkar beklentisinden uzak tutarak yalnızca Allah’ın rızasını kazanmak amacıyla yapmaktır. Takva ise Allah’ın emirlerine sarılıp yasaklarından sakınarak O’nun koruyucu rahmetine sığınmaktır.\n\n'
@@ -161,10 +148,8 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       category: 'Ahlak & Takva',
       title: 'Cuma Hutbesi: Doğruluk (Sıdk) ve Emanet Bilinci',
       arabicHeader: 'فَاسْتَقِمْ كَمَا أُمِرْتَ وَمَن تَابَ مَعَكَ',
-      verseOrHadith:
-          '“Emrolunduğun gibi dosdoğru ol!” (Hûd, 11/112) · “Doğruluk iyiliğe, iyilik de cennete götürür.” (Buhârî, Edeb, 69)',
-      summary:
-          'Müslüman, elinden ve dilinden herkesin emin olduğu, sözü senet olan güvenilir insandır.',
+      verseOrHadith: '“Emrolunduğun gibi dosdoğru ol!” (Hûd, 11/112) · “Doğruluk iyiliğe, iyilik de cennete götürür.” (Buhârî, Edeb, 69)',
+      summary: 'Müslüman, elinden ve dilinden herkesin emin olduğu, sözü senet olan güvenilir insandır.',
       fullText:
           'Aziz Müminler!\n'
           'Sevgili Peygamberimiz (s.a.v.), peygamberlik vazifesinden önce bile Mekke toplumunda “Muhammedü’l-Emîn” (Güvenilir Muhammed) sıfatıyla tanınmıştı. O, “Bizi aldatan bizden değildir” (Müslim, Îmân, 164) buyurarak müminin hayatında yalana ve hileye yer olamayacağını ilan etmiştir.\n\n'
@@ -177,10 +162,8 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       category: 'Ahlak & Takva',
       title: 'Cuma Hutbesi: Müminin İki Kanadı — Sabır ve Şükür',
       arabicHeader: 'يَا أَيُّهَا الَّذِينَ آمَنُوا اسْتَعِينُوا بِالصَّبْرِ وَالصَّلَاةِ ۚ إِنَّ اللَّهَ مَعَ الصَّابِرِينَ',
-      verseOrHadith:
-          '“Ey iman edenler! Sabır ve namazla Allah’tan yardım dileyin. Şüphesiz Allah sabredenlerle beraberdir.” (Bakara, 2/153)',
-      summary:
-          'Mümin nimete kavuştuğunda şükrederek, musibetle karşılaştığında sabrederek her hâlükârda kazançlı çıkar.',
+      verseOrHadith: '“Ey iman edenler! Sabır ve namazla Allah’tan yardım dileyin. Şüphesiz Allah sabredenlerle beraberdir.” (Bakara, 2/153)',
+      summary: 'Mümin nimete kavuştuğunda şükrederek, musibetle karşılaştığında sabrederek her hâlükârda kazançlı çıkar.',
       fullText:
           'Muhterem Müslümanlar!\n'
           'Dünya hayatı bir imtihan yurdudur; bazen varlıkla, bazen darlıkla sınanırız. Resûl-i Ekrem (s.a.v.) Efendimiz şöyle buyurur: “Müminin durumu ne hoştur! Her işi kendisi için hayırlıdır. Ona sevindirici bir şey gelirse şükreder, bu onun için hayır olur; başına bir sıkıntı gelirse sabreder, bu da onun için hayır olur.” (Müslim, Zühd, 64)\n\n'
@@ -193,10 +176,8 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       category: 'Ahlak & Takva',
       title: 'Cuma Hutbesi: Dilin Afetleri — Gıybet, İftira ve Kötü Sözden Sakınmak',
       arabicHeader: 'وَلَا يَغْتَب بَّعْضُكُم بَعْضًا',
-      verseOrHadith:
-          '“Birbirinizin kusurlarını araştırmayın ve biriniz diğerinizi arkasından çekiştirmesin (gıybet etmesin).” (Hucurât, 49/12)',
-      summary:
-          'Gıybet, iftira ve suizan kardeşliği kemiren manevi hastalıklardır; mümin ya hayır söyler ya da susar.',
+      verseOrHadith: '“Birbirinizin kusurlarını araştırmayın ve biriniz diğerinizi arkasından çekiştirmesin (gıybet etmesin).” (Hucurât, 49/12)',
+      summary: 'Gıybet, iftira ve suizan kardeşliği kemiren manevi hastalıklardır; mümin ya hayır söyler ya da susar.',
       fullText:
           'Muhterem Müslümanlar!\n'
           'Yüce Rabbimiz Hucurât Suresi’nde gıybeti, ölmüş kardeşinin etini yemeye benzeterek bu günahın çirkinliğini gözler önüne sermiştir. Sevgili Peygamberimiz (s.a.v.) ise “Allah’a ve ahiret gününe iman eden kimse ya hayır söylesin ya da sussun” (Buhârî, Edeb, 31) buyurmuştur.\n\n'
@@ -208,11 +189,10 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       id: 'ahlak_tevazu_merhamet',
       category: 'Ahlak & Takva',
       title: 'Cuma Hutbesi: Tevazu, Hoşgörü ve Merhamet Ahlakı',
-      arabicHeader: 'وَعِبَادُ الرَّحْمَٰنِ الَّذِينَ يَمْشُونَ عَلَى الْأَرْضِ هَوْنًا',
-      verseOrHadith:
-          '“Rahmân’ın has kulları, yeryüzünde vakar ve tevazu ile yürüyen kimselerdir.” (Furkân, 25/63) · “Kim Allah için tevazu gösterirse Allah onu yüceltir.” (Müslim, Birr, 69)',
-      summary:
-          'Kibir şeytanın, tevazu ve merhamet ise peygamberlerin ve salih müminlerin vasfıdır.',
+      arabicHeader:
+          'وَعِبَادُ الرَّحْمَٰنِ الَّذِينَ يَمْشُونَ عَلَى الْأَرْضِ هَوْنًا',
+      verseOrHadith: '“Rahmân’ın has kulları, yeryüzünde vakar ve tevazu ile yürüyen kimselerdir.” (Furkân, 25/63) · “Kim Allah için tevazu gösterirse Allah onu yüceltir.” (Müslim, Birr, 69)',
+      summary: 'Kibir şeytanın, tevazu ve merhamet ise peygamberlerin ve salih müminlerin vasfıdır.',
       fullText:
           'Aziz Müminler!\n'
           'Yeryüzündekilere merhamet etmeyene göktekilerin merhamet etmeyeceğini bildiren bir dinin mensuplarıyız. Kalbinde zerre kadar kibir bulunanın cennete giremeyeceğini haber veren Peygamberimiz (s.a.v.), insanlara karşı daima alçakgönüllü ve şefkatli olmuştur.\n\n'
@@ -227,10 +207,8 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       category: 'Aile & Toplum',
       title: 'Cuma Hutbesi: Aile — Sevgi, Merhamet ve Sekînet Yuvası',
       arabicHeader: 'وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً',
-      verseOrHadith:
-          '“Kendileriyle huzur bulasınız diye sizin için türünüzden eşler yaratması ve aranızda bir sevgi ve merhamet var etmesi de O’nun varlığının delillerindendir.” (Rûm, 30/21)',
-      summary:
-          'Aile; meveddet (sevgi), rahmet (şefkat) ve sekînet (huzur) üzerine kurulan en mukaddes kurumdur.',
+      verseOrHadith: '“Kendileriyle huzur bulasınız diye sizin için türünüzden eşler yaratması ve aranızda bir sevgi ve merhamet var etmesi de O’nun varlığının delillerindendir.” (Rûm, 30/21)',
+      summary: 'Aile; meveddet (sevgi), rahmet (şefkat) ve sekînet (huzur) üzerine kurulan en mukaddes kurumdur.',
       fullText:
           'Muhterem Müslümanlar!\n'
           'Aile, insanın dünyadaki cenneti, toplumun en sağlam kalesidir. Kur’an-ı Kerîm eşleri birbirinin “libâsı” (koruyucu örtüsü) olarak tanımlar. Sevgili Peygamberimiz (s.a.v.) de “Sizin en hayırlınız, ailesine karşı en hayırlı olanınızdır” (Tirmizî, Menâkıb, 63) buyurmuştur.\n\n'
@@ -243,10 +221,8 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       category: 'Aile & Toplum',
       title: 'Cuma Hutbesi: Anne-Babaya İhsan ve Sıla-i Rahîm',
       arabicHeader: 'وَقَضَىٰ رَبُّكَ أَلَّا تَعْبُدُوا إِلَّا إِيَّاهُ وَبِالْوَالِدَيْنِ إِحْسَانًا',
-      verseOrHadith:
-          '“Rabb’in, kendisinden başkasına asla ibadet etmemenizi, anne ve babaya iyi davranmanızı kesin olarak emretti.” (İsrâ, 17/23)',
-      summary:
-          'Allah\'ın rızası anne-babanın rızasında, akrabalık bağlarını gözetmek (sıla-i rahîm) ise ömrün ve rızkın bereketindedir.',
+      verseOrHadith: '“Rabb’in, kendisinden başkasına asla ibadet etmemenizi, anne ve babaya iyi davranmanızı kesin olarak emretti.” (İsrâ, 17/23)',
+      summary: 'Allah\'ın rızası anne-babanın rızasında, akrabalık bağlarını gözetmek (sıla-i rahîm) ise ömrün ve rızkın bereketindedir.',
       fullText:
           'Muhterem Müslümanlar!\n'
           'Yüce Rabbimiz kendisine kulluk emrinin hemen ardından anne-babaya ihsanı zikretmiş; onlara “öf!” bile dememeyi, üzerlerine merhamet kanatlarını germeyi ve “Rabbim! Küçüklüğümde onlar beni nasıl şefkatle büyüttülerse, şimdi Sen de onlara öyle merhamet et!” diye dua etmeyi emretmiştir.\n\n'
@@ -259,10 +235,8 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       category: 'Aile & Toplum',
       title: 'Cuma Hutbesi: Evlatlarımız — Göz Aydınlığımız ve İstikbalimiz',
       arabicHeader: 'رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ',
-      verseOrHadith:
-          '“Hiçbir baba, çocuğuna güzel terbiyeden daha üstün bir miras bırakamaz.” (Tirmizî, Birr, 33)',
-      summary:
-          'Çocuklarımız ve gençlerimiz bize Allah\'ın emanetidir; onlara bırakacağımız en büyük miras iman ve güzel ahlaktır.',
+      verseOrHadith: '“Hiçbir baba, çocuğuna güzel terbiyeden daha üstün bir miras bırakamaz.” (Tirmizî, Birr, 33)',
+      summary: 'Çocuklarımız ve gençlerimiz bize Allah\'ın emanetidir; onlara bırakacağımız en büyük miras iman ve güzel ahlaktır.',
       fullText:
           'Aziz Müminler!\n'
           'Evlatlarımız dünya hayatının süsü ve ahiret azığımızdır. Peygamber Efendimiz (s.a.v.), insan öldüğünde amel defterinin kapanacağını, ancak kendisine dua eden hayırlı bir evlat bırakanın sevabının kesintisiz devam edeceğini müjdelemiştir.\n\n'
@@ -275,10 +249,8 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       category: 'Aile & Toplum',
       title: 'Cuma Hutbesi: Komşuluk Hukuku ve Toplumsal Dayanışma',
       arabicHeader: 'وَاعْبُدُوا اللَّهَ وَلَا تُشْرِكُوا بِهِ شَيْئًا وَبِالْوَالِدَيْنِ إِحْسَانًا وَبِذِي الْقُرْبَىٰ وَالْيَتَامَىٰ وَالْمَسَاكِينِ وَالْجَارِ ذِي الْقُرْبَىٰ وَالْجَارِ الْجُنُبِ',
-      verseOrHadith:
-          '“Cebrâil bana komşu hakkını o kadar tavsiye etti ki, komşuyu komşuya mirasçı kılacak zannettim.” (Buhârî, Edeb, 28)',
-      summary:
-          'Komşusu açken tok yatan bizden değildir; komşuluk hakkını gözetmek iman olgunluğunun göstergesidir.',
+      verseOrHadith: '“Cebrâil bana komşu hakkını o kadar tavsiye etti ki, komşuyu komşuya mirasçı kılacak zannettim.” (Buhârî, Edeb, 28)',
+      summary: 'Komşusu açken tok yatan bizden değildir; komşuluk hakkını gözetmek iman olgunluğunun göstergesidir.',
       fullText:
           'Muhterem Müslümanlar!\n'
           'İslam medeniyeti, komşusuyla selamlaşan, sevincini ve kederini paylaşan, tenceresinde pişen aşın kokusunu dahi komşusunu gözeterek paylaşan bir komşuluk ahlakı inşa etmiştir.\n\n'
@@ -289,12 +261,11 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
     KhutbahItem(
       id: 'aile_yetim_mazlum',
       category: 'Aile & Toplum',
-      title: 'Cuma Hutbesi: Yetimlerin Başını Okşamak ve Mazluma Kol Kanat Germek',
+      title:
+          'Cuma Hutbesi: Yetimlerin Başını Okşamak ve Mazluma Kol Kanat Germek',
       arabicHeader: 'فَأَمَّا الْيَتِيمَ فَلَا تَقْهَرْ ۝ وَأَمَّا السَّائِلَ فَلَا تَنْهَرْ',
-      verseOrHadith:
-          '“Öyleyse sakın yetimi ezme! El açıp isteyeni de azarlama!” (Duhâ, 93/9–10) · “Ben ve yetimi himaye eden kimse cennette şöyle yan yanayız.” (Buhârî, Talâk, 25)',
-      summary:
-          'Yetimi, öksüzü ve kimsesizi koruyup gözetmek kalbi yumuşatır ve Peygamber Efendimiz\'e cennette komşu kılar.',
+      verseOrHadith: '“Öyleyse sakın yetimi ezme! El açıp isteyeni de azarlama!” (Duhâ, 93/9–10) · “Ben ve yetimi himaye eden kimse cennette şöyle yan yanayız.” (Buhârî, Talâk, 25)',
+      summary: 'Yetimi, öksüzü ve kimsesizi koruyup gözetmek kalbi yumuşatır ve Peygamber Efendimiz\'e cennette komşu kılar.',
       fullText:
           'Aziz Müminler!\n'
           'Kendisi de dünyaya yetim olarak teşrif eden Rahmet Peygamberi (s.a.v.), yetime ve mazluma kol kanat germeyi cennetin anahtarı olarak göstermiştir. Kalbinin katılığından şikâyet eden bir sahâbîye, “Yetimin başını okşa ve yoksulu doyur” tavsiyesinde bulunmuştur.\n\n'
@@ -308,11 +279,10 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       id: 'kazanc_helal_lokma',
       category: 'Helal Kazanç & Kul Hakkı',
       title: 'Cuma Hutbesi: Helal Kazanç, Alın Teri ve Bereket',
-      arabicHeader: 'يَا أَيُّهَا النَّاسُ كُلُوا مِمَّا فِي الْأَرْضِ حَلَالًا طَيِّبًا',
-      verseOrHadith:
-          '“Ey insanlar! Yeryüzündeki şeylerin helal ve temiz olanlarından yiyin!” (Bakara, 2/168) · “Hiç kimse kendi elinin emeğinden daha hayırlı bir lokma yememiştir.” (Buhârî, Büyû, 15)',
-      summary:
-          'Duaların kabulü ve ibadetlerin feyzi helal lokmaya bağlıdır; alın teriyle kazanılan az rızık, haramın çokluğundan hayırlıdır.',
+      arabicHeader:
+          'يَا أَيُّهَا النَّاسُ كُلُوا مِمَّا فِي الْأَرْضِ حَلَالًا طَيِّبًا',
+      verseOrHadith: '“Ey insanlar! Yeryüzündeki şeylerin helal ve temiz olanlarından yiyin!” (Bakara, 2/168) · “Hiç kimse kendi elinin emeğinden daha hayırlı bir lokma yememiştir.” (Buhârî, Büyû, 15)',
+      summary: 'Duaların kabulü ve ibadetlerin feyzi helal lokmaya bağlıdır; alın teriyle kazanılan az rızık, haramın çokluğundan hayırlıdır.',
       fullText:
           'Muhterem Müslümanlar!\n'
           'Helal kazanç, ibadetlerin kabulünün ve nesillerin salahının temel şartıdır. Peygamber Efendimiz (s.a.v.), yediği haram, içtiği haram, giydiği haram olan bir kimsenin ellerini göğe kaldırıp “Yâ Rabbî!” diye dua etmesi hâlinde duasının nasıl kabul edileceğini sorarak bizleri uyarmıştır.\n\n'
@@ -325,10 +295,8 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       category: 'Helal Kazanç & Kul Hakkı',
       title: 'Cuma Hutbesi: Kul Hakkı ve Ahiret Hesabı',
       arabicHeader: 'وَيْلٌ لِّلْمُطَفِّفِينَ ۝ الَّذِينَ إِذَا اكْتَالُوا عَلَى النَّاسِ يَسْتَوْفُونَ',
-      verseOrHadith:
-          '“Ölçüde ve tartıda hile yapanların vay hâline!” (Mutaffifîn, 83/1) · “Kimin üzerinde kardeşinin onuru veya malıyla ilgili bir hak varsa, altın ve gümüşün geçmeyeceği gün gelmeden önce helalleşsin.” (Buhârî, Mezâlim, 10)',
-      summary:
-          'Allah Teâlâ kendi hakkını dilerse affeder; ancak kul hakkını hak sahibi helal etmedikçe bağışlamaz.',
+      verseOrHadith: '“Ölçüde ve tartıda hile yapanların vay hâline!” (Mutaffifîn, 83/1) · “Kimin üzerinde kardeşinin onuru veya malıyla ilgili bir hak varsa, altın ve gümüşün geçmeyeceği gün gelmeden önce helalleşsin.” (Buhârî, Mezâlim, 10)',
+      summary: 'Allah Teâlâ kendi hakkını dilerse affeder; ancak kul hakkını hak sahibi helal etmedikçe bağışlamaz.',
       fullText:
           'Aziz Müminler!\n'
           'Resûlullah (s.a.v.) bir gün ashabına “Müflis kimdir?” diye sormuş ve gerçek müflisin; kıyamet gününe namaz, oruç ve zekâtla geldiği hâlde, dünyada şuna sövmüş, buna iftira etmiş, ötekinin malını yemiş olduğu için bütün sevapları hak sahiplerine dağıtılan kimse olduğunu bildirmiştir.\n\n'
@@ -341,10 +309,8 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       category: 'Helal Kazanç & Kul Hakkı',
       title: 'Cuma Hutbesi: İsraftan Sakınmak, İktisat ve Kanaat Zenginliği',
       arabicHeader: 'وَكُلُوا وَاشْرَبُوا وَلَا تُسْرِفُوا ۚ إِنَّهُ لَا يُحِبُّ الْمُسْرِفِينَ',
-      verseOrHadith:
-          '“Yiyin, için fakat israf etmeyin. Çünkü Allah israf edenleri sevmez.” (A’râf, 7/31) · “Gerçek zenginlik mal çokluğu değil, gönül tokluğudur.” (Buhârî, Rikâk, 15)',
-      summary:
-          'Su, ekmek, enerji ve zaman nimetlerini israf etmemek; kanaat ve iktisatla yaşamak müminin şükür borcudur.',
+      verseOrHadith: '“Yiyin, için fakat israf etmeyin. Çünkü Allah israf edenleri sevmez.” (A’râf, 7/31) · “Gerçek zenginlik mal çokluğu değil, gönül tokluğudur.” (Buhârî, Rikâk, 15)',
+      summary: 'Su, ekmek, enerji ve zaman nimetlerini israf etmemek; kanaat ve iktisatla yaşamak müminin şükür borcudur.',
       fullText:
           'Muhterem Müslümanlar!\n'
           'Rabbimizin bizlere bahşettiği her nimet bir emanet ve imtihandır. Nehrin kenarında abdest alırken dahi suyu israf etmemeyi emreden Peygamberimiz (s.a.v.), “İktisat eden (tutumlu olan) fakir düşmez” buyurmuştur.\n\n'
@@ -357,10 +323,8 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       category: 'Helal Kazanç & Kul Hakkı',
       title: 'Cuma Hutbesi: İslam\'da İş Ahlakı, Liyakat ve İhsan',
       arabicHeader: 'إِنَّ اللَّهَ يَأْمُرُكُمْ أَن تُؤَدُّوا الْأَمَانَاتِ إِلَىٰ أَهْلِهَا',
-      verseOrHadith:
-          '“Allah, sizden birinizin yaptığı işi sağlam ve en güzel şekilde (ihsan ile) yapmasından hoşnut olur.” (Taberânî, el-Mu’cemü’l-Evsat, I, 275)',
-      summary:
-          'Yaptığı işi sağlam yapmak, işçinin ücretini alın teri kurumadan vermek ve ticarette dürüst olmak ibadettir.',
+      verseOrHadith: '“Allah, sizden birinizin yaptığı işi sağlam ve en güzel şekilde (ihsan ile) yapmasından hoşnut olur.” (Taberânî, el-Mu’cemü’l-Evsat, I, 275)',
+      summary: 'Yaptığı işi sağlam yapmak, işçinin ücretini alın teri kurumadan vermek ve ticarette dürüst olmak ibadettir.',
       fullText:
           'Aziz Müminler!\n'
           'İslam’da çalışma ve üretim, helal dairesinde ve güzel niyetle yapıldığında nafile ibadet sevabı kazandırır. Doğru sözlü ve güvenilir tüccarın ahirette peygamberler, sıddıklar ve şehitlerle beraber olacağı müjdelenmiştir.\n\n'
@@ -373,12 +337,11 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
     KhutbahItem(
       id: 'kuran_hayat_kitabi',
       category: 'Kur\'an & Sünnet',
-      title: 'Cuma Hutbesi: Kur\'an-ı Kerîm — Şifa, Rahmet ve Hidayet Rehberimiz',
+      title:
+          'Cuma Hutbesi: Kur\'an-ı Kerîm — Şifa, Rahmet ve Hidayet Rehberimiz',
       arabicHeader: 'إِنَّ هَٰذَا الْقُرْآنَ يَهْدِي لِلَّتِي هِيَ أَقْوَمُ',
-      verseOrHadith:
-          '“Şüphesiz bu Kur’an, insanları en doğru ve en sağlam yola iletir.” (İsrâ, 17/9) · “Sizin en hayırlınız, Kur’an’ı öğrenen ve öğretendir.” (Buhârî, Fedâilü’l-Kur’ân, 21)',
-      summary:
-          'Kur\'an, sadece okunmak için değil; anlaşılmak, kalplere şifa olmak ve hayatımıza rehber kılınmak için indirilmiştir.',
+      verseOrHadith: '“Şüphesiz bu Kur’an, insanları en doğru ve en sağlam yola iletir.” (İsrâ, 17/9) · “Sizin en hayırlınız, Kur’an’ı öğrenen ve öğretendir.” (Buhârî, Fedâilü’l-Kur’ân, 21)',
+      summary: 'Kur\'an, sadece okunmak için değil; anlaşılmak, kalplere şifa olmak ve hayatımıza rehber kılınmak için indirilmiştir.',
       fullText:
           'Muhterem Müslümanlar!\n'
           'Kur’an-ı Kerîm, Yüce Rabbimizin insanlığa gönderdiği son ilahi mesaj, karanlıkları aydınlatan nur ve müminler için rahmet kaynağıdır. O, tutunduğumuzda asla kopmayacak olan “hablullah” (Allah’ın sağlam ipi)dir.\n\n'
@@ -390,11 +353,10 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       id: 'kuran_peygamber_sevgisi',
       category: 'Kur\'an & Sünnet',
       title: 'Cuma Hutbesi: Hz. Muhammed (s.a.v.) — En Güzel Örnek (Üsve-i Hasene)',
-      arabicHeader: 'لَّقَدْ كَانَ لَكُمْ فِي رَسُولِ اللَّهِ أُسْوَةٌ حَسَنَةٌ',
-      verseOrHadith:
-          '“Andolsun, Allah’ın Resûlü’nde sizin için; Allah’a ve ahiret gününe kavuşmayı umanlar için güzel bir örnek vardır.” (Ahzâb, 33/21)',
-      summary:
-          'Peygamber Efendimiz\'i sevmek, O\'nun yaşayan Kur\'an olan ahlakını ve Sünnet-i Seniyyesini hayatımıza taşımaktır.',
+      arabicHeader:
+          'لَّقَدْ كَانَ لَكُمْ فِي رَسُولِ اللَّهِ أُسْوَةٌ حَسَنَةٌ',
+      verseOrHadith: '“Andolsun, Allah’ın Resûlü’nde sizin için; Allah’a ve ahiret gününe kavuşmayı umanlar için güzel bir örnek vardır.” (Ahzâb, 33/21)',
+      summary: 'Peygamber Efendimiz\'i sevmek, O\'nun yaşayan Kur\'an olan ahlakını ve Sünnet-i Seniyyesini hayatımıza taşımaktır.',
       fullText:
           'Aziz Müminler!\n'
           'Alemlere rahmet olarak gönderilen Sevgili Peygamberimiz Hz. Muhammed Mustafa (s.a.v.), “Ben güzel ahlakı tamamlamak için gönderildim” buyurmuştur. Hz. Âişe validemizin ifadesiyle O’nun ahlakı Kur’an idi.\n\n'
@@ -407,10 +369,8 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       category: 'Kur\'an & Sünnet',
       title: 'Cuma Hutbesi: İlim, Hikmet ve Tefekkür — "Oku!" Emrinin İzinde',
       arabicHeader: 'قُلْ هَلْ يَسْتَوِي الَّذِينَ يَعْلَمُونَ وَالَّذِينَ لَا يَعْلَمُونَ',
-      verseOrHadith:
-          '“De ki: Hiç bilenlerle bilmeyenler bir olur mu?” (Zümer, 39/9) · “Kim ilim tahsil etmek için bir yola girerse, Allah ona cennetin yolunu kolaylaştırır.” (Müslim, Zikir, 38)',
-      summary:
-          'İlk emri "Oku!" olan İslam, ilmi ve hikmeti müminin yitiği saymış; faydalı ilmi sadaka-i cariye kılmıştır.',
+      verseOrHadith: '“De ki: Hiç bilenlerle bilmeyenler bir olur mu?” (Zümer, 39/9) · “Kim ilim tahsil etmek için bir yola girerse, Allah ona cennetin yolunu kolaylaştırır.” (Müslim, Zikir, 38)',
+      summary: 'İlk emri "Oku!" olan İslam, ilmi ve hikmeti müminin yitiği saymış; faydalı ilmi sadaka-i cariye kılmıştır.',
       fullText:
           'Muhterem Müslümanlar!\n'
           'İslam dini ilim, akıl ve tefekkür dinidir. İlk vahyin “Yaratan Rabbinin adıyla oku!” (Alak, 96/1) emriyle başlaması, dinimizin bilgiye ve öğrenmeye verdiği eşsiz değeri gösterir.\n\n'
@@ -423,10 +383,8 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       category: 'Kur\'an & Sünnet',
       title: 'Cuma Hutbesi: Tövbe ve İstiğfar — Rahmet Kapısından Dönüş',
       arabicHeader: 'قُلْ يَا عِبَادِيَ الَّذِينَ أَسْرَفُوا عَلَىٰ أَنفُسِهِمْ لَا تَقْنَطُوا مِن رَّحْمَةِ اللَّهِ',
-      verseOrHadith:
-          '“De ki: Ey kendi nefisleri aleyhine haddi aşan kullarım! Allah’ın rahmetinden ümidinizi kesmeyin. Şüphesiz Allah bütün günahları bağışlar.” (Zümer, 39/53)',
-      summary:
-          'Her insan hata edebilir; hata edenlerin en hayırlısı ise samimi bir kalple (nasûh tövbesiyle) Rabbine yönelendir.',
+      verseOrHadith: '“De ki: Ey kendi nefisleri aleyhine haddi aşan kullarım! Allah’ın rahmetinden ümidinizi kesmeyin. Şüphesiz Allah bütün günahları bağışlar.” (Zümer, 39/53)',
+      summary: 'Her insan hata edebilir; hata edenlerin en hayırlısı ise samimi bir kalple (nasûh tövbesiyle) Rabbine yönelendir.',
       fullText:
           'Aziz Müminler!\n'
           'İnsanoğlu beşerdir, zaman zaman nefsine uyup hata ve günaha düşebilir. Ancak Yüce Rabbimizin Tevvâb ve Gafûr isimleri, pişmanlıkla kapısına gelen hiçbir kulunu geri çevirmez. Peygamber Efendimiz (s.a.v.), “Günahından samimiyetle tövbe eden kimse, hiç günah işlememiş gibidir” (İbn Mâce, Zühd, 30) buyurmuştur.\n\n'
@@ -441,10 +399,8 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       category: 'Mübarek Gün & Bayram',
       title: 'Ramazan Hutbesi: Oruç, Kur\'an ve Takva Mevsimi Ramazan-ı Şerif',
       arabicHeader: 'يَا أَيُّهَا الَّذِينَ آمَنُوا كُتِبَ عَلَيْكُمُ الصِّيَامُ كَمَا كُتِبَ عَلَى الَّذِينَ مِن قَبْلِكُمْ لَعَلَّكُمْ تَتَّقُونَ',
-      verseOrHadith:
-          '“Kim inanarak ve sevabını yalnızca Allah’tan bekleyerek Ramazan orucunu tutarsa geçmiş günahları bağışlanır.” (Buhârî, Îmân, 28)',
-      summary:
-          'Başı rahmet, ortası mağfiret, sonu cehennem ateşinden kurtuluş olan Ramazan; nefsi terbiye ve paylaşma ayıdır.',
+      verseOrHadith: '“Kim inanarak ve sevabını yalnızca Allah’tan bekleyerek Ramazan orucunu tutarsa geçmiş günahları bağışlanır.” (Buhârî, Îmân, 28)',
+      summary: 'Başı rahmet, ortası mağfiret, sonu cehennem ateşinden kurtuluş olan Ramazan; nefsi terbiye ve paylaşma ayıdır.',
       fullText:
           'Muhterem Müslümanlar!\n'
           'On bir ayın sultanı Ramazan-ı Şerif; Kur’an-ı Kerîm’in indirildiği, cennet kapılarının sonuna kadar açıldığı, rahmet ve mağfiret iklimidir. Oruç ibadeti, sadece midemizi yeme-içmeden değil; gözümüzü, dilimizi ve kalbimizi her türlü günahtan koruma mektebidir.\n\n'
@@ -457,10 +413,8 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       category: 'Mübarek Gün & Bayram',
       title: 'Özel Hutbe: Bin Aydan Daha Hayırlı Gece — Kadir Gecesi',
       arabicHeader: 'إِنَّا أَنزَلْنَاهُ فِي لَيْلَةِ الْقَدْرِ ۝ وَمَا أَدْرَاكَ مَا لَيْلَةُ الْقَدْرِ ۝ لَيْلَةُ الْقَدْرِ خَيْرٌ مِّنْ أَلْفِ شَهْرٍ',
-      verseOrHadith:
-          '“Kadir Gecesi bin aydan daha hayırlıdır. O gecede melekler ve Rûh, Rablerinin izniyle her bir iş için iner de iner. O gece, tan yeri ağarıncaya kadar esenliktir.” (Kadr, 97/3–5)',
-      summary:
-          'Bir ömre bedel olan Kadir Gecesi, Kur\'an\'ın indirildiği, af ve mağfiret kapılarının ardına kadar açıldığı gecedir.',
+      verseOrHadith: '“Kadir Gecesi bin aydan daha hayırlıdır. O gecede melekler ve Rûh, Rablerinin izniyle her bir iş için iner de iner. O gece, tan yeri ağarıncaya kadar esenliktir.” (Kadr, 97/3–5)',
+      summary: 'Bir ömre bedel olan Kadir Gecesi, Kur\'an\'ın indirildiği, af ve mağfiret kapılarının ardına kadar açıldığı gecedir.',
       fullText:
           'Aziz Müminler!\n'
           'İçinde Kadir Gecesi bulunmayan seksen küsur yıllık bir ömürden daha hayırlı olan bu mübarek gece, Kur’an-ı Kerîm’in yeryüzünü şereflendirdiği gecedir.\n\n'
@@ -470,12 +424,11 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
     KhutbahItem(
       id: 'mubarek_ramazan_bayrami',
       category: 'Mübarek Gün & Bayram',
-      title: 'Bayram Hutbesi: Ramazan Bayramı — Sevinç, Kardeşlik ve Sıla-i Rahîm',
+      title:
+          'Bayram Hutbesi: Ramazan Bayramı — Sevinç, Kardeşlik ve Sıla-i Rahîm',
       arabicHeader: 'اللَّهُ أَكْبَرُ اللَّهُ أَكْبَرُ لَا إِلَٰهَ إِلَّا اللَّهُ وَاللَّهُ أَكْبَرُ اللَّهُ أَكْبَرُ وَلِلَّهِ الْحَمْدُ',
-      verseOrHadith:
-          '“Müminler ancak kardeştirler. Öyleyse kardeşlerinizin arasını düzeltin ve Allah’a karşı gelmekten sakının ki size merhamet edilsin.” (Hucurât, 49/10)',
-      summary:
-          'Oruç ve ibadetle geçen Ramazan\'ın ardından kavuştuğumuz Bayram; küskünlerin barıştığı, büyüklerin ve yetimlerin sevindirildiği gündür.',
+      verseOrHadith: '“Müminler ancak kardeştirler. Öyleyse kardeşlerinizin arasını düzeltin ve Allah’a karşı gelmekten sakının ki size merhamet edilsin.” (Hucurât, 49/10)',
+      summary: 'Oruç ve ibadetle geçen Ramazan\'ın ardından kavuştuğumuz Bayram; küskünlerin barıştığı, büyüklerin ve yetimlerin sevindirildiği gündür.',
       fullText:
           'Aziz Müminler! Bayramınız Mübarek Olsun!\n'
           'Bir ay boyunca tuttuğumuz oruçlarla, kıldığımız teravihlerle ve okuduğumuz hatimlerle arındıktan sonra bizleri bayram sabahının sevincine kavuşturan Rabbimize sonsuz hamd ü senalar olsun.\n\n'
@@ -488,10 +441,8 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       category: 'Mübarek Gün & Bayram',
       title: 'Bayram Hutbesi: Kurban Bayramı — Teslimiyet, Takva ve Paylaşma',
       arabicHeader: 'لَن يَنَالَ اللَّهَ لُحُومُهَا وَلَا دِمَاؤُهَا وَلَٰكِن يَنَالُهُ التَّقْوَىٰ مِنكُمْ',
-      verseOrHadith:
-          '“Onların (kurbanların) ne etleri ne de kanları Allah’a ulaşır; fakat O’na sadece sizin takvanız ulaşır.” (Hac, 22/37)',
-      summary:
-          'Kurban; Hz. İbrahim\'in sadakatini, Hz. İsmail\'in teslimiyetini kuşanmak ve kardeşlerimizle paylaşarak Allah\'a yaklaşmaktır.',
+      verseOrHadith: '“Onların (kurbanların) ne etleri ne de kanları Allah’a ulaşır; fakat O’na sadece sizin takvanız ulaşır.” (Hac, 22/37)',
+      summary: 'Kurban; Hz. İbrahim\'in sadakatini, Hz. İsmail\'in teslimiyetini kuşanmak ve kardeşlerimizle paylaşarak Allah\'a yaklaşmaktır.',
       fullText:
           'Muhterem Müslümanlar! Kurban Bayramınız Mübarek Olsun!\n'
           'Kurban, kelime anlamı itibarıyla Allah’a yakınlaşmak (kurbiyyet) demektir. Hz. İbrahim (a.s.) ve oğlu Hz. İsmail (a.s.)’ın ilahi emre gösterdikleri eşsiz teslimiyetin asırlardır süren nişanesidir.\n\n'
@@ -502,12 +453,11 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
     KhutbahItem(
       id: 'mubarek_kandiller_mevlid',
       category: 'Mübarek Gün & Bayram',
-      title: 'Özel Hutbe: Üç Aylar ve Kandil Geceleri — Manevi Yenilenme Mevsimi',
+      title:
+          'Özel Hutbe: Üç Aylar ve Kandil Geceleri — Manevi Yenilenme Mevsimi',
       arabicHeader: 'وَمَا أَرْسَلْنَاكَ إِلَّا رَحْمَةً لِّلْعَالَمِينَ',
-      verseOrHadith:
-          '“(Ey Muhammed!) Biz seni ancak âlemlere rahmet olarak gönderdik.” (Enbiyâ, 21/107) · “Allah’ım! Receb ve Şaban’ı bize mübarek kıl ve bizi Ramazan’a ulaştır.” (Ahmed b. Hanbel, Müsned, I, 259)',
-      summary:
-          'Regâib, Mi\'rac, Berat ve Mevlid geceleri; ömrümüzü muhasebe etmek ve gönül dünyamızı yenilemek için ilahi fırsatlardır.',
+      verseOrHadith: '“(Ey Muhammed!) Biz seni ancak âlemlere rahmet olarak gönderdik.” (Enbiyâ, 21/107) · “Allah’ım! Receb ve Şaban’ı bize mübarek kıl ve bizi Ramazan’a ulaştır.” (Ahmed b. Hanbel, Müsned, I, 259)',
+      summary: 'Regâib, Mi\'rac, Berat ve Mevlid geceleri; ömrümüzü muhasebe etmek ve gönül dünyamızı yenilemek için ilahi fırsatlardır.',
       fullText:
           'Aziz Müminler!\n'
           'Mübarek gün ve geceler, hızla akıp giden ömür sermayemizi gözden geçirdiğimiz, Rabbimize olan kulluk ahdimizi tazelediğimiz rahmet duraklarıdır. Regâib ile rağbetimizi Allah’a yöneltir, Mi’rac ile namaz hediyesine sarılır, Berat ile günahlardan beraat diler, Mevlid ile Rahmet Peygamberi’nin doğumunu salavatlarla idrak ederiz.\n\n'
@@ -521,10 +471,8 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       category: 'Vatan & Kardeşlik',
       title: 'Cuma Hutbesi: İslam Kardeşliği, Birlik ve Beraberlik Ruhu',
       arabicHeader: 'وَاعْتَصِمُوا بِحَبْلِ اللَّهِ جَمِيعًا وَلَا تَفَرَّقُوا',
-      verseOrHadith:
-          '“Hep birlikte Allah’ın ipine sımsıkı sarılın, parçalanıp bölünmeyin!” (Âl-i İmrân, 3/103) · “Mümin, mümin için parçaları birbirini kenetleyen bir bina gibidir.” (Buhârî, Salât, 88)',
-      summary:
-          'Müminleri birbirine bağlayan en güçlü bağ iman kardeşliğidir; tefrikadan uzak durup kenetlenmek izzetimizin şartıdır.',
+      verseOrHadith: '“Hep birlikte Allah’ın ipine sımsıkı sarılın, parçalanıp bölünmeyin!” (Âl-i İmrân, 3/103) · “Mümin, mümin için parçaları birbirini kenetleyen bir bina gibidir.” (Buhârî, Salât, 88)',
+      summary: 'Müminleri birbirine bağlayan en güçlü bağ iman kardeşliğidir; tefrikadan uzak durup kenetlenmek izzetimizin şartıdır.',
       fullText:
           'Muhterem Müslümanlar!\n'
           'Yüce Rabbimiz Âl-i İmrân Suresi’nde bizleri Allah’ın ipine (Kur’an ve İslam’a) hep birlikte sımsıkı sarılmaya ve ayrılığa düşmemeye çağırmaktadır. Çünkü rahmet cemaatte ve birlikte, azap ise ayrılık ve tefrikadadır.\n\n'
@@ -537,10 +485,8 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       category: 'Vatan & Kardeşlik',
       title: 'Cuma Hutbesi: Vatan Sevgisi, Şehitlik ve Gazilik Ruhu',
       arabicHeader: 'وَلَا تَقُولُوا لِمَن يُقْتَلُ فِي سَبِيلِ اللَّهِ أَمْوَاتٌ ۚ بَلْ أَحْيَاءٌ وَلَٰكِن لَّا تَشْعُرُونَ',
-      verseOrHadith:
-          '“Allah yolunda öldürülenlere ‘ölüler’ demeyin. Bilakis onlar diridirler, lâkin siz anlayamazsınız.” (Bakara, 2/154)',
-      summary:
-          'Minarelerinden ezanların yükseldiği hür vatanımız, aziz şehitlerimizin ve gazilerimizin bizlere en mukaddes emanetidir.',
+      verseOrHadith: '“Allah yolunda öldürülenlere ‘ölüler’ demeyin. Bilakis onlar diridirler, lâkin siz anlayamazsınız.” (Bakara, 2/154)',
+      summary: 'Minarelerinden ezanların yükseldiği hür vatanımız, aziz şehitlerimizin ve gazilerimizin bizlere en mukaddes emanetidir.',
       fullText:
           'Aziz Müminler!\n'
           'İbadetlerimizi hür ve güven içinde eda edebilmemiz, minarelerimizden ezan-ı Muhammedilerin yankılanması, mukaddes vatan toprağının varlığı sayesindedir. Vatanı korumak, imanı, namusu ve istiklali korumaktır.\n\n'
@@ -553,10 +499,8 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       category: 'Vatan & Kardeşlik',
       title: 'Cuma Hutbesi: Çevre Ahlakı, Tabiatı Korumak ve Merhamet',
       arabicHeader: 'وَلَا تُفْسِدُوا فِي الْأَرْضِ بَعْدَ إِصْلَاحِهَا',
-      verseOrHadith:
-          '“Kıyametin kopacağını bilseniz bile elinizdeki fidanı dikiniz!” (Ahmed b. Hanbel, Müsned, III, 184)',
-      summary:
-          'Yeryüzü, ormanlar, sular ve tüm canlılar insanlığa emanettir; doğayı korumak ve ağaç dikmek sadaka-i cariyedir.',
+      verseOrHadith: '“Kıyametin kopacağını bilseniz bile elinizdeki fidanı dikiniz!” (Ahmed b. Hanbel, Müsned, III, 184)',
+      summary: 'Yeryüzü, ormanlar, sular ve tüm canlılar insanlığa emanettir; doğayı korumak ve ağaç dikmek sadaka-i cariyedir.',
       fullText:
           'Muhterem Müslümanlar!\n'
           'Yüce Allah kâinatı kusursuz bir ölçü ve denge (mîzân) ile yaratmıştır. Peygamber Efendimiz (s.a.v.), bir Müslümanın diktiği ağaçtan veya ektiği ekinden insan, kuş veya hayvan yediğinde bunun kendisi için sadaka olacağını müjdelemiştir.\n\n'
@@ -570,11 +514,10 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       id: 'cuma_sunnetleri_rehber',
       category: 'Cuma Mesajları & Sünnetleri',
       title: 'Cuma Rehberi: Cuma Gününün Sünnetleri ve Âdâbı',
-      arabicHeader: 'خَيْرُ يَوْمٍ طَلَعَتْ عَلَيْهِ الشَّمْسُ يَوْمُ الْجُمُعَةِ',
-      verseOrHadith:
-          '“Kim Cuma günü yıkanır (gusleder), erkenden camiye gider, imama yakın oturup hutbeyi sessizce dinlerse attığı her adıma bir yıllık nafile oruç ve namaz sevabı yazılır.” (Ebû Dâvûd, Tahâret, 127)',
-      summary:
-          'Cuma guslü almak, güzel koku sürünmek, Kehf Suresi okumak ve bol salavat getirmek Cuma gününün başlıca sünnetleridir.',
+      arabicHeader:
+          'خَيْرُ يَوْمٍ طَلَعَتْ عَلَيْهِ الشَّمْسُ يَوْمُ الْجُمُعَةِ',
+      verseOrHadith: '“Kim Cuma günü yıkanır (gusleder), erkenden camiye gider, imama yakın oturup hutbeyi sessizce dinlerse attığı her adıma bir yıllık nafile oruç ve namaz sevabı yazılır.” (Ebû Dâvûd, Tahâret, 127)',
+      summary: 'Cuma guslü almak, güzel koku sürünmek, Kehf Suresi okumak ve bol salavat getirmek Cuma gününün başlıca sünnetleridir.',
       fullText:
           'Cuma Gününün Başlıca Sünnetleri ve Âdâbı:\n'
           '1. Cuma Guslü ve Temizlik: Cuma namazı için boy abdesti (gusül) almak, tırnak kesmek ve temiz kıyafetler giymek.\n'
@@ -582,17 +525,16 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
           '3. Camiye Erken Gitmek: Ezan okunmadan önce camide hazır bulunmak, safları omuz üzerinden atlamadan doldurmak.\n'
           '4. Hutbeyi Dinlemek: İmam minbere çıktığında konuşmayı bırakıp hutbeyi huşû içinde dinlemek.\n'
           '5. Kehf Suresi ve Salavat: Perşembe akşamından Cuma ikindi vaktine kadar Kehf Suresi okumak ve Peygamber Efendimiz’e (s.a.v.) çokça salât ü selâm getirmek.',
-      source: 'Buhârî, Cum\'a, 6 · Müslim, Cum\'a, 27 · Ebû Dâvûd, Tahâret, 127',
+      source:
+          'Buhârî, Cum\'a, 6 · Müslim, Cum\'a, 27 · Ebû Dâvûd, Tahâret, 127',
     ),
     KhutbahItem(
       id: 'cuma_mesaj_rahmet',
       category: 'Cuma Mesajları & Sünnetleri',
       title: 'Cuma Tebrik Mesajı: Rahmet, Mağfiret ve Dua Günü',
       arabicHeader: 'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ',
-      verseOrHadith:
-          '“Rabbimiz! Bize dünyada da iyilik ver, ahirette de iyilik ver ve bizi ateş azabından koru!” (Bakara, 2/201)',
-      summary:
-          'Gönüllerimiz duada birleşsin, kalplerimiz Kur\'an ve sünnet nuruyla dolsun. Rabbimiz dualarımızı ve ibadetlerimizi kabul eylesin. Hayırlı Cumalar.',
+      verseOrHadith: '“Rabbimiz! Bize dünyada da iyilik ver, ahirette de iyilik ver ve bizi ateş azabından koru!” (Bakara, 2/201)',
+      summary: 'Gönüllerimiz duada birleşsin, kalplerimiz Kur\'an ve sünnet nuruyla dolsun. Rabbimiz dualarımızı ve ibadetlerimizi kabul eylesin. Hayırlı Cumalar.',
       fullText:
           'Hayırlı ve Bereketli Cumalar!\n'
           '“Rabbimiz! Bize dünyada da iyilik ve güzellik ver, ahirette de iyilik ve güzellik ver; bizi cehennem azabından koru!” (Bakara, 2/201)\n\n'
@@ -604,10 +546,8 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       category: 'Cuma Mesajları & Sünnetleri',
       title: 'Cuma Tebrik Mesajı: Salavat-ı Şerife ve İcâbet Saati',
       arabicHeader: 'إِنَّ اللَّهَ وَمَلَائِكَتَهُ يُصَلُّونَ عَلَى النَّبِيِّ ۚ يَا أَيُّهَا الَّذِينَ آمَنُوا صَلُّوا عَلَيْهِ وَسَلِّمُوا تَسْلِيمًا',
-      verseOrHadith:
-          '“Kim bana bir defa salât getirirse, Allah da ona on kat rahmet eder.” (Müslim, Salât, 70)',
-      summary:
-          'Salavatlarla nurlanan, duaların kabul olduğu icâbet saatine tevafuk eden mübarek bir Cuma dileriz.',
+      verseOrHadith: '“Kim bana bir defa salât getirirse, Allah da ona on kat rahmet eder.” (Müslim, Salât, 70)',
+      summary: 'Salavatlarla nurlanan, duaların kabul olduğu icâbet saatine tevafuk eden mübarek bir Cuma dileriz.',
       fullText:
           'Allâhümme salli alâ seyyidinâ Muhammedin ve alâ âli seyyidinâ Muhammed.\n\n'
           '“Şüphesiz Allah ve melekleri Peygamber’e salât ederler. Ey iman edenler! Siz de O’na salât edin ve tam bir teslimiyetle selam verin.” (Ahzâb, 33/56)\n\n'
@@ -618,11 +558,10 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       id: 'cuma_mesaj_insirah',
       category: 'Cuma Mesajları & Sünnetleri',
       title: 'Cuma Tebrik Mesajı: İnşirah ve Kolaylık Duası',
-      arabicHeader: 'فَإِنَّ مَعَ الْعُسْرِ يُسْرًا ۝ إِنَّ مَعَ الْعُسْرِ يُسْرًا',
-      verseOrHadith:
-          '“Şüphesiz her güçlükle beraber bir kolaylık vardır. Gerçekten her güçlükle beraber bir kolaylık vardır.” (İnşirâh, 94/5–6)',
-      summary:
-          'Rabbimiz gönlünüze İnşirah ferahlığı versin, her zorluğunuzu kolaylığa tebdil eylesin. Cumanız mübarek olsun.',
+      arabicHeader:
+          'فَإِنَّ مَعَ الْعُسْرِ يُسْرًا ۝ إِنَّ مَعَ الْعُسْرِ يُسْرًا',
+      verseOrHadith: '“Şüphesiz her güçlükle beraber bir kolaylık vardır. Gerçekten her güçlükle beraber bir kolaylık vardır.” (İnşirâh, 94/5–6)',
+      summary: 'Rabbimiz gönlünüze İnşirah ferahlığı versin, her zorluğunuzu kolaylığa tebdil eylesin. Cumanız mübarek olsun.',
       fullText:
           'Bismillâhirrahmânirrahîm.\n'
           '“Muhakkak ki her zorlukla beraber bir kolaylık vardır.” (İnşirâh, 94/5–6)\n\n'
@@ -634,10 +573,8 @@ class KazaTrackerScreen extends ConsumerStatefulWidget {
       category: 'Cuma Mesajları & Sünnetleri',
       title: 'Cuma Hutbe Duası ve İmamların Minberde Okuduğu Ayet',
       arabicHeader: 'إِنَّ اللَّهَ يَأْمُرُ بِالْعَدْلِ وَالْإِحْسَانِ وَإِيتَاءِ ذِي الْقُرْبَىٰ وَيَنْهَىٰ عَنِ الْفَحْشَاءِ وَالْمُنكَرِ وَالْبَغْيِ ۚ يَعِظُكُمْ لَعَلَّكُمْ تَذَكَّرُونَ',
-      verseOrHadith:
-          '“Şüphesiz Allah; adaleti, iyiliği (ihsanı), akrabaya yardım etmeyi emreder; çirkin işleri (fahşâyı), kötülüğü (münkeri) ve azgınlığı (bağyi) da yasaklar. O, düşünüp tutasınız diye size öğüt verir.” (Nahl, 16/90)',
-      summary:
-          'Her Cuma hutbesinin sonunda minberden okunan Nahl Suresi 90. ayet-i kerîmesi, İslam ahlakının veciz özetidir.',
+      verseOrHadith: '“Şüphesiz Allah; adaleti, iyiliği (ihsanı), akrabaya yardım etmeyi emreder; çirkin işleri (fahşâyı), kötülüğü (münkeri) ve azgınlığı (bağyi) da yasaklar. O, düşünüp tutasınız diye size öğüt verir.” (Nahl, 16/90)',
+      summary: 'Her Cuma hutbesinin sonunda minberden okunan Nahl Suresi 90. ayet-i kerîmesi, İslam ahlakının veciz özetidir.',
       fullText:
           'Minberden Her Cuma Yükselen İlahi Öğüt (Nahl Suresi, 90. Ayet):\n'
           '“Şüphesiz Allah; adaleti, iyiliği, akrabaya yardım etmeyi emreder; çirkin işleri, fenalık ve azgınlığı da yasaklar. O, düşünüp tutasınız diye size öğüt verir.”\n\n'
@@ -745,18 +682,21 @@ class _KazaTrackerScreenState extends ConsumerState<KazaTrackerScreen>
 
   List<KhutbahItem> _filteredKhutbahs() {
     final String q = _searchQuery.trim().toLowerCase();
-    return KazaTrackerScreen.khutbahCatalog.where((KhutbahItem item) {
-      if (_selectedCategory != 'Tümü' && item.category != _selectedCategory) {
-        return false;
-      }
-      if (q.isEmpty) return true;
-      return item.title.toLowerCase().contains(q) ||
-          item.category.toLowerCase().contains(q) ||
-          item.summary.toLowerCase().contains(q) ||
-          item.verseOrHadith.toLowerCase().contains(q) ||
-          item.fullText.toLowerCase().contains(q) ||
-          item.source.toLowerCase().contains(q);
-    }).toList(growable: false);
+    return KazaTrackerScreen.khutbahCatalog
+        .where((KhutbahItem item) {
+          if (_selectedCategory != 'Tümü' &&
+              item.category != _selectedCategory) {
+            return false;
+          }
+          if (q.isEmpty) return true;
+          return item.title.toLowerCase().contains(q) ||
+              item.category.toLowerCase().contains(q) ||
+              item.summary.toLowerCase().contains(q) ||
+              item.verseOrHadith.toLowerCase().contains(q) ||
+              item.fullText.toLowerCase().contains(q) ||
+              item.source.toLowerCase().contains(q);
+        })
+        .toList(growable: false);
   }
 
   KhutbahItem _featuredWeeklyKhutbah() {
@@ -985,7 +925,8 @@ class _KazaTrackerScreenState extends ConsumerState<KazaTrackerScreen>
                   setState(() => _searchQuery = value);
                 },
                 decoration: InputDecoration(
-                  hintText: 'Hutbe konusu, ayet, hadis veya anahtar kelime ara…',
+                  hintText:
+                      'Hutbe konusu, ayet, hadis veya anahtar kelime ara…',
                   prefixIcon: const Icon(Icons.search_rounded),
                   suffixIcon: _searchQuery.isEmpty
                       ? null
@@ -1179,9 +1120,7 @@ class _KhutbahCard extends StatelessWidget {
                         : Icons.expand_more_rounded,
                     size: 18,
                   ),
-                  label: Text(
-                    expanded ? 'Özeti Göster' : 'Tam Hutbeyi Oku',
-                  ),
+                  label: Text(expanded ? 'Özeti Göster' : 'Tam Hutbeyi Oku'),
                 ),
                 OutlinedButton.icon(
                   onPressed: () async {

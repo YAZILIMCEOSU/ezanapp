@@ -1407,8 +1407,7 @@ class _QiblaNeedlePainter extends CustomPainter {
         ..strokeCap = StrokeCap.round
         ..color = const Color(0xFF2E7D32).withValues(alpha: 0.32);
       for (double r = 22.0; r < 92.0; r += 10.0) {
-        final Offset p1 =
-            center + Offset(math.cos(rad) * r, math.sin(rad) * r);
+        final Offset p1 = center + Offset(math.cos(rad) * r, math.sin(rad) * r);
         final Offset p2 =
             center +
             Offset(
