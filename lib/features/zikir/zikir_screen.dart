@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -318,8 +320,18 @@ class ZikirScreen extends ConsumerWidget {
         AppLog.debug('Tık sesi çalınamadı: $error');
       }
     }
+    final ZikirCounterState before = ref.read(zikirCounterProvider);
     await ref.read(zikirCounterProvider.notifier).increment();
     ref.invalidate(zikirDailySummaryProvider);
+    final ZikirCounterState after = ref.read(zikirCounterProvider);
+    // Ücretsiz pakette: günlük hedef **ilk kez** tamamlandığında kullanıcıyı
+    // iş akışının ortasında bölmeyen doğal bir duraklamada tek bir geçiş
+    // reklamı gösterilir (en fazla 3 dakikada bir; premium'da hiç gösterilmez).
+    if (!before.reached && after.reached) {
+      unawaited(
+        ref.read(runtimeProvider).ads.showInterstitial(placement: 'tesbih_hedef'),
+      );
+    }
   }
 
   Future<void> _confirmReset(BuildContext context, WidgetRef ref) async {

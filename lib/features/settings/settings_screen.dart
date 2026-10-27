@@ -251,6 +251,16 @@ class SettingsScreen extends ConsumerWidget {
             trailing: const Icon(Icons.chevron_right_rounded),
             onTap: () => context.push(AppRoutes.premium),
           ),
+          if (ref.read(runtimeProvider).ads.privacyOptionsRequired)
+            ListTile(
+              leading: const Icon(Icons.privacy_tip_outlined),
+              title: const Text('Reklam gizlilik ayarları'),
+              subtitle: const Text(
+                'Kişiselleştirilmiş reklam tercihlerinizi değiştirin (GDPR/DMA)',
+              ),
+              trailing: const Icon(Icons.chevron_right_rounded),
+              onTap: () => ref.read(runtimeProvider).ads.showPrivacyOptions(),
+            ),
           ListTile(
             leading: const Icon(Icons.info_outline_rounded),
             title: const Text('Hakkında'),

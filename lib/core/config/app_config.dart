@@ -44,6 +44,21 @@ abstract final class AppConfig {
     defaultValue: '',
   );
 
+  /// Reklamların genel anahtarı. Ücretsiz (reklamlı) paket için `true`;
+  /// reklamsız özel dağıtım için `--dart-define=ADS_ENABLED=false`.
+  static const bool adsEnabled = bool.fromEnvironment(
+    'ADS_ENABLED',
+    defaultValue: true,
+  );
+
+  /// Test reklam modu: birim kimliği verilmese bile Google'ın **resmî test
+  /// reklam kimlikleriyle** reklam gösterilir (geliştirme/QA).
+  /// Yayın derlemesinde **asla** açık bırakılmaz.
+  static const bool admobTestMode = bool.fromEnvironment(
+    'ADMOB_TEST_MODE',
+    defaultValue: false,
+  );
+
   /// AdMob birim kimlikleri — boşsa reklamlar tamamen devre dışı kalır.
   static const String admobBannerId = String.fromEnvironment(
     'ADMOB_BANNER_ID',
@@ -77,7 +92,9 @@ abstract final class AppConfig {
       supabaseUrl.isNotEmpty && supabaseAnonKey.isNotEmpty;
   static bool get hasIlahiCatalog => ilahiCatalogUrl.isNotEmpty;
   static bool get adsConfigured =>
-      admobBannerId.isNotEmpty || admobInterstitialId.isNotEmpty;
+      admobTestMode ||
+      admobBannerId.isNotEmpty ||
+      admobInterstitialId.isNotEmpty;
 
   static Uri? endpoint(String path, [Map<String, String>? query]) {
     if (!hasBackend) return null;

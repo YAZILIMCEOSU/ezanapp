@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import '../constants/app_constants.dart';
+import 'wmm.dart';
 
 /// Coğrafi hesaplamalar: kıble yönü, mesafe, açı normalizasyonu.
 abstract final class GeoUtils {
@@ -77,39 +78,29 @@ abstract final class GeoUtils {
   /// Türkiye için yaz saati uygulaması: 2016'dan beri kalıcı UTC+3.
   static double turkeyTimeZoneOffset(DateTime date) => 3.0;
 
-  /// Verilen koordinat için yaklaşık manyetik sapma açısı (declination, derece).
+  /// Verilen koordinat için manyetik sapma açısı (declination, derece).
   ///
   /// Doğu sapması pozitif (+), batı sapması negatiftir (-).
   /// Sensörün ölçtüğü manyetik kuzey (`magneticHeading`), gerçek coğrafi kuzeye
   /// (`trueHeading = normalizeDegrees(magneticHeading + declination)`) çevrilir;
   /// böylece gerçek kuzeye göre hesaplanan [qiblaBearing] ile aynı referans
   /// düzleminde karşılaştırılır.
-  static double magneticDeclination(double latitude, double longitude) {
+  ///
+  /// Hesap artık **WMM-2025** küresel harmonik modeli ile yapılır; dünyanın her
+  /// noktasında `0.05°`'nin altında hata verir (bkz. [Wmm2025]). Android
+  /// cihazlarda önce donanım `GeomagneticField` değeri denenir; bu metot onun
+  /// yedeği ve test referansıdır.
+  static double magneticDeclination(
+    double latitude,
+    double longitude, {
+    DateTime? date,
+  }) {
     if (!latitude.isFinite || !longitude.isFinite) return 0.0;
-    // WMM-2025/2026 kuzey manyetik kutbu (Doğu yarımküre/Sibirya geçişi ~86.0°K, 158.0°D)
-    // + Avrasya/Anadolu/Orta Doğu bölgesel harmonik düzeltmesi.
-    // Türkiye (36-42°K, 26-45°D) için +5.5° .. +7.0° aralığında gerçek WMM değerlerini verir.
-    const double poleLat = 86.0 * _deg2rad;
-    const double poleLon = 158.0 * _deg2rad;
-    final double lat = latitude.clamp(-85.0, 85.0) * _deg2rad;
-    final double lon = longitude * _deg2rad;
-
-    final double dLon = poleLon - lon;
-    final double y = math.sin(dLon) * math.cos(poleLat);
-    final double x =
-        math.cos(lat) * math.sin(poleLat) -
-        math.sin(lat) * math.cos(poleLat) * math.cos(dLon);
-    final double dipoleDeclination = math.atan2(y, x) * _rad2deg;
-
-    // Doğu Akdeniz / Anadolu / Arap Yarımadası bölgesel WMM-2025 düzeltmesi:
-    final double regionalEastAnomaly =
-        1.92 *
-        math.exp(
-          -(math.pow((latitude - 39.0) / 26.0, 2) +
-              math.pow((longitude - 36.0) / 32.0, 2)),
-        );
-    return (dipoleDeclination + regionalEastAnomaly).clamp(-35.0, 35.0);
+    return Wmm2025.declination(latitude, longitude, date: date);
   }
+
+  /// Sapmanın hangi kaynaktan geldiğini açıklayan etiket (arayüz/telemetri).
+  static String declinationModelLabel() => Wmm2025.modelId;
 
   /// Dijital Kıble Pusulası açısı (derece, 0-360°).
   ///

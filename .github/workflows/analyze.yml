@@ -94,7 +94,8 @@ jobs:
               -dname "CN=EzanAI CI, OU=QA, O=Yazilimceosu, L=Istanbul, C=TR"
             printf 'storePassword=ezanai-ci\nkeyPassword=ezanai-ci\nkeyAlias=ezanai-ci\nstoreFile=%s\n' \
               "$RUNNER_TEMP/ci-release.jks" > android/key.properties
-            flutter build apk --release --no-pub --obfuscate --split-debug-info=build/symbols
+            flutter build apk --release --no-pub --obfuscate --split-debug-info=build/symbols \
+              --dart-define=ADMOB_TEST_MODE=true
             cp build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/ezanai-kurulum.apk
             cp build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/app-debug.apk
           } 2>&1 | tail -60 | tee /tmp/build.log

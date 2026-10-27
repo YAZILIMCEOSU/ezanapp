@@ -426,7 +426,10 @@ class MainActivity : FlutterActivity(), SensorEventListener {
             normalizeDegrees(Math.toDegrees(kotlin.math.atan2(eastLvl, northLvl)))
         }
         val rawTiltDeg = Math.toDegrees(kotlin.math.asin((-ay).coerceIn(-1.0, 1.0)))
-        val tiltDeg = if (az >= 0.0) rawTiltDeg * 0.62 else 60.0
+        // Dik tutuş (telefonu kaldırıp Kâbe'ye nişan alma) modunda "eğik tutuyorsunuz"
+        // uyarısı verilmez: bu mod pusula için geçerli ve desteklenen bir kullanımdır.
+        // Yalnızca yatay kadran modunda eğim/yatma uyarısı üretilir.
+        val tiltDeg = if (yHorizMag < 0.14) 0.0 else rawTiltDeg * 0.62
         val rollDeg = Math.toDegrees(kotlin.math.asin(ax.coerceIn(-1.0, 1.0))) * 0.75
         if (!rawAzimuth.isFinite() || !tiltDeg.isFinite() || !rollDeg.isFinite()) return null
         return Triple(rawAzimuth, tiltDeg, rollDeg)

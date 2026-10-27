@@ -5,42 +5,102 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../config/app_config.dart';
 import '../utils/logger.dart';
+import '../ads/ad_unit_ids.dart';
+import '../ads/ads_consent.dart';
 
-/// Reklam yerleşimleri.
+/// Reklam yerleşimleri (ücretsiz / reklamlı paket).
 ///
-/// **İlke:** Reklam birim kimlikleri derleme zamanında verilmezse reklamlar
-/// tamamen kapanır ve arayüzde hiçbir boş/bozuk alan görünmez. Premium
-/// kullanıcılar için de reklam yüklenmez.
+/// **İlkeler**
+/// * Premium kullanıcıda **hiç reklam yüklenmez** ([setPremium]).
+/// * Birim kimlikleri tanımlı değilse reklamlar tamamen kapanır; arayüzde
+///   boş/bozuk alan görünmez.
+/// * Test modunda Google'ın **resmî test kimlikleri** kullanılır; yayında
+///   asla test kimliği ile yayın yapılmaz ([AppConfig.admobTestMode]).
+/// * Açılışta UMP onay akışı tamamlanmadan reklam istenmez
+///   ([AdsConsent]); AB/AEA kullanıcıları için yasal zorunluluktur.
+/// * Geçiş (interstitial) reklamları **en fazla 3 dakikada bir** ve yalnızca
+///   doğal duraklamalarda (ör. tesbih hedefi tamamlandığında) gösterilir.
 class AdsService {
-  AdsService();
+  AdsService({AdsConsent? consent}) : _consent = consent ?? AdsConsent();
+
+  final AdsConsent _consent;
 
   bool _initialized = false;
   bool _enabled = false;
   bool _premium = false;
+  DateTime? _lastInterstitialAt;
   Object? lastError;
 
+  /// Geçiş reklamları arasındaki en kısa süre (kullanıcı deneyimi koruması).
+  static const Duration interstitialCooldown = Duration(minutes: 3);
+
+  AdsConsent get consent => _consent;
+
+  /// Google test birimleri kullanılıyor mu?
+  bool get isTestMode => AppConfig.admobTestMode || kDebugMode;
+
+  String? get bannerId => _id(AppConfig.admobBannerId, AdUnitIds.testBanner);
+  String? get interstitialId =>
+      _id(AppConfig.admobInterstitialId, AdUnitIds.testInterstitial);
+  String? get rewardedId =>
+      _id(AppConfig.admobRewardedId, AdUnitIds.testRewarded);
+
+  String? _id(String configured, String testId) {
+    if (configured.isNotEmpty) return configured;
+    if (isTestMode) return testId;
+    return null;
+  }
+
   bool get isEnabled => _enabled && !_premium;
-  bool get bannerAvailable => isEnabled && AppConfig.admobBannerId.isNotEmpty;
+  bool get bannerAvailable => isEnabled && (bannerId?.isNotEmpty ?? false);
   bool get interstitialAvailable =>
-      isEnabled && AppConfig.admobInterstitialId.isNotEmpty;
-  bool get rewardedAvailable =>
-      isEnabled && AppConfig.admobRewardedId.isNotEmpty;
+      isEnabled && (interstitialId?.isNotEmpty ?? false);
+  bool get rewardedAvailable => isEnabled && (rewardedId?.isNotEmpty ?? false);
 
   InterstitialAd? _interstitial;
   RewardedAd? _rewarded;
 
+  /// Reklam altyapısını hazırlar.
+  ///
+  /// Sıra: premium kontrolü → onay (UMP) → MobileAds başlatma. Herhangi bir
+  /// adım başarısız olursa reklamlar kapalı kalır, uygulama çalışmaya devam
+  /// eder.
   Future<void> initialize({required bool premium}) async {
     _premium = premium;
-    _enabled = AppConfig.adsConfigured;
-    if (!_enabled) {
+    if (premium) {
+      _enabled = false;
+      return;
+    }
+    if (!AppConfig.adsEnabled) {
+      _enabled = false;
+      AppLog.info('Reklamlar derleme zamanında kapatıldı (ADS_ENABLED=false).');
+      return;
+    }
+    if (!isTestMode && AppConfig.admobBannerId.isEmpty && AppConfig.admobInterstitialId.isEmpty) {
+      _enabled = false;
       AppLog.info('AdMob kimlikleri tanımlı değil — reklamlar kapalı.');
+      return;
+    }
+    if (!_supportedPlatform) {
+      _enabled = false;
       return;
     }
     if (_initialized) return;
     try {
+      final bool consented = await _consent.ensureConsent();
+      if (!consented) {
+        _enabled = false;
+        AppLog.info('Reklam onayı alınamadı — bu oturumda reklam yok.');
+        return;
+      }
       await MobileAds.instance.initialize();
       _initialized = true;
-      AppLog.info('AdMob başlatıldı.');
+      _enabled = true;
+      AppLog.info(
+        'AdMob başlatıldı${isTestMode ? ' (TEST reklam kimlikleri)' : ''}.',
+      );
+      unawaited(preloadInterstitial());
+      unawaited(preloadRewarded());
     } catch (error) {
       lastError = error;
       _enabled = false;
@@ -54,6 +114,16 @@ class AdsService {
     if (premium) dispose();
   }
 
+  /// Ayarlar ekranındaki "Reklam gizlilik ayarları" girişi gerekli mi?
+  bool get privacyOptionsRequired => _consent.privacyOptionsRequired;
+
+  Future<void> showPrivacyOptions() => _consent.showPrivacyOptions();
+
+  static bool get _supportedPlatform =>
+      !kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.android ||
+          defaultTargetPlatform == TargetPlatform.iOS);
+
   // ------------------------------------------------------------ Banner
 
   /// Banner reklamı oluşturur; kimlik yoksa null döner (arayüz boşluk bırakmaz).
@@ -62,10 +132,11 @@ class AdsService {
     VoidCallback? onLoaded,
     VoidCallback? onFailed,
   }) {
-    if (!bannerAvailable) return null;
+    final String? unitId = bannerId;
+    if (!bannerAvailable || unitId == null) return null;
     return BannerAd(
       size: size,
-      adUnitId: AppConfig.admobBannerId,
+      adUnitId: unitId,
       request: const AdRequest(),
       listener: BannerAdListener(
         onAdLoaded: (Ad ad) {
@@ -86,9 +157,11 @@ class AdsService {
 
   /// Geçiş reklamını önceden yükler (kullanıcıyı bekletmemek için).
   Future<void> preloadInterstitial() async {
-    if (!interstitialAvailable || _interstitial != null) return;
+    final String? unitId = interstitialId;
+    if (!interstitialAvailable || unitId == null || !_initialized) return;
+    if (_interstitial != null) return;
     await InterstitialAd.load(
-      adUnitId: AppConfig.admobInterstitialId,
+      adUnitId: unitId,
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (InterstitialAd ad) => _interstitial = ad,
@@ -102,14 +175,23 @@ class AdsService {
   }
 
   /// Yüklenmiş geçiş reklamını gösterir; yoksa sessizce yenisini yükler.
+  ///
+  /// 3 dakikalık bekleme süresi dolmadıysa reklam gösterilmez (`false`).
   Future<bool> showInterstitial({String? placement}) async {
-    if (!interstitialAvailable) return false;
+    final String? unitId = interstitialId;
+    if (!interstitialAvailable || unitId == null || !_initialized) return false;
+    final DateTime now = DateTime.now();
+    final DateTime? last = _lastInterstitialAt;
+    if (last != null && now.difference(last) < interstitialCooldown) {
+      return false;
+    }
     final InterstitialAd? ad = _interstitial;
     if (ad == null) {
       unawaited(preloadInterstitial());
       return false;
     }
     _interstitial = null;
+    _lastInterstitialAt = now;
     ad.fullScreenContentCallback = FullScreenContentCallback(
       onAdDismissedFullScreenContent: (InterstitialAd ad) {
         ad.dispose();
@@ -131,9 +213,11 @@ class AdsService {
   // -------------------------------------------------------- Ödüllü reklam
 
   Future<void> preloadRewarded() async {
-    if (!rewardedAvailable || _rewarded != null) return;
+    final String? unitId = rewardedId;
+    if (!rewardedAvailable || unitId == null || !_initialized) return;
+    if (_rewarded != null) return;
     await RewardedAd.load(
-      adUnitId: AppConfig.admobRewardedId,
+      adUnitId: unitId,
       request: const AdRequest(),
       rewardedAdLoadCallback: RewardedAdLoadCallback(
         onAdLoaded: (RewardedAd ad) => _rewarded = ad,
@@ -152,7 +236,8 @@ class AdsService {
     required void Function(int amount) onReward,
     VoidCallback? onDismissed,
   }) async {
-    if (!rewardedAvailable) return false;
+    final String? unitId = rewardedId;
+    if (!rewardedAvailable || unitId == null || !_initialized) return false;
     final RewardedAd? ad = _rewarded;
     if (ad == null) {
       unawaited(preloadRewarded());

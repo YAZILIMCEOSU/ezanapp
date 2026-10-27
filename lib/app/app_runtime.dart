@@ -155,7 +155,6 @@ class AppRuntime {
   }
 
   Future<void> _warmUp() async {
-    ads.setPremium(false);
     await Future.wait(<Future<void>>[
       _safely(
         'bağlantı izleme',
@@ -166,7 +165,14 @@ class AppRuntime {
         }),
       ),
       _safely('bildirimler', () => notifications.initialize()),
-      _safely('faturalandırma', () => billing.initialize()),
+      _safely('faturalandırma', () async {
+        await billing.initialize();
+        // Reklamlar yalnızca **ücretsiz** kullanıcıda ve onay (UMP) alındıktan
+        // sonra başlatılır; premium kullanıcı hiç reklam görmez.
+        final bool premium = billing.status.isPremium;
+        ads.setPremium(premium);
+        if (!premium) await ads.initialize(premium: false);
+      }),
       _safely('bildirim köprüsü', push.initialize),
     ]);
   }

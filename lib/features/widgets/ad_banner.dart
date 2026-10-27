@@ -26,6 +26,7 @@ class AdBanner extends ConsumerStatefulWidget {
 class _AdBannerState extends ConsumerState<AdBanner> {
   BannerAd? _ad;
   bool _loaded = false;
+  int _attempts = 0;
 
   @override
   void initState() {
@@ -36,7 +37,16 @@ class _AdBannerState extends ConsumerState<AdBanner> {
   void _load() {
     if (!mounted) return;
     final AdsService ads = ref.read(runtimeProvider).ads;
-    if (!ads.bannerAvailable) return;
+    // Reklam altyapısı (onay akışı + MobileAds) açılıştan hemen sonra
+    // hazırlanır; ilk denemede hazır değilse kısa aralıklarla yeniden denenir.
+    if (!ads.bannerAvailable) {
+      if (_attempts >= 3) return;
+      _attempts++;
+      Future<void>.delayed(Duration(seconds: 2 * _attempts), () {
+        if (mounted) _load();
+      });
+      return;
+    }
     final BannerAd? ad = ads.createBanner(
       onLoaded: () {
         if (mounted) setState(() => _loaded = true);

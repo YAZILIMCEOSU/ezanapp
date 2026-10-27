@@ -12,6 +12,7 @@ import '../../core/constants/app_constants.dart';
 import '../../core/services/compass_service.dart';
 import '../../core/utils/geo.dart';
 import '../../core/utils/logger.dart';
+import '../../core/utils/qibla_math.dart';
 import '../../data/models/app_settings.dart';
 import '../../data/models/city.dart';
 import '../../data/models/prayer.dart';
@@ -35,6 +36,9 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
   CompassService? _compassService;
   CompassReading? _reading;
   double? _hardwareDeclination;
+  double _fallbackDeclination = 0;
+  String _declinationKey = '';
+  bool _declinationFromHardware = false;
   bool _wasAligned = false;
   bool _supported = true;
   bool _showMapTab = false;
@@ -70,13 +74,8 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
       location.latitude,
       location.longitude,
     );
-    final double declination = await service.getGeomagneticDeclination(
-      location.latitude,
-      location.longitude,
-    );
-    if (mounted) {
-      setState(() => _hardwareDeclination = declination);
-    }
+    // Sapma açısı konuma göre otomatik çözülür (WMM-2025 + donanım modeli).
+    final double declination = _declinationFor(location);
 
     final bool supported = await service.checkSupport();
     if (!mounted) return;
@@ -93,12 +92,7 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
           currentLocation.latitude,
           currentLocation.longitude,
         );
-        final double currentDeclination =
-            _hardwareDeclination ??
-            GeoUtils.magneticDeclination(
-              currentLocation.latitude,
-              currentLocation.longitude,
-            );
+        final double currentDeclination = _declinationFor(currentLocation);
         final CompassReading? updated = reading?.withQibla(
           currentTrueQibla,
           declination: currentDeclination,
@@ -123,6 +117,46 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
     service.start(qiblaDirection: trueQibla, declination: declination);
   }
 
+  /// Konuma göre manyetik sapma (declination, derece; Doğu +).
+  ///
+  /// * Konum değiştiğinde (GPS güncellemesi, şehir değişikliği) değer
+  ///   **otomatik yenilenir**; eski şehrin sapma açısı asla kullanılmaz.
+  /// * İlk değer WMM-2025 modelinden **senkron** hesaplanır (anında doğru),
+  ///   ardından Android `GeomagneticField` (cihazın kendi WMM hesabı) varsa
+  ///   daha kesin değerle değiştirilir.
+  double _declinationFor(UserLocation location) {
+    final String key =
+        '${location.latitude.toStringAsFixed(2)},'
+        '${location.longitude.toStringAsFixed(2)}';
+    if (key != _declinationKey) {
+      _declinationKey = key;
+      _fallbackDeclination = GeoUtils.magneticDeclination(
+        location.latitude,
+        location.longitude,
+      );
+      _hardwareDeclination = null;
+      _declinationFromHardware = false;
+      unawaited(_loadHardwareDeclination(location, key));
+    }
+    return _hardwareDeclination ?? _fallbackDeclination;
+  }
+
+  Future<void> _loadHardwareDeclination(
+    UserLocation location,
+    String key,
+  ) async {
+    final CompassService service = ref.read(compassServiceProvider);
+    final double value = await service.getGeomagneticDeclination(
+      location.latitude,
+      location.longitude,
+    );
+    if (!mounted || key != _declinationKey) return;
+    setState(() {
+      _hardwareDeclination = value;
+      _declinationFromHardware = service.lastDeclinationFromHardware;
+    });
+  }
+
   @override
   void dispose() {
     _subscription?.cancel();
@@ -135,9 +169,7 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
     final double trueQibla = ref.watch(qiblaDirectionProvider);
     final double distance = ref.watch(qiblaDistanceProvider);
     final UserLocation location = ref.watch(activeLocationProvider);
-    final double declination =
-        _hardwareDeclination ??
-        GeoUtils.magneticDeclination(location.latitude, location.longitude);
+    final double declination = _declinationFor(location);
     final double compassQibla = GeoUtils.compassQiblaBearing(
       location.latitude,
       location.longitude,
@@ -383,6 +415,13 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
                   label: 'Manyetik sapma (WMM)',
                   value:
                       '${declination >= 0 ? '+' : ''}${declination.toStringAsFixed(1)}°',
+                ),
+                _InfoRow(
+                  icon: Icons.verified_rounded,
+                  label: 'Sapma modeli',
+                  value: _declinationFromHardware
+                      ? 'Android GeomagneticField (WMM)'
+                      : 'WMM-2025 dahili model',
                 ),
                 if (activeReading != null)
                   _InfoRow(
@@ -993,13 +1032,16 @@ class _CompassDial extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     final bool isDark = theme.brightness == Brightness.dark;
     final double heading = reading?.heading ?? 0;
+    // e-Diyanet geometrisi tek bir test edilebilir kaynaktan gelir (QiblaMath).
     final double qiblaRelative =
-        reading?.differenceToQibla ?? GeoUtils.normalizeSigned(qibla - heading);
+        reading?.differenceToQibla ??
+        QiblaMath.badgeScreenAngle(qibla: qibla, heading: heading);
     final bool aligned = reading?.isAligned ?? false;
-    // e-Diyanet üst kutu: Canlı pusula derecesi (ör. 153.7°) 60 FPS güncellenir
-    final double shownTopDegree = reading != null
-        ? reading!.heading
-        : displayQibla;
+    // e-Diyanet üst kutu: Canlı pusula derecesi (ör. 153.7°) 60 FPS güncellenir.
+    // Ölçüm gelmeden **uydurma bir açı gösterilmez** ("—").
+    final String shownTopText = reading == null
+        ? '—'
+        : '${reading!.heading.toStringAsFixed(1)}°';
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -1034,7 +1076,7 @@ class _CompassDial extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '${shownTopDegree.toStringAsFixed(1)}°',
+                    shownTopText,
                     style: theme.textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.w900,
                       color: aligned
@@ -1069,7 +1111,7 @@ class _CompassDial extends StatelessWidget {
               ),
               // Dış derece çizgileri, artı (+) eksen çizgisi ve N/E/S/W yön harfleri
               Transform.rotate(
-                angle: -heading * math.pi / 180,
+                angle: QiblaMath.dialRotation(heading: heading) * math.pi / 180,
                 child: CustomPaint(
                   size: const Size(310, 310),
                   painter: _CompassPainter(

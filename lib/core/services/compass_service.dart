@@ -157,6 +157,11 @@ class CompassService {
 
   bool _started = false;
   double? _qiblaDirection;
+
+  /// Son [getGeomagneticDeclination] çağrısı cihazın kendi WMM modelinden
+  /// (`GeomagneticField`) mi geldi, yoksa uygulamanın dahili WMM-2025
+  /// modelinden mi hesaplandı? Arayüzde "Sapma modeli" satırında gösterilir.
+  bool lastDeclinationFromHardware = false;
   double _declination = 0;
   CompassReading? _lastReading;
   CompassReading? get lastReading => _lastReading;
@@ -335,9 +340,11 @@ class CompassService {
         },
       );
       if (decl != null && decl.isFinite) {
+        lastDeclinationFromHardware = true;
         return decl;
       }
     } catch (_) {}
+    lastDeclinationFromHardware = false;
     return GeoUtils.magneticDeclination(latitude, longitude);
   }
 
