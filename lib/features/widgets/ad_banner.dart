@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -27,6 +29,7 @@ class _AdBannerState extends ConsumerState<AdBanner> {
   BannerAd? _ad;
   bool _loaded = false;
   int _attempts = 0;
+  Timer? _retryTimer;
 
   @override
   void initState() {
@@ -42,7 +45,8 @@ class _AdBannerState extends ConsumerState<AdBanner> {
     if (!ads.bannerAvailable) {
       if (_attempts >= 3) return;
       _attempts++;
-      Future<void>.delayed(Duration(seconds: 2 * _attempts), () {
+      _retryTimer?.cancel();
+      _retryTimer = Timer(Duration(seconds: 2 * _attempts), () {
         if (mounted) _load();
       });
       return;
@@ -64,6 +68,7 @@ class _AdBannerState extends ConsumerState<AdBanner> {
 
   @override
   void dispose() {
+    _retryTimer?.cancel();
     _ad?.dispose();
     super.dispose();
   }

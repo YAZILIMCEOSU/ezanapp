@@ -25,6 +25,10 @@ abstract final class GeoUtils {
   ///
   /// Büyük daire (initial bearing) formülü kullanılır.
   static double qiblaBearing(double latitude, double longitude) {
+    // Kâbe'nin tam üzerinde yön tanımsızdır (atan2(0, -0) → 180° hatası).
+    // 50 metreden yakın konumlarda 0° (kuzey) döndürülür; pratikte GPS
+    // gürültüsü bu mesafenin altında kalır.
+    if (distanceToKaabaKm(latitude, longitude) < 0.05) return 0.0;
     final double lat1 = latitude * _deg2rad;
     const double lat2 = AppConstants.kaabaLat * _deg2rad;
     final double deltaLon = (AppConstants.kaabaLng - longitude) * _deg2rad;

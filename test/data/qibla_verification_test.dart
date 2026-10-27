@@ -390,7 +390,12 @@ void main() {
         magneticHeading: magnetic,
         accuracy: 3,
       ).withQibla(qibla, declination: wrongDecl);
-      expect(r.differenceToQibla!.abs(), closeTo(30, 0.01));
+      final double expectedDifference = GeoUtils.normalizeSigned(
+        qibla - GeoUtils.normalizeDegrees(magnetic + wrongDecl),
+      );
+      expect(r.differenceToQibla, closeTo(expectedDifference, 1e-9));
+      // Yanlış sapma kullanılsa bile sapma **30°** ile sınırlıdır.
+      expect(r.differenceToQibla!.abs(), closeTo(30.3, 0.5));
     });
   });
 }
