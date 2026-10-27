@@ -1,5 +1,10 @@
 # Google Play mağaza metinleri ve yayın kontrol listesi
 
+> **Ücretsiz (reklamlı) paket + Premium abonelik kurulumu için bkz.**
+> [`FREE_REKLAMLI_PAKET_VE_PREMIUM_REHBERI.md`](FREE_REKLAMLI_PAKET_VE_PREMIUM_REHBERI.md)
+> — AdMob kurulumu, UMP onayı, ürün kimlikleri, fiyatlandırma ve 2026 Play
+> Store kuralları (API 36, veri güvenliği, kapalı test) tıklama düzeyinde.
+
 Bu dosya, Play Console'da ilgili alanlara kopyalanacak metinleri ve mağaza
 varlıklarının listesini içerir. Uygulama adı ve metinler Türkçedir; İngilizce
 listeleme eklenirse çeviri notları en altta verilmiştir.
