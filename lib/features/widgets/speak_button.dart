@@ -36,10 +36,20 @@ class _SpeakButtonState extends ConsumerState<SpeakButton> {
   bool _speaking = false;
   Timer? _watchdog;
 
+  /// `dispose()` içinde `ref` kullanılamaz (Riverpod güvenlik kuralı);
+  /// servis bir alanda tutulur.
+  TtsService? _tts;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _tts = ref.read(ttsServiceProvider);
+  }
+
   @override
   void dispose() {
     _watchdog?.cancel();
-    unawaited(ref.read(ttsServiceProvider).stop());
+    unawaited(_tts?.stop());
     super.dispose();
   }
 
@@ -51,7 +61,7 @@ class _SpeakButtonState extends ConsumerState<SpeakButton> {
   }
 
   Future<void> _toggle() async {
-    final TtsService tts = ref.read(ttsServiceProvider);
+    final TtsService tts = _tts ?? ref.read(ttsServiceProvider);
     if (_speaking) {
       await tts.stop();
       _watchdog?.cancel();
@@ -87,7 +97,8 @@ class _SpeakButtonState extends ConsumerState<SpeakButton> {
     _watchdog?.cancel();
     _watchdog = Timer(const Duration(seconds: 2), () async {
       if (!mounted || !_speaking) return;
-      final bool speaking = await ref.read(ttsServiceProvider).isSpeaking();
+      final TtsService tts = _tts ?? ref.read(ttsServiceProvider);
+      final bool speaking = await tts.isSpeaking();
       if (!mounted) return;
       if (!speaking) {
         setState(() => _speaking = false);
