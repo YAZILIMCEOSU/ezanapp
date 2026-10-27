@@ -220,17 +220,19 @@ class MainActivity : FlutterActivity(), SensorEventListener {
         textToSpeech = TextToSpeech(applicationContext) { status ->
             ttsReady = status == TextToSpeech.SUCCESS
             val engine = textToSpeech
-            if (!ttsReady || engine == null) {
+            if (ttsReady && engine != null) {
+                try {
+                    val tr = Locale("tr", "TR")
+                    val availability = engine.isLanguageAvailable(tr)
+                    engine.language =
+                        if (availability >= TextToSpeech.LANG_AVAILABLE) tr else Locale.getDefault()
+                    engine.setSpeechRate(ttsRate)
+                } catch (_: Throwable) {
+                }
+                speakNextChunk()
+            } else {
                 ttsPendingChunks.clear()
-                return@TextToSpeech
             }
-            try {
-                val tr = Locale("tr", "TR")
-                val availability = engine.isLanguageAvailable(tr)
-                engine.language = if (availability >= TextToSpeech.LANG_AVAILABLE) tr else Locale.getDefault()
-                engine.setSpeechRate(ttsRate)
-            } catch (_: Throwable) {}
-            speakNextChunk()
         }
     }
 

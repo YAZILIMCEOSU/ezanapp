@@ -25,6 +25,24 @@ uygulamanın içinde **"reklamsız + ek özellikler"** olarak açılır.
 
 ---
 
+## 0.1) Şimdi sıra sizde — 7 adım (tahmini süre: 1 akşam + 14 gün test)
+
+| # | Yapılacak | Nerede | Süre |
+|---|---|---|---|
+| 1 | AdMob hesabı + **banner** ve **geçiş** reklam birimi oluşturun | Bölüm 2.2 | 10 dk |
+| 2 | `app-ads.txt` dosyasını `ezanai.app` kök dizinine yükleyin | Bölüm 2.4 | 5 dk |
+| 3 | Play Console'da **uygulama oluşturun** + mağaza metinlerini girin | `docs/PLAY_STORE.md` | 30 dk |
+| 4 | **Uygulama içeriği** formları: Reklamlar = Evet, Veri güvenliği, IARC | Bölüm 6.4 | 20 dk |
+| 5 | **Kapalı test** kanalına AAB yükleyin, **12 test kullanıcısı** ekleyin | Bölüm 6.5 | 15 dk |
+| 6 | **14 gün** test + geri bildirim düzeltmeleri | — | 14 gün |
+| 7 | Üretime **kademeli %20** yayın; ardından Premium aboneliği açın | Bölüm 3 + 6.5 | 20 dk |
+
+> **Sıra önemli:** Premium aboneliğini, ücretsiz sürüm yayına çıkmadan önce de
+> açabilirsiniz; ancak **kapalı test bitmeden** üretim yayını yapılamaz.
+> Reklamlar ücretsiz sürümde, Premium'da **hiç** gösterilmez (kod hazır).
+
+---
+
 ## 1) Play Store'u iyice inceledik: 2026'da sizi ne bekliyor?
 
 | Konu | 2026 kuralı | Bizim durumumuz |

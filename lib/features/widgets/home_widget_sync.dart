@@ -31,7 +31,11 @@ class _HomeWidgetSyncState extends ConsumerState<HomeWidgetSync> {
     // kullanıcı uygulamayı açmadan ana ekranda doğru geri sayım görünür.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      _sync(ref.read(prayerTimesProvider).value);
+      try {
+        _sync(ref.read(prayerTimesProvider).value);
+      } catch (error) {
+        AppLog.debug('Ana ekran widget senkronu atlandı: $error');
+      }
     });
   }
 
