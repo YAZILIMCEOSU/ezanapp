@@ -27,7 +27,10 @@ void main() {
 
       final Map<String, Object?> map = payload.toMap();
       expect(map['time'], '16:41');
-      expect(map['targetMillis'], DateTime(2026, 10, 27, 16, 41).millisecondsSinceEpoch);
+      expect(
+        map['targetMillis'],
+        DateTime(2026, 10, 27, 16, 41).millisecondsSinceEpoch,
+      );
       expect(map.keys.toSet(), <String>{
         'city',
         'prayer',
@@ -51,7 +54,8 @@ void main() {
 
   group('2) Sesli okuma metni', () {
     test('Arapça hat ayıklanır, Türkçe metin korunur', () {
-      const String mixed = 'Muhterem Müslümanlar!  بِسْمِ اللّٰهِ  Sabır ve şükür.';
+      const String mixed =
+          'Muhterem Müslümanlar!  بِسْمِ اللّٰهِ  Sabır ve şükür.';
       final String clean = TtsText.sanitize(mixed);
       expect(clean, contains('Muhterem Müslümanlar!'));
       expect(clean, contains('Sabır ve şükür.'));
@@ -76,7 +80,9 @@ void main() {
     test('uzun hutbe 4000 karakter sınırını aşmayan parçalara bölünür', () {
       final StringBuffer buffer = StringBuffer();
       for (int i = 0; i < 400; i++) {
-        buffer.write('Bu cümle hutbe metninin bir parçasıdır ve test amaçlıdır. ');
+        buffer.write(
+          'Bu cümle hutbe metninin bir parçasıdır ve test amaçlıdır. ',
+        );
       }
       final String text = buffer.toString().trim();
       expect(text.length, greaterThan(3000));
@@ -131,10 +137,7 @@ void main() {
     test('uzun yanıt 280 karakterlik özetle saklanır', () async {
       final PreferencesService prefs = PreferencesService(null);
       final AiReportService service = AiReportService(prefs);
-      await service.report(
-        reason: 'Diğer',
-        answer: 'a' * 900,
-      );
+      await service.report(reason: 'Diğer', answer: 'a' * 900);
       final List<AiReport> reports = service.recent();
       expect(reports.single.excerpt.length, 281);
       expect(reports.single.excerpt.endsWith('…'), isTrue);

@@ -306,10 +306,7 @@ class _DuaCard extends StatelessWidget {
                   color: isFavorite ? AppColors.danger : null,
                 ),
               ),
-              SpeakButton(
-                compact: true,
-                text: dua.shareText(),
-              ),
+              SpeakButton(compact: true, text: dua.shareText()),
               IconButton(
                 visualDensity: VisualDensity.compact,
                 tooltip: 'Kopyala',

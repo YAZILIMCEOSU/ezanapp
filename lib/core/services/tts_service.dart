@@ -42,10 +42,10 @@ class TtsService {
     final List<String> chunks = TtsText.chunk(text);
     if (chunks.isEmpty) return TtsStart.empty;
     try {
-      final bool? ok = await _channel.invokeMethod<bool>('speak', <String, Object?>{
-        'chunks': chunks,
-        'rate': rate,
-      });
+      final bool? ok = await _channel.invokeMethod<bool>(
+        'speak',
+        <String, Object?>{'chunks': chunks, 'rate': rate},
+      );
       return ok == true ? TtsStart.started : TtsStart.failed;
     } on PlatformException catch (error) {
       AppLog.warning('Sesli okuma başlatılamadı: ${error.message}');
@@ -82,7 +82,9 @@ abstract final class TtsText {
   /// Tek bir konuşma parçasının üst sınırı (Android TTS: 4000 karakter).
   static const int maxChunkChars = 2800;
 
-  static final RegExp _arabic = RegExp(r'[\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]');
+  static final RegExp _arabic = RegExp(
+    r'[\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]',
+  );
   static final RegExp _spaces = RegExp(r'[ \t]+');
   static final RegExp _blankLines = RegExp(r'\n{3,}');
   static final RegExp _sentenceSplit = RegExp(r'(?<=[.!?:;])\s+|\n+');

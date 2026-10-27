@@ -221,9 +221,8 @@ class _AiScreenState extends ConsumerState<AiScreen> {
                 ),
                 child: Text(
                   'Bu yanıtı neden bildiriyorsunuz?',
-                  style: Theme.of(sheetContext).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
+                  style: Theme.of(sheetContext).textTheme.titleSmall
+                      ?.copyWith(fontWeight: FontWeight.w800),
                 ),
               ),
               for (final String option in AiReportService.reasons)
@@ -568,17 +567,17 @@ class _MessageBubble extends StatelessWidget {
                         ),
                       ),
                     IconButton(
-                  visualDensity: VisualDensity.compact,
-                  tooltip: 'Yanıtı paylaş',
-                  onPressed: () => SharePlus.instance.share(
-                    ShareParams(
-                      text:
-                          '${message.text}\n\n'
-                          '${message.sources.map((AiSource s) => '• ${s.label}${s.detail == null ? '' : ' · ${s.detail}'}').join('\n')}\n\n'
-                          '(Ezan Vaktim Pro AI Asistanı — kaynaklı yanıt)',
-                    ),
-                  ),
-                  icon: const Icon(Icons.ios_share_rounded, size: 17),
+                      visualDensity: VisualDensity.compact,
+                      tooltip: 'Yanıtı paylaş',
+                      onPressed: () => SharePlus.instance.share(
+                        ShareParams(
+                          text:
+                              '${message.text}\n\n'
+                              '${message.sources.map((AiSource s) => '• ${s.label}${s.detail == null ? '' : ' · ${s.detail}'}').join('\n')}\n\n'
+                              '(Ezan Vaktim Pro AI Asistanı — kaynaklı yanıt)',
+                        ),
+                      ),
+                      icon: const Icon(Icons.ios_share_rounded, size: 17),
                     ),
                   ],
                 ),
