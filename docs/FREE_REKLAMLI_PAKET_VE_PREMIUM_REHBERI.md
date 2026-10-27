@@ -233,6 +233,14 @@ Play Console → **Uygulama içeriği** → **Veri güvenliği**:
 | **3. Arayüz** | e-Diyanet kadranı: sabit 12 yönü oku, `qibla − heading` rozeti, dönüş yönü, ±5° hizalama | 120 açıda doğrulandı |
 | **4. Uçtan uca** | Bağcılar / İstanbul / Londra / New York / Sidney / Tokyo senaryoları | Hizalama hatası **< 0.01°** |
 
+**2026-10-27 — bağımsız tekrar doğrulama (4/4 geçti):** Uygulama kodundan
+bağımsız olarak `python3 tools/verify_qibla.py` ile yeniden hesaplandı:
+kerteriz üç ayrı matematik yöntemiyle (küresel `tan`, vektör biçimi, WGS-84
+Vincenty) **en büyük fark 0.181°**; 16 şehirde manyetik sapma resmî NOAA
+`WMM_2025.COF` katsayılarıyla **en büyük fark 0.0005°**; konum + pusula +
+çizim hatalarının birleşik üst sınırı **1.38°** (±5° eşiğinin çok altında).
+Ayrıntılı tablolar: **`docs/KIBLE_DOGRULAMA_RAPORU.md`**.
+
 **Eski hata (giderildi):** Manyetik sapma, Türkiye dışında 12°'ye kadar
 yanlış hesaplanıyordu (Sidney +12°, New York −8.5°). Artık resmî NOAA
 WMM-2025 küresel harmonik modeli kullanılıyor; cihazın kendi
@@ -295,19 +303,25 @@ WMM-2025 küresel harmonik modeli kullanılıyor; cihazın kendi
 | **Faz 1** | Kıble pusulası e-Diyanet hassasiyeti, WMM-2025, sabit ok, canlı derece, kalibrasyon | ✅ Tamamlandı |
 | **Faz 2** | 32 hutbelik arşiv, 8 kategori, arama, ana ekrandan geçiş | ✅ Tamamlandı |
 | **Faz 3** | **Ücretsiz reklamlı paket** (AdMob + UMP + sıklık sınırı) | ✅ Bu sürümde tamamlandı |
-| **Faz 4** | Ana ekran **Android widget'ı** (vakit + geri sayım), hutbe/dua **sesli okuma (TTS)**, AI asistanına **"bildir"** akışı | 🔜 Sırada |
+| **Faz 4** | Ana ekran **Android widget'ı** (vakit + Chronometer geri sayım), hutbe/dua **sesli okuma (TTS)**, AI asistanına **"bildir"** akışı | ✅ Tamamlandı |
 | **Faz 5** | **Bulut yedekleme** (Supabase) + cihazlar arası eşitleme, özel temalar | 🔜 Planlandı |
 | **Faz 6** | **Kâbe canlı yayını + Diyanet/Kur'an radyosu**, çevrimdışı ilahi indirme yöneticisi | 🔜 Planlandı |
 | **Faz 7** | Premium abonelik canlı testi, mağaza görselleri, kapalı test → üretim yayını | 🔜 Yayın fazı |
 
-### Bilinen eksikler (dürüst liste)
-1. **Ana ekran widget'ı** henüz yok (rakiplerin çoğunda var).
-2. Hutbe ve duaların **sesli okunması** yok.
-3. **Bulut yedekleme** altyapısı hazır ama Supabase anahtarları girilmedi.
-4. İlahi kataloğu **lisanslı kaynak** gerektiriyor; şu an açık lisanslı
-   (no-music) kayıtlar kullanılıyor, katalog genişletilecek.
-5. **Play Store mağaza görselleri** (ekran görüntüleri) üretilecek.
-6. **AI asistanı** için üretken AI "bildir" akışı eklenmeli (Play politikası).
+### Bilinen eksikler (dürüst liste, 2026-10-27)
+1. **Bulut yedekleme** altyapısı hazır ama Supabase anahtarları girilmedi
+   (Faz 5).
+2. İlahi kataloğu **lisanslı kaynak** gerektiriyor; şu an açık lisanslı
+   (no-music) kayıtlar kullanılıyor, katalog genişletilecek (Faz 6).
+3. **Play Store mağaza görselleri** (telefon + tablet ekran görüntüleri)
+   üretilecek — metinler hazır (`docs/PLAY_STORE.md`), görseller sırada.
+4. Gerçek cihazda **saha testi**: metalden uzak 8 çizerek kalibrasyon ve
+   e-Diyanet ile yan yana karşılaştırma (matematik/test tarafı hazır).
+5. AdMob hesabı + gerçek birim kimlikleri + `app-ads.txt` yayına alınacak
+   (Bölüm 2.2–2.4).
+
+> Faz 4 kapsamı (widget, TTS, AI "bildir") **tamamlandı**; 1, 2 ve 6 numaralı
+> eski eksikler giderildi.
 
 ---
 
