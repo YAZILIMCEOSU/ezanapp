@@ -49,7 +49,7 @@ class AdsConsent {
     final Completer<bool> completer = Completer<bool>();
     try {
       ConsentInformation.instance.requestConsentInfoUpdate(
-        const ConsentRequestParameters(),
+        ConsentRequestParameters(),
         () async {
           try {
             _privacyOptionsRequired =

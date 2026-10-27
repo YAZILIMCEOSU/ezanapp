@@ -86,12 +86,12 @@ void main() {
     });
 
     test('model geçerlilik aralığı dışında çökmek yerine sabitlenir', () {
-      expect(Wmm2025.declinationAtYear(41.0, 29.0, 2400.0), isFinite);
-      expect(Wmm2025.declinationAtYear(41.0, 29.0, 1980.0), isFinite);
+      expect(Wmm2025.declinationAtYear(41.0, 29.0, 2400.0).isFinite, isTrue);
+      expect(Wmm2025.declinationAtYear(41.0, 29.0, 1980.0).isFinite, isTrue);
       expect(Wmm2025.declinationAtYear(double.nan, 29.0, 2026.0), 0.0);
       // Kutuplarda (gimbal lock) NaN üretmemeli.
-      expect(Wmm2025.declinationAtYear(89.9, 0.0, 2026.0), isFinite);
-      expect(Wmm2025.declinationAtYear(-89.9, 180.0, 2026.0), isFinite);
+      expect(Wmm2025.declinationAtYear(89.9, 0.0, 2026.0).isFinite, isTrue);
+      expect(Wmm2025.declinationAtYear(-89.9, 180.0, 2026.0).isFinite, isTrue);
     });
 
     test('ondalık yıl çevrimi doğru', () {
@@ -129,7 +129,7 @@ void main() {
     test('Kâbe üzerinde açı 0° (kuzeye) döner, antipodda tanımsız değil', () {
       final double atKaaba = GeoUtils.qiblaBearing(21.4224779, 39.8251832);
       expect(GeoUtils.normalizeSigned(atKaaba), closeTo(0.0, 0.01));
-      expect(GeoUtils.qiblaBearing(-21.4224779, -140.1748168), isFinite);
+      expect(GeoUtils.qiblaBearing(-21.4224779, -140.1748168).isFinite, isTrue);
     });
 
     test('dijital pusula açısı gerçek kuzey açısıyla birebir aynıdır', () {

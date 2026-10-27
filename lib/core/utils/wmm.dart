@@ -80,6 +80,7 @@ abstract final class Wmm2025 {
 
   /// Resmî WMM-2025 Gauss katsayıları:
   /// `n, m, g(n,m), h(n,m), dg/dt, dh/dt` (nT ve nT/yıl).
+  // dart format off
   static const List<double> coefficients = <double>[
     1.0,
     0.0,
@@ -622,6 +623,7 @@ abstract final class Wmm2025 {
     -0.1,
     -0.1,
   ];
+  // dart format on
 }
 
 /// Schönberg/NOAA algoritmasının (geomag70.c) saf Dart uygulaması.
