@@ -15,6 +15,7 @@ import '../data/models/city.dart';
 import '../data/models/prayer.dart';
 import '../data/models/prayer_times_day.dart';
 import '../design/app_theme.dart';
+import '../features/widgets/home_widget_sync.dart';
 import '../router/app_router.dart';
 import '../state/providers.dart';
 
@@ -301,6 +302,8 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp>
       scaffoldMessengerKey: _messengerKey,
       debugShowCheckedModeBanner: false,
       routerConfig: appRouter,
+      builder: (BuildContext context, Widget? child) =>
+          HomeWidgetSync(child: child ?? const SizedBox.shrink()),
       theme: AppTheme.light(),
       darkTheme: mode == AppThemeMode.amoled
           ? AppTheme.amoled()

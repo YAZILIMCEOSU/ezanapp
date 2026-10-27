@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../core/services/ai_report_service.dart';
 import '../../data/ai/knowledge_base.dart';
 import '../../data/models/ai_models.dart';
 import '../../data/repositories/ai_repository.dart';
@@ -130,6 +131,8 @@ class _AiScreenState extends ConsumerState<AiScreen> {
                       _MessageBubble(
                         message: messages[index],
                         onAsk: (String question) => _send(question),
+                        onReport: () =>
+                            _reportAnswer(messages[index], messages, index),
                       ),
                 );
               },
@@ -184,6 +187,73 @@ class _AiScreenState extends ConsumerState<AiScreen> {
 
   bool messagesEmpty(AsyncValue<AiConversation?> chat) =>
       chat.value?.messages.isEmpty ?? true;
+
+  /// Play Store "AI-Generated Content" politikası: kullanıcı, yapay zekâ
+  /// yanıtını gerekçesiyle bildirebilir. Bildirim cihazda saklanır ve sunucu
+  /// yapılandırılmışsa iletilir; kullanıcıya her durumda onay gösterilir.
+  Future<void> _reportAnswer(
+    AiMessage message,
+    List<AiMessage> all,
+    int index,
+  ) async {
+    String? question;
+    for (int i = index - 1; i >= 0; i--) {
+      if (all[i].fromUser) {
+        question = all[i].text;
+        break;
+      }
+    }
+    final String? reason = await showModalBottomSheet<String>(
+      context: context,
+      showDragHandle: true,
+      builder: (BuildContext sheetContext) => SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.lg,
+                  0,
+                  AppSpacing.lg,
+                  AppSpacing.sm,
+                ),
+                child: Text(
+                  'Bu yanıtı neden bildiriyorsunuz?',
+                  style: Theme.of(sheetContext).textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+              for (final String option in AiReportService.reasons)
+                ListTile(
+                  dense: true,
+                  leading: const Icon(Icons.flag_outlined, size: 18),
+                  title: Text(option),
+                  onTap: () => Navigator.of(sheetContext).pop(option),
+                ),
+              const SizedBox(height: AppSpacing.sm),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (reason == null || !mounted) return;
+    await ref
+        .read(aiReportServiceProvider)
+        .report(reason: reason, answer: message.text, question: question);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        duration: Duration(seconds: 4),
+        content: Text(
+          'Bildiriminiz alındı. Yanıt incelenip gerekli düzeltme yapılacaktır. '
+          'Teşekkür ederiz.',
+        ),
+      ),
+    );
+  }
 
   void _showTopicsCatalog() {
     showModalBottomSheet<void>(
@@ -334,12 +404,16 @@ class _AiScreenState extends ConsumerState<AiScreen> {
 }
 
 class _MessageBubble extends StatelessWidget {
-  const _MessageBubble({required this.message, this.onAsk});
+  const _MessageBubble({required this.message, this.onAsk, this.onReport});
 
   final AiMessage message;
 
   /// Önerilen soruya dokunulduğunda çağrılır.
   final ValueChanged<String>? onAsk;
+
+  /// "Bu cevabı bildir" — Play'in yapay zekâ içerik politikası gereği
+  /// kullanıcı yanlış/uygunsuz yanıtı bildirebilmelidir.
+  final VoidCallback? onReport;
 
   @override
   Widget build(BuildContext context) {
@@ -477,7 +551,23 @@ class _MessageBubble extends StatelessWidget {
               const SizedBox(height: AppSpacing.sm),
               Align(
                 alignment: Alignment.centerRight,
-                child: IconButton(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    if (onReport != null && !message.failed)
+                      TextButton.icon(
+                        onPressed: onReport,
+                        style: TextButton.styleFrom(
+                          visualDensity: VisualDensity.compact,
+                          foregroundColor: theme.colorScheme.onSurfaceVariant,
+                        ),
+                        icon: const Icon(Icons.flag_outlined, size: 15),
+                        label: const Text(
+                          'Bu cevabı bildir',
+                          style: TextStyle(fontSize: 11.5),
+                        ),
+                      ),
+                    IconButton(
                   visualDensity: VisualDensity.compact,
                   tooltip: 'Yanıtı paylaş',
                   onPressed: () => SharePlus.instance.share(
@@ -489,6 +579,8 @@ class _MessageBubble extends StatelessWidget {
                     ),
                   ),
                   icon: const Icon(Icons.ios_share_rounded, size: 17),
+                    ),
+                  ],
                 ),
               ),
             ],

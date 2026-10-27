@@ -33,6 +33,10 @@
 
     <!-- Android 11+ (API 30-36) Harita ve Adım Adım Navigasyon görünürlüğü -->
     <queries>
+        <!-- Android 11+ cihazlarda cihazın Türkçe konuşma (TTS) motorunu bulmak için -->
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
         <intent>
             <action android:name="android.intent.action.VIEW" />
             <data android:scheme="geo" />
@@ -145,6 +149,20 @@
         <meta-data
             android:name="com.google.android.gms.ads.DELAY_APP_MEASUREMENT_INIT"
             android:value="true" />
+
+        <!-- Ana ekran widget'ı: sıradaki vakit + canlı geri sayım -->
+        <receiver
+            android:name=".EzanWidgetProvider"
+            android:exported="true"
+            android:label="@string/widget_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.yazilimceosu.ezanai.WIDGET_REFRESH" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/ezan_widget_info" />
+        </receiver>
 
         <meta-data
             android:name="flutterEmbedding"

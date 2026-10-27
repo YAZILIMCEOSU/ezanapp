@@ -7,6 +7,7 @@ import '../../design/app_colors.dart';
 import '../../design/app_spacing.dart';
 import '../../design/app_theme.dart';
 import '../../state/providers.dart';
+import '../widgets/speak_button.dart';
 
 /// Tekil hutbe / Cuma rehberi modeli.
 @immutable
@@ -1121,6 +1122,11 @@ class _KhutbahCard extends StatelessWidget {
                     size: 18,
                   ),
                   label: Text(expanded ? 'Özeti Göster' : 'Tam Hutbeyi Oku'),
+                ),
+                SpeakButton(
+                  text:
+                      '${khutbah.title}. ${khutbah.verseOrHadith}. '
+                      '${khutbah.fullText} Kaynak: ${khutbah.source}.',
                 ),
                 OutlinedButton.icon(
                   onPressed: () async {

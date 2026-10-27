@@ -1,5 +1,7 @@
 package com.yazilimceosu.ezanai
 
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
@@ -13,9 +15,11 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.net.wifi.WifiManager
 import android.os.Build
+import android.os.Bundle
 import android.os.Debug
 import android.os.PowerManager
 import android.provider.Settings
+import android.speech.tts.TextToSpeech
 import android.view.Surface
 import android.view.WindowManager
 import io.flutter.embedding.android.FlutterActivity
@@ -23,6 +27,7 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 import java.security.MessageDigest
+import java.util.Locale
 
 /**
  * Ezan ana aktivitesi.
@@ -42,6 +47,12 @@ class MainActivity : FlutterActivity(), SensorEventListener {
     private var magnetometer: Sensor? = null
     private var audioWakeLock: PowerManager.WakeLock? = null
     private var audioWifiLock: WifiManager.WifiLock? = null
+
+    // --- Sesli okuma (TTS): hutbe ve dualar cihazın kendi konuşma motoruyla okunur ---
+    private var textToSpeech: TextToSpeech? = null
+    private var ttsReady = false
+    private var ttsPendingChunks: MutableList<String> = mutableListOf()
+    private var ttsRate: Float = 0.95f
 
     private val gravity = FloatArray(3)
     private val geomagnetic = FloatArray(3)
@@ -145,6 +156,115 @@ class MainActivity : FlutterActivity(), SensorEventListener {
                     else -> result.notImplemented()
                 }
             }
+
+        // Ana ekran widget'ı: vakit + geri sayım verisini yerel olarak yazar.
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "ezanai/widget")
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "update" -> {
+                        EzanWidgetProvider.updateFromPayload(
+                            applicationContext,
+                            city = call.argument<String>("city") ?: "",
+                            prayer = call.argument<String>("prayer") ?: "",
+                            time = call.argument<String>("time") ?: "--:--",
+                            targetMillis = call.argument<Number>("targetMillis")?.toLong() ?: 0L,
+                            hijri = call.argument<String>("hijri") ?: "",
+                        )
+                        result.success(true)
+                    }
+                    "requestPin" -> result.success(requestPinWidget())
+                    else -> result.notImplemented()
+                }
+            }
+
+        // Sesli okuma (TTS): hutbe ve dualar için cihazın konuşma motoru.
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "ezanai/tts")
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "speak" -> {
+                        val chunks = call.argument<List<String>>("chunks") ?: emptyList()
+                        val rate = call.argument<Number>("rate")?.toFloat() ?: 0.95f
+                        result.success(speakChunks(chunks, rate))
+                    }
+                    "stop" -> {
+                        stopSpeaking()
+                        result.success(true)
+                    }
+                    "isSpeaking" -> result.success(textToSpeech?.isSpeaking == true)
+                    else -> result.notImplemented()
+                }
+            }
+    }
+
+    // ------------------------------------------------------------------ TTS
+
+    private fun speakChunks(chunks: List<String>, rate: Float): Boolean {
+        val clean = chunks.map { it.trim() }.filter { it.isNotEmpty() }
+        if (clean.isEmpty()) return false
+        ttsRate = rate.coerceIn(0.5f, 2.0f)
+        stopSpeaking()
+        ttsPendingChunks = clean.toMutableList()
+        val engine = textToSpeech
+        if (engine == null) {
+            initTextToSpeech()
+            return true
+        }
+        if (!ttsReady) return true
+        engine.setSpeechRate(ttsRate)
+        speakNextChunk()
+        return true
+    }
+
+    private fun initTextToSpeech() {
+        if (textToSpeech != null) return
+        textToSpeech = TextToSpeech(applicationContext) { status ->
+            ttsReady = status == TextToSpeech.SUCCESS
+            val engine = textToSpeech
+            if (!ttsReady || engine == null) {
+                ttsPendingChunks.clear()
+                return@TextToSpeech
+            }
+            try {
+                val tr = Locale("tr", "TR")
+                val availability = engine.isLanguageAvailable(tr)
+                engine.language = if (availability >= TextToSpeech.LANG_AVAILABLE) tr else Locale.getDefault()
+                engine.setSpeechRate(ttsRate)
+            } catch (_: Throwable) {}
+            speakNextChunk()
+        }
+    }
+
+    private fun speakNextChunk() {
+        val engine = textToSpeech ?: return
+        if (!ttsReady || ttsPendingChunks.isEmpty()) return
+        val chunk = ttsPendingChunks.removeAt(0)
+        try {
+            engine.speak(chunk, TextToSpeech.QUEUE_ADD, Bundle(), "ezanai-${System.currentTimeMillis()}")
+        } catch (_: Throwable) {}
+    }
+
+    private fun stopSpeaking() {
+        ttsPendingChunks.clear()
+        try {
+            textToSpeech?.stop()
+        } catch (_: Throwable) {}
+    }
+
+    // ------------------------------------------------------- Ana ekran widget
+
+    private fun requestPinWidget(): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return false
+        return try {
+            val manager = AppWidgetManager.getInstance(applicationContext) ?: return false
+            if (!manager.isRequestPinAppWidgetSupported) return false
+            manager.requestPinAppWidget(
+                ComponentName(applicationContext, EzanWidgetProvider::class.java),
+                null,
+                null,
+            )
+        } catch (_: Throwable) {
+            false
+        }
     }
 
     private fun checkIgnoringBatteryOptimizations(): Boolean {
@@ -587,6 +707,11 @@ class MainActivity : FlutterActivity(), SensorEventListener {
 
     override fun onDestroy() {
         updateAudioWakeLock(false)
+        try {
+            textToSpeech?.stop()
+            textToSpeech?.shutdown()
+        } catch (_: Throwable) {}
+        textToSpeech = null
         super.onDestroy()
     }
 }

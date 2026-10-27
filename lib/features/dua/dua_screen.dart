@@ -12,6 +12,7 @@ import '../../state/content_providers.dart';
 import '../../state/providers.dart';
 import '../widgets/ad_banner.dart';
 import '../widgets/app_shell.dart';
+import '../widgets/speak_button.dart';
 import '../widgets/state_views.dart';
 
 /// Dualar ekranı: kategoriler, arama, favoriler ve kaynak künyesi.
@@ -304,6 +305,10 @@ class _DuaCard extends StatelessWidget {
                   size: 19,
                   color: isFavorite ? AppColors.danger : null,
                 ),
+              ),
+              SpeakButton(
+                compact: true,
+                text: dua.shareText(),
               ),
               IconButton(
                 visualDensity: VisualDensity.compact,

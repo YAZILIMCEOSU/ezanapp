@@ -251,6 +251,31 @@ class SettingsScreen extends ConsumerWidget {
             trailing: const Icon(Icons.chevron_right_rounded),
             onTap: () => context.push(AppRoutes.premium),
           ),
+          ListTile(
+            leading: const Icon(Icons.widgets_outlined),
+            title: const Text('Ana ekran widget’ı'),
+            subtitle: const Text(
+              'Sıradaki vakti ve canlı geri sayımı ana ekrana ekleyin',
+            ),
+            trailing: const Icon(Icons.add_circle_outline_rounded),
+            onTap: () async {
+              final bool pinned = await ref
+                  .read(homeWidgetServiceProvider)
+                  .requestPin();
+              if (!context.mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  duration: const Duration(seconds: 6),
+                  content: Text(
+                    pinned
+                        ? 'Widget yerleştirme penceresi açıldı: “Ekle”ye dokunun.'
+                        : 'Cihaz otomatik eklemeyi desteklemiyor. Ana ekranı '
+                              'basılı tutun → Widget’lar → Ezan Vaktim Pro.',
+                  ),
+                ),
+              );
+            },
+          ),
           if (ref.read(runtimeProvider).ads.privacyOptionsRequired)
             ListTile(
               leading: const Icon(Icons.privacy_tip_outlined),

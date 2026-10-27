@@ -7,9 +7,12 @@ import '../app/app_runtime.dart';
 import '../core/config/app_features.dart';
 import '../core/constants/app_constants.dart';
 import '../core/errors/app_exception.dart';
+import '../core/services/ai_report_service.dart';
 import '../core/services/billing_service.dart';
 import '../core/services/compass_service.dart';
+import '../core/services/home_widget_service.dart';
 import '../core/services/location_service.dart';
+import '../core/services/tts_service.dart';
 import '../core/utils/geo.dart';
 import '../core/utils/logger.dart';
 import '../data/models/app_settings.dart';
@@ -859,6 +862,21 @@ final NotifierProvider<PremiumController, PremiumStatus> premiumProvider =
 final Provider<bool> isPremiumProvider = Provider<bool>(
   (Ref ref) => ref.watch(premiumProvider).isPremium,
 );
+
+/// Sesli okuma (hutbe, dua) — cihazın kendi Türkçe konuşma motoru.
+final Provider<TtsService> ttsServiceProvider = Provider<TtsService>(
+  (Ref ref) => const TtsService(),
+);
+
+/// Android ana ekran widget'ı köprüsü (vakit + geri sayım).
+final Provider<HomeWidgetService> homeWidgetServiceProvider =
+    Provider<HomeWidgetService>((Ref ref) => const HomeWidgetService());
+
+/// Yapay zekâ yanıtı bildirim servisi (Play "AI-Generated Content" politikası).
+final Provider<AiReportService> aiReportServiceProvider =
+    Provider<AiReportService>(
+      (Ref ref) => AiReportService(ref.watch(runtimeProvider).preferences),
+    );
 
 // ------------------------------------------------------------- Kıble
 
