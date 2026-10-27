@@ -1,11 +1,10 @@
 import 'dart:math' as math;
 
-import 'package:flutter_test/flutter_test.dart';
-
 import 'package:ezanai/core/services/compass_service.dart';
 import 'package:ezanai/core/utils/geo.dart';
 import 'package:ezanai/core/utils/qibla_math.dart';
 import 'package:ezanai/core/utils/wmm.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 /// **Kıble Doğrulama Testi — 4 aşamalı kontrol.**
 ///
@@ -57,9 +56,18 @@ void main() {
 
     test('sapma işareti ve büyüklüğü jeofiziksel olarak tutarlı', () {
       // Türkiye'de doğu sapması ~+6°, Avustralya'da ~+13°, ABD'de batı (-).
-      expect(Wmm2025.declinationAtYear(41.0339, 28.8567, 2026.8), inInclusiveRange(5.5, 6.6));
-      expect(Wmm2025.declinationAtYear(-33.8688, 151.2093, 2026.8), inInclusiveRange(12.0, 13.6));
-      expect(Wmm2025.declinationAtYear(40.7128, -74.0060, 2026.8), inInclusiveRange(-13.3, -11.6));
+      expect(
+        Wmm2025.declinationAtYear(41.0339, 28.8567, 2026.8),
+        inInclusiveRange(5.5, 6.6),
+      );
+      expect(
+        Wmm2025.declinationAtYear(-33.8688, 151.2093, 2026.8),
+        inInclusiveRange(12.0, 13.6),
+      );
+      expect(
+        Wmm2025.declinationAtYear(40.7128, -74.0060, 2026.8),
+        inInclusiveRange(-13.3, -11.6),
+      );
       // Türkiye genelinde tüm il merkezleri 4°–8° aralığında kalmalı.
       const List<List<double>> turkey = <List<double>>[
         <double>[41.0082, 28.9784],
@@ -170,19 +178,22 @@ void main() {
       expect(GeoUtils.normalizeDegrees(-10), closeTo(350, 1e-9));
     });
 
-    test('withQibla iki kez uygulansa da sonucu bozmaz (çift düzeltme yok)', () {
-      const double qibla = 151.37;
-      const double decl = 6.073;
-      const CompassReading raw = CompassReading(
-        heading: qibla - decl,
-        magneticHeading: qibla - decl,
-        accuracy: 3,
-      );
-      final CompassReading once = raw.withQibla(qibla, declination: decl);
-      final CompassReading twice = once.withQibla(qibla, declination: decl);
-      expect(twice.heading, closeTo(once.heading, 1e-9));
-      expect(twice.differenceToQibla, closeTo(once.differenceToQibla!, 1e-9));
-    });
+    test(
+      'withQibla iki kez uygulansa da sonucu bozmaz (çift düzeltme yok)',
+      () {
+        const double qibla = 151.37;
+        const double decl = 6.073;
+        const CompassReading raw = CompassReading(
+          heading: qibla - decl,
+          magneticHeading: qibla - decl,
+          accuracy: 3,
+        );
+        final CompassReading once = raw.withQibla(qibla, declination: decl);
+        final CompassReading twice = once.withQibla(qibla, declination: decl);
+        expect(twice.heading, closeTo(once.heading, 1e-9));
+        expect(twice.differenceToQibla, closeTo(once.differenceToQibla!, 1e-9));
+      },
+    );
 
     test('fark -180..180 aralığında ve en kısa yolu gösterir', () {
       for (int heading = 0; heading < 360; heading += 5) {
@@ -261,18 +272,9 @@ void main() {
     });
 
     test('hizalama yalnızca Kâbe yönünde gerçekleşir', () {
-      expect(
-        QiblaMath.isAligned(qibla: 151.37, heading: 151.37),
-        isTrue,
-      );
-      expect(
-        QiblaMath.isAligned(qibla: 151.37, heading: 151.37 + 4.9),
-        isTrue,
-      );
-      expect(
-        QiblaMath.isAligned(qibla: 20.0, heading: 200.0),
-        isFalse,
-      );
+      expect(QiblaMath.isAligned(qibla: 151.37, heading: 151.37), isTrue);
+      expect(QiblaMath.isAligned(qibla: 151.37, heading: 151.37 + 4.9), isTrue);
+      expect(QiblaMath.isAligned(qibla: 20.0, heading: 200.0), isFalse);
       // Rozet tam ters yönde: 180° fark asla hizalı sayılmaz.
       expect(QiblaMath.isAligned(qibla: 10.0, heading: 190.0), isFalse);
     });
@@ -323,17 +325,24 @@ void main() {
       const double lat = 41.0339;
       const double lon = 28.8567;
       final double decl = GeoUtils.magneticDeclination(lat, lon);
-      final double magQibla =
-          GeoUtils.normalizeDegrees(GeoUtils.qiblaBearing(lat, lon) - decl);
+      final double magQibla = GeoUtils.normalizeDegrees(
+        GeoUtils.qiblaBearing(lat, lon) - decl,
+      );
 
-      final CompassReading aligned =
-          simulate(lat: lat, lon: lon, magneticHeading: magQibla);
+      final CompassReading aligned = simulate(
+        lat: lat,
+        lon: lon,
+        magneticHeading: magQibla,
+      );
       expect(aligned.isAligned, isTrue);
       expect(aligned.differenceToQibla!.abs(), lessThan(0.01));
 
       // 30° sağa dönükken rozet 30° solda görünmeli (ekranda ok ile hizasız).
-      final CompassReading turned =
-          simulate(lat: lat, lon: lon, magneticHeading: magQibla + 30);
+      final CompassReading turned = simulate(
+        lat: lat,
+        lon: lon,
+        magneticHeading: magQibla + 30,
+      );
       expect(turned.differenceToQibla, closeTo(-30, 0.01));
       expect(turned.isAligned, isFalse);
       expect(
@@ -359,8 +368,11 @@ void main() {
         final double qibla = GeoUtils.qiblaBearing(lat, lon);
         final double decl = GeoUtils.magneticDeclination(lat, lon);
         final double magQibla = GeoUtils.normalizeDegrees(qibla - decl);
-        final CompassReading r =
-            simulate(lat: lat, lon: lon, magneticHeading: magQibla);
+        final CompassReading r = simulate(
+          lat: lat,
+          lon: lon,
+          magneticHeading: magQibla,
+        );
         expect(r.isAligned, isTrue, reason: '${e.key} hizalanmadı');
         // Ham manyetik hedef her zaman 0-360 aralığında olmalı.
         expect(magQibla, inInclusiveRange(0.0, 360.0));

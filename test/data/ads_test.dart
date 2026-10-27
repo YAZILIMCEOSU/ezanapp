@@ -1,8 +1,7 @@
-import 'package:flutter_test/flutter_test.dart';
-
 import 'package:ezanai/core/ads/ad_unit_ids.dart';
 import 'package:ezanai/core/config/app_config.dart';
 import 'package:ezanai/core/services/ads_service.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 /// Ücretsiz (reklamlı) paket sözleşmesi.
 ///

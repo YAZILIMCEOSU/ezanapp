@@ -60,7 +60,9 @@ class AdsConsent {
               FormError? formError,
             ) async {
               if (formError != null) {
-                AppLog.warning('Onay formu gösterilemedi: ${formError.message}');
+                AppLog.warning(
+                  'Onay formu gösterilemedi: ${formError.message}',
+                );
               }
               _canRequestAds = await ConsentInformation.instance
                   .canRequestAds();

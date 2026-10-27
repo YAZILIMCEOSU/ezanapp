@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-import '../config/app_config.dart';
-import '../utils/logger.dart';
 import '../ads/ad_unit_ids.dart';
 import '../ads/ads_consent.dart';
+import '../config/app_config.dart';
+import '../utils/logger.dart';
 
 /// Reklam yerleşimleri (ücretsiz / reklamlı paket).
 ///
@@ -76,7 +76,9 @@ class AdsService {
       AppLog.info('Reklamlar derleme zamanında kapatıldı (ADS_ENABLED=false).');
       return;
     }
-    if (!isTestMode && AppConfig.admobBannerId.isEmpty && AppConfig.admobInterstitialId.isEmpty) {
+    if (!isTestMode &&
+        AppConfig.admobBannerId.isEmpty &&
+        AppConfig.admobInterstitialId.isEmpty) {
       _enabled = false;
       AppLog.info('AdMob kimlikleri tanımlı değil — reklamlar kapalı.');
       return;

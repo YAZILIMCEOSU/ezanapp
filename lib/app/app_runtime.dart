@@ -172,6 +172,7 @@ class AppRuntime {
         final bool premium = billing.status.isPremium;
         ads.setPremium(premium);
         if (!premium) await ads.initialize(premium: false);
+        return null;
       }),
       _safely('bildirim köprüsü', push.initialize),
     ]);

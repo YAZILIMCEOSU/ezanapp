@@ -79,12 +79,10 @@ abstract final class QiblaMath {
     required double heading,
     double length = 1,
   }) {
-    final double rad = (badgeScreenAngle(qibla: qibla, heading: heading) - 90) *
+    final double rad =
+        (badgeScreenAngle(qibla: qibla, heading: heading) - 90) *
         math.pi /
         180.0;
-    return math.Point<double>(
-      math.cos(rad) * length,
-      math.sin(rad) * length,
-    );
+    return math.Point<double>(math.cos(rad) * length, math.sin(rad) * length);
   }
 }

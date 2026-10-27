@@ -329,7 +329,10 @@ class ZikirScreen extends ConsumerWidget {
     // reklamı gösterilir (en fazla 3 dakikada bir; premium'da hiç gösterilmez).
     if (!before.reached && after.reached) {
       unawaited(
-        ref.read(runtimeProvider).ads.showInterstitial(placement: 'tesbih_hedef'),
+        ref
+            .read(runtimeProvider)
+            .ads
+            .showInterstitial(placement: 'tesbih_hedef'),
       );
     }
   }
