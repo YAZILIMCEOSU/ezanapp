@@ -61,10 +61,11 @@ class _HomeWidgetSyncState extends ConsumerState<HomeWidgetSync> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<AsyncValue<TodayTimes>>(prayerTimesProvider, (
-      AsyncValue<TodayTimes>? previous,
-      AsyncValue<TodayTimes> next,
-    ) => _sync(next.value));
+    ref.listen<AsyncValue<TodayTimes>>(
+      prayerTimesProvider,
+      (AsyncValue<TodayTimes>? previous, AsyncValue<TodayTimes> next) =>
+          _sync(next.value),
+    );
 
     return widget.child;
   }
