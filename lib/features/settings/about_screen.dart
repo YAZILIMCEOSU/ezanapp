@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -23,6 +24,9 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
   String _version = '—';
   Map<String, String> _diagnostics = const <String, String>{};
 
+  /// Cihazda hesaplanan paket bütünlüğü/kopya koruması bilgisi.
+  Map<String, Object?> _integrity = const <String, Object?>{};
+
   @override
   void initState() {
     super.initState();
@@ -43,6 +47,85 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
         .read(runtimeProvider)
         .diagnostics();
     if (mounted) setState(() => _diagnostics = diagnostics);
+    await _loadIntegrity();
+  }
+
+  /// Paket imzası, kurulum kaynağı ve mod/klon tespiti — yalnızca Android'de.
+  Future<void> _loadIntegrity() async {
+    if (kIsWeb || defaultTargetPlatform != TargetPlatform.android) return;
+    try {
+      final Map<String, Object?> info = await ref
+          .read(compassServiceProvider)
+          .getIntegrityInfo();
+      if (mounted) setState(() => _integrity = info);
+    } catch (error) {
+      AppLog.debug('Bütünlük bilgisi okunamadı: $error');
+    }
+  }
+
+  /// Güvenlik satırları: (simge, etiket, değer, durum iyi mi?).
+  List<(IconData, String, String, bool?)> _securityRows() {
+    final Map<String, Object?> info = _integrity;
+    final bool? official = info['isOfficialPackage'] as bool?;
+    final bool? pinned = info['signaturePinned'] as bool?;
+    final bool? signatureOk = info['signatureMatches'] as bool?;
+    final bool? tamper = info['hasTamperTools'] as bool?;
+    final bool? cloned = info['isClonedEnvironment'] as bool?;
+    final bool? debugger = info['isDebuggerAttached'] as bool?;
+    final bool? playInstall = info['isPlayStoreInstall'] as bool?;
+    final String? installer = info['installerPackage'] as String?;
+    final String? sha = info['signingSha256'] as String?;
+    return <(IconData, String, String, bool?)>[
+      (
+        Icons.verified_user_outlined,
+        'Paket bütünlüğü',
+        official == true ? 'Doğrulandı' : 'Doğrulanamadı',
+        official,
+      ),
+      (
+        Icons.key_outlined,
+        'İmza sabitleme',
+        pinned == true
+            ? (signatureOk == true ? 'Eşleşti' : 'UYUMSUZ — modlanmış olabilir')
+            : 'Bu derlemede kapalı (test/CI)',
+        pinned == true ? signatureOk : null,
+      ),
+      (
+        Icons.storefront_outlined,
+        'Kurulum kaynağı',
+        playInstall == true
+            ? 'Google Play'
+            : (installer == null || installer.isEmpty
+                  ? 'Doğrudan APK kurulumu'
+                  : installer),
+        playInstall,
+      ),
+      (
+        Icons.build_circle_outlined,
+        'Mod/patch araçları',
+        tamper == true ? 'Tespit edildi' : 'Yok',
+        tamper == null ? null : !tamper,
+      ),
+      (
+        Icons.copy_all_outlined,
+        'Klon / çift uygulama',
+        cloned == true ? 'Tespit edildi' : 'Yok',
+        cloned == null ? null : !cloned,
+      ),
+      (
+        Icons.bug_report_outlined,
+        'Hata ayıklayıcı',
+        debugger == true ? 'Bağlı' : 'Bağlı değil',
+        debugger == null ? null : !debugger,
+      ),
+      if (sha != null && sha.isNotEmpty)
+        (
+          Icons.fingerprint_rounded,
+          'İmza SHA-256',
+          '${sha.substring(0, sha.length < 16 ? sha.length : 16)}…',
+          null,
+        ),
+    ];
   }
 
   @override
@@ -105,6 +188,48 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
                 ),
               ),
             ),
+          if (_integrity.isNotEmpty) ...<Widget>[
+            const SectionHeader(title: 'Güvenlik ve kopya koruması'),
+            for (final (IconData icon, String label, String value, bool? ok)
+                in _securityRows())
+              ListTile(
+                dense: true,
+                leading: Icon(
+                  icon,
+                  size: 20,
+                  color: ok == null
+                      ? theme.colorScheme.onSurfaceVariant
+                      : (ok ? AppColors.emerald600 : AppColors.danger),
+                ),
+                title: Text(label),
+                trailing: Text(
+                  value,
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: ok == null
+                        ? theme.colorScheme.onSurfaceVariant
+                        : (ok ? AppColors.emerald600 : AppColors.danger),
+                    fontWeight: ok == false ? FontWeight.w700 : null,
+                  ),
+                ),
+              ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.lg,
+                AppSpacing.xs,
+                AppSpacing.lg,
+                AppSpacing.md,
+              ),
+              child: Text(
+                'Bu bilgiler cihazınızda hesaplanır, hiçbir sunucuya gönderilmez. '
+                'Uygulama Google Play dışından yeniden paketlenmiş (modlanmış) '
+                'bir kopya ise satın alma doğrulaması reddedilir.',
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                  height: 1.45,
+                ),
+              ),
+            ),
+          ],
           const SectionHeader(title: 'Veri kaynakları'),
           const _SourceTile(
             icon: Icons.calculate_outlined,

@@ -11,6 +11,16 @@ destekli İslami soru-cevap özelliklerini tek uygulamada birleştiren, çevrimd
 
 ---
 
+## 0. Güvenlik ve dağıtım (özet)
+
+* Depo **gizlidir**; kaynak kod herkese açık değildir.
+* Sürüm paketleri `--obfuscate` + R8 küçültme ile üretilir.
+* **İmza sabitleme** (`EXPECTED_SIGNING_SHA256`) ve **paket bütünlüğü**
+  (klon/patch/debugger tespiti) satın alma doğrulamasına bağlıdır.
+* Ayrıntılı rehber: [`docs/GUVENLIK_KOPYA_KORUMASI.md`](docs/GUVENLIK_KOPYA_KORUMASI.md).
+
+---
+
 ## 1. Özellikler
 
 | Modül | Öne çıkanlar |

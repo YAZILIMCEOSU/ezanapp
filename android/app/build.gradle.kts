@@ -14,6 +14,19 @@ if (hasGoogleServices) {
     apply(plugin = "com.google.firebase.crashlytics")
 }
 
+// --- İmza sabitleme (signature pinning) -------------------------------------
+// Sürüm paketi, uygulamanın kendi imzasıyla imzalanmış olmalıdır. Beklenen
+// parmak izi derleme sırasında verilir:
+//   ./gradlew assembleRelease -PEXPECTED_SIGNING_SHA256=<sha256>
+// veya ortam değişkeni EXPECTED_SIGNING_SHA256. Boş bırakılırsa kontrol
+// yapılmaz (CI'daki geçici deneme anahtarı ve hata ayıklama derlemeleri için).
+val expectedSigningSha256: String =
+    ((project.findProperty("EXPECTED_SIGNING_SHA256") as String?)
+        ?: System.getenv("EXPECTED_SIGNING_SHA256")
+        ?: "")
+        .replace(":", "")
+        .lowercase()
+
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("key.properties")
 if (keystorePropertiesFile.exists()) {
@@ -44,6 +57,11 @@ android {
         versionName = flutter.versionName
         multiDexEnabled = true
         resourceConfigurations += listOf("tr", "en")
+        buildConfigField(
+            "String",
+            "EXPECTED_SIGNING_SHA256",
+            "\"$expectedSigningSha256\"",
+        )
         manifestPlaceholders["admobAppId"] =
             (project.findProperty("ADMOB_ANDROID_APP_ID") as String?)
                 ?: System.getenv("ADMOB_ANDROID_APP_ID")
@@ -80,6 +98,11 @@ android {
             versionNameSuffix = "-debug"
             isMinifyEnabled = false
         }
+    }
+
+    buildFeatures {
+        // BuildConfig.EXPECTED_SIGNING_SHA256 için gerekli (AGP 8+ varsayılanı kapalı).
+        buildConfig = true
     }
 
     packaging {

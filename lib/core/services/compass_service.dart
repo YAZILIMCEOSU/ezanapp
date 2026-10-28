@@ -372,6 +372,21 @@ class CompassService {
     }
   }
 
+  /// Ekran görüntüsü / ekran kaydı koruması (FLAG_SECURE).
+  ///
+  /// Ödeme ve satın alma ekranlarında açılır; kullanıcıya ait hassas bilgi ve
+  /// satın alma akışının ekran kaydına alınmasını engeller. Kanal yoksa
+  /// (masaüstü/test) sessizce yok sayılır.
+  Future<void> setSecureScreen(bool enabled) async {
+    try {
+      await _methods.invokeMethod<bool>('setSecureScreen', <String, Object?>{
+        'enabled': enabled,
+      });
+    } catch (_) {
+      // Test/masaüstü ortamı: koruma yok, işlev etkilenmez.
+    }
+  }
+
   /// APK paket bütünlüğü, imza SHA-256 ve kopya/yama koruma raporunu döndürür.
   Future<Map<String, Object?>> getIntegrityInfo() async {
     try {

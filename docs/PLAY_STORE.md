@@ -4,6 +4,10 @@
 > [`FREE_REKLAMLI_PAKET_VE_PREMIUM_REHBERI.md`](FREE_REKLAMLI_PAKET_VE_PREMIUM_REHBERI.md)
 > — AdMob kurulumu, UMP onayı, ürün kimlikleri, fiyatlandırma ve 2026 Play
 > Store kuralları (API 36, veri güvenliği, kapalı test) tıklama düzeyinde.
+>
+> **Güvenlik, kopya koruması ve gizli depo kuralları için bkz.**
+> [`GUVENLIK_KOPYA_KORUMASI.md`](GUVENLIK_KOPYA_KORUMASI.md) — imza sabitleme,
+> Play App Signing, mod/klon tespiti ve "sizin yapacaklarınız" listesi.
 
 Bu dosya, Play Console'da ilgili alanlara kopyalanacak metinleri ve mağaza
 varlıklarının listesini içerir. Uygulama adı ve metinler Türkçedir; İngilizce

@@ -108,6 +108,20 @@ jobs:
             cp build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/app-debug.apk
           } 2>&1 | tail -60 | tee /tmp/build.log
 
+      # İmza doğrulaması: üretilen APK gerçekten imzalı mı, sertifika hangisi?
+      # (Kopya koruması için "imza sabitleme" değeri bu çıktıdan alınır.)
+      - name: İmza doğrulaması (apksigner)
+        id: sign
+        if: always() && steps.build.outcome == 'success'
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          SDK="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
+          BT="$(ls -d "$SDK"/build-tools/* 2>/dev/null | tail -1)"
+          if [ -z "$BT" ]; then echo "build-tools bulunamadı"; exit 0; fi
+          "$BT/apksigner" verify --print-certs \
+            build/app/outputs/flutter-apk/app-release.apk 2>&1 | tee /tmp/sign.log | tail -30
+
       - name: flutter build appbundle (release, deneme anahtarı)
         id: release
         continue-on-error: true
@@ -169,10 +183,11 @@ jobs:
             echo "| analyze | ${{ steps.analyze.outcome }} |"
             echo "| test | ${{ steps.test.outcome }} |"
             echo "| test (uzak AI sözleşmesi) | ${{ steps.ai.outcome }} |"
+            echo "| imza doğrulaması (apksigner) | ${{ steps.sign.outcome }} |"
             echo "| build (debug apk) | ${{ steps.build.outcome }} |"
             echo "| build (release appbundle) | ${{ steps.release.outcome }} |"
             echo "| dene-apk indirmeye açıldı | ${{ steps.apk_release.outcome }} |"
-            for f in pubget fmt analyze test ai build release; do
+            for f in pubget fmt analyze test ai sign build release; do
               if [ -f /tmp/$f.log ]; then
                 echo
                 echo "## $f"

@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/errors/app_exception.dart';
 import '../../core/services/billing_service.dart';
+import '../../core/services/compass_service.dart';
 import '../../core/utils/logger.dart';
 import '../../design/app_colors.dart';
 import '../../design/app_spacing.dart';
@@ -50,10 +53,33 @@ class _PremiumScreenState extends ConsumerState<PremiumScreen> {
         ),
       ];
 
+  /// Ödeme ekranı ekran görüntüsüne/kaydına kapalı (FLAG_SECURE).
+  /// `dispose()` içinde `ref` kullanılamadığı için servis alanda tutulur.
+  CompassService? _compass;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => _loadProducts());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final CompassService service = _compass ?? ref.read(compassServiceProvider);
+    if (_compass == null) {
+      _compass = service;
+      unawaited(service.setSecureScreen(true));
+    }
+  }
+
+  @override
+  void dispose() {
+    final CompassService? service = _compass;
+    if (service != null) {
+      unawaited(service.setSecureScreen(false));
+    }
+    super.dispose();
   }
 
   Future<void> _loadProducts() async {

@@ -382,7 +382,8 @@ class MainActivity : FlutterActivity(), SensorEventListener {
 
     private fun buildIntegrityInfo(): Map<String, Any?> {
         val pkg = applicationContext.packageName
-        val isOfficial = pkg == "com.yazilimceosu.ezanai" || pkg == "com.yazilimceosu.ezanai.debug"
+        val isOfficialPackageName =
+            pkg == "com.yazilimceosu.ezanai" || pkg == "com.yazilimceosu.ezanai.debug"
         val installer = try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 packageManager.getInstallSourceInfo(pkg).installingPackageName
@@ -457,11 +458,31 @@ class MainActivity : FlutterActivity(), SensorEventListener {
         val hasTamper = hasPatcherApp || hasXposedHook || (!isDebugBuild && isDebuggerAttached)
         val isPlayInstall = installer == "com.android.vending" || installer == "com.google.android.feedback"
 
+        // İmza sabitleme: yayın paketi yalnızca bizim sertifikamızla imzalanmış
+        // olmalıdır. Beklenen parmak izi derlemede verilmezse (CI deneme
+        // anahtarı, hata ayıklama) kontrol atlanır; verildiğinde yeniden
+        // imzalanmış (modlanmış) APK'lar buradan yakalanır.
+        val expectedSignature = try {
+            BuildConfig.EXPECTED_SIGNING_SHA256.trim().lowercase()
+        } catch (_: Throwable) {
+            ""
+        }
+        val signaturePinned = expectedSignature.isNotEmpty()
+        val signatureMatches = if (!signaturePinned) {
+            true
+        } else {
+            val actual = sha256?.lowercase()
+            actual != null && actual == expectedSignature
+        }
+
         return mapOf(
             "packageName" to pkg,
-            "isOfficialPackage" to (isOfficial && !isCloned && !hasTamper),
+            "isOfficialPackage" to
+                (isOfficialPackageName && !isCloned && !hasTamper && signatureMatches),
             "installerPackage" to installer,
             "signingSha256" to sha256,
+            "signaturePinned" to signaturePinned,
+            "signatureMatches" to signatureMatches,
             "isClonedEnvironment" to isCloned,
             "hasTamperTools" to hasTamper,
             "isDebuggerAttached" to isDebuggerAttached,
