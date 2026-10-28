@@ -13,7 +13,7 @@
 | Soru | Cevap |
 |---|---|
 | Uygulama çalınabilir mi? | **Birebir çalışan kopyası üretilemez**: paket adı sabit, imza doğrulaması var, satın alma doğrulaması paket bütünlüğüne bağlı. Ama %100 imkânsız değildir — Android'de hiçbir uygulama bunu garanti edemez. |
-| Kaynak kodu görünüyor mu? | Depo **artık gizli** (private). APK içindeki Dart kodu `--obfuscate` ile isimleri karıştırılmış hâlde; Kotlin kodu R8 ile küçültülmüş. |
+| Kaynak kodu görünüyor mu? | Depo **hâlâ herkese açık** — gizlemek için 4 tıklama gerekiyor (Bölüm 6.0). Gizlendiğinde: APK içindeki Dart kodu `--obfuscate` ile karıştırılmış, Kotlin kodu R8 ile küçültülmüş olur. |
 | Modlanmış (Lucky Patcher vb.) APK çalışır mı? | Çalışabilir **ama Premium satın alma çalışmaz**: klon/patch/debugger tespit edilirse makbuz doğrulaması reddedilir. |
 | Yeniden imzalanmış (re-signed) APK yakalanıyor mu? | **Evet** — bu sürümde *imza sabitleme* eklendi: beklenen SHA-256 verilirse farklı imzalı paket "resmî olmayan" sayılır. |
 | Ekran görüntüsüyle satın alma hilesi? | Ödeme ekranında **FLAG_SECURE** açık; ekran görüntüsü/kayıt alınamaz. |
@@ -60,7 +60,7 @@
 
 | # | Katman | Nasıl çalışıyor | Durum |
 |---|---|---|---|
-| 1 | **Depo gizliliği** | GitHub deposu private | ✅ **Bu sürümde açıldı** |
+| 1 | **Depo gizliliği** | GitHub deposu private | ⚠️ **Sizin 4 tıklamanız gerekiyor** (Bölüm 6.0) |
 | 2 | **Kod karıştırma** | `flutter build --obfuscate --split-debug-info` (CI'da açık) | ✅ |
 | 3 | **Kod küçültme (R8)** | `isMinifyEnabled` + `isShrinkResources` + ProGuard kuralları | ✅ |
 | 4 | **İmza sabitleme** | `EXPECTED_SIGNING_SHA256` ile paket imzası karşılaştırılır | ✅ **Bu sürümde eklendi** |
@@ -86,7 +86,12 @@
 
 ---
 
-## 5) Depo gizli (private): ne değişti?
+## 5) Depo gizli (private): ne değişecek?
+
+> **Durum (28 Ekim 2026):** Depo **henüz herkese açık**. Bu ortamdaki GitHub
+> bağlantısının **depo görünürlüğünü değiştirme yetkisi yok** (kod yazma yetkisi
+> var, ayar değiştirme yok). Aşağıdaki 4 tıklamayı sizin yapmanız gerekiyor —
+> 20 saniye sürer.
 
 **Kazanç**
 * Kaynak kodunuz, hutbe/dua/AI veri tabanınız ve iş kurallarınız artık
@@ -106,6 +111,25 @@
 ---
 
 ## 6) SİZİN YAPACAKLARINIZ (tıklama düzeyinde)
+
+### 6.0. Depoyu gizli yapın — **ilk ve en kolay adım** (20 saniye)
+
+1. Tarayıcıda açın: **`https://github.com/YAZILIMCEOSU/ezanapp/settings`**
+   (giriş yapmış olmanız gerekir).
+2. Sayfayı en alta kaydırın → **"Danger Zone"** (Kırmızı çerçeveli bölüm).
+3. **"Change repository visibility"** satırında **"Change visibility"** düğmesine basın.
+4. **"Make private"** seçin → açılan uyarı kutusuna depo adını
+   `YAZILIMCEOSU/ezanapp` yazın → **"I understand, change repository visibility"**.
+
+**Bitti.** Sayfayı yenilediğinizde depo adının yanında **"Private"** yazacak.
+
+Notlar:
+* Gizledikten sonra **APK indirme bağlantısı** yalnızca GitHub hesabınızla
+  giriş yapınca çalışır (Bölüm 2'deki dağıtım yolları).
+* Depoya başka biri bakacaksa: *Settings → Collaborators → Add people →
+  yetki: **Read***.
+* GitHub Actions ücretsiz planda özel depolarda **aylık 2.000 dakika** verir;
+  bir derleme ~14 dakika. Kota yaklaşırsa bana söyleyin, CI'ı daraltırım.
 
 ### 6.1. İmza anahtarını (keystore) oluşturun ve 3 yerde saklayın — **en kritik adım**
 
