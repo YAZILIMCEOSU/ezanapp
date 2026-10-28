@@ -24,8 +24,7 @@ void main() {
       bool playInstall = true,
     }) => <String, Object?>{
       'packageName': 'com.yazilimceosu.ezanai',
-      'isOfficialPackage':
-          official && !tamper && !cloned && signatureMatches,
+      'isOfficialPackage': official && !tamper && !cloned && signatureMatches,
       'installerPackage': playInstall ? 'com.android.vending' : null,
       'signingSha256': 'a' * 64,
       'signaturePinned': pinned,
