@@ -247,6 +247,18 @@ aapt dump badging ezanai-kurulum.apk | head -1        # package: name='com.yazil
 #    satırları (imza, kurulum kaynağı, mod/klon tespiti) cihazda gösterilir.
 ```
 
+**Deneme (CI) paketinin gerçek imzası** — her CI derlemesinde
+`.ci/report.md` içindeki `## sign` bölümünde yazılır:
+
+```
+V2 Signer: certificate DN: CN=EzanAI CI, OU=QA, O=Yazilimceosu, L=Istanbul, C=TR
+V2 Signer: certificate SHA-256 digest: 4da153191a7ae5b0f47638ef5663f807ecab860251b291bbbca8c942d826a7e7
+```
+
+> Bu **CI'nın geçici anahtarıdır** — yalnızca deneme APK'sı içindir, Play'e
+> yüklenmez. Play'e yükleyeceğiniz paket **sizin 6.1'de ürettiğiniz anahtarla**
+> imzalanır; imza sabitleme değeri (6.3) **o** parmak izidir.
+
 Beklenen görüntü (Play'den kurulmuş sürümde):
 
 | Satır | Beklenen değer |
