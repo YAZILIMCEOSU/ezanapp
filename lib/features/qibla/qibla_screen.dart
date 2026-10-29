@@ -13,6 +13,7 @@ import '../../core/services/compass_service.dart';
 import '../../core/utils/geo.dart';
 import '../../core/utils/logger.dart';
 import '../../core/utils/qibla_math.dart';
+import '../../core/utils/sun_position.dart';
 import '../../data/models/app_settings.dart';
 import '../../data/models/city.dart';
 import '../../data/models/prayer.dart';
@@ -45,6 +46,12 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
   bool _showCalibrationGuide = false;
   String? _error;
 
+  // Güneşle Kıble doğrulaması (pusuladan bağımsız ikinci kaynak).
+  String _sunKey = '';
+  QiblaSunAlignment? _sunToday;
+  QiblaSunAlignment? _sunBest;
+  SunCoordinates? _sunNow;
+
   @override
   void initState() {
     super.initState();
@@ -54,6 +61,8 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
   Future<void> _start() async {
     final CompassService service = ref.read(compassServiceProvider);
     _compassService = service;
+    // Kıble hizalanırken ekran sönmesin (rakip uygulamalarda standart davranış).
+    unawaited(service.setKeepScreenOn(true));
     final bool calibrationSeen = ref
         .read(runtimeProvider)
         .preferences
@@ -160,8 +169,46 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
   @override
   void dispose() {
     _subscription?.cancel();
+    unawaited(_compassService?.setKeepScreenOn(false));
     unawaited(_compassService?.stop());
     super.dispose();
+  }
+
+  /// Güneşle Kıble doğrulaması verisini (konum başına bir kez) hesaplar.
+  ///
+  /// Hesap ~10 ms sürer; kare çizimini bloklamamak için kare sonrasında çağrılır.
+  void _refreshSunCheck(UserLocation location) {
+    final String key =
+        '${location.latitude.toStringAsFixed(3)},'
+        '${location.longitude.toStringAsFixed(3)}';
+    if (key == _sunKey) return;
+    _sunKey = key;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final DateTime now = DateTime.now();
+      final QiblaSunAlignment? today = QiblaSunCheck.bestOn(
+        day: now,
+        latitude: location.latitude,
+        longitude: location.longitude,
+        toleranceDegrees: 15,
+      );
+      final QiblaSunAlignment? best = QiblaSunCheck.bestUpcoming(
+        from: now,
+        latitude: location.latitude,
+        longitude: location.longitude,
+      );
+      final SunCoordinates sunNow = SunPosition.at(
+        utc: now.toUtc(),
+        latitude: location.latitude,
+        longitude: location.longitude,
+      );
+      if (!mounted) return;
+      setState(() {
+        _sunToday = today;
+        _sunBest = best;
+        _sunNow = sunNow;
+      });
+    });
   }
 
   @override
@@ -178,6 +225,7 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
       trueQibla,
       declination: declination,
     );
+    _refreshSunCheck(location);
     final ThemeData theme = Theme.of(context);
 
     return Scaffold(
@@ -361,7 +409,6 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
                     padding: const EdgeInsets.all(AppSpacing.xl),
                     child: _QiblaMapViewCard(
                       location: location,
-                      compassQibla: compassQibla,
                       trueQibla: trueQibla,
                       distanceKm: distance,
                       heading: activeReading?.heading,
@@ -372,10 +419,15 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
                 else ...<Widget>[
                   const SizedBox(height: AppSpacing.xs),
                   Center(
-                    child: _CompassDial(
-                      reading: activeReading,
-                      qibla: trueQibla,
-                      displayQibla: compassQibla,
+                    // 320 dp'lik küçük ekranlarda taşmayı önler; tablette
+                    // aynı oranda büyütür.
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: _CompassDial(
+                        reading: activeReading,
+                        qibla: trueQibla,
+                        displayQibla: compassQibla,
+                      ),
                     ),
                   ),
                   const SizedBox(height: AppSpacing.md),
@@ -392,13 +444,14 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
                 const SizedBox(height: AppSpacing.lg),
                 _InfoRow(
                   icon: Icons.mosque_rounded,
-                  label: 'Diyanet Kıble Pusulası Açısı',
-                  value: '${compassQibla.toStringAsFixed(1)}°',
+                  label: 'Kıble açısı (gerçek kuzey · Diyanet)',
+                  value: '${trueQibla.toStringAsFixed(1)}°',
                 ),
                 _InfoRow(
                   icon: Icons.explore_outlined,
-                  label: 'Coğrafi Kıble Açısı (Gerçek Kuzey)',
-                  value: '${trueQibla.toStringAsFixed(1)}°',
+                  label: 'Elde pusula için Kıble açısı',
+                  value:
+                      '${GeoUtils.magneticNeedleQiblaBearing(location.latitude, location.longitude).toStringAsFixed(1)}°',
                 ),
                 _InfoRow(
                   icon: Icons.straighten_rounded,
@@ -422,6 +475,22 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
                   value: _declinationFromHardware
                       ? 'Android GeomagneticField (WMM)'
                       : 'WMM-2025 dahili model',
+                ),
+                _InfoRow(
+                  icon: Icons.speed_rounded,
+                  label: 'Ölçüm hassasiyeti',
+                  value: activeReading == null
+                      ? 'Ölçülüyor…'
+                      : '±${activeReading.accuracy.toStringAsFixed(0)}°',
+                ),
+                _InfoRow(
+                  icon: Icons.phone_android_rounded,
+                  label: 'Telefon tutuşu',
+                  value: switch (activeReading?.pose) {
+                    'upright' => 'Dik · arka kamera yönü',
+                    'blend' => 'Geçiş açısı · düz tutun',
+                    _ => activeReading == null ? 'Ölçülüyor…' : 'Yatay · üst kenar',
+                  },
                 ),
                 if (activeReading != null)
                   _InfoRow(
@@ -463,6 +532,20 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
                     label: const Text(
                       'Hata & Sensör Test Modu (Canlı Tanılama)',
                     ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.xl,
+                    AppSpacing.md,
+                    AppSpacing.xl,
+                    0,
+                  ),
+                  child: _SunVerificationCard(
+                    today: _sunToday,
+                    upcoming: _sunBest,
+                    now: _sunNow,
+                    qibla: trueQibla,
                   ),
                 ),
                 const SectionHeader(
@@ -1157,7 +1240,6 @@ class _CompassDial extends StatelessWidget {
 class _QiblaMapViewCard extends StatelessWidget {
   const _QiblaMapViewCard({
     required this.location,
-    required this.compassQibla,
     required this.trueQibla,
     required this.distanceKm,
     required this.heading,
@@ -1166,7 +1248,6 @@ class _QiblaMapViewCard extends StatelessWidget {
   });
 
   final UserLocation location;
-  final double compassQibla;
   final double trueQibla;
   final double distanceKm;
   final double? heading;
@@ -1252,9 +1333,9 @@ class _QiblaMapViewCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    const Text('Diyanet Pusula Kıble Açısı'),
+                    const Text('Kıble açısı (gerçek kuzey)'),
                     Text(
-                      '${compassQibla.toStringAsFixed(1)}°',
+                      '${trueQibla.toStringAsFixed(1)}°',
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w800,
                         color: AppColors.emerald500,
@@ -1266,9 +1347,9 @@ class _QiblaMapViewCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    const Text('Harita / Gerçek Kuzey Açısı'),
+                    const Text('Elde pusula için açı'),
                     Text(
-                      '${trueQibla.toStringAsFixed(1)}°',
+                      '${GeoUtils.magneticNeedleQiblaBearing(location.latitude, location.longitude).toStringAsFixed(1)}°',
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w800,
                       ),
@@ -1804,6 +1885,136 @@ class _LiveQiblaInteractiveMapState extends State<_LiveQiblaInteractiveMap> {
             ),
           ),
       ],
+    );
+  }
+}
+
+/// **Güneşle Kıble doğrulama kartı** — pusuladan tamamen bağımsız kontrol.
+///
+/// Güneş, yılda iki kez (mayıs sonu / temmuz ortası) Kâbe doğrultusuna gelir.
+/// O anda bir çubuğun gölgesi Kıble yönünü **kesin** gösterir; kullanıcı hem
+/// uygulamanın açısını hem de kendi yönünü doğrulayabilir.
+class _SunVerificationCard extends StatelessWidget {
+  const _SunVerificationCard({
+    required this.today,
+    required this.upcoming,
+    required this.now,
+    required this.qibla,
+  });
+
+  final QiblaSunAlignment? today;
+  final QiblaSunAlignment? upcoming;
+  final SunCoordinates? now;
+  final double qibla;
+
+  static const List<String> _months = <String>[
+    'Ocak',
+    'Şubat',
+    'Mart',
+    'Nisan',
+    'Mayıs',
+    'Haziran',
+    'Temmuz',
+    'Ağustos',
+    'Eylül',
+    'Ekim',
+    'Kasım',
+    'Aralık',
+  ];
+
+  String _dateLabel(DateTime d) => '${d.day} ${_months[d.month - 1]}';
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final QiblaSunAlignment? reliable = (today?.isReliable ?? false)
+        ? today
+        : upcoming;
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: AppColors.gold500.withValues(alpha: 0.10),
+        borderRadius: AppRadius.allLg,
+        border: Border.all(color: AppColors.gold500.withValues(alpha: 0.35)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              const Icon(Icons.wb_sunny_outlined, size: 18),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Text(
+                  'Güneşle Kıble Doğrulama',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+              if (now != null)
+                Text(
+                  now!.isDaylight ? 'Gündüz' : 'Gece',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            'Pusuladan bağımsız ikinci kaynak: yılda iki kez güneş tam Kâbe '
+            'doğrultusuna gelir. O anda gölgeniz Kıble yönünü gösterir.',
+            style: theme.textTheme.bodySmall?.copyWith(height: 1.45),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          if (reliable != null)
+            Text(
+              '${(today?.isReliable ?? false) ? 'Bugün' : _dateLabel(reliable.time)}'
+              ' ${reliable.windowLabel} · güneş Kıble yönünde '
+              '(fark ${reliable.differenceDegrees.toStringAsFixed(2)}°)',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            )
+          else if (today != null)
+            Text(
+              'Bugün en yakın an ${today!.clockLabel} '
+              '(fark ${today!.differenceDegrees.toStringAsFixed(1)}°) · '
+              'tam doğrulama için sonraki uygun gün beklenmeli.',
+              style: theme.textTheme.bodyMedium,
+            )
+          else
+            Text(
+              'Bu konumda güneş Kıble doğrultusuna yaklaşmıyor; '
+              'pusula ölçümünü kullanın.',
+              style: theme.textTheme.bodyMedium,
+            ),
+          if (now != null) ...<Widget>[
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              'Şu an güneş: ${now!.azimuth.toStringAsFixed(1)}° yönünde, '
+              'ufkun ${now!.altitude.toStringAsFixed(0)}° üzerinde · '
+              'Kıble ${qibla.toStringAsFixed(1)}°',
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+          if (reliable != null && reliable.isReliable) ...<Widget>[
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              'O an: güneşe sırtınızı dönün, gölgeniz '
+              '${reliable.shadowBearing.toStringAsFixed(0)}° yönünü gösterir '
+              '= Kıble.',
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 }

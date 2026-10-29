@@ -344,14 +344,24 @@ void main() {
       expect(interference.needsCalibration, isTrue);
       expect(interference.calibrationMessage, contains('Manyetik parazit'));
 
+      // Dik tutuş artık geçerli kullanımdır (arka kamera yönü esas alınır);
+      // uyarı yalnızca iki yönün harmanlandığı geçiş açısında üretilir.
       const CompassReading tilted = CompassReading(
         heading: 150,
         accuracy: 5,
         tilt: 52.0,
+        pose: 'upright',
       );
       expect(tilted.isTilted, isTrue);
-      expect(tilted.needsCalibration, isTrue);
-      expect(tilted.calibrationMessage, contains('eğik'));
+      expect(tilted.needsCalibration, isFalse);
+      const CompassReading blending = CompassReading(
+        heading: 150,
+        accuracy: 5,
+        tilt: 45.0,
+        pose: 'blend',
+      );
+      expect(blending.needsCalibration, isTrue);
+      expect(blending.calibrationMessage, contains('eğik'));
     });
   });
 

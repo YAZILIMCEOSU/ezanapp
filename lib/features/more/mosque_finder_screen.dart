@@ -26,12 +26,7 @@ class MosquePlace {
     required this.latitude,
     required this.longitude,
     this.isExactCoordinate = true,
-    this.facilities = const <String>[
-      'Cuma Namazı',
-      'Şadırvan',
-      'Hanımlar Bölümü',
-      'Tahiyyetü\'l-Mescid (2 Rekât)',
-    ],
+    this.facilities = const <String>[],
   });
 
   final String name;
@@ -91,6 +86,246 @@ class MosquePlace {
   }
 }
 
+/// Uyarı şeridi (çevrimdışı / kısmi sonuç).
+class _InlineNotice extends StatelessWidget {
+  const _InlineNotice({required this.icon, required this.text});
+
+  final IconData icon;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Icon(icon, size: 18, color: theme.colorScheme.onSurfaceVariant),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Text(
+              text,
+              style: theme.textTheme.bodySmall?.copyWith(height: 1.4),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Tek cami kartı.
+///
+/// **Düzeltilen hatalar**
+/// * Sağ taraftaki iki ikon + "Yol Tarifi" düğmesi 320 dp ekranlarda satırı
+///   taşırıyordu (RenderFlex overflow). Düğmeler alt satıra alındı.
+/// * Tesis çipleri cami verisinde yokken boş bir boşluk bırakıyordu; artık
+///   yalnızca gerçek veri varsa gösterilir (uydurma etiket yok).
+/// * Çok uzun cami adları taşmadan kesiliyor.
+class _MosqueCard extends StatelessWidget {
+  const _MosqueCard({
+    required this.mosque,
+    required this.distanceLabel,
+    required this.directionLabel,
+    required this.onCompass,
+    required this.onDirections,
+    required this.theme,
+    this.onExactPin,
+  });
+
+  final MosquePlace mosque;
+  final String distanceLabel;
+  final String directionLabel;
+  final VoidCallback onCompass;
+  final VoidCallback? onExactPin;
+  final VoidCallback onDirections;
+  final ThemeData theme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: AppColors.emerald600.withValues(alpha: 0.14),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  alignment: Alignment.center,
+                  child: const Icon(
+                    Icons.mosque_outlined,
+                    color: AppColors.emerald500,
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        mosque.name,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        mosque.district.isEmpty
+                            ? '$distanceLabel ($directionLabel yönü)'
+                            : '${mosque.district} · $distanceLabel '
+                                  '($directionLabel yönü)',
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            if (mosque.facilities.isNotEmpty) ...<Widget>[
+              const SizedBox(height: AppSpacing.sm),
+              Wrap(
+                spacing: AppSpacing.xs,
+                runSpacing: AppSpacing.xs,
+                children: <Widget>[
+                  for (final String f in mosque.facilities)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.sm,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(f, style: theme.textTheme.labelSmall),
+                    ),
+                ],
+              ),
+            ],
+            const SizedBox(height: AppSpacing.sm),
+            Wrap(
+              spacing: AppSpacing.sm,
+              runSpacing: AppSpacing.xs,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: <Widget>[
+                FilledButton.tonalIcon(
+                  onPressed: onDirections,
+                  icon: const Icon(Icons.directions_walk_rounded, size: 16),
+                  label: const Text('Yol Tarifi'),
+                ),
+                OutlinedButton.icon(
+                  onPressed: onCompass,
+                  icon: const Icon(Icons.explore_rounded, size: 16),
+                  label: const Text('Pusula'),
+                ),
+                if (onExactPin != null)
+                  IconButton(
+                    visualDensity: VisualDensity.compact,
+                    tooltip: 'Haritada Tam Yeri İşaretle',
+                    onPressed: onExactPin,
+                    icon: const Icon(
+                      Icons.location_on_outlined,
+                      color: AppColors.emerald500,
+                      size: 20,
+                    ),
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// **Türkçe'ye duyarlı arama normalizasyonu.**
+///
+/// `'İ'.toLowerCase()` Dart'ta `i̇` (i + birleşik nokta) üretir; bu yüzden
+/// "ŞİŞLİ" ile "şişli" eşleşmez. Ayrıca kullanıcı çoğu zaman Türkçe karakter
+/// yazmaz ("cami", "sisli"). Bu yardımcı tüm aksanları sadeleştirir:
+/// `Şişli Camii` → `sisli camii`.
+String normalizeTurkish(String input) {
+  const Map<String, String> fold = <String, String>{
+    'İ': 'i',
+    'I': 'i',
+    'ı': 'i',
+    'Ş': 's',
+    'ş': 's',
+    'Ğ': 'g',
+    'ğ': 'g',
+    'Ü': 'u',
+    'ü': 'u',
+    'Ö': 'o',
+    'ö': 'o',
+    'Ç': 'c',
+    'ç': 'c',
+    'Â': 'a',
+    'â': 'a',
+    'Î': 'i',
+    'î': 'i',
+    'Û': 'u',
+    'û': 'u',
+  };
+  final StringBuffer buffer = StringBuffer();
+  for (final String ch in input.split('')) {
+    buffer.write(fold[ch] ?? ch.toLowerCase());
+  }
+  return buffer
+      .toString()
+      .replaceAll('\u0307', '')
+      .replaceAll(RegExp(r'\s+'), ' ')
+      .trim();
+}
+
+/// Camileri tekilleştirir: aynı ad (Türkçe normalleştirilmiş) ve ~120 m içinde
+/// olan kayıtlar tek kayda indirilir. OSM + Nominatim birlikte kullanıldığında
+/// aynı cami 2–4 kez listelenebiliyordu; bu fonksiyon onu engeller.
+List<MosquePlace> dedupeMosques(List<MosquePlace> input) {
+  final List<MosquePlace> result = <MosquePlace>[];
+  for (final MosquePlace candidate in input) {
+    final String key = normalizeTurkish(
+      candidate.name,
+    ).replaceAll(RegExp(r'[^a-z0-9]'), '');
+    final bool duplicate = result.any((MosquePlace existing) {
+      final String existingKey = normalizeTurkish(
+        existing.name,
+      ).replaceAll(RegExp(r'[^a-z0-9]'), '');
+      final bool sameName =
+          key == existingKey ||
+          (key.length > 6 &&
+              existingKey.length > 6 &&
+              (key.contains(existingKey) || existingKey.contains(key)));
+      final double metres =
+          existing.distanceKmFrom(candidate.latitude, candidate.longitude) *
+          1000;
+      return sameName && metres < 120;
+    });
+    if (!duplicate) result.add(candidate);
+  }
+  return result;
+}
+
 /// Etraftaki camileri canlı konumdan bulan, istenen camiyi arayan ve tam nokta
 /// navigasyonu açan ekran.
 class MosqueFinderScreen extends ConsumerStatefulWidget {
@@ -108,6 +343,7 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
   bool _loadingOnline = false;
   bool _searchingOnline = false;
   bool _showInlineMap = true;
+  bool _offlineFallback = false;
   String _query = '';
 
   @override
@@ -141,8 +377,12 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
   }
 
   Future<void> _fetchNearbyOnline() async {
+    if (!mounted) return;
     final UserLocation loc = ref.read(activeLocationProvider);
-    setState(() => _loadingOnline = true);
+    setState(() {
+      _loadingOnline = true;
+      _offlineFallback = false;
+    });
     // ÖNEMLİ: Overpass QL'de `out center 60;` mesafeye göre değil OSM ID'sine göre
     // ilk 60 kaydı kesip en yakın sokak camilerini düşürüyordu!
     // Bu yüzden 2.5 km mahalle yarıçapındaki TÜM cami ve mescitler (`out center;`)
@@ -294,10 +534,14 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
         setState(() => _onlineMosques = collected);
       }
     } catch (_) {
-      // Çevrimdışı durumda yerleşik cami veritabanı kullanılır.
+      // Çevrimdışı / servis hatası: kullanıcıya açıkça söylenir ve
+      // yalnızca yakındaki yerleşik kayıtlar gösterilir.
     } finally {
       if (mounted) {
-        setState(() => _loadingOnline = false);
+        setState(() {
+          _loadingOnline = false;
+          _offlineFallback = collected.isEmpty;
+        });
       }
     }
   }
@@ -325,7 +569,7 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
     if (!mounted) return;
     setState(() => _searchingOnline = true);
     try {
-      final String normalized = rawQuery.toLowerCase();
+      final String normalized = normalizeTurkish(rawQuery);
       final String effectiveQuery =
           normalized.contains('cami') || normalized.contains('mescid')
           ? rawQuery
@@ -398,45 +642,55 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
     }
   }
 
+  /// Listeye girecek kayıtlar.
+  ///
+  /// **Düzeltilen hatalar**
+  /// 1. Sabit "landmark" listesi (Bağcılar/İstanbul camileri) **her konumda**
+  ///    listeye ekleniyordu; Ankara'daki kullanıcı İstanbul camilerini görüyordu.
+  ///    Artık yalnızca çevrimiçi sonuç yoksa **ve** 60 km içindeyse kullanılır.
+  /// 2. Aynı cami OSM + Nominatim'den 2–4 kez gelebiliyordu → [dedupeMosques].
+  /// 3. Arama `toLowerCase().contains()` ile yapıldığı için "ŞİŞLİ" araması
+  ///    "şişli" ile eşleşmiyordu → Türkçe normalizasyon.
+  /// 4. Çevrimiçi arama sonuçları, yazılan metni birebir içermediğinde
+  ///    (ör. "Ayasofya Camii" → "Ayasofya-i Kebîr Cami-i Şerifi") listeden
+  ///    düşüyordu → kaynak bilgisi taşınır, çevrimiçi sonuçlar korunur.
   List<MosquePlace> _resolvedMosques(UserLocation loc) {
-    final String q = _query.trim().toLowerCase();
-    final List<MosquePlace> basePool = <MosquePlace>[
-      if (q.isNotEmpty) ..._searchedMosques,
+    final String q = normalizeTurkish(_query);
+    final bool searching = q.isNotEmpty;
+    final List<MosquePlace> pool = <MosquePlace>[
+      if (searching) ..._searchedMosques,
       ..._onlineMosques,
-      ..._landmarkMosques,
+      if (!searching && _onlineMosques.isEmpty)
+        ..._landmarkMosques.where(
+          (MosquePlace m) =>
+              m.distanceKmFrom(loc.latitude, loc.longitude) <= 60,
+        ),
     ];
-    final Set<String> seen = <String>{};
-    final List<MosquePlace> unique = <MosquePlace>[];
-    for (final MosquePlace m in basePool) {
-      final String key =
-          '${m.name.toLowerCase()}_${m.latitude.toStringAsFixed(3)}_${m.longitude.toStringAsFixed(3)}';
-      if (seen.add(key)) {
-        unique.add(m);
-      }
-    }
-    if (q.isEmpty) {
+    final List<MosquePlace> unique = dedupeMosques(pool);
+
+    double distanceOf(MosquePlace m) =>
+        m.distanceKmFrom(loc.latitude, loc.longitude);
+
+    if (!searching) {
       unique.sort(
-        (MosquePlace a, MosquePlace b) => a
-            .distanceKmFrom(loc.latitude, loc.longitude)
-            .compareTo(b.distanceKmFrom(loc.latitude, loc.longitude)),
+        (MosquePlace a, MosquePlace b) =>
+            distanceOf(a).compareTo(distanceOf(b)),
       );
       return unique;
     }
 
+    // Çevrimiçi aramadan gelenler her zaman görünür (metin eşleşmese de).
+    final Set<MosquePlace> searched = _searchedMosques.toSet();
     final List<MosquePlace> filtered = unique.where((MosquePlace m) {
-      return m.name.toLowerCase().contains(q) ||
-          m.district.toLowerCase().contains(q);
+      if (searched.contains(m)) return true;
+      return normalizeTurkish(m.name).contains(q) ||
+          normalizeTurkish(m.district).contains(q);
     }).toList();
-
-    // Eğer çevrimiçi aramadan gelen sonuçlar varsa onları en üstte, geri
-    // kalanları mesafeye göre sırala.
     filtered.sort((MosquePlace a, MosquePlace b) {
-      final bool aSearched = _searchedMosques.contains(a);
-      final bool bSearched = _searchedMosques.contains(b);
+      final bool aSearched = searched.contains(a);
+      final bool bSearched = searched.contains(b);
       if (aSearched != bSearched) return aSearched ? -1 : 1;
-      return a
-          .distanceKmFrom(loc.latitude, loc.longitude)
-          .compareTo(b.distanceKmFrom(loc.latitude, loc.longitude));
+      return distanceOf(a).compareTo(distanceOf(b));
     });
     return filtered;
   }
@@ -885,9 +1139,123 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
   }
 
   Future<void> _refreshGpsAndFetch() async {
+    if (!mounted) return;
     setState(() => _loadingOnline = true);
     await ref.read(locationControllerProvider.notifier).refreshFromGps();
     await _fetchNearbyOnline();
+  }
+
+  /// Liste / boş / yükleniyor / hata durumlarını üretir.
+  Widget _buildMosqueList(
+    List<MosquePlace> mosques,
+    UserLocation loc,
+    ThemeData theme,
+  ) {
+    if (mosques.isEmpty) {
+      if (_loadingOnline || _searchingOnline) {
+        return const Padding(
+          padding: EdgeInsets.symmetric(vertical: AppSpacing.xxl),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              CircularProgressIndicator(),
+              SizedBox(height: AppSpacing.md),
+              Text('Yakındaki camiler aranıyor…'),
+            ],
+          ),
+        );
+      }
+      final bool searching = _query.trim().isNotEmpty;
+      return ListView(
+        // RefreshIndicator'ın çalışması için kaydırılabilir boş görünüm.
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.all(AppSpacing.xl),
+        children: <Widget>[
+          const SizedBox(height: AppSpacing.xl),
+          Icon(
+            searching ? Icons.search_off_rounded : Icons.mosque_outlined,
+            size: 48,
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            searching
+                ? '"${_query.trim()}" için yakında cami bulunamadı.'
+                : 'Bu konumda kayıtlı cami bulunamadı.',
+            textAlign: TextAlign.center,
+            style: theme.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            searching
+                ? 'Yazımı kontrol edin (ör. "Sultanahmet"), daha kısa bir ad '
+                      'yazın veya haritada arayın.'
+                : 'Konumunuzu GPS ile güncelleyin veya şehir seçin; internet '
+                      'yoksa yalnızca kayıtlı camiler listelenir.',
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+              height: 1.4,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
+            children: <Widget>[
+              FilledButton.tonalIcon(
+                onPressed: _loadingOnline ? null : _refreshGpsAndFetch,
+                icon: const Icon(Icons.my_location_rounded, size: 18),
+                label: const Text('Konumumu güncelle'),
+              ),
+              OutlinedButton.icon(
+                onPressed: () async {
+                  await context.push(AppRoutes.cities);
+                  if (mounted) await _fetchNearbyOnline();
+                },
+                icon: const Icon(Icons.location_city_rounded, size: 18),
+                label: const Text('Şehir seç'),
+              ),
+              if (searching)
+                OutlinedButton.icon(
+                  onPressed: () =>
+                      _openExternalMosqueSearch(loc, customQuery: _query),
+                  icon: const Icon(Icons.map_outlined, size: 18),
+                  label: const Text('Haritada ara'),
+                ),
+            ],
+          ),
+        ],
+      );
+    }
+
+    return ListView.separated(
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      itemCount: mosques.length,
+      separatorBuilder: (BuildContext context, int index) =>
+          const SizedBox(height: AppSpacing.sm),
+      itemBuilder: (BuildContext context, int index) {
+        final MosquePlace mosque = mosques[index];
+        return _MosqueCard(
+          mosque: mosque,
+          distanceLabel: mosque.formattedDistanceFrom(
+            loc.latitude,
+            loc.longitude,
+          ),
+          directionLabel: mosque.compassLabelFrom(loc.latitude, loc.longitude),
+          onCompass: () => _showMosqueCompassSheet(mosque, loc),
+          onExactPin: mosque.isExactCoordinate
+              ? () => _openExactMapPin(mosque)
+              : null,
+          onDirections: () => _openDirections(mosque, loc),
+          theme: theme,
+        );
+      },
+    );
   }
 
   @override
@@ -1062,127 +1430,26 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
             ),
           if (_loadingOnline || _searchingOnline)
             const LinearProgressIndicator(minHeight: 2),
+          if (_offlineFallback && _query.trim().isEmpty)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.lg,
+                0,
+                AppSpacing.lg,
+                AppSpacing.sm,
+              ),
+              child: _InlineNotice(
+                icon: Icons.cloud_off_rounded,
+                text:
+                    'Çevrimiçi cami verisi alınamadı (internet veya servis '
+                    'sorunu). Yalnızca uygulamada kayıtlı ve 60 km içindeki '
+                    'camiler gösteriliyor. Yenilemek için listeyi aşağı çekin.',
+              ),
+            ),
           Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              itemCount: mosques.length,
-              separatorBuilder: (BuildContext context, int index) =>
-                  const SizedBox(height: AppSpacing.sm),
-              itemBuilder: (BuildContext context, int index) {
-                final MosquePlace mosque = mosques[index];
-                final String distance = mosque.formattedDistanceFrom(
-                  loc.latitude,
-                  loc.longitude,
-                );
-                final String dir = mosque.compassLabelFrom(
-                  loc.latitude,
-                  loc.longitude,
-                );
-                return Card(
-                  margin: EdgeInsets.zero,
-                  child: Padding(
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: AppColors.emerald600.withValues(
-                                  alpha: 0.14,
-                                ),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              alignment: Alignment.center,
-                              child: const Icon(
-                                Icons.mosque_outlined,
-                                color: AppColors.emerald500,
-                                size: 20,
-                              ),
-                            ),
-                            const SizedBox(width: AppSpacing.md),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    mosque.name,
-                                    style: theme.textTheme.titleSmall?.copyWith(
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                  Text(
-                                    '${mosque.district} · $distance ($dir yönü)',
-                                    style: theme.textTheme.bodySmall?.copyWith(
-                                      color: theme.colorScheme.onSurfaceVariant,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            IconButton(
-                              visualDensity: VisualDensity.compact,
-                              tooltip: 'Camiye Canlı Pusula ve Yön',
-                              onPressed: () =>
-                                  _showMosqueCompassSheet(mosque, loc),
-                              icon: const Icon(
-                                Icons.explore_rounded,
-                                color: AppColors.emerald500,
-                                size: 20,
-                              ),
-                            ),
-                            if (mosque.isExactCoordinate)
-                              IconButton(
-                                visualDensity: VisualDensity.compact,
-                                tooltip: 'Haritada Tam Yeri İşaretle',
-                                onPressed: () => _openExactMapPin(mosque),
-                                icon: const Icon(
-                                  Icons.location_on_outlined,
-                                  color: AppColors.emerald500,
-                                  size: 20,
-                                ),
-                              ),
-                            FilledButton.tonalIcon(
-                              onPressed: () => _openDirections(mosque, loc),
-                              icon: const Icon(
-                                Icons.directions_walk_rounded,
-                                size: 16,
-                              ),
-                              label: const Text('Yol Tarifi'),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: AppSpacing.sm),
-                        Wrap(
-                          spacing: AppSpacing.xs,
-                          runSpacing: AppSpacing.xs,
-                          children: <Widget>[
-                            for (final String f in mosque.facilities)
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: AppSpacing.sm,
-                                  vertical: 2,
-                                ),
-                                decoration: BoxDecoration(
-                                  color:
-                                      theme.colorScheme.surfaceContainerHighest,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Text(
-                                  f,
-                                  style: theme.textTheme.labelSmall,
-                                ),
-                              ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
+            child: RefreshIndicator(
+              onRefresh: _fetchNearbyOnline,
+              child: _buildMosqueList(mosques, loc, theme),
             ),
           ),
         ],

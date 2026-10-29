@@ -70,6 +70,15 @@ class MainActivity : FlutterActivity(), SensorEventListener {
     private var lastEmittedHeading: Double = 0.0
     private var activeSensorSource: String = "initializing"
 
+    // --- Poz (tutuş) füzyonu -------------------------------------------------
+    // Telefon **yatay** tutulduğunda ekranın üst kenarı, **dik** tutulduğunda
+    // arka kamera yönü Kıble'ye çevrilir. İki yön de döndürme matrisinden
+    // doğrudan hesaplanır ve yatay izdüşüm büyüklükleriyle **dairesel** olarak
+    // harmanlanır. Böylece 45°'lik okuma açısında açı sıçraması olmaz.
+    private var poseWeight: Double = 0.0
+    private var hasPoseWeight = false
+    private var lastPoseLabel: String = "flat"
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as? SensorManager
@@ -142,6 +151,11 @@ class MainActivity : FlutterActivity(), SensorEventListener {
                         val lon = (call.argument<Number>("lon")?.toFloat()) ?: 28.9784f
                         val field = GeomagneticField(lat, lon, 0f, System.currentTimeMillis())
                         result.success(field.declination.toDouble())
+                    }
+                    "setKeepScreenOn" -> {
+                        val enabled = call.argument<Boolean>("enabled") ?: false
+                        setKeepScreenOnFlag(enabled)
+                        result.success(true)
                     }
                     "setSecureScreen" -> {
                         val enabled = call.argument<Boolean>("enabled") ?: false
@@ -266,6 +280,21 @@ class MainActivity : FlutterActivity(), SensorEventListener {
             )
         } catch (_: Throwable) {
             false
+        }
+    }
+
+    /// Kıble ekranı açıkken ekranın kapanmasını engeller (pusula hizalanırken
+    /// ekran sönmesin). Ana iş parçacığında çalışır.
+    private fun setKeepScreenOnFlag(enabled: Boolean) {
+        try {
+            runOnUiThread {
+                if (enabled) {
+                    window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                } else {
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                }
+            }
+        } catch (_: Throwable) {
         }
     }
 
@@ -536,6 +565,22 @@ class MainActivity : FlutterActivity(), SensorEventListener {
 
     private fun normalizeSigned(deg: Double): Double = ((deg + 540.0) % 360.0) - 180.0
 
+    /**
+     * Döndürme matrisinden pusula açısı ve tutuş açıları.
+     *
+     * **Matematik:** `displayAdjusted`, ekran çerçevesinden dünyaya giden
+     * döndürme matrisidir (satır 0 = doğu, satır 1 = kuzey, satır 2 = yukarı).
+     *
+     * * Telefon **yatay** iken ekranın üst kenarı yön belirler:
+     *   `bearingFlat = atan2(R[1], R[4])` → (doğu, kuzey).
+     * * Telefon **dik** tutulup ufka bakılırken arka kamera yönü belirler:
+     *   `bearingUpright = atan2(-R[2], -R[5])`.
+     *
+     * İkisinin yatay izdüşüm büyüklükleri tutuş ağırlığını verir ve birim
+     * vektörler üzerinden **dairesel** olarak birleştirilir. Böylece
+     * yatay ↔ dik geçişte açı sıçraması, 180° ters dönme veya "eğik tutuş"
+     * kaynaklı yanlış yön oluşmaz (eski `camSign` tahmini kaldırıldı).
+     */
     private fun extractAnglesFromMatrix(rotationMatrix: FloatArray): Triple<Double, Double, Double>? {
         val displayAdjusted = FloatArray(9)
         val (axisX, axisY) = when (currentSurfaceRotation()) {
@@ -546,34 +591,50 @@ class MainActivity : FlutterActivity(), SensorEventListener {
         }
         SensorManager.remapCoordinateSystem(rotationMatrix, axisX, axisY, displayAdjusted)
 
-        val orientation = FloatArray(3)
-        SensorManager.getOrientation(displayAdjusted, orientation)
+        // Yatay tutuş: ekranın üst kenarı (dünya koordinatında doğu/kuzey).
+        val flatEast = displayAdjusted[1].toDouble()
+        val flatNorth = displayAdjusted[4].toDouble()
+        val flatHoriz = kotlin.math.hypot(flatEast, flatNorth)
 
-        val hy = displayAdjusted[1].toDouble()
-        val hz = displayAdjusted[2].toDouble()
-        val my = displayAdjusted[4].toDouble()
-        val mz = displayAdjusted[5].toDouble()
-        val ax = displayAdjusted[6].toDouble()
-        val ay = displayAdjusted[7].toDouble()
-        val az = displayAdjusted[8].toDouble()
+        // Dik tutuş: arka kamera yönü (ekran normalinin tersi).
+        val camEast = -displayAdjusted[2].toDouble()
+        val camNorth = -displayAdjusted[5].toDouble()
+        val camHoriz = kotlin.math.hypot(camEast, camNorth)
 
-        val yHorizMag = kotlin.math.hypot(hy, my)
-        val rawAzimuth = if (yHorizMag >= 0.14) {
-            // Standart e-Diyanet & Android SensorManager.getOrientation azimut açısı
-            normalizeDegrees(Math.toDegrees(orientation[0].toDouble()))
-        } else {
-            val uprightWeight = ((0.14 - yHorizMag) / 0.10).coerceIn(0.0, 1.0)
-            val camSign = if (ay >= 0.0) -1.0 else 1.0
-            val eastLvl = hy * (1.0 - uprightWeight) + (camSign * hz) * uprightWeight
-            val northLvl = my * (1.0 - uprightWeight) + (camSign * mz) * uprightWeight
-            normalizeDegrees(Math.toDegrees(kotlin.math.atan2(eastLvl, northLvl)))
+        val flatWeight = flatHoriz * flatHoriz
+        val camWeight = camHoriz * camHoriz
+        val total = flatWeight + camWeight
+        if (total < 1e-6) return null
+
+        val bearingFlat = Math.atan2(flatEast, flatNorth)
+        val bearingCam = Math.atan2(camEast, camNorth)
+        val sinSum =
+            flatWeight * kotlin.math.sin(bearingFlat) + camWeight * kotlin.math.sin(bearingCam)
+        val cosSum =
+            flatWeight * kotlin.math.cos(bearingFlat) + camWeight * kotlin.math.cos(bearingCam)
+        val rawAzimuth = normalizeDegrees(Math.toDegrees(Math.atan2(sinSum, cosSum)))
+
+        // Tutuş ağırlığı (0 = yatay, 1 = dik) — arayüzde bilgi olarak gösterilir.
+        val targetWeight = (camWeight / total).coerceIn(0.0, 1.0)
+        poseWeight =
+            if (!hasPoseWeight) targetWeight else poseWeight + 0.25 * (targetWeight - poseWeight)
+        hasPoseWeight = true
+        lastPoseLabel = when {
+            poseWeight > 0.72 -> "upright"
+            poseWeight < 0.28 -> "flat"
+            else -> "blend"
         }
-        val rawTiltDeg = Math.toDegrees(kotlin.math.asin((-ay).coerceIn(-1.0, 1.0)))
-        // Dik tutuş (telefonu kaldırıp Kâbe'ye nişan alma) modunda "eğik tutuyorsunuz"
-        // uyarısı verilmez: bu mod pusula için geçerli ve desteklenen bir kullanımdır.
-        // Yalnızca yatay kadran modunda eğim/yatma uyarısı üretilir.
-        val tiltDeg = if (yHorizMag < 0.14) 0.0 else rawTiltDeg * 0.62
-        val rollDeg = Math.toDegrees(kotlin.math.asin(ax.coerceIn(-1.0, 1.0))) * 0.75
+
+        // Gerçek eğim: ekranın yatay düzlemden kaç derece kalkık olduğu.
+        val pitchDeg = Math.toDegrees(
+            kotlin.math.asin((-displayAdjusted[7].toDouble()).coerceIn(-1.0, 1.0)),
+        )
+        val tiltDeg = kotlin.math.abs(90.0 - kotlin.math.abs(pitchDeg))
+        // Yan yatırma (roll): ekranın sağ kenarının yatay düzlemden sapması.
+        // Yatay tutuşta hangi yöne bakılırsa bakılsın 0'a yakındır.
+        val rollDeg = Math.toDegrees(
+            kotlin.math.asin(displayAdjusted[6].toDouble().coerceIn(-1.0, 1.0)),
+        )
         if (!rawAzimuth.isFinite() || !tiltDeg.isFinite() || !rollDeg.isFinite()) return null
         return Triple(rawAzimuth, tiltDeg, rollDeg)
     }
@@ -704,6 +765,8 @@ class MainActivity : FlutterActivity(), SensorEventListener {
             "tilt" to tiltDeg,
             "roll" to rollDeg,
             "sensorSource" to activeSensorSource,
+            "pose" to lastPoseLabel,
+            "poseWeight" to poseWeight,
         )
         lastMagAzimuth?.let { payload["rawMagHeading"] = it }
         lastFieldStrengthMicroTesla?.let { payload["fieldStrength"] = it }

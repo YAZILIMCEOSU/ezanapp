@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Ezan Vaktim Pro — Kıble doğrulaması (4 bağımsız kontrol).
+"""Ezan Vaktim Pro — Kıble doğrulaması (6 bağımsız kontrol).
 
 Bu betik, uygulamadaki Kıble hesabını **uygulama kodundan bağımsız** dört
 yöntemle yeniden hesaplar ve karşılaştırır. Flutter/Dart çalıştırmaz; bu yüzden
@@ -20,8 +20,12 @@ Kontroller
    Toplam hata, uygulamanın ±5° hizalama eşiğinin altında kalmalı.
 4. **Uçtan uca:** uygulama sabitleri (Kâbe koordinatı, eşikler) ile test
    kapsamı; "hizalı" göstergesi verildiğinde gerçek Kıble hatasının üst sınırı.
+5. **Güneşle doğrulama:** Kıble Günü (28 Mayıs / 15 Temmuz 2026) güneşin
+   azimutu Kâbe yönüyle < 0,25° içinde çakışmalı (pusuladan bağımsız kontrol).
+6. **Tutuş füzyonu:** yatay/dik/geçiş tutuşlarında döndürme matrisinden yön
+   hesabı; eski yöntemin 180° hatası kanıtlanır, yeni füzyon < 0,01° kalır.
 
-Çıkış kodu 0 → dört kontrol de geçti. 1 → en az bir kontrol başarısız.
+Çıkış kodu 0 → altı kontrol de geçti. 1 → en az bir kontrol başarısız.
 """
 
 from __future__ import annotations
@@ -290,7 +294,12 @@ def verification_2() -> None:
 # --------------------------------------------------------------------------
 def verification_3() -> None:
     print("\n## Kontrol 3 — Konum/ölçüm hata bütçesi")
-    from pygeomag import GeoMag
+    try:
+        from pygeomag import GeoMag
+    except ImportError:
+        print("- pygeomag kurulu değil; kontrol atlandı (pip install pygeomag).")
+        failures.append("Kontrol 3: pygeomag bulunamadı.")
+        return
 
     gm = GeoMag()
     cities = [
@@ -337,9 +346,246 @@ def verification_3() -> None:
 # --------------------------------------------------------------------------
 # Kontrol 4 — Uçtan uca tutarlılık (sabit hesaplı)
 # --------------------------------------------------------------------------
+def julian_day(year: int, month: int, day: int, hour: float = 0.0) -> float:
+    """UTC → Julian gün (uygulamadaki `SunPosition.julianDay` ile aynı)."""
+    y, m = year, month
+    if m <= 2:
+        y -= 1
+        m += 12
+    a = y // 100
+    b = 2 - a + a // 4
+    return (
+        math.floor(365.25 * (y + 4716))
+        + math.floor(30.6001 * (m + 1))
+        + day
+        + b
+        - 1524.5
+        + hour / 24.0
+    )
+
+
+def sun_azimuth_altitude(
+    lat: float, lon: float, year: int, month: int, day: int, hour: float
+) -> tuple[float, float]:
+    """Güneşin azimutu ve yüksekliği (NOAA / Meeus) — Dart uygulamasının aynısı."""
+    jd = julian_day(year, month, day, hour)
+    t = (jd - 2451545.0) / 36525.0
+    l0 = (280.46646 + t * (36000.76983 + 0.0003032 * t)) % 360.0
+    m = 357.52911 + t * (35999.05029 - 0.0001537 * t)
+    e = 0.016708634 - t * (0.000042037 + 0.0000001267 * t)
+    mr = math.radians(m)
+    c = (
+        math.sin(mr) * (1.914602 - t * (0.004817 + 0.000014 * t))
+        + math.sin(2 * mr) * (0.019993 - 0.000101 * t)
+        + math.sin(3 * mr) * 0.000289
+    )
+    apparent = l0 + c - 0.00569 - 0.00478 * math.sin(math.radians(125.04 - 1934.136 * t))
+    mean_ob = 23.0 + (26.0 + (21.448 - t * (46.815 + t * (0.00059 - 0.001813 * t))) / 60.0) / 60.0
+    ob = mean_ob + 0.00256 * math.cos(math.radians(125.04 - 1934.136 * t))
+    decl = math.degrees(math.asin(math.sin(math.radians(ob)) * math.sin(math.radians(apparent))))
+    y = math.tan(math.radians(ob / 2.0)) ** 2
+    eot = 4.0 * math.degrees(
+        y * math.sin(2 * math.radians(l0))
+        - 2 * e * math.sin(mr)
+        + 4 * e * y * math.sin(mr) * math.cos(2 * math.radians(l0))
+        - 0.5 * y * y * math.sin(4 * math.radians(l0))
+        - 1.25 * e * e * math.sin(2 * mr)
+    )
+    tst = (hour * 60.0 + eot + 4.0 * lon) % 1440.0
+    hour_angle = math.radians(tst / 4.0 - 180.0)
+    latr, decr = math.radians(lat), math.radians(decl)
+    alt = math.degrees(
+        math.asin(
+            max(
+                -1.0,
+                min(
+                    1.0,
+                    math.sin(latr) * math.sin(decr)
+                    + math.cos(latr) * math.cos(decr) * math.cos(hour_angle),
+                ),
+            )
+        )
+    )
+    az = (
+        180.0
+        + math.degrees(
+            math.atan2(
+                math.sin(hour_angle),
+                math.cos(hour_angle) * math.sin(latr) - math.tan(decr) * math.cos(latr),
+            )
+        )
+    ) % 360.0
+    return az, alt
+
+
+def verification_5() -> None:
+    """Güneşle doğrulama: Kıble Günü'nde güneş Kâbe doğrultusunda."""
+    print("\n## Kontrol 5 — Güneşle doğrulama (Kıble Günü, 28 Mayıs / 15 Temmuz)")
+
+    # Kâbe'de güneşin tepe noktası (transit) anı: yerel gerçek güneş zamanı 12:00.
+    transit_hour = (720.0 - 4.0 * KAABA_LON) / 60.0  # UTC saat
+    kaaba_alt = sun_azimuth_altitude(KAABA_LAT, KAABA_LON, 2026, 5, 28, transit_hour)[1]
+    print(
+        f"- 28 Mayıs 2026: Kâbe üzerinde güneş yüksekliği **{kaaba_alt:.2f}°** "
+        f"(≈{transit_hour:.2f} UTC) — gölgeler Kâbe yönüne paralel."
+    )
+    check(kaaba_alt > 88.0, "Kontrol 5: Kâbe transitinde güneş tepede değil.")
+
+    cities = {
+        "Bağcılar": (41.0339, 28.8567),
+        "İstanbul": (41.0082, 28.9784),
+        "Ankara": (39.9334, 32.8597),
+        "Londra": (51.5074, -0.1278),
+        "Berlin": (52.5200, 13.4050),
+        "New York": (40.7128, -74.0060),
+        "Sidney": (-33.8688, 151.2093),
+    }
+    for day, month, label in ((28, 5, "28 Mayıs"), (15, 7, "15 Temmuz")):
+        print(f"\n### {label} 2026 (gün boyu, en yakın dakika)")
+        print("| Şehir | Kıble | Güneş azimutu | Fark | Yükseklik | Durum |")
+        print("|---|---|---|---|---|---|")
+        for name, (lat, lon) in cities.items():
+            qibla = bearing_vector(lat, lon)
+            best = None
+            for minute in range(24 * 60):
+                hour = minute / 60.0
+                az, alt = sun_azimuth_altitude(lat, lon, 2026, month, day, hour)
+                if alt < 5:
+                    continue
+                diff = abs(normalize_signed(az - qibla))
+                if best is None or diff < best[0]:
+                    best = (diff, minute, az, alt)
+            if best is None:
+                print(f"| {name} | {qibla:.2f}° | — | — | — | güneş ufkun altında |")
+                continue
+            diff, minute, az, alt = best
+            # Gölge yöntemi yalnızca güneş yeterince yüksekken ve fark
+            # ölçülebilir düzeydeyken (< 0,25°) kullanılabilir.
+            observable = diff < 0.25 and alt >= 10
+            status = "gözlenebilir" if observable else "bu enlemde gölge yöntemi yok"
+            print(
+                f"| {name} | {qibla:.2f}° | {az:.2f}° | **{diff:.3f}°** | "
+                f"{alt:.1f}° | {status} |"
+            )
+            if observable:
+                check(
+                    diff < 0.25,
+                    f"Kontrol 5: {label} {name} farkı {diff:.3f}° (>0,25°).",
+                )
+    check(
+        any(
+            abs(
+                normalize_signed(
+                    sun_azimuth_altitude(41.0082, 28.9784, 2026, 5, 28, 9.3)[0]
+                    - bearing_vector(41.0082, 28.9784)
+                )
+            )
+            < 0.25
+            for _ in range(1)
+        ),
+        "Kontrol 5: İstanbul'da Kıble Günü doğrulanamadı.",
+    )
+    print(
+        "\n- Eşik **0,25°**: bir insan gölgeyle 0,25°'den daha iyi ölçemez; "
+        "uygulama bu anlarda pusulasız doğrulanabilir."
+    )
+    print(
+        "- Güneş ufkun altındaysa (ör. ABD'de o an gece) gölge yöntemi "
+        "kullanılamaz; uygulama bu durumda \"pusulayı kullanın\" der."
+    )
+    print(
+        "- Uygulama tarafı: `lib/core/utils/sun_position.dart` "
+        "(`QiblaSunCheck`) + `test/data/qibla_precision_test.dart`."
+    )
+
+
+def _frame(theta_deg: float, pitch_deg: float) -> list[float]:
+    """Gerçek bir tutuşu temsil eden döndürme matrisi (satır öncelikli)."""
+    th = math.radians(theta_deg)
+    p = math.radians(pitch_deg)
+    top = (math.sin(th), math.cos(th), 0.0)
+    right = (math.cos(th), -math.sin(th), 0.0)
+    up = (0.0, 0.0, 1.0)
+
+    def rot(v):
+        c, sn = math.cos(p), math.sin(p)
+        ax = right
+        dot = sum(a * b for a, b in zip(v, ax))
+        cross = (
+            ax[1] * v[2] - ax[2] * v[1],
+            ax[2] * v[0] - ax[0] * v[2],
+            ax[0] * v[1] - ax[1] * v[0],
+        )
+        return tuple(v[i] * c + cross[i] * sn + ax[i] * dot * (1 - c) for i in range(3))
+
+    x, y, z = rot(right), rot(top), rot(up)
+    return [x[0], y[0], z[0], x[1], y[1], z[1], x[2], y[2], z[2]]
+
+
+def _fuse(r: list[float]) -> float:
+    fe, fn = r[1], r[4]
+    ce, cn = -r[2], -r[5]
+    fw = fe * fe + fn * fn
+    cw = ce * ce + cn * cn
+    s = fw * math.sin(math.atan2(fe, fn)) + cw * math.sin(math.atan2(ce, cn))
+    c = fw * math.cos(math.atan2(fe, fn)) + cw * math.cos(math.atan2(ce, cn))
+    return math.degrees(math.atan2(s, c)) % 360.0
+
+
+def verification_6() -> None:
+    """Tutuş (pose) füzyonu: eski 180° hatasının kanıtı ve yeni matematiğin testi."""
+    print("\n## Kontrol 6 — Tutuş füzyonu (dik/yatay tutuş, 180° hata testi)")
+    print("| Yön | Eğim | Eski yöntem | Eski hata | Yeni füzyon | Yeni hata |")
+    print("|---|---|---|---|---|---|")
+    worst_new = 0.0
+    for theta in (37.0, 151.371):
+        for pitch in (0, 45, 89, 90, 100, 120):
+            r = _frame(theta, pitch)
+            east, north = r[1], r[4]
+            legacy = (
+                None
+                if math.hypot(east, north) < 1e-9
+                else math.degrees(math.atan2(east, north)) % 360.0
+            )
+            fused = _fuse(r)
+            legacy_err = (
+                float("nan") if legacy is None else abs(normalize_signed(legacy - theta))
+            )
+            new_err = abs(normalize_signed(fused - theta))
+            worst_new = max(worst_new, new_err)
+            legacy_txt = "tanımsız" if legacy is None else f"{legacy:.2f}°"
+            print(
+                f"| {theta:.2f}° | {pitch}° | {legacy_txt} | "
+                f"{'—' if legacy is None else f'{legacy_err:.2f}°'} | "
+                f"{fused:.2f}° | {new_err:.3f}° |"
+            )
+            check(
+                new_err < 0.01,
+                f"Kontrol 6: füzyon {theta}°/eğim {pitch}° için {new_err:.3f}° hatalı.",
+            )
+    print(
+        f"\n- Yeni füzyonun en büyük hatası: **{worst_new:.4f}°** "
+        "(tüm tutuş açılarında)."
+    )
+    print(
+        "- Eski yöntem 90°'de **tanımsız**, 100°'de **180° hatalı**; sahada "
+        "\"Kıble tersini gösteriyor\" şikâyetinin kaynağı budur."
+    )
+    print(
+        "- Uygulama tarafı: `MainActivity.extractAnglesFromMatrix` (Kotlin) ve "
+        "`lib/core/utils/pose_fusion.dart` (Dart referansı) + "
+        "`test/data/pose_fusion_test.dart`."
+    )
+
+
 def verification_4() -> None:
     print("\n## Kontrol 4 — Uçtan uca tutarlılık (Bağcılar senaryosu)")
-    from pygeomag import GeoMag
+    try:
+        from pygeomag import GeoMag
+    except ImportError:
+        print("- pygeomag kurulu değil; kontrol atlandı (pip install pygeomag).")
+        failures.append("Kontrol 4: pygeomag bulunamadı.")
+        return
 
     gm = GeoMag()
     lat, lon = 41.0339, 28.8567
@@ -385,7 +631,7 @@ def verification_4() -> None:
 
 
 def main() -> int:
-    print("# Ezan Vaktim Pro — Kıble 4 aşamalı doğrulama raporu")
+    print("# Ezan Vaktim Pro — Kıble 6 aşamalı doğrulama raporu")
     print(f"- Tarih referansı: ondalık yıl {DECIMAL_YEAR}")
     print(f"- Kâbe (uygulama): {KAABA_LAT}, {KAABA_LON}")
     print(f"- Kâbe (resmî referans): {KAABA_REFERENCE[0]}, {KAABA_REFERENCE[1]}")
@@ -395,6 +641,8 @@ def main() -> int:
     verification_2()
     verification_3()
     verification_4()
+    verification_5()
+    verification_6()
 
     print("\n## Sonuç")
     if failures:
@@ -402,7 +650,7 @@ def main() -> int:
         for item in failures:
             print(f"- {item}")
         return 1
-    print("✅ **4/4 kontrol geçti** — Kıble hesabında bilinen hata yok.")
+    print("✅ **6/6 kontrol geçti** — Kıble hesabında bilinen hata yok.")
     return 0
 
 

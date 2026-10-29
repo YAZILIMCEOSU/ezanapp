@@ -26,6 +26,8 @@ class CompassReading {
     this.qiblaDirection,
     this.differenceToQibla,
     this.sensorSource,
+    this.pose = 'flat',
+    this.poseWeight = 0,
   });
 
   /// Gerçek kuzeye (veya sapma 0 ise manyetik kuzeye) göre yön (0-360°).
@@ -61,6 +63,20 @@ class CompassReading {
   /// Aktif sensör füzyon kaynağı (ör. fusion_mag_anchored, geomagnetic_matrix).
   final String? sensorSource;
 
+  /// Kullanıcının telefonu tutuş biçimi:
+  /// * `flat` — telefon yatay (masada, avuçta düz); ekranın üst kenarı yön verir.
+  /// * `upright` — telefon dik, ufka doğru; **arka kamera** yön verir.
+  /// * `blend` — geçiş açısı (≈35°–55°); iki yön eşit ağırlıkta harmanlanır.
+  final String pose;
+
+  /// Tutuş ağırlığı: 0 = tamamen yatay, 1 = tamamen dik.
+  final double poseWeight;
+
+  bool get isUprightPose => pose == 'upright';
+
+  /// Yön belirsizliğinin en yüksek olduğu geçiş açısı.
+  bool get isBlendPose => pose == 'blend';
+
   /// Sensör değerleri sayısal olarak geçerli mi?
   bool get isValid =>
       heading.isFinite &&
@@ -85,12 +101,16 @@ class CompassReading {
               fieldStrengthMicroTesla! > 88.0)) ||
       stabilityDegrees > 35.0;
 
-  /// Telefon aşırı eğik mi tutuluyor?
+  /// Telefon dikey konuma yakın mı? (0° = masada düz, 90° = dik)
   bool get isTilted => tilt.abs() > 45 || roll.abs() > 45;
 
   /// Kalibrasyon veya tutuş düzeltmesi gerekiyor mu?
+  ///
+  /// Dik tutuş artık **geçerli bir kullanımdır** (arka kamera yönü esas
+  /// alınır); yalnızca iki yönün eşit ağırlıkta harmanlandığı geçiş
+  /// açısında kullanıcıya tutuş önerisi gösterilir.
   bool get needsCalibration =>
-      accuracy > 20 || hasMagneticInterference || isTilted;
+      accuracy > 20 || hasMagneticInterference || isBlendPose;
 
   /// Kullanıcıya gösterilecek anlaşılır kalibrasyon/parazit yönlendirmesi.
   String get calibrationMessage {
@@ -98,9 +118,9 @@ class CompassReading {
       return 'Manyetik parazit algılandı: metal masa, mıknatıslı kılıf veya '
           'elektronik cihazlardan uzaklaşın ve telefonu havada 8 çizer gibi hareket ettirin.';
     }
-    if (isTilted) {
-      return 'Telefon eğik tutuluyor: doğru pusula ölçümü için telefonu '
-          'yere paralel (düz) konuma getirin.';
+    if (isBlendPose) {
+      return 'Telefon eğik tutuluyor (yaklaşık 45°): yönün netleşmesi için '
+          'ya telefonu yere paralel tutun ya da ufka doğru dik çevirin.';
     }
     return 'Pusula kalibrasyonu gerekiyor: telefonu havada birkaç kez 8 çizer '
         'gibi hareket ettirin ve metal eşyalardan uzaklaşın.';
@@ -128,6 +148,8 @@ class CompassReading {
       qiblaDirection: qiblaDirection,
       differenceToQibla: difference,
       sensorSource: sensorSource,
+      pose: pose,
+      poseWeight: poseWeight,
     );
   }
 }
@@ -230,6 +252,13 @@ class CompassService {
             final double? fieldStrength = (map['fieldStrength'] as num?)
                 ?.toDouble();
             final String? sensorSource = map['sensorSource'] as String?;
+            final String pose = switch (map['pose']) {
+              'upright' => 'upright',
+              'blend' => 'blend',
+              _ => 'flat',
+            };
+            final double poseWeight =
+                ((map['poseWeight'] as num?)?.toDouble() ?? 0).clamp(0.0, 1.0);
 
             _recentHeadings.add(rawHeading);
             if (_recentHeadings.length > 8) {
@@ -256,6 +285,8 @@ class CompassService {
                   : null,
               stabilityDegrees: stability,
               sensorSource: sensorSource,
+              pose: pose,
+              poseWeight: poseWeight,
             );
             if (_qiblaDirection != null) {
               reading = reading.withQibla(
@@ -302,6 +333,18 @@ class CompassService {
       return true;
     } catch (_) {
       return false;
+    }
+  }
+
+  /// Kıble ekranı açıkken ekranın kapanmasını engeller (hizalama sırasında
+  /// ekran sönmesin). Ekrandan çıkarken `false` ile çağrılmalıdır.
+  Future<void> setKeepScreenOn(bool enabled) async {
+    try {
+      await _methods.invokeMethod<bool>('setKeepScreenOn', <String, Object?>{
+        'enabled': enabled,
+      });
+    } catch (_) {
+      // Test/masaüstü ortamı: etkisiz.
     }
   }
 
