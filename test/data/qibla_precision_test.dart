@@ -123,9 +123,10 @@ void main() {
       expect(a, isNotNull);
       expect(a!.differenceDegrees, lessThan(0.2));
       expect(a.isReliable, isTrue);
-      // ephem: 09:17:58 UTC = 12:17 TRT
-      expect(a.time.hour, 12);
-      expect(a.time.minute, inInclusiveRange(14, 21));
+      // ephem: 28 Mayıs 2026 09:17:58 UTC (TRT 12:17:58).
+      // Test, koştuğu makinenin saat diliminden bağımsız olmalı → UTC'ye çevrilir.
+      expect(a.time.toUtc().hour, 9);
+      expect(a.time.toUtc().minute, inInclusiveRange(14, 21));
       expect(a.windowLabel, contains('–'));
     });
 
@@ -144,9 +145,9 @@ void main() {
       expect(bagcilar, isNotNull);
       expect(ankara!.differenceDegrees, lessThan(0.2));
       expect(bagcilar!.differenceDegrees, lessThan(0.2));
-      // ephem transit (Kâbe): 09:26:42 UTC = 12:26 TRT
-      expect(ankara.time.hour, 12);
-      expect(ankara.time.minute, inInclusiveRange(23, 30));
+      // ephem transit (Kâbe): 15 Temmuz 2026 09:26:42 UTC (TRT 12:26).
+      expect(ankara.time.toUtc().hour, 9);
+      expect(ankara.time.toUtc().minute, inInclusiveRange(23, 30));
     });
 
     test('Önümüzdeki uygun gün 8° içinde bulunur ve hızlıdır', () {
