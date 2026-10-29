@@ -91,6 +91,17 @@ yön            = atan2( Σ w·sin(bearing), Σ w·cos(bearing) )   # dairesel o
 > olarak** kullanılamaz. Uygulama bu durumda dürüst davranıp "pusulayı kullanın"
 > der, yanlış bir saat önermez.
 
+### Doğrulama kaydı (CI)
+
+| Öğe | Değer |
+|---|---|
+| Koşu | `40866994562` (dal `arena/01a1057d-ezanapp`) |
+| Süre / sonuç | 12 dk 0 sn · **başarılı** (9/9 adım) |
+| Testler | **298** birim/arayüz testi (230 mevcut + **48 yeni**), 0 hata |
+| Kıble kontrolü | **6/6** bağımsız kontrol geçti (ayrı CI adımı) |
+| APK | **91.941.202 bayt**, 29 Ekim 2026 11:50 UTC |
+| APK bağlantısı | `https://github.com/YAZILIMCEOSU/ezanapp/releases/download/dene-apk/ezanai-kurulum.apk` |
+
 ### Doğrulamayı kendiniz tekrarlayın
 
 ```bash
