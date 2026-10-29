@@ -489,7 +489,10 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
                   value: switch (activeReading?.pose) {
                     'upright' => 'Dik · arka kamera yönü',
                     'blend' => 'Geçiş açısı · düz tutun',
-                    _ => activeReading == null ? 'Ölçülüyor…' : 'Yatay · üst kenar',
+                    _ =>
+                      activeReading == null
+                          ? 'Ölçülüyor…'
+                          : 'Yatay · üst kenar',
                   },
                 ),
                 if (activeReading != null)

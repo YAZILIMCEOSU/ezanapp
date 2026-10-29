@@ -26,7 +26,10 @@ void main() {
     test('Türkçe karakter yazılmasa da eşleşir', () {
       final String typed = normalizeTurkish('camii');
       expect(normalizeTurkish('Çamlıca Camii'), contains(typed));
-      expect(normalizeTurkish('Ayasofya-i Kebir Cami-i Şerifi'), contains('ayasofya'));
+      expect(
+        normalizeTurkish('Ayasofya-i Kebir Cami-i Şerifi'),
+        contains('ayasofya'),
+      );
     });
 
     test('Fazla boşluklar kırpılır', () {
@@ -39,8 +42,12 @@ void main() {
   });
 
   group('Mükerrer cami temizliği', () {
-    MosquePlace place(String name, double lat, double lon) =>
-        MosquePlace(name: name, district: 'Test', latitude: lat, longitude: lon);
+    MosquePlace place(String name, double lat, double lon) => MosquePlace(
+      name: name,
+      district: 'Test',
+      latitude: lat,
+      longitude: lon,
+    );
 
     test('Aynı ad + 120 m içindeki kayıtlar tekilleşir', () {
       final List<MosquePlace> input = <MosquePlace>[
@@ -81,7 +88,7 @@ void main() {
   });
 
   group('Mesafe ve yön etiketleri', () {
-    final MosquePlace mosque = MosquePlace(
+    const MosquePlace mosque = MosquePlace(
       name: 'Test Camii',
       district: 'Bağcılar',
       latitude: 41.0339,
@@ -103,7 +110,16 @@ void main() {
     });
 
     test('Yön etiketi 8 yönden biri', () {
-      const List<String> dirs = <String>['K', 'KD', 'D', 'GD', 'G', 'GB', 'B', 'KB'];
+      const List<String> dirs = <String>[
+        'K',
+        'KD',
+        'D',
+        'GD',
+        'G',
+        'GB',
+        'B',
+        'KB',
+      ];
       final String dir = mosque.compassLabelFrom(41.0000, 28.8567);
       expect(dirs, contains(dir));
     });

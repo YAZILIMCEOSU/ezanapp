@@ -304,13 +304,11 @@ String normalizeTurkish(String input) {
 List<MosquePlace> dedupeMosques(List<MosquePlace> input) {
   final List<MosquePlace> result = <MosquePlace>[];
   for (final MosquePlace candidate in input) {
-    final String key = normalizeTurkish(
-      candidate.name,
-    ).replaceAll(RegExp(r'[^a-z0-9]'), '');
+    final String key = normalizeTurkish(candidate.name)
+        .replaceAll(RegExp(r'[^a-z0-9]'), '');
     final bool duplicate = result.any((MosquePlace existing) {
-      final String existingKey = normalizeTurkish(
-        existing.name,
-      ).replaceAll(RegExp(r'[^a-z0-9]'), '');
+      final String existingKey = normalizeTurkish(existing.name)
+          .replaceAll(RegExp(r'[^a-z0-9]'), '');
       final bool sameName =
           key == existingKey ||
           (key.length > 6 &&
@@ -1431,8 +1429,8 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
           if (_loadingOnline || _searchingOnline)
             const LinearProgressIndicator(minHeight: 2),
           if (_offlineFallback && _query.trim().isEmpty)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
+            const Padding(
+              padding: EdgeInsets.fromLTRB(
                 AppSpacing.lg,
                 0,
                 AppSpacing.lg,

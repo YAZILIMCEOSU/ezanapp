@@ -336,7 +336,10 @@ void main() {
       const double a = 10;
       const double b = 350;
       expect(GeoUtils.normalizeSigned(a - b), closeTo(20, 1e-9));
-      expect(math.cos(GeoUtils.normalizeSigned(b - a) * math.pi / 180), lessThan(1));
+      expect(
+        math.cos(GeoUtils.normalizeSigned(b - a) * math.pi / 180),
+        lessThan(1),
+      );
     });
   });
 }

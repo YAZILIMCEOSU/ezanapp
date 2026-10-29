@@ -45,19 +45,13 @@ abstract final class SunPosition {
     // Eksen eğikliği.
     final double meanObliquity =
         23.0 +
-        (26.0 +
-                (21.448 -
-                        t * (46.815 + t * (0.00059 - t * 0.001813))) /
-                    60.0) /
+        (26.0 + (21.448 - t * (46.815 + t * (0.00059 - t * 0.001813))) / 60.0) /
             60.0;
-    final double obliquity =
-        meanObliquity + 0.00256 * math.cos(_rad(omega));
+    final double obliquity = meanObliquity + 0.00256 * math.cos(_rad(omega));
 
     // Güneşin sapması (declination).
     final double declination = _deg(
-      math.asin(
-        math.sin(_rad(obliquity)) * math.sin(_rad(apparentLongitude)),
-      ),
+      math.asin(math.sin(_rad(obliquity)) * math.sin(_rad(apparentLongitude))),
     );
 
     // Zaman denklemi (dakika).
@@ -73,8 +67,7 @@ abstract final class SunPosition {
         );
 
     // Gerçek güneş zamanı (dakika) → saat açısı (derece).
-    final double utcMinutes =
-        utc.hour * 60.0 + utc.minute + utc.second / 60.0;
+    final double utcMinutes = utc.hour * 60.0 + utc.minute + utc.second / 60.0;
     final double trueSolarMinutes =
         (utcMinutes + equationOfTime + 4.0 * longitude) % 1440.0;
     final double hourAngle = trueSolarMinutes / 4.0 - 180.0;

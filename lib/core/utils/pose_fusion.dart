@@ -35,7 +35,9 @@ abstract final class PoseFusion {
     // Yatay tutuş: ekranın üst kenarı (device +Y).
     final double flatEast = rotationMatrix[1];
     final double flatNorth = rotationMatrix[4];
-    final double flatHoriz = math.sqrt(flatEast * flatEast + flatNorth * flatNorth);
+    final double flatHoriz = math.sqrt(
+      flatEast * flatEast + flatNorth * flatNorth,
+    );
 
     // Dik tutuş: arka kamera (device -Z).
     final double camEast = -rotationMatrix[2];
@@ -57,11 +59,8 @@ abstract final class PoseFusion {
       math.atan2(sinSum, cosSum) * 180.0 / math.pi,
     );
 
-    final double pitch = math.asin(
-      (-rotationMatrix[8]).clamp(-1.0, 1.0),
-    ) *
-        180.0 /
-        math.pi;
+    final double pitch =
+        math.asin((-rotationMatrix[8]).clamp(-1.0, 1.0)) * 180.0 / math.pi;
     final double tilt = (90.0 - pitch.abs()).abs();
     final double roll =
         math.asin(rotationMatrix[6].clamp(-1.0, 1.0)) * 180.0 / math.pi;

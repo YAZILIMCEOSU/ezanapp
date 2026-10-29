@@ -41,9 +41,15 @@ void main() {
         right[0] * v[1] - right[1] * v[0],
       ];
       return <double>[
-        v[0] * math.cos(p) + cross[0] * math.sin(p) + right[0] * dot * (1 - math.cos(p)),
-        v[1] * math.cos(p) + cross[1] * math.sin(p) + right[1] * dot * (1 - math.cos(p)),
-        v[2] * math.cos(p) + cross[2] * math.sin(p) + right[2] * dot * (1 - math.cos(p)),
+        v[0] * math.cos(p) +
+            cross[0] * math.sin(p) +
+            right[0] * dot * (1 - math.cos(p)),
+        v[1] * math.cos(p) +
+            cross[1] * math.sin(p) +
+            right[1] * dot * (1 - math.cos(p)),
+        v[2] * math.cos(p) +
+            cross[2] * math.sin(p) +
+            right[2] * dot * (1 - math.cos(p)),
       ];
     }
 
@@ -52,17 +58,23 @@ void main() {
     final List<double> z = rotate(up);
 
     // Satır öncelikli: R[0] = (x_e, y_e, z_e), R[1] = (x_n, y_n, z_n)…
-    return <double>[
-      x[0], y[0], z[0],
-      x[1], y[1], z[1],
-      x[2], y[2], z[2],
-    ];
+    return <double>[x[0], y[0], z[0], x[1], y[1], z[1], x[2], y[2], z[2]];
   }
 
   group('1. Füzyon her tutuşta doğru yönü verir', () {
     for (final double theta in <double>[0, 37, 90, 151.371, 180, 270, 359]) {
-      test('yön ${theta}° · tüm tutuş açılarında ±0,001°', () {
-        for (final double pitch in <double>[0, 15, 30, 45, 60, 75, 90, 100, 120]) {
+      test('yön $theta° · tüm tutuş açılarında ±0,001°', () {
+        for (final double pitch in <double>[
+          0,
+          15,
+          30,
+          45,
+          60,
+          75,
+          90,
+          100,
+          120,
+        ]) {
           final FusedBearing? fused = PoseFusion.fromRotationMatrix(
             frame(theta, pitch),
           );
@@ -159,9 +171,8 @@ void main() {
     test('Ağırlık 0 → 1 arasında ve tek yönlü artar', () {
       double previous = -1;
       for (double pitch = 0; pitch <= 90; pitch += 5) {
-        final double w = PoseFusion.fromRotationMatrix(
-          frame(10, pitch),
-        )!.poseWeight;
+        final double w = PoseFusion.fromRotationMatrix(frame(10, pitch))!
+            .poseWeight;
         expect(w, inInclusiveRange(0, 1));
         expect(w, greaterThanOrEqualTo(previous));
         previous = w;
@@ -198,14 +209,14 @@ void main() {
     });
 
     test('Yan çevrilmiş ekranda eksenler döner (AY, -AX)', () {
-      expect(
-        PoseFusion.remapAxes(1),
-        (PoseFusion.axisY, PoseFusion.axisMinusX),
-      );
-      expect(
-        PoseFusion.remapAxes(3),
-        (PoseFusion.axisMinusY, PoseFusion.axisX),
-      );
+      expect(PoseFusion.remapAxes(1), (
+        PoseFusion.axisY,
+        PoseFusion.axisMinusX,
+      ));
+      expect(PoseFusion.remapAxes(3), (
+        PoseFusion.axisMinusY,
+        PoseFusion.axisX,
+      ));
     });
   });
 }
