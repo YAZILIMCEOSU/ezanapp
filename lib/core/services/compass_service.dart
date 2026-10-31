@@ -1,0 +1,496 @@
+import 'dart:async';
+import 'dart:math' as math;
+
+import 'package:flutter/services.dart';
+
+import '../utils/geo.dart';
+import '../utils/logger.dart';
+
+/// Pusula ölçümü.
+///
+/// [magneticHeading] sensörden gelen ham manyetik kuzey açısıdır (0-360°).
+/// [declination] bulunulan konumdaki manyetik sapma açısıdır (Doğu +).
+/// [heading] ise gerçek coğrafi kuzeye göre düzeltilmiş cihaz yönüdür ve
+/// [qiblaDirection] (gerçek kuzeye göre Kâbe açısı) ile birebir aynı referans
+/// sistemindedir.
+class CompassReading {
+  const CompassReading({
+    required this.heading,
+    required this.accuracy,
+    this.magneticHeading,
+    this.declination = 0,
+    this.tilt = 0,
+    this.roll = 0,
+    this.fieldStrengthMicroTesla,
+    this.stabilityDegrees = 0,
+    this.qiblaDirection,
+    this.differenceToQibla,
+    this.sensorSource,
+    this.pose = 'flat',
+    this.poseWeight = 0,
+  });
+
+  /// Gerçek kuzeye (veya sapma 0 ise manyetik kuzeye) göre yön (0-360°).
+  final double heading;
+
+  /// Sensörün ölçtüğü ham manyetik kuzey yönü (0-360°).
+  final double? magneticHeading;
+
+  /// Uygulanan manyetik sapma açısı (derece, Doğu +).
+  final double declination;
+
+  /// Tahmini hata payı (derece).
+  final double accuracy;
+
+  /// Telefonun öne/arkaya eğimi (derece).
+  final double tilt;
+
+  /// Telefonun yana yatması (derece).
+  final double roll;
+
+  /// Manyetik alan şiddeti (µT). Dünya'nın normal alanı ~25–65 µT aralığındadır.
+  final double? fieldStrengthMicroTesla;
+
+  /// Son ölçümlerin açısal kararsızlığı (standart sapma, derece).
+  final double stabilityDegrees;
+
+  /// Kıble yönü (gerçek kuzeyden saat yönünde, 0-360°).
+  final double? qiblaDirection;
+
+  /// Kıbleye göre sapma (-180..180°).
+  final double? differenceToQibla;
+
+  /// Aktif sensör füzyon kaynağı (ör. fusion_mag_anchored, geomagnetic_matrix).
+  final String? sensorSource;
+
+  /// Kullanıcının telefonu tutuş biçimi:
+  /// * `flat` — telefon yatay (masada, avuçta düz); ekranın üst kenarı yön verir.
+  /// * `upright` — telefon dik, ufka doğru; **arka kamera** yön verir.
+  /// * `blend` — geçiş açısı (≈35°–55°); iki yön eşit ağırlıkta harmanlanır.
+  final String pose;
+
+  /// Tutuş ağırlığı: 0 = tamamen yatay, 1 = tamamen dik.
+  final double poseWeight;
+
+  bool get isUprightPose => pose == 'upright';
+
+  /// Yön belirsizliğinin en yüksek olduğu geçiş açısı.
+  bool get isBlendPose => pose == 'blend';
+
+  /// Sensör değerleri sayısal olarak geçerli mi?
+  bool get isValid =>
+      heading.isFinite &&
+      heading >= 0 &&
+      heading <= 360 &&
+      accuracy.isFinite &&
+      accuracy >= 0 &&
+      tilt.isFinite &&
+      roll.isFinite;
+
+  bool get isAligned =>
+      differenceToQibla != null && differenceToQibla!.abs() <= 5;
+
+  bool get isClose =>
+      differenceToQibla != null && differenceToQibla!.abs() <= 12;
+
+  /// Manyetik parazit var mı? (normal dışı µT alanı veya yüksek açısal sıçrama)
+  bool get hasMagneticInterference =>
+      (fieldStrengthMicroTesla != null &&
+          fieldStrengthMicroTesla!.isFinite &&
+          (fieldStrengthMicroTesla! < 12.0 ||
+              fieldStrengthMicroTesla! > 88.0)) ||
+      stabilityDegrees > 35.0;
+
+  /// Telefon dikey konuma yakın mı? (0° = masada düz, 90° = dik)
+  bool get isTilted => tilt.abs() > 45 || roll.abs() > 45;
+
+  /// Kalibrasyon veya tutuş düzeltmesi gerekiyor mu?
+  ///
+  /// Dik tutuş artık **geçerli bir kullanımdır** (arka kamera yönü esas
+  /// alınır); yalnızca iki yönün eşit ağırlıkta harmanlandığı geçiş
+  /// açısında kullanıcıya tutuş önerisi gösterilir.
+  bool get needsCalibration =>
+      accuracy > 20 || hasMagneticInterference || isBlendPose;
+
+  /// Kullanıcıya gösterilecek anlaşılır kalibrasyon/parazit yönlendirmesi.
+  String get calibrationMessage {
+    if (hasMagneticInterference) {
+      return 'Manyetik parazit algılandı: metal masa, mıknatıslı kılıf veya '
+          'elektronik cihazlardan uzaklaşın ve telefonu havada 8 çizer gibi hareket ettirin.';
+    }
+    if (isBlendPose) {
+      return 'Telefon eğik tutuluyor (yaklaşık 45°): yönün netleşmesi için '
+          'ya telefonu yere paralel tutun ya da ufka doğru dik çevirin.';
+    }
+    return 'Pusula kalibrasyonu gerekiyor: telefonu havada birkaç kez 8 çizer '
+        'gibi hareket ettirin ve metal eşyalardan uzaklaşın.';
+  }
+
+  /// Kıble yönü ve isteğe bağlı manyetik sapma ile güncellenmiş ölçüm döner.
+  CompassReading withQibla(double qiblaDirection, {double? declination}) {
+    final double rawMagnetic = magneticHeading ?? heading;
+    final double appliedDeclination = declination ?? this.declination;
+    final double trueHeading = GeoUtils.normalizeDegrees(
+      rawMagnetic + appliedDeclination,
+    );
+    final double difference = GeoUtils.normalizeSigned(
+      qiblaDirection - trueHeading,
+    );
+    return CompassReading(
+      heading: trueHeading,
+      magneticHeading: rawMagnetic,
+      declination: appliedDeclination,
+      accuracy: accuracy,
+      tilt: tilt,
+      roll: roll,
+      fieldStrengthMicroTesla: fieldStrengthMicroTesla,
+      stabilityDegrees: stabilityDegrees,
+      qiblaDirection: qiblaDirection,
+      differenceToQibla: difference,
+      sensorSource: sensorSource,
+      pose: pose,
+      poseWeight: poseWeight,
+    );
+  }
+}
+
+/// Cihaz sensörlerinden pusula verisi okur.
+///
+/// Android tarafında yerel kanal (`ezanai/sensors`) üzerinden çalışır;
+/// sensör yoksa `isSupported` false döner ve arayüz manyetik olmayan
+/// (derece/harita tabanlı) kıble moduna geçer.
+class CompassService {
+  CompassService({EventChannel? channel, MethodChannel? methodChannel})
+    : _channel = channel ?? const EventChannel('ezanai/sensors'),
+      _methods = methodChannel ?? const MethodChannel('ezanai/sensors/methods');
+
+  final EventChannel _channel;
+  final MethodChannel _methods;
+
+  StreamSubscription<Object?>? _subscription;
+  final StreamController<CompassReading?> _controller =
+      StreamController<CompassReading?>.broadcast();
+  final List<double> _recentHeadings = <double>[];
+
+  Stream<CompassReading?> get readings => _controller.stream;
+
+  bool _isSupported = true;
+  bool get isSupported => _isSupported;
+
+  bool _started = false;
+  double? _qiblaDirection;
+
+  /// Son [getGeomagneticDeclination] çağrısı cihazın kendi WMM modelinden
+  /// (`GeomagneticField`) mi geldi, yoksa uygulamanın dahili WMM-2025
+  /// modelinden mi hesaplandı? Arayüzde "Sapma modeli" satırında gösterilir.
+  bool lastDeclinationFromHardware = false;
+  double _declination = 0;
+  CompassReading? _lastReading;
+  CompassReading? get lastReading => _lastReading;
+
+  /// Ham sensör paketinin geçerli sayısal değerler içerdiğini doğrular.
+  static bool isValidSensorPayload(Map<Object?, Object?> map) {
+    final Object? rawHeading = map['heading'];
+    final Object? rawAccuracy = map['accuracy'];
+    if (rawHeading is! num || rawAccuracy is! num) return false;
+    final double heading = rawHeading.toDouble();
+    final double accuracy = rawAccuracy.toDouble();
+    if (!heading.isFinite || !accuracy.isFinite || accuracy < 0) return false;
+    final Object? rawTilt = map['tilt'];
+    final Object? rawRoll = map['roll'];
+    if (rawTilt is num && !rawTilt.toDouble().isFinite) return false;
+    if (rawRoll is num && !rawRoll.toDouble().isFinite) return false;
+    return true;
+  }
+
+  /// Sensör var mı kontrolü (izin gerekmez).
+  Future<bool> checkSupport() async {
+    try {
+      final bool? has = await _methods.invokeMethod<bool>('hasCompass');
+      _isSupported = has ?? false;
+    } on PlatformException catch (error) {
+      AppLog.warning('Pusula desteği sorgulanamadı: ${error.message}');
+      _isSupported = false;
+    } on MissingPluginException {
+      // Testlerde/emülatörde kanal bulunmayabilir.
+      _isSupported = false;
+    }
+    return _isSupported;
+  }
+
+  void start({double? qiblaDirection, double declination = 0}) {
+    _qiblaDirection = qiblaDirection ?? _qiblaDirection;
+    _declination = declination;
+    if (_started && _subscription != null) {
+      if (_lastReading != null && !_controller.isClosed) {
+        final CompassReading updated = _qiblaDirection != null
+            ? _lastReading!.withQibla(
+                _qiblaDirection!,
+                declination: _declination,
+              )
+            : _lastReading!;
+        _controller.add(updated);
+      }
+      return;
+    }
+    _started = true;
+    try {
+      _subscription = _channel.receiveBroadcastStream().listen(
+        (Object? event) {
+          if (event is Map) {
+            final Map<Object?, Object?> map = event;
+            if (!isValidSensorPayload(map)) {
+              if (!_controller.isClosed) _controller.add(null);
+              return;
+            }
+            final double rawHeading = GeoUtils.normalizeDegrees(
+              (map['heading'] as num).toDouble(),
+            );
+            final double accuracy = (map['accuracy'] as num).toDouble();
+            final double tilt = (map['tilt'] as num?)?.toDouble() ?? 0;
+            final double roll = (map['roll'] as num?)?.toDouble() ?? 0;
+            final double? fieldStrength = (map['fieldStrength'] as num?)
+                ?.toDouble();
+            final String? sensorSource = map['sensorSource'] as String?;
+            final String pose = switch (map['pose']) {
+              'upright' => 'upright',
+              'blend' => 'blend',
+              _ => 'flat',
+            };
+            final double poseWeight =
+                ((map['poseWeight'] as num?)?.toDouble() ?? 0).clamp(0.0, 1.0);
+
+            _recentHeadings.add(rawHeading);
+            if (_recentHeadings.length > 8) {
+              _recentHeadings.removeAt(0);
+            }
+            final double stability = _recentHeadings.length >= 4
+                ? headingStability(_recentHeadings)
+                : 0;
+
+            final double trueHeading = GeoUtils.normalizeDegrees(
+              rawHeading + _declination,
+            );
+
+            CompassReading reading = CompassReading(
+              heading: trueHeading,
+              magneticHeading: rawHeading,
+              declination: _declination,
+              accuracy: accuracy,
+              tilt: tilt,
+              roll: roll,
+              fieldStrengthMicroTesla:
+                  fieldStrength != null && fieldStrength.isFinite
+                  ? fieldStrength
+                  : null,
+              stabilityDegrees: stability,
+              sensorSource: sensorSource,
+              pose: pose,
+              poseWeight: poseWeight,
+            );
+            if (_qiblaDirection != null) {
+              reading = reading.withQibla(
+                _qiblaDirection!,
+                declination: _declination,
+              );
+            }
+            _lastReading = reading;
+            if (!_controller.isClosed) _controller.add(reading);
+          }
+        },
+        onError: (Object error) {
+          AppLog.warning('Pusula akışı hata verdi', error: error);
+          if (!_controller.isClosed) _controller.add(null);
+        },
+        cancelOnError: false,
+      );
+    } on PlatformException catch (error) {
+      AppLog.warning('Pusula başlatılamadı: ${error.message}');
+      _isSupported = false;
+    } on MissingPluginException {
+      _isSupported = false;
+    }
+  }
+
+  Future<void> resetCompass() async {
+    _recentHeadings.clear();
+    _lastReading = null;
+    try {
+      await _methods.invokeMethod<bool>('resetCompass');
+    } catch (_) {}
+  }
+
+  /// Telefonun varsayılan bildirim sesini (ezan okumadan) çalar.
+  Future<bool> playSystemNotificationSound() async {
+    try {
+      final bool? played = await _methods.invokeMethod<bool>(
+        'playSystemNotificationSound',
+      );
+      if (played == true) return true;
+    } catch (_) {}
+    try {
+      await SystemSound.play(SystemSoundType.alert);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Kıble ekranı açıkken ekranın kapanmasını engeller (hizalama sırasında
+  /// ekran sönmesin). Ekrandan çıkarken `false` ile çağrılmalıdır.
+  Future<void> setKeepScreenOn(bool enabled) async {
+    try {
+      await _methods.invokeMethod<bool>('setKeepScreenOn', <String, Object?>{
+        'enabled': enabled,
+      });
+    } catch (_) {
+      // Test/masaüstü ortamı: etkisiz.
+    }
+  }
+
+  /// Donanım pusula / sensör tanılama bilgilerini döndürür.
+  Future<Map<String, Object?>> getDiagnostics() async {
+    try {
+      final Map<Object?, Object?>? raw = await _methods
+          .invokeMethod<Map<Object?, Object?>>('getSensorDiagnostics');
+      if (raw != null) {
+        return <String, Object?>{
+          for (final MapEntry<Object?, Object?> e in raw.entries)
+            if (e.key is String) e.key as String: e.value,
+        };
+      }
+    } catch (_) {}
+    return <String, Object?>{
+      'hasMagnetometer': _isSupported,
+      'lastFusedHeading': _lastReading?.heading,
+      'fieldStrengthMicroTesla': _lastReading?.fieldStrengthMicroTesla,
+      'sensorSource': _lastReading?.sensorSource ?? 'simulated_or_fallback',
+    };
+  }
+
+  /// Android donanım GeomagneticField modelinden gerçek manyetik sapma açısını döndürür.
+  Future<double> getGeomagneticDeclination(
+    double latitude,
+    double longitude,
+  ) async {
+    try {
+      final double? decl = await _methods.invokeMethod<double>(
+        'getGeomagneticDeclination',
+        <String, Object?>{
+          'latitude': latitude,
+          'longitude': longitude,
+          'altitude': 0.0,
+        },
+      );
+      if (decl != null && decl.isFinite) {
+        lastDeclinationFromHardware = true;
+        return decl;
+      }
+    } catch (_) {}
+    lastDeclinationFromHardware = false;
+    return GeoUtils.magneticDeclination(latitude, longitude);
+  }
+
+  /// Uygulamanın Android pil optimizasyonundan muaf olup olmadığını kontrol eder.
+  Future<bool> isIgnoringBatteryOptimizations() async {
+    try {
+      final bool? res = await _methods.invokeMethod<bool>(
+        'isIgnoringBatteryOptimizations',
+      );
+      return res ?? true;
+    } catch (_) {
+      return true;
+    }
+  }
+
+  /// Android pil optimizasyonu istisnası (Kısıtlama Yok / İzin Ver) penceresini açar.
+  Future<bool> requestIgnoreBatteryOptimizations() async {
+    try {
+      final bool? res = await _methods.invokeMethod<bool>(
+        'requestIgnoreBatteryOptimizations',
+      );
+      return res ?? false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Ekran görüntüsü / ekran kaydı koruması (FLAG_SECURE).
+  ///
+  /// Ödeme ve satın alma ekranlarında açılır; kullanıcıya ait hassas bilgi ve
+  /// satın alma akışının ekran kaydına alınmasını engeller. Kanal yoksa
+  /// (masaüstü/test) sessizce yok sayılır.
+  Future<void> setSecureScreen(bool enabled) async {
+    try {
+      await _methods.invokeMethod<bool>('setSecureScreen', <String, Object?>{
+        'enabled': enabled,
+      });
+    } catch (_) {
+      // Test/masaüstü ortamı: koruma yok, işlev etkilenmez.
+    }
+  }
+
+  /// APK paket bütünlüğü, imza SHA-256 ve kopya/yama koruma raporunu döndürür.
+  Future<Map<String, Object?>> getIntegrityInfo() async {
+    try {
+      final Map<Object?, Object?>? raw = await _methods
+          .invokeMethod<Map<Object?, Object?>>('getIntegrityInfo');
+      if (raw != null) {
+        return <String, Object?>{
+          for (final MapEntry<Object?, Object?> e in raw.entries)
+            if (e.key is String) e.key as String: e.value,
+        };
+      }
+    } catch (_) {}
+    return const <String, Object?>{
+      'packageName': 'com.yazilimceosu.ezanai',
+      'isOfficialPackage': true,
+      'isClonedEnvironment': false,
+      'hasTamperTools': false,
+      'isDebuggerAttached': false,
+    };
+  }
+
+  Future<void> stop() async {
+    final StreamSubscription<Object?>? sub = _subscription;
+    _subscription = null;
+    _started = false;
+    _recentHeadings.clear();
+    await sub?.cancel();
+  }
+
+  Future<void> dispose() async {
+    await stop();
+    await _controller.close();
+  }
+
+  /// Kalibrasyon yardımı: telefonu 8 çizer gibi hareket ettirme önerisi için
+  /// ölçüm kararlılığını (dairesel standart sapma, derece) değerlendirir.
+  static double headingStability(List<double> recentHeadings) {
+    if (recentHeadings.length < 3) return 180;
+    double sumSin = 0;
+    double sumCos = 0;
+    for (final double h in recentHeadings) {
+      final double rad = h * math.pi / 180.0;
+      sumSin += math.sin(rad);
+      sumCos += math.cos(rad);
+    }
+    final double mean = GeoUtils.normalizeDegrees(
+      math.atan2(
+            sumSin / recentHeadings.length,
+            sumCos / recentHeadings.length,
+          ) *
+          180.0 /
+          math.pi,
+    );
+    final double variance =
+        recentHeadings
+            .map(
+              (double h) =>
+                  math.pow(GeoUtils.normalizeSigned(h - mean), 2).toDouble(),
+            )
+            .reduce((double a, double b) => a + b) /
+        recentHeadings.length;
+    return math.sqrt(variance);
+  }
+}
