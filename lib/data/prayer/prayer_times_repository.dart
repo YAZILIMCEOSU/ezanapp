@@ -115,7 +115,11 @@ class PrayerTimesRepository {
           date: date,
           method: method,
         );
-        final PrayerTimesDay result = _refineRemote(rawResult, method, location);
+        final PrayerTimesDay result = _refineRemote(
+          rawResult,
+          method,
+          location,
+        );
         if (!result.isSane) {
           failures.add('${source.id}: vakitler tutarsız');
           continue;
@@ -184,11 +188,10 @@ class PrayerTimesRepository {
     // 6 kayıt "yeterli" sayılıp son gün (yarın) eksik kalıyordu. Eksik gün
     // yüzünden yarının imsakı bulunamayınca sabah bildirimi kurulmuyordu.
     final int requestedDays =
-        DateTime(
-          endDate.year,
-          endDate.month,
-          endDate.day,
-        ).difference(DateTime(startDate.year, startDate.month, startDate.day))
+        DateTime(endDate.year, endDate.month, endDate.day)
+            .difference(
+              DateTime(startDate.year, startDate.month, startDate.day),
+            )
             .inDays +
         1;
     final bool cacheCoversRange = cached.length >= requestedDays;
@@ -196,9 +199,7 @@ class PrayerTimesRepository {
     // Cihazda hesaplanmış (ya da 1 hafta önce çekilmiş) kayıtlar "taze"
     // sayılıp bildirimler bu eski saatlere kuruluyordu; ekran ise güncel
     // resmî veriyi gösterdiği için ezan 1–2 dakika **erken** çalabiliyordu.
-    final bool cacheFresh = cached.isEmpty
-        ? false
-        : _isRangeFresh(cached);
+    final bool cacheFresh = cached.isEmpty ? false : _isRangeFresh(cached);
 
     if (_connectivity.isOnline &&
         location.city != null &&

@@ -80,8 +80,7 @@ class City {
     province: json['province'] as String?,
     country: json['country'] as String? ?? 'Türkiye',
     timeZoneOffsetHours: (json['tz'] as num?)?.toDouble() ?? 3.0,
-    hasTimeZone:
-        json['tzExplicit'] as bool? ?? json.containsKey('tz'),
+    hasTimeZone: json['tzExplicit'] as bool? ?? json.containsKey('tz'),
     isTurkish: json['isTurkish'] as bool? ?? true,
   );
 

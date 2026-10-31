@@ -540,25 +540,28 @@ void main() {
   });
 
   group('kaynak bilgisi (kullanıcı mesajları)', () {
-    chainTest('resmî veri varken kaynak ve son kontrol bilgisi gösterilir', () async {
-      final PrayerTimesRepository repository = buildRepository(
-        online: true,
-        diyanet: _StubSource.success('diyanet', saneDay(today)),
-      );
-      await repository.getDay(
-        location: cityLocation,
-        date: today,
-        method: CalculationMethod.diyanet,
-      );
+    chainTest(
+      'resmî veri varken kaynak ve son kontrol bilgisi gösterilir',
+      () async {
+        final PrayerTimesRepository repository = buildRepository(
+          online: true,
+          diyanet: _StubSource.success('diyanet', saneDay(today)),
+        );
+        await repository.getDay(
+          location: cityLocation,
+          date: today,
+          method: CalculationMethod.diyanet,
+        );
 
-      final String described = await repository.describeActiveSource(
-        cityLocation,
-      );
-      // "Son güncelleme" ifadesi "Diyanet güncelleme" gibi okunuyordu; artık
-      // kaynak (Diyanet resmî verisi) ve son kontrol zamanı ayrı yazılır.
-      expect(described, contains('Diyanet resmî verisi'));
-      expect(described, contains('son kontrol'));
-    });
+        final String described = await repository.describeActiveSource(
+          cityLocation,
+        );
+        // "Son güncelleme" ifadesi "Diyanet güncelleme" gibi okunuyordu; artık
+        // kaynak (Diyanet resmî verisi) ve son kontrol zamanı ayrı yazılır.
+        expect(described, contains('Diyanet resmî verisi'));
+        expect(described, contains('son kontrol'));
+      },
+    );
 
     chainTest('konum seçilmemişse hesap bilgisi gösterilir', () async {
       final PrayerTimesRepository repository = buildRepository(online: false);

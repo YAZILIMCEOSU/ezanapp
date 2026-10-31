@@ -30,11 +30,11 @@ abstract final class TimeZoneResolver {
   /// Cihazın verilen gündeki UTC farkı (yaz/kış saati dahil).
   static double _deviceOffset(DateTime date) {
     return DateTime(
-              date.year,
-              date.month,
-              date.day,
-              12,
-            ).timeZoneOffset.inMinutes /
+          date.year,
+          date.month,
+          date.day,
+          12,
+        ).timeZoneOffset.inMinutes /
         60.0;
   }
 }

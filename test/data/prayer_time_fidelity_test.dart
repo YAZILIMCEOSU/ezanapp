@@ -109,9 +109,8 @@ void main() {
         );
       } catch (_) {
         // Paket varlıkları okunamazsa depodaki dosya kullanılır.
-        raw = File(
-          'assets/data/diyanet_validation_sample.json',
-        ).readAsStringSync();
+        raw = File('assets/data/diyanet_validation_sample.json')
+            .readAsStringSync();
       }
       final Object? decoded = jsonDecode(raw);
       final Object? records = (decoded! as Map)['records'];
@@ -121,77 +120,83 @@ void main() {
       ];
     }
 
-    test('yerel hesap Diyanet ile **yansız** (±0,5 dk ortalama) eşleşir', () async {
-      final List<Map<String, Object?>> records = await loadSamples();
-      expect(records, isNotEmpty);
+    test(
+      'yerel hesap Diyanet ile **yansız** (±0,5 dk ortalama) eşleşir',
+      () async {
+        final List<Map<String, Object?>> records = await loadSamples();
+        expect(records, isNotEmpty);
 
-      final Map<String, List<double>> errors = <String, List<double>>{
-        for (final String key in <String>[
-          'imsak',
-          'gunes',
-          'ogle',
-          'ikindi',
-          'aksam',
-          'yatsi',
-        ])
-          key: <double>[],
-      };
-
-      for (final Map<String, Object?> record in records) {
-        final DateTime date = DateTime.parse(record['date']! as String);
-        final CalculatedTimes times = PrayerCalculator.calculate(
-          date: date,
-          latitude: (record['lat']! as num).toDouble(),
-          longitude: (record['lon']! as num).toDouble(),
-          method: CalculationMethod.diyanet,
-          timeZoneOffsetHours: (record['tz'] as num?)?.toDouble() ?? 3.0,
-        );
-        final Map<String, double> computed = <String, double>{
-          'imsak': times.imsak,
-          'gunes': times.gunes,
-          'ogle': times.ogle,
-          'ikindi': times.ikindi,
-          'aksam': times.aksam,
-          'yatsi': times.yatsi,
+        final Map<String, List<double>> errors = <String, List<double>>{
+          for (final String key in <String>[
+            'imsak',
+            'gunes',
+            'ogle',
+            'ikindi',
+            'aksam',
+            'yatsi',
+          ])
+            key: <double>[],
         };
-        for (final MapEntry<String, double> entry in computed.entries) {
-          final List<String> parts = (record[entry.key]! as String).split(':');
-          final double official =
-              int.parse(parts[0]) + int.parse(parts[1]) / 60.0;
-          errors[entry.key]!.add((entry.value - official) * 60);
+
+        for (final Map<String, Object?> record in records) {
+          final DateTime date = DateTime.parse(record['date']! as String);
+          final CalculatedTimes times = PrayerCalculator.calculate(
+            date: date,
+            latitude: (record['lat']! as num).toDouble(),
+            longitude: (record['lon']! as num).toDouble(),
+            method: CalculationMethod.diyanet,
+            timeZoneOffsetHours: (record['tz'] as num?)?.toDouble() ?? 3.0,
+          );
+          final Map<String, double> computed = <String, double>{
+            'imsak': times.imsak,
+            'gunes': times.gunes,
+            'ogle': times.ogle,
+            'ikindi': times.ikindi,
+            'aksam': times.aksam,
+            'yatsi': times.yatsi,
+          };
+          for (final MapEntry<String, double> entry in computed.entries) {
+            final List<String> parts = (record[entry.key]! as String).split(
+              ':',
+            );
+            final double official =
+                int.parse(parts[0]) + int.parse(parts[1]) / 60.0;
+            errors[entry.key]!.add((entry.value - official) * 60);
+          }
         }
-      }
 
-      for (final MapEntry<String, List<double>> entry in errors.entries) {
-        final List<double> values = entry.value;
-        final double mean = values.reduce((double a, double b) => a + b) /
-            values.length;
-        final double worst = values
-            .map((double v) => v.abs())
-            .reduce((double a, double b) => a > b ? a : b);
-        final int early2 = values.where((double v) => v < -2.0).length;
+        for (final MapEntry<String, List<double>> entry in errors.entries) {
+          final List<double> values = entry.value;
+          final double mean =
+              values.reduce((double a, double b) => a + b) / values.length;
+          final double worst = values
+              .map((double v) => v.abs())
+              .reduce((double a, double b) => a > b ? a : b);
+          final int early2 = values.where((double v) => v < -2.0).length;
 
-        expect(
-          mean.abs(),
-          lessThan(0.5),
-          reason:
-              '${entry.key}: ortalama sapma ${mean.toStringAsFixed(2)} dk — '
-              'sistematik olarak erken/geç gösteriyor',
-        );
-        expect(
-          worst,
-          lessThan(3.0),
-          reason: '${entry.key}: en kötü sapma ${worst.toStringAsFixed(2)} dk',
-        );
-        expect(
-          early2 / values.length,
-          lessThan(0.05),
-          reason:
-              '${entry.key}: ${early2} örnekte 2 dakikadan fazla erken '
-              '(toplam ${values.length})',
-        );
-      }
-    });
+          expect(
+            mean.abs(),
+            lessThan(0.5),
+            reason:
+                '${entry.key}: ortalama sapma ${mean.toStringAsFixed(2)} dk — '
+                'sistematik olarak erken/geç gösteriyor',
+          );
+          expect(
+            worst,
+            lessThan(3.0),
+            reason:
+                '${entry.key}: en kötü sapma ${worst.toStringAsFixed(2)} dk',
+          );
+          expect(
+            early2 / values.length,
+            lessThan(0.05),
+            reason:
+                '${entry.key}: $early2 örnekte 2 dakikadan fazla erken '
+                '(toplam ${values.length})',
+          );
+        }
+      },
+    );
 
     test('temkin: akşam/yatsı düzeltmeleri Diyanet ile aynı (V6)', () {
       const Temkin temkin = Temkin.diyanet;
@@ -292,140 +297,151 @@ void main() {
       aladhan: aladhan ?? _StubSource.failing('aladhan'),
     );
 
-    dbTest('Hanefî ikindi seçilse de resmî Diyanet verisi kullanılır (V2)', () async {
-      final _StubSource diyanet = _StubSource.success(
-        'diyanet',
-        _officialDay(day),
-      );
-      final _StubSource aladhan = _StubSource.success(
-        'aladhan',
-        _officialDay(day, source: 'aladhan'),
-      );
-      final PrayerTimesRepository repository = build(
-        diyanet: diyanet,
-        aladhan: aladhan,
-      );
-
-      final PrayerTimesDay evvel = await repository.getDay(
-        location: bagcilarLocation,
-        date: day,
-        method: CalculationMethod.diyanet,
-      );
-      final PrayerTimesDay sani = await repository.getDay(
-        location: bagcilarLocation,
-        date: day,
-        method: CalculationMethod.diyanet.copyWith(asrFactor: 2),
-      );
-
-      expect(sani.source, 'diyanet', reason: 'Yedek servise düşmemeli');
-      expect(aladhan.dayCalls, 0, reason: 'AlAdhan hiç çağrılmamalı');
-
-      // Diğer vakitler resmî değerle **birebir** aynı kalmalı.
-      for (final Prayer prayer in <Prayer>[
-        Prayer.imsak,
-        Prayer.gunes,
-        Prayer.ogle,
-        Prayer.aksam,
-        Prayer.yatsi,
-      ]) {
-        expect(
-          sani.timeOf(prayer),
-          evvel.timeOf(prayer),
-          reason: '${prayer.label} değişmemeli',
+    dbTest(
+      'Hanefî ikindi seçilse de resmî Diyanet verisi kullanılır (V2)',
+      () async {
+        final _StubSource diyanet = _StubSource.success(
+          'diyanet',
+          _officialDay(day),
         );
-      }
+        final _StubSource aladhan = _StubSource.success(
+          'aladhan',
+          _officialDay(day, source: 'aladhan'),
+        );
+        final PrayerTimesRepository repository = build(
+          diyanet: diyanet,
+          aladhan: aladhan,
+        );
 
-      // Hanefî ikindi 40–90 dk daha geç olmalı.
-      final int shiftMinutes = sani
-          .timeOf(Prayer.ikindi)!
-          .difference(evvel.timeOf(Prayer.ikindi)!)
-          .inMinutes;
-      final double expected = PrayerCalculator.asrShiftMinutes(
-        date: day,
-        latitude: bagcilarLocation.latitude,
-        longitude: bagcilarLocation.longitude,
-        method: CalculationMethod.diyanet,
-      );
-      expect(shiftMinutes, inInclusiveRange(40, 90));
-      expect(shiftMinutes, closeTo(expected.round(), 1));
-    });
+        final PrayerTimesDay evvel = await repository.getDay(
+          location: bagcilarLocation,
+          date: day,
+          method: CalculationMethod.diyanet,
+        );
+        final PrayerTimesDay sani = await repository.getDay(
+          location: bagcilarLocation,
+          date: day,
+          method: CalculationMethod.diyanet.copyWith(asrFactor: 2),
+        );
 
-    dbTest('önbellekten okunan resmî veriye de Hanefî kaydırma uygulanır (V8)', () async {
-      // **Düzeltilen hata:** SQLite'tan okunan kayıt `source: 'cache'` olarak
-      // işaretlendiği için "resmî veri" sayılmıyor, Hanefî ikindi kaydırması
-      // atlanıyordu; ekranda 15:46, bildirimde 16:26 görünüyordu.
-      await cache.saveMany('district:20585', <PrayerTimesDay>[_officialDay(day)]);
+        expect(sani.source, 'diyanet', reason: 'Yedek servise düşmemeli');
+        expect(aladhan.dayCalls, 0, reason: 'AlAdhan hiç çağrılmamalı');
 
-      final PrayerTimesRepository offline = PrayerTimesRepository(
-        cache: cache,
-        connectivity: _FixedConnectivity(false),
-        diyanet: _StubSource.failing('diyanet'),
-        aladhan: _StubSource.failing('aladhan'),
-      );
+        // Diğer vakitler resmî değerle **birebir** aynı kalmalı.
+        for (final Prayer prayer in <Prayer>[
+          Prayer.imsak,
+          Prayer.gunes,
+          Prayer.ogle,
+          Prayer.aksam,
+          Prayer.yatsi,
+        ]) {
+          expect(
+            sani.timeOf(prayer),
+            evvel.timeOf(prayer),
+            reason: '${prayer.label} değişmemeli',
+          );
+        }
 
-      final PrayerTimesDay sani = await offline.getDay(
-        location: bagcilarLocation,
-        date: day,
-        method: CalculationMethod.diyanet.copyWith(asrFactor: 2),
-      );
-      expect(sani.source, 'cache');
+        // Hanefî ikindi 40–90 dk daha geç olmalı.
+        final int shiftMinutes = sani
+            .timeOf(Prayer.ikindi)!
+            .difference(evvel.timeOf(Prayer.ikindi)!)
+            .inMinutes;
+        final double expected = PrayerCalculator.asrShiftMinutes(
+          date: day,
+          latitude: bagcilarLocation.latitude,
+          longitude: bagcilarLocation.longitude,
+          method: CalculationMethod.diyanet,
+        );
+        expect(shiftMinutes, inInclusiveRange(40, 90));
+        expect(shiftMinutes, closeTo(expected.round(), 1));
+      },
+    );
 
-      final int shift = sani
-          .timeOf(Prayer.ikindi)!
-          .difference(_officialDay(day).timeOf(Prayer.ikindi)!)
-          .inMinutes;
-      expect(shift, inInclusiveRange(40, 90));
-      expect(
-        sani.timeOf(Prayer.aksam),
-        _officialDay(day).timeOf(Prayer.aksam),
-        reason: 'Diğer vakitler resmî kalmalı',
-      );
-    });
+    dbTest(
+      'önbellekten okunan resmî veriye de Hanefî kaydırma uygulanır (V8)',
+      () async {
+        // **Düzeltilen hata:** SQLite'tan okunan kayıt `source: 'cache'` olarak
+        // işaretlendiği için "resmî veri" sayılmıyor, Hanefî ikindi kaydırması
+        // atlanıyordu; ekranda 15:46, bildirimde 16:26 görünüyordu.
+        await cache.saveMany('district:20585', <PrayerTimesDay>[
+          _officialDay(day),
+        ]);
 
-    dbTest('manuel düzeltme önbellekten okurken iki kez uygulanmaz (V3)', () async {
-      final PrayerTimesRepository repository = build(
-        diyanet: _StubSource.success('diyanet', _officialDay(day)),
-      );
-      final CalculationMethod shifted = CalculationMethod.diyanet.copyWith(
-        manualOffsets: <String, int>{'yatsi': 3, 'imsak': -2},
-      );
+        final PrayerTimesRepository offline = PrayerTimesRepository(
+          cache: cache,
+          connectivity: _FixedConnectivity(false),
+          diyanet: _StubSource.failing('diyanet'),
+          aladhan: _StubSource.failing('aladhan'),
+        );
 
-      final PrayerTimesDay first = await repository.getDay(
-        location: bagcilarLocation,
-        date: day,
-        method: shifted,
-      );
-      expect(
-        first.timeOf(Prayer.yatsi),
-        _officialDay(day).timeOf(Prayer.yatsi)!.add(
-          const Duration(minutes: 3),
-        ),
-      );
+        final PrayerTimesDay sani = await offline.getDay(
+          location: bagcilarLocation,
+          date: day,
+          method: CalculationMethod.diyanet.copyWith(asrFactor: 2),
+        );
+        expect(sani.source, 'cache');
 
-      // Aynı repository ikinci kez okur (bellek önbelleği) ve yeni bir
-      // repository önbellekten (SQLite) okur: ikisi de +3 olmalı, +6 değil.
-      final PrayerTimesDay second = await repository.getDay(
-        location: bagcilarLocation,
-        date: day,
-        method: shifted,
-      );
-      expect(second.timeOf(Prayer.yatsi), first.timeOf(Prayer.yatsi));
+        final int shift = sani
+            .timeOf(Prayer.ikindi)!
+            .difference(_officialDay(day).timeOf(Prayer.ikindi)!)
+            .inMinutes;
+        expect(shift, inInclusiveRange(40, 90));
+        expect(
+          sani.timeOf(Prayer.aksam),
+          _officialDay(day).timeOf(Prayer.aksam),
+          reason: 'Diğer vakitler resmî kalmalı',
+        );
+      },
+    );
 
-      final PrayerTimesRepository fresh = build(
-        diyanet: _StubSource.success('diyanet', _officialDay(day)),
-      );
-      final PrayerTimesDay fromCache = await fresh.getDay(
-        location: bagcilarLocation,
-        date: day,
-        method: shifted,
-      );
-      expect(fromCache.source, 'cache');
-      expect(
-        fromCache.timeOf(Prayer.yatsi),
-        first.timeOf(Prayer.yatsi),
-        reason: 'Önbellekten okurken düzeltme yeniden eklenmemeli',
-      );
-    });
+    dbTest(
+      'manuel düzeltme önbellekten okurken iki kez uygulanmaz (V3)',
+      () async {
+        final PrayerTimesRepository repository = build(
+          diyanet: _StubSource.success('diyanet', _officialDay(day)),
+        );
+        final CalculationMethod shifted = CalculationMethod.diyanet.copyWith(
+          manualOffsets: <String, int>{'yatsi': 3, 'imsak': -2},
+        );
+
+        final PrayerTimesDay first = await repository.getDay(
+          location: bagcilarLocation,
+          date: day,
+          method: shifted,
+        );
+        expect(
+          first.timeOf(Prayer.yatsi),
+          _officialDay(day)
+              .timeOf(Prayer.yatsi)!
+              .add(const Duration(minutes: 3)),
+        );
+
+        // Aynı repository ikinci kez okur (bellek önbelleği) ve yeni bir
+        // repository önbellekten (SQLite) okur: ikisi de +3 olmalı, +6 değil.
+        final PrayerTimesDay second = await repository.getDay(
+          location: bagcilarLocation,
+          date: day,
+          method: shifted,
+        );
+        expect(second.timeOf(Prayer.yatsi), first.timeOf(Prayer.yatsi));
+
+        final PrayerTimesRepository fresh = build(
+          diyanet: _StubSource.success('diyanet', _officialDay(day)),
+        );
+        final PrayerTimesDay fromCache = await fresh.getDay(
+          location: bagcilarLocation,
+          date: day,
+          method: shifted,
+        );
+        expect(fromCache.source, 'cache');
+        expect(
+          fromCache.timeOf(Prayer.yatsi),
+          first.timeOf(Prayer.yatsi),
+          reason: 'Önbellekten okurken düzeltme yeniden eklenmemeli',
+        );
+      },
+    );
 
     dbTest('düzeltmeli yöntem ayrı önbellek anahtarı kullanır (V3)', () async {
       final PrayerTimesRepository repository = build(
@@ -510,9 +526,7 @@ void main() {
   // --------------------------------------------------------------------- V5
   group('V5 — bayat aralık önbelleği yenilenir', () {
     dbTest('7 saatlik önbellek yeniden çekilir', () async {
-      final DateTime stale = DateTime.now().subtract(
-        const Duration(hours: 7),
-      );
+      final DateTime stale = DateTime.now().subtract(const Duration(hours: 7));
       await cache.saveMany('district:20585', <PrayerTimesDay>[
         _officialDay(day, cachedAt: stale),
       ]);
@@ -566,8 +580,7 @@ void main() {
         method: CalculationMethod.diyanet,
         timeZoneOffsetHours: 4.5,
       );
-      final int expectedMinutes =
-          (reference.ogle * 60).round() % (24 * 60);
+      final int expectedMinutes = (reference.ogle * 60).round() % (24 * 60);
       final DateTime? ogle = result.timeOf(Prayer.ogle);
       expect(ogle, isNotNull);
       expect(
