@@ -363,32 +363,52 @@ void main() {
       () async {
         // **Düzeltilen hata:** SQLite'tan okunan kayıt `source: 'cache'` olarak
         // işaretlendiği için "resmî veri" sayılmıyor, Hanefî ikindi kaydırması
-        // atlanıyordu; ekranda 15:46, bildirimde 16:26 görünüyordu.
-        await cache.saveMany('district:20585', <PrayerTimesDay>[
-          _officialDay(day),
-        ]);
+        // atlanıyordu. Sonuç: ilk açılışta 16:26, uygulama yeniden açılınca
+        // 15:46. Artık kaynak aslı korunuyor.
+        final CalculationMethod hanefi = CalculationMethod.diyanet.copyWith(
+          asrFactor: 2,
+        );
 
+        // 1) Çevrimiçi: resmî veri çekilir ve önbelleğe yazılır.
+        final PrayerTimesRepository online = PrayerTimesRepository(
+          cache: cache,
+          connectivity: _FixedConnectivity(true),
+          diyanet: _StubSource.success('diyanet', _officialDay(day)),
+          aladhan: _StubSource.failing('aladhan'),
+        );
+        final PrayerTimesDay fresh = await online.getDay(
+          location: bagcilarLocation,
+          date: day,
+          method: hanefi,
+        );
+        expect(fresh.source, 'diyanet');
+        final int freshShift = fresh
+            .timeOf(Prayer.ikindi)!
+            .difference(_officialDay(day).timeOf(Prayer.ikindi)!)
+            .inMinutes;
+        expect(freshShift, inInclusiveRange(40, 90));
+
+        // 2) Uygulama yeniden açıldı, internet yok: önbellekten okunur ve
+        //    **aynı** dakikayı vermeli.
         final PrayerTimesRepository offline = PrayerTimesRepository(
           cache: cache,
           connectivity: _FixedConnectivity(false),
           diyanet: _StubSource.failing('diyanet'),
           aladhan: _StubSource.failing('aladhan'),
         );
-
-        final PrayerTimesDay sani = await offline.getDay(
+        final PrayerTimesDay cached = await offline.getDay(
           location: bagcilarLocation,
           date: day,
-          method: CalculationMethod.diyanet.copyWith(asrFactor: 2),
+          method: hanefi,
         );
-        expect(sani.source, 'cache');
-
-        final int shift = sani
-            .timeOf(Prayer.ikindi)!
-            .difference(_officialDay(day).timeOf(Prayer.ikindi)!)
-            .inMinutes;
-        expect(shift, inInclusiveRange(40, 90));
+        expect(cached.source, 'cache');
         expect(
-          sani.timeOf(Prayer.aksam),
+          cached.timeOf(Prayer.ikindi),
+          fresh.timeOf(Prayer.ikindi),
+          reason: 'Önbellek Hanefî kaydırmayı korumalı',
+        );
+        expect(
+          cached.timeOf(Prayer.aksam),
           _officialDay(day).timeOf(Prayer.aksam),
           reason: 'Diğer vakitler resmî kalmalı',
         );
