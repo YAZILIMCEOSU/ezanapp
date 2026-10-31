@@ -180,6 +180,22 @@ güncel davranışa göre güncellendi.
 
 ---
 
+## 5.1. Doğrulama kaydı (CI)
+
+| Kontrol | Sonuç |
+|---|---|
+| `flutter analyze` | **No issues found** (21,1 sn) |
+| `flutter test` | **312 test geçti**, 6 atlandı (platform gerektirenler) |
+| Kıble doğrulaması | **6/6 kontrol** |
+| Release APK derlemesi | Başarılı — 91,9 MB |
+| İmza doğrulaması | Başarılı (CI deneme anahtarı) |
+| Çalışma | GitHub Actions **41222902245**, tüm adımlar `success` |
+
+APK indirme bağlantısı (telefonda denemek için):
+`https://github.com/YAZILIMCEOSU/ezanapp/releases/download/dene-apk/ezanai-kurulum.apk`
+
+---
+
 ## 6. Yazılım bilmeyenler için: 5 dakikada doğrulama
 
 Bilgisayar, terminal, SDK gerekmez. Yalnızca telefon.
