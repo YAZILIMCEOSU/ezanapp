@@ -3,6 +3,7 @@ import '../models/prayer.dart';
 import '../models/prayer_times_day.dart';
 import 'prayer_calculator.dart';
 import 'prayer_times_source.dart';
+import 'time_zone_resolver.dart';
 
 /// Çevrimdışı yerel hesaplama kaynağı.
 ///
@@ -98,18 +99,9 @@ class LocalCalculationSource implements PrayerTimesSource {
     Prayer.yatsi: times.yatsi,
   };
 
-  /// Hesapta kullanılacak UTC farkını belirler.
-  ///
-  /// Seçili şehir varsa şehrin saat dilimi (yaz/kış saati dahil) kullanılır.
-  /// Konum GPS ile alındıysa şehir bilgisi olmadığından cihazın o günkü
-  /// saat dilimi farkı esas alınır; böylece yurt dışındaki kullanıcılar için
-  /// vakitler 3 saat kaymaz.
-  double _timeZoneOffset(UserLocation location, DateTime date) {
-    final double? cityOffset = location.city?.timeZoneOffsetHours;
-    if (cityOffset != null) return cityOffset;
-    final DateTime probe = DateTime(date.year, date.month, date.day, 12);
-    return probe.timeZoneOffset.inMinutes / 60.0;
-  }
+  /// Hesapta kullanılacak UTC farkı (bkz. [TimeZoneResolver]).
+  double _timeZoneOffset(UserLocation location, DateTime date) =>
+      TimeZoneResolver.forLocation(location, date);
 
   /// Gece yarısından itibaren geçen [minutes] dakikayı tarihe dönüştürür.
   ///

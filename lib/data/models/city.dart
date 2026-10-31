@@ -27,6 +27,7 @@ class City {
     this.province,
     this.country = 'Türkiye',
     this.timeZoneOffsetHours = 3.0,
+    this.hasTimeZone = false,
     this.isTurkish = true,
   });
 
@@ -37,6 +38,15 @@ class City {
   final String? province;
   final String country;
   final double timeZoneOffsetHours;
+
+  /// Saat dilimi veri kümesinde **açıkça** tanımlı mı?
+  ///
+  /// Dünya şehirleri veri kümesinde saat dilimi alanı yok; bu durumda
+  /// varsayılan 3,0 (Türkiye) kullanılırdı ve ör. Kâbil için çevrimdışı hesap
+  /// 1,5 saat kayardı. Alan yoksa saat dilimi boylamdan tahmin edilir
+  /// (bkz. `LocalCalculationSource`).
+  final bool hasTimeZone;
+
   final bool isTurkish;
 
   /// Görüntülenecek tam ad: "İlçe, İl" veya "Şehir, Ülke".
@@ -58,6 +68,7 @@ class City {
     'province': province,
     'country': country,
     'tz': timeZoneOffsetHours,
+    'tzExplicit': hasTimeZone,
     'isTurkish': isTurkish,
   };
 
@@ -69,6 +80,8 @@ class City {
     province: json['province'] as String?,
     country: json['country'] as String? ?? 'Türkiye',
     timeZoneOffsetHours: (json['tz'] as num?)?.toDouble() ?? 3.0,
+    hasTimeZone:
+        json['tzExplicit'] as bool? ?? json.containsKey('tz'),
     isTurkish: json['isTurkish'] as bool? ?? true,
   );
 

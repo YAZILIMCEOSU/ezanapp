@@ -13,6 +13,7 @@ import 'local_calculation_source.dart';
 import 'prayer_calculator.dart';
 import 'prayer_times_cache.dart';
 import 'prayer_times_source.dart';
+import 'time_zone_resolver.dart';
 
 /// Vakit verisinin tek giriş noktası.
 ///
@@ -78,7 +79,14 @@ class PrayerTimesRepository {
         date,
       );
       if (cached != null && !_isStale(cached)) {
-        final PrayerTimesDay resolved = cached.copyWith(source: 'cache');
+        // Önbellek **ham** resmî veriyi saklar; Hanefî/manüel düzeltmeler her
+        // okumada yeniden uygulanır. Böylece ayar değiştirildiğinde eski
+        // kayıtlar yanlış dakika göstermez (ve düzeltmeler iki kez eklenmez).
+        final PrayerTimesDay resolved = _refineRemote(
+          cached,
+          method,
+          location,
+        ).copyWith(source: 'cache');
         _memory[key] = resolved;
         if (!_connectivity.isOnline) {
           lastWarning =
@@ -88,16 +96,15 @@ class PrayerTimesRepository {
       }
     }
 
-    final bool useDiyanetOfficial =
-        (method.id == 'diyanet' || method.id == 'diyanet_high_lat') &&
-        method.asrFactor == CalculationMethod.diyanet.asrFactor;
+    // **Düzeltme:** Hanefî ikindi veya manuel dakika düzeltmesi seçildiğinde
+    // resmî Diyanet verisi **atlanmıyordu**; zincir doğrudan AlAdhan'a
+    // düşüyor ve temkin düzeltmeleri kaybolduğu için akşam ~8, öğle ~5,
+    // ikindi ~4, yatsı ~1 dakika **erken** görünüyordu. Artık resmî veri her
+    // zaman ilk sırada; Hanefî farkı ve manuel düzeltme `_refineRemote`
+    // içinde resmî vakitlerin **üzerine** uygulanır.
     final List<PrayerTimesSource> chain =
         _connectivity.isOnline && location.city != null
-        ? <PrayerTimesSource>[
-            if (useDiyanetOfficial) _diyanet,
-            _aladhan,
-            _local,
-          ]
+        ? <PrayerTimesSource>[_diyanet, _aladhan, _local]
         : <PrayerTimesSource>[_local];
 
     final List<String> failures = <String>[];
@@ -108,16 +115,26 @@ class PrayerTimesRepository {
           date: date,
           method: method,
         );
-        final PrayerTimesDay result = _applyExtraOffsets(rawResult, method);
+        final PrayerTimesDay result = _refineRemote(rawResult, method, location);
         if (!result.isSane) {
           failures.add('${source.id}: vakitler tutarsız');
           continue;
         }
         _memory[key] = result;
-        await _cache.save(_locationKey(location, method), result);
+        // Cihazda hesaplanan vakitler önbelleğe yazılmaz: hesap zaten
+        // milisaniyeler sürer ve yazılırsa manuel düzeltmeler ikinci kez
+        // uygulanabilir. Yalnızca uzak/resmî veri saklanır.
+        if (rawResult.source != 'calculation') {
+          await _cache.save(_locationKey(location, method), rawResult);
+        }
         if (source.id == 'calculation' && _connectivity.isOnline) {
           lastWarning =
               'Resmî vakit servisine ulaşılamadı; vakitler cihazda hesaplandı.';
+        } else if (source.id == 'aladhan' && location.city != null) {
+          lastWarning =
+              'Diyanet resmî verisine şu an ulaşılamadı; yedek servis '
+              'kullanıldı (Diyanet temkinine göre düzeltildi). '
+              'Listeyi yenilemeyi deneyin.';
         }
         return result;
       } on PrayerTimesSourceException catch (error) {
@@ -150,7 +167,10 @@ class PrayerTimesRepository {
     final String key = _rangeKey(location, method, startDate, endDate);
     if (!forceRefresh) {
       final List<PrayerTimesDay>? memo = _rangeMemory[key];
-      if (memo != null) return memo;
+      // Bellek önbelleği de tazelik denetiminden geçer; aksi halde uygulama
+      // açık kaldığı sürece (günlerce) eski saatler kullanılmaya devam ederdi.
+      if (memo != null && _isRangeFresh(memo)) return memo;
+      _rangeMemory.remove(key);
     }
 
     final String locationKey = _locationKey(location, method);
@@ -159,12 +179,30 @@ class PrayerTimesRepository {
       startDate,
       endDate,
     );
-    final bool cacheCoversRange =
-        cached.length >= endDate.difference(startDate).inDays;
+    // **Düzeltme (off-by-one):** gün farkına +1 eklenmezse 1 günlük aralıkta
+    // (bugün → bugün) `>= 0` her zaman doğru çıkıyor, 7 günlük aralıkta ise
+    // 6 kayıt "yeterli" sayılıp son gün (yarın) eksik kalıyordu. Eksik gün
+    // yüzünden yarının imsakı bulunamayınca sabah bildirimi kurulmuyordu.
+    final int requestedDays =
+        DateTime(
+          endDate.year,
+          endDate.month,
+          endDate.day,
+        ).difference(DateTime(startDate.year, startDate.month, startDate.day))
+            .inDays +
+        1;
+    final bool cacheCoversRange = cached.length >= requestedDays;
+    // **Düzeltme:** aralık önbelleği hiç tazelik denetimi yapmıyordu.
+    // Cihazda hesaplanmış (ya da 1 hafta önce çekilmiş) kayıtlar "taze"
+    // sayılıp bildirimler bu eski saatlere kuruluyordu; ekran ise güncel
+    // resmî veriyi gösterdiği için ezan 1–2 dakika **erken** çalabiliyordu.
+    final bool cacheFresh = cached.isEmpty
+        ? false
+        : _isRangeFresh(cached);
 
     if (_connectivity.isOnline &&
         location.city != null &&
-        (!cacheCoversRange || forceRefresh)) {
+        (!cacheCoversRange || forceRefresh || !cacheFresh)) {
       for (final PrayerTimesSource source in <PrayerTimesSource>[
         _diyanet,
         _aladhan,
@@ -177,9 +215,15 @@ class PrayerTimesRepository {
             method: method,
           );
           if (fetched.isNotEmpty) {
-            await _cache.saveMany(locationKey, fetched);
-            _rangeMemory[key] = fetched;
-            return fetched;
+            if (fetched.first.source != 'calculation') {
+              await _cache.saveMany(locationKey, fetched);
+            }
+            final List<PrayerTimesDay> refined = <PrayerTimesDay>[
+              for (final PrayerTimesDay day in fetched)
+                _refineRemote(day, method, location),
+            ];
+            _rangeMemory[key] = refined;
+            return refined;
           }
         } on PrayerTimesSourceException catch (error) {
           AppLog.warning('Aralık kaynağı başarısız → $error');
@@ -190,8 +234,16 @@ class PrayerTimesRepository {
     }
 
     if (cached.isNotEmpty) {
-      _rangeMemory[key] = cached;
-      return cached;
+      // Önbellekteki resmî veri kullanıcı düzeltmeleriyle birlikte sunulur;
+      // böylece ekran ile bildirim aynı dakikayı gösterir. Kaynak etiketi
+      // en sonda "Kayıtlı veri" yapılır; düzeltmeler ise **özgün kaynağa**
+      // (Diyanet) göre uygulanır.
+      final List<PrayerTimesDay> refined = <PrayerTimesDay>[
+        for (final PrayerTimesDay day in cached)
+          _refineRemote(day, method, location).copyWith(source: 'cache'),
+      ];
+      _rangeMemory[key] = refined;
+      return refined;
     }
 
     final List<PrayerTimesDay> calculated = await _local.fetchRange(
@@ -201,7 +253,6 @@ class PrayerTimesRepository {
       method: method,
     );
     _rangeMemory[key] = calculated;
-    unawaited(_cache.saveMany(locationKey, calculated));
     return calculated;
   }
 
@@ -209,12 +260,13 @@ class PrayerTimesRepository {
   Future<String> describeActiveSource(UserLocation location) async {
     if (location.city != null) {
       final DateTime? last = await _cache.lastFetch(_locationKey(location));
-      if (last != null) return 'Son güncelleme: ${_relative(last)}';
+      if (last != null) {
+        return 'Diyanet resmî verisi • ilçe: ${location.city!.name} · '
+            'son kontrol ${_relative(last)}';
+      }
+      return 'Diyanet resmî verisi • ilçe: ${location.city!.name}';
     }
-    if (location.city == null) {
-      return 'Konum seçilmedi: vakitler GPS koordinatına göre hesaplanır';
-    }
-    return 'Resmî Diyanet verisi • ilçe: ${location.city!.name}';
+    return 'Konum seçilmedi: vakitler GPS koordinatına göre cihazda hesaplanır';
   }
 
   /// Namaza kalan süre bilgisi (ana ekran sayacı için).
@@ -242,6 +294,17 @@ class PrayerTimesRepository {
   void clearMemoryCache() {
     _memory.clear();
     _rangeMemory.clear();
+  }
+
+  /// Aralık önbelleği taze mi? (en eski kayıt TTL'den yeni olmalı)
+  bool _isRangeFresh(List<PrayerTimesDay> days) {
+    final DateTime now = DateTime.now();
+    for (final PrayerTimesDay day in days) {
+      final DateTime? fetched = day.cachedAt;
+      if (fetched == null) return false;
+      if (now.difference(fetched) > AppConstants.prayerTimesTtl) return false;
+    }
+    return true;
   }
 
   bool _isStale(PrayerTimesDay day) {
@@ -278,6 +341,51 @@ class PrayerTimesRepository {
         .join(',');
     return '${method.id}|asr${method.asrFactor}|$adj';
   }
+
+  /// Uzak (resmî) veriye yöntem ve kullanıcı düzeltmelerini uygular.
+  ///
+  /// * **Hanefî (asr-ı sânî):** resmî ikindi vakti, aynı günün asr-ı sânî
+  ///   farkı kadar (genelde 40–90 dk) ileri alınır. Diğer vakitler resmî kalır.
+  /// * **Manuel dakika düzeltmeleri:** yöntemin varsayılanından farkı eklenir.
+  ///
+  /// Yerel hesaplama kaynağı bu düzeltmeleri kendi içinde uyguladığı için
+  /// burada yalnızca resmî/uzak kaynaklara dokunulur.
+  PrayerTimesDay _refineRemote(
+    PrayerTimesDay day,
+    CalculationMethod method,
+    UserLocation location,
+  ) {
+    PrayerTimesDay refined = day;
+    final bool officialData = day.source == 'diyanet';
+    final CalculationMethod base = CalculationMethod.fromId(method.id);
+    if (officialData && method.asrFactor >= 2 && base.asrFactor < 2) {
+      final DateTime? ikindi = day.timeOf(Prayer.ikindi);
+      if (ikindi != null) {
+        final double shift = PrayerCalculator.asrShiftMinutes(
+          date: day.date,
+          latitude: location.latitude,
+          longitude: location.longitude,
+          method: base,
+          timeZoneOffsetHours: _tzFor(day.date, location),
+        );
+        if (shift > 0) {
+          // Tam dakikaya yuvarlanır: ekranda 17:10 yazıyorsa bildirim de
+          // 17:10:00'da çalsın (saniye artığı kalmasın).
+          refined = refined.copyWith(
+            times: <Prayer, DateTime>{
+              ...refined.times,
+              Prayer.ikindi: ikindi.add(Duration(minutes: shift.round())),
+            },
+          );
+        }
+      }
+    }
+    return _applyExtraOffsets(refined, method);
+  }
+
+  /// O günün UTC farkı — çevrimdışı hesapla **aynı** çözümleyici kullanılır.
+  static double _tzFor(DateTime date, UserLocation location) =>
+      TimeZoneResolver.forLocation(location, date);
 
   /// Uzak servislerden gelen vakitlere kullanıcının manuel dakika düzeltmelerini uygular.
   static PrayerTimesDay _applyExtraOffsets(

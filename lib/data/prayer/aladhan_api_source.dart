@@ -103,9 +103,30 @@ class AladhanApiSource implements PrayerTimesSource {
         Prayer.aksam: parse(timings['Maghrib']),
         Prayer.yatsi: parse(timings['Isha']),
       };
+      // **Kritik düzeltme (1–8 dakika erken ezan hatası):**
+      // AlAdhan ham astronomik vakitleri döndürür; Diyanet'in "temkin"
+      // düzeltmelerini uygulamaz. Diyanet yöntemi için aynı günün resmî
+      // vakitleriyle karşılaştırıldığında fark: akşam −7,1 dk, öğle −5,1 dk,
+      // ikindi −4,1 dk, yatsı −1,0 dk, güneş +6,9 dk (hepsi **erken**).
+      // Bu yüzden yöntemin temkin değerleri burada uygulanır; böylece kaynak
+      // değişse bile kullanıcı Diyanet ile aynı dakikayı görür.
+      final Temkin temkin = method.temkin;
+      final Map<Prayer, int> temkinMinutes = <Prayer, int>{
+        Prayer.imsak: temkin.imsak,
+        Prayer.gunes: temkin.gunes,
+        Prayer.ogle: temkin.ogle,
+        Prayer.ikindi: temkin.ikindi,
+        Prayer.aksam: temkin.aksam,
+        Prayer.yatsi: temkin.yatsi,
+      };
       final Map<Prayer, DateTime> mapped = <Prayer, DateTime>{
         for (final MapEntry<Prayer, DateTime?> entry in parsed.entries)
-          if (entry.value != null) entry.key: entry.value!,
+          if (entry.value != null)
+            entry.key: (temkinMinutes[entry.key] ?? 0) == 0
+                ? entry.value!
+                : entry.value!.add(
+                    Duration(minutes: temkinMinutes[entry.key] ?? 0),
+                  ),
       };
       if (mapped.length < Prayer.values.length) {
         throw const PrayerTimesSourceException(
@@ -204,9 +225,25 @@ class AladhanApiSource implements PrayerTimesSource {
           Prayer.aksam: parse(timings['Maghrib']),
           Prayer.yatsi: parse(timings['Isha']),
         };
+        // Aralık tablosunda da aynı temkin düzeltmesi (bkz. `fetchDay`):
+        // aksi halde haftalık/aylık tablo akşamı 7 dk erken gösterirdi.
+        final Temkin rangeTemkin = method.temkin;
+        final Map<Prayer, int> rangeTemkinMinutes = <Prayer, int>{
+          Prayer.imsak: rangeTemkin.imsak,
+          Prayer.gunes: rangeTemkin.gunes,
+          Prayer.ogle: rangeTemkin.ogle,
+          Prayer.ikindi: rangeTemkin.ikindi,
+          Prayer.aksam: rangeTemkin.aksam,
+          Prayer.yatsi: rangeTemkin.yatsi,
+        };
         final Map<Prayer, DateTime> mapped = <Prayer, DateTime>{
           for (final MapEntry<Prayer, DateTime?> entry in parsed.entries)
-            if (entry.value != null) entry.key: entry.value!,
+            if (entry.value != null)
+              entry.key: (rangeTemkinMinutes[entry.key] ?? 0) == 0
+                  ? entry.value!
+                  : entry.value!.add(
+                      Duration(minutes: rangeTemkinMinutes[entry.key] ?? 0),
+                    ),
         };
         if (mapped.length == Prayer.values.length) {
           days.add(

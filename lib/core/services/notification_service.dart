@@ -344,6 +344,40 @@ class NotificationService {
     return true;
   }
 
+  /// Android 14+ **kesin alarm** izni verilmiş mi?
+  ///
+  /// Android 14'ten itibaren `SCHEDULE_EXACT_ALARM` yeni kurulumlarda varsayılan
+  /// olarak **kapalıdır**. İzin yoksa ezan dakikası tam tutturulamaz: sistem
+  /// alarmı birkaç dakika kaydırabilir. Bu yüzden durumu ekranda gösterip
+  /// kullanıcıyı tek dokunuşla izin ekranına yönlendiriyoruz.
+  Future<bool> canScheduleExactAlarms() async {
+    await initialize();
+    if (!Platform.isAndroid) return true;
+    try {
+      final AndroidFlutterLocalNotificationsPlugin? android = _plugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
+      return await android?.canScheduleExactNotifications() ?? true;
+    } catch (_) {
+      return true;
+    }
+  }
+
+  /// Kesin alarm izni ekranını açar (Android 14+ "Alarmlar ve hatırlatıcılar").
+  Future<void> openExactAlarmSettings() async {
+    if (!Platform.isAndroid) return;
+    try {
+      await _plugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >()
+          ?.requestExactAlarmsPermission();
+    } catch (error) {
+      AppLog.warning('Kesin alarm izni açılamadı: $error');
+    }
+  }
+
   Future<void> openSystemSettings() async {
     if (Platform.isAndroid) {
       await _plugin
@@ -832,6 +866,9 @@ class NotificationService {
     }
   }
 
+  /// Kesin alarm izni yoksa yalnızca bir kez loglanır (ekranı kirletmemek için).
+  bool _exactAlarmWarningLogged = false;
+
   Future<void> _schedule({
     required int id,
     required String title,
@@ -876,9 +913,14 @@ class NotificationService {
           payload: payload,
         );
       } on PlatformException catch (error) {
-        AppLog.warning(
-          'Tam alarm zamanlanamadı, esnek moda geçildi: ${error.code}',
-        );
+        if (!_exactAlarmWarningLogged) {
+          _exactAlarmWarningLogged = true;
+          AppLog.warning(
+            'Kesin alarm izni yok; ezan dakikası birkaç dakika kayabilir. '
+            'Ayarlar > Bildirimler > "Kesin alarm izni" bölümünden açın '
+            '(${error.code})',
+          );
+        }
         await _plugin.zonedSchedule(
           id: id,
           title: title,

@@ -116,7 +116,13 @@ class PrayerTimesCache {
         Prayer.aksam: build('aksam'),
         Prayer.yatsi: build('yatsi'),
       },
-      source: 'cache',
+      // **Düzeltme:** kaynak bilgisi `'cache'` olarak eziliyordu. Bu yüzden
+      // önbellekten okunan resmî Diyanet verisi "resmî" sayılmıyor, Hanefî
+      // ikindi kaydırması uygulanmıyordu (ekran 15:46, bildirim 16:26 gibi
+      // tutarsızlık). Kaynak olduğu gibi korunur; ekranda "Kayıtlı veri"
+      // yazılmasını repository kendi `copyWith(source: 'cache')` çağrısıyla
+      // yapar.
+      source: (row['source'] as String?) ?? 'diyanet',
       hijriDate: row['hijri'] as String?,
       cachedAt: DateTime.fromMillisecondsSinceEpoch(row['fetched_at']! as int),
     );

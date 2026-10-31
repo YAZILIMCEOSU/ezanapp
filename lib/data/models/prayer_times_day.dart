@@ -275,12 +275,36 @@ class PrayerTimesDay {
     cachedAt: cachedAt ?? this.cachedAt,
   );
 
-  /// Bir aylık tablo için yardımcı: kaynak etiketinin okunabilir karşılığı.
+  /// Kaynak etiketinin okunabilir karşılığı.
+  ///
+  /// Kullanıcı "bu saat Diyanet ile aynı mı?" sorusunun cevabını tek bakışta
+  /// görebilmeli: resmî veri, düzeltilmiş yedek servis ya da cihaz hesabı.
   String get sourceLabel => switch (source) {
-    'diyanet' => 'Diyanet verisi',
-    'aladhan' => 'Uluslararası servis',
-    'calculation' => 'Çevrimdışı hesap',
-    'cache' => 'Önbellek',
+    'diyanet' => 'Diyanet resmî verisi',
+    'aladhan' => 'Yedek servis (Diyanet temkinine göre düzeltildi)',
+    'calculation' => 'Cihazda hesaplandı (Diyanet kalibrasyonlu)',
+    'cache' => 'Kayıtlı veri',
     _ => source,
   };
+
+  /// Verinin ne zaman alındığını insan dilinde söyler.
+  ///
+  /// Önceden ekranda `güncelleme 14:32` yazıyordu; bu ifade hem "Diyanet
+  /// güncellemesi" gibi okunuyor hem de tarih içermiyordu. Artık geçen süre
+  /// yazılır: `az önce alındı`, `3 saat önce alındı`.
+  String? freshnessLabel([DateTime? now]) {
+    final DateTime? fetched = cachedAt;
+    if (fetched == null) return null;
+    final Duration diff = (now ?? DateTime.now()).difference(fetched);
+    if (diff.inMinutes < 2) return 'az önce alındı';
+    if (diff.inMinutes < 60) return '${diff.inMinutes} dk önce alındı';
+    if (diff.inHours < 24) return '${diff.inHours} saat önce alındı';
+    return '${diff.inDays} gün önce alındı';
+  }
+
+  /// Kaynak + tazelik: `Diyanet resmî verisi · 3 saat önce alındı`.
+  String get displaySource {
+    final String? fresh = freshnessLabel();
+    return fresh == null ? sourceLabel : '$sourceLabel · $fresh';
+  }
 }

@@ -25,6 +25,7 @@ class NotificationSettingsScreen extends ConsumerStatefulWidget {
 class _NotificationSettingsScreenState
     extends ConsumerState<NotificationSettingsScreen> {
   bool? _systemPermission;
+  bool? _exactAlarmAllowed;
   int _pending = 0;
   bool _busy = false;
 
@@ -39,9 +40,11 @@ class _NotificationSettingsScreenState
     try {
       final bool granted = await runtime.notifications.hasPermission();
       final int pending = await runtime.notifications.pendingCount();
+      final bool exact = await runtime.notifications.canScheduleExactAlarms();
       if (!mounted) return;
       setState(() {
         _systemPermission = granted;
+        _exactAlarmAllowed = exact;
         _pending = pending;
       });
     } catch (error) {
@@ -132,6 +135,35 @@ class _NotificationSettingsScreenState
             value: settings.enabled,
             onChanged: (bool value) =>
                 _update((NotificationSettings s) => s.copyWith(enabled: value)),
+          ),
+          ListTile(
+            leading: Icon(
+              _exactAlarmAllowed == false
+                  ? Icons.alarm_off_rounded
+                  : Icons.alarm_on_rounded,
+            ),
+            title: const Text('Kesin alarm izni (ezan tam vaktinde)'),
+            subtitle: Text(
+              _exactAlarmAllowed == false
+                  ? 'Kapalı: Android 14+ ezanı 1–2 dakika kaydırabilir. '
+                        'Açmak için dokunun.'
+                  : _exactAlarmAllowed == true
+                  ? 'Açık: ezan tam vakitte çalar'
+                  : 'Kontrol ediliyor…',
+            ),
+            trailing: _exactAlarmAllowed == false
+                ? const Icon(Icons.chevron_right_rounded)
+                : const Icon(Icons.check_circle_outline_rounded),
+            enabled: _exactAlarmAllowed == false,
+            onTap: _exactAlarmAllowed == false
+                ? () async {
+                    await ref
+                        .read(runtimeProvider)
+                        .notifications
+                        .openExactAlarmSettings();
+                    await _refreshStatus();
+                  }
+                : null,
           ),
           ListTile(
             leading: const Icon(Icons.battery_saver_rounded),

@@ -310,9 +310,6 @@ class PrayerSourceNote extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final String? cachedAt = day.cachedAt == null
-        ? null
-        : AppTime.formatTime(day.cachedAt!, use24Hour: use24Hour);
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.xl,
@@ -333,8 +330,7 @@ class PrayerSourceNote extends StatelessWidget {
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
-              warning ??
-                  '${day.sourceLabel}${cachedAt == null ? '' : ' · güncelleme $cachedAt'}',
+              warning ?? day.displaySource,
               style: theme.textTheme.labelSmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),

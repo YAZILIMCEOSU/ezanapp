@@ -103,6 +103,18 @@ abstract final class GeoUtils {
     return Wmm2025.declination(latitude, longitude, date: date);
   }
 
+  /// Boylamdan **yaklaşık** UTC farkı (saat) — 30 dakikaya yuvarlanır.
+  ///
+  /// Yalnızca veri kümesinde saat dilimi bulunmayan yurt dışı şehirler için
+  /// kullanılır. Gerçek idari saat dilimleri (ör. Hindistan +5,5; Çin +8)
+  /// bu yöntemle ±30 dakika içinde tahmin edilir; çevrimiçi resmî veri her
+  /// zaman önceliklidir.
+  static double approximateUtcOffsetHours(double longitude) {
+    if (!longitude.isFinite) return 0;
+    final double raw = (longitude / 15.0).clamp(-12.0, 14.0);
+    return (raw * 2).round() / 2.0;
+  }
+
   /// Sapmanın hangi kaynaktan geldiğini açıklayan etiket (arayüz/telemetri).
   static String declinationModelLabel() => Wmm2025.modelId;
 

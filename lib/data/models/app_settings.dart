@@ -115,7 +115,7 @@ class NotificationSettings {
     this.eidAlarm = true,
     this.abdestSukurReminder = false,
     this.inAppAdhanEnabled = true,
-    this.daysToSchedule = 7,
+    this.daysToSchedule = 14,
   });
 
   final bool enabled;
@@ -376,7 +376,7 @@ class NotificationSettings {
       eidAlarm: boolOr('eidAlarm', true),
       abdestSukurReminder: boolOr('abdestSukurReminder', false),
       inAppAdhanEnabled: boolOr('inAppAdhanEnabled', true),
-      daysToSchedule: intOr('daysToSchedule', 7),
+      daysToSchedule: intOr('daysToSchedule', 14),
     );
   }
 }

@@ -28,6 +28,15 @@ class DiyanetApiSource implements PrayerTimesSource {
 
   static const Duration _timeout = Duration(seconds: 4);
 
+  /// Aynı ilçe için aylık/yıllık yanıt bellekte tutulur.
+  ///
+  /// Resmî veri günde bir kez değişir; her gün isteği için tekrar ağa çıkmak
+  /// hem yavaş hem de servis kesintisinde gereksiz yedek kaynağa düşme
+  /// (dolayısıyla dakika farkı) riski demekti.
+  final Map<String, _CachedPeriod> _periodCache = <String, _CachedPeriod>{};
+
+  static const Duration _memoryTtl = Duration(hours: 6);
+
   @override
   String get id => 'diyanet';
 
@@ -103,14 +112,14 @@ class DiyanetApiSource implements PrayerTimesSource {
 
   Future<List<PrayerTimesDay>> _fetch(String districtId, String period) async {
     final String apiDistrictId = districtId.split('_').first;
+    final String cacheKey = '$apiDistrictId|$period';
+    final _CachedPeriod? hit = _periodCache[cacheKey];
+    if (hit != null && DateTime.now().difference(hit.fetchedAt) < _memoryTtl) {
+      return hit.days;
+    }
     final Uri uri = Uri.parse('$baseUrl/prayer-times/$apiDistrictId/$period');
     try {
-      final http.Response response = await _client
-          .get(
-            uri,
-            headers: const <String, String>{'Accept': 'application/json'},
-          )
-          .timeout(_timeout);
+      final http.Response response = await _getWithRetry(uri);
       if (response.statusCode != 200) {
         throw PrayerTimesSourceException(
           'diyanet',
@@ -138,6 +147,9 @@ class DiyanetApiSource implements PrayerTimesSource {
           'Kayıtlar çözümlenemedi.',
         );
       }
+      // Bellek sınırsız büyümesin: en fazla 24 dönem (≈2 yıl × birkaç ilçe).
+      if (_periodCache.length >= 24) _periodCache.clear();
+      _periodCache[cacheKey] = _CachedPeriod(days, DateTime.now());
       AppLog.debug('Diyanet API: ${days.length} gün alındı ($period)');
       return days;
     } on TimeoutException {
@@ -146,6 +158,27 @@ class DiyanetApiSource implements PrayerTimesSource {
       rethrow;
     } catch (error) {
       throw PrayerTimesSourceException('diyanet', 'Bağlantı hatası: $error');
+    }
+  }
+
+  /// Tek istek + tek tekrar denemesi.
+  ///
+  /// Tek seferlik kopmalar (zaman aşımı, 5xx) yüzünden yedek servise düşmek
+  /// dakika farkına yol açtığı için bir kez daha denenir.
+  Future<http.Response> _getWithRetry(Uri uri) async {
+    const Map<String, String> headers = <String, String>{
+      'Accept': 'application/json',
+    };
+    Future<http.Response> attempt() =>
+        _client.get(uri, headers: headers).timeout(_timeout);
+    try {
+      final http.Response first = await attempt();
+      if (first.statusCode < 500) return first;
+      await Future<void>.delayed(const Duration(milliseconds: 300));
+      return await attempt();
+    } on TimeoutException {
+      await Future<void>.delayed(const Duration(milliseconds: 300));
+      return attempt();
     }
   }
 
@@ -267,7 +300,21 @@ class DiyanetApiSource implements PrayerTimesSource {
   static bool _sameDay(DateTime a, DateTime b) =>
       a.year == b.year && a.month == b.month && a.day == b.day;
 
-  void dispose() => _client.close();
+  /// Bellek önbelleğini temizler (zorla yenileme / tanılama).
+  void clearMemoryCache() => _periodCache.clear();
+
+  void dispose() {
+    _periodCache.clear();
+    _client.close();
+  }
+}
+
+/// Bellekte tutulan dönem yanıtı.
+class _CachedPeriod {
+  const _CachedPeriod(this.days, this.fetchedAt);
+
+  final List<PrayerTimesDay> days;
+  final DateTime fetchedAt;
 }
 
 extension _FirstWhereOrNull<E> on Iterable<E> {

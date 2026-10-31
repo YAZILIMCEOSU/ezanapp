@@ -540,6 +540,9 @@ class PrayerTimesNotifier extends AsyncNotifier<TodayTimes> {
       date: now,
       method: method,
     );
+    // `lastWarning` repository üzerinde tek alan; yarının verisi çekilirken
+    // sıfırlanıyordu. Bu yüzden bugünün uyarısı hemen saklanır.
+    final String? todayWarning = runtime.prayerTimes.lastWarning;
     final PrayerTimesDay tomorrow = await runtime.prayerTimes.getDay(
       location: location,
       date: now.add(const Duration(days: 1)),
@@ -553,7 +556,7 @@ class PrayerTimesNotifier extends AsyncNotifier<TodayTimes> {
     return TodayTimes(
       day: day,
       tomorrow: tomorrow,
-      warning: runtime.prayerTimes.lastWarning,
+      warning: todayWarning ?? runtime.prayerTimes.lastWarning,
       locationLabel: location.city?.displayName ?? label,
     );
   }
@@ -572,6 +575,7 @@ class PrayerTimesNotifier extends AsyncNotifier<TodayTimes> {
         method: method,
         forceRefresh: true,
       );
+      final String? todayWarning = runtime.prayerTimes.lastWarning;
       final PrayerTimesDay tomorrow = await runtime.prayerTimes.getDay(
         location: location,
         date: now.add(const Duration(days: 1)),
@@ -581,7 +585,7 @@ class PrayerTimesNotifier extends AsyncNotifier<TodayTimes> {
       return TodayTimes(
         day: day,
         tomorrow: tomorrow,
-        warning: runtime.prayerTimes.lastWarning,
+        warning: todayWarning ?? runtime.prayerTimes.lastWarning,
         locationLabel:
             location.city?.displayName ??
             await runtime.cities.describePoint(
@@ -698,7 +702,17 @@ class NotificationCoordinator {
         (a.longitude - b.longitude).abs() < 1e-4;
   }
 
-  Future<int> reschedule({AppSettings? settings, int days = 8}) async {
+  /// Ezan bildirimlerinin kaç gün ileriye kurulacağı.
+  ///
+  /// Uygulama 14 gün boyunca açılmasa bile vakit bildirimleri çalışmaya devam
+  /// eder (önceden 8 gündü; tatile giden kullanıcıda bildirimler sessizce
+  /// duruyordu).
+  static const int scheduleHorizonDays = 15;
+
+  Future<int> reschedule({
+    AppSettings? settings,
+    int days = scheduleHorizonDays,
+  }) async {
     final int generation = ++_rescheduleGeneration;
     final AppSettings current =
         settings ?? _ref.read(settingsControllerProvider);
