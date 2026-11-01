@@ -94,8 +94,10 @@ void main() {
           expect(find.text('Konum'), findsWidgets);
           // **Manuel düzeltme** durumu her koşulda yazılmalı: kullanıcı
           // "1 dakika geç/erken" şikâyetinin kaynağını buradan görür.
-          final bool offsetInfo =
-              find.textContaining('Manuel düzeltme').evaluate().isNotEmpty;
+          final bool offsetInfo = find
+              .textContaining('Manuel düzeltme')
+              .evaluate()
+              .isNotEmpty;
           expect(offsetInfo, isTrue);
           // Çevrimdışı test ortamında düğme "İnternet yok..." yazar; iki metin
           // de "karşılaştır" kökünü taşır.
