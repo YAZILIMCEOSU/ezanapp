@@ -81,31 +81,32 @@ void main() {
   });
 
   group('içerik gerçekten çiziliyor', () {
-    screenTest('Vakit doğrulama: konum, yöntem ve gösterilen vakitler çizilir', (
-      WidgetTester tester,
-    ) async {
-      await renderScreen(
-        tester,
-        const PrayerVerifyScreen(),
-        runtime: runtime,
-        times: times,
-        verify: () {
-          expect(find.text('Vakit doğrulama'), findsWidgets);
-          expect(find.text('Konum'), findsWidgets);
-          // **Manuel düzeltme** durumu her koşulda yazılmalı: kullanıcı
-          // "1 dakika geç/erken" şikâyetinin kaynağını buradan görür.
-          final bool offsetInfo = find
-              .textContaining('Manuel düzeltme')
-              .evaluate()
-              .isNotEmpty;
-          expect(offsetInfo, isTrue);
-          // Liste görünümü olduğu için ekranın altındaki karşılaştırma
-          // düğmesi ilk karede kurulmaz; üstteki bölümler doğrulanır.
-          expect(find.textContaining('Saat dilimi'), findsWidgets);
-          expect(find.textContaining('Yöntem'), findsWidgets);
-        },
-      );
-    });
+    screenTest(
+      'Vakit doğrulama: konum, yöntem ve gösterilen vakitler çizilir',
+      (WidgetTester tester) async {
+        await renderScreen(
+          tester,
+          const PrayerVerifyScreen(),
+          runtime: runtime,
+          times: times,
+          verify: () {
+            expect(find.text('Vakit doğrulama'), findsWidgets);
+            expect(find.text('Konum'), findsWidgets);
+            // **Manuel düzeltme** durumu her koşulda yazılmalı: kullanıcı
+            // "1 dakika geç/erken" şikâyetinin kaynağını buradan görür.
+            final bool offsetInfo = find
+                .textContaining('Manuel düzeltme')
+                .evaluate()
+                .isNotEmpty;
+            expect(offsetInfo, isTrue);
+            // Liste görünümü olduğu için ekranın altındaki karşılaştırma
+            // düğmesi ilk karede kurulmaz; üstteki bölümler doğrulanır.
+            expect(find.textContaining('Saat dilimi'), findsWidgets);
+            expect(find.textContaining('Yöntem'), findsWidgets);
+          },
+        );
+      },
+    );
 
     screenTest('Dualar: künye özeti ve kategori çipleri görünür', (
       WidgetTester tester,
