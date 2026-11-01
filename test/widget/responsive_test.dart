@@ -99,9 +99,10 @@ void main() {
               .evaluate()
               .isNotEmpty;
           expect(offsetInfo, isTrue);
-          // Çevrimdışı test ortamında düğme "İnternet yok..." yazar; iki metin
-          // de "karşılaştır" kökünü taşır.
-          expect(find.textContaining('karşılaştır'), findsWidgets);
+          // Liste görünümü olduğu için ekranın altındaki karşılaştırma
+          // düğmesi ilk karede kurulmaz; üstteki bölümler doğrulanır.
+          expect(find.textContaining('Saat dilimi'), findsWidgets);
+          expect(find.textContaining('Yöntem'), findsWidgets);
         },
       );
     });
