@@ -294,6 +294,76 @@ class NextPrayerCountdownCard extends StatelessWidget {
   }
 }
 
+/// **Manuel dakika düzeltmesi uyarısı.**
+///
+/// Kullanıcı bir vakte ±N dakika eklediğinde vakitler artık resmî saatle
+/// birebir aynı görünmez. Bu uyarı, "vakit 1 dakika geç/erken" şikâyetlerinin
+/// en sık sebebini görünür kılar ve tek dokunuşla sıfırlama sunar.
+class ManualOffsetNotice extends StatelessWidget {
+  const ManualOffsetNotice({
+    required this.offsets,
+    required this.onReset,
+    super.key,
+  });
+
+  /// Yalnızca sıfırdan farklı düzeltmeler.
+  final Map<String, int> offsets;
+  final VoidCallback onReset;
+
+  @override
+  Widget build(BuildContext context) {
+    if (offsets.isEmpty) return const SizedBox.shrink();
+    final ThemeData theme = Theme.of(context);
+    final String detail = offsets.entries
+        .map(
+          (MapEntry<String, int> e) =>
+              '${Prayer.fromKey(e.key).label} ${e.value > 0 ? '+' : ''}${e.value} dk',
+        )
+        .join(' · ');
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.xl,
+        AppSpacing.sm,
+        AppSpacing.xl,
+        0,
+      ),
+      child: Material(
+        color: AppColors.warning.withValues(alpha: 0.12),
+        borderRadius: AppRadius.allMd,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.md,
+            AppSpacing.sm,
+            AppSpacing.sm,
+            AppSpacing.sm,
+          ),
+          child: Row(
+            children: <Widget>[
+              const Icon(
+                Icons.tune_rounded,
+                size: 18,
+                color: AppColors.warning,
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Text(
+                  'Manuel düzeltme açık: $detail. Vakitler resmî saatten bu '
+                  'kadar kaymış görünür.',
+                  style: theme.textTheme.bodySmall,
+                ),
+              ),
+              TextButton(
+                onPressed: onReset,
+                child: const Text('Sıfırla'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 /// Vakit verisinin kaynağını ve tazeliğini gösteren küçük not.
 class PrayerSourceNote extends StatelessWidget {
   const PrayerSourceNote({

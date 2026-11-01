@@ -295,7 +295,7 @@ Future<void> showBatteryOptimizationDialog(
 }
 
 /// Bugünün altı vakti.
-class _TodayTimesCard extends StatelessWidget {
+class _TodayTimesCard extends ConsumerWidget {
   const _TodayTimesCard({
     required this.times_,
     required this.now,
@@ -309,7 +309,7 @@ class _TodayTimesCard extends StatelessWidget {
   final NotificationSettings notifications;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final PrayerScheduleSnapshot snap = times_.snapshot(now);
     final PrayerTimesDay day = snap.activeDay;
     final Prayer current = snap.currentPrayer;
@@ -360,6 +360,18 @@ class _TodayTimesCard extends StatelessWidget {
           day: day,
           use24Hour: use24Hour,
           warning: times_.warning,
+        ),
+        ManualOffsetNotice(
+          offsets: ref.watch(settingsControllerProvider).manualOffsets,
+          onReset: () async {
+            await ref.read(settingsControllerProvider.notifier).clearManualOffsets();
+            if (!context.mounted) return;
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Manuel düzeltmeler kaldırıldı; vakitler resmî saatle aynı.'),
+              ),
+            );
+          },
         ),
         DiyanetKerahatAndNafileBar(day: day, now: now, use24Hour: use24Hour),
       ],

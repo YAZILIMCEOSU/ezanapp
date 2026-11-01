@@ -262,7 +262,24 @@ class AladhanApiSource implements PrayerTimesSource {
       days.sort(
         (PrayerTimesDay a, PrayerTimesDay b) => a.date.compareTo(b.date),
       );
-      return days;
+      // **Düzeltme:** uç nokta bütün ayı döndürür; istenen aralığın dışındaki
+      // günler kesilir (yoksa haftalık tablo 31 güne çıkıyordu).
+      final DateTime first = DateTime(
+        startDate.year,
+        startDate.month,
+        startDate.day,
+      );
+      final DateTime last = DateTime(
+        endDate.year,
+        endDate.month,
+        endDate.day,
+      );
+      return days
+          .where(
+            (PrayerTimesDay d) =>
+                !d.date.isBefore(first) && !d.date.isAfter(last),
+          )
+          .toList();
     } on PrayerTimesSourceException {
       rethrow;
     } catch (error) {

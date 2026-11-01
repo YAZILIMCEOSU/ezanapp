@@ -125,7 +125,7 @@ class AppRuntime {
       database: database,
       preferences: preferences,
       connectivity: connectivity,
-      location: const LocationService(),
+      location: LocationService(),
       notifications: notifications,
       audio: audio,
       ads: ads,

@@ -31,6 +31,7 @@ import '../features/settings/adhan_sound_screen.dart';
 import '../features/settings/backup_screen.dart';
 import '../features/settings/city_picker_screen.dart';
 import '../features/settings/notification_settings_screen.dart';
+import '../features/settings/prayer_verify_screen.dart';
 import '../features/settings/settings_screen.dart';
 import '../features/widgets/app_shell.dart';
 import '../features/widgets/not_found_screen.dart';
@@ -60,6 +61,7 @@ abstract final class AppRoutes {
   static const String settings = '/ayarlar';
   static const String notificationSettings = '/ayarlar/bildirimler';
   static const String about = '/ayarlar/hakkinda';
+  static const String prayerVerify = '/ayarlar/vakit-dogrulama';
   static const String premium = '/premium';
   static const String calendar = '/takvim';
   static const String cities = '/sehir-sec';
@@ -249,6 +251,11 @@ final GoRouter appRouter = GoRouter(
           path: 'hakkinda',
           builder: (BuildContext context, GoRouterState state) =>
               const AboutScreen(),
+        ),
+        GoRoute(
+          path: 'vakit-dogrulama',
+          builder: (BuildContext context, GoRouterState state) =>
+              const PrayerVerifyScreen(),
         ),
       ],
     ),

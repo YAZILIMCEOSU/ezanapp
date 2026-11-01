@@ -120,6 +120,14 @@ class SettingsController extends Notifier<AppSettings> {
     rescheduleNotifications: false,
   );
 
+  /// Tüm manuel dakika düzeltmelerini temizler.
+  ///
+  /// "Vakit 1 dakika geç/erken görünüyor" şikâyetlerinin en sık sebebi unutulmuş
+  /// bir manuel düzeltmedir (ör. ikindi +1). Tek dokunuşla resmî saatlere
+  /// dönülebilmesi için bu yöntem eklendi.
+  Future<void> clearManualOffsets() =>
+      update(state.copyWith(manualOffsets: const <String, int>{}));
+
   Future<void> setManualOffset(String prayerKey, int minutes) {
     final Map<String, int> offsets = Map<String, int>.from(state.manualOffsets);
     if (minutes == 0) {
@@ -245,6 +253,8 @@ class LocationState {
 class LocationController extends Notifier<LocationState> {
   static const String _locationKey = 'active_location';
   StreamSubscription<LocationFix>? _positionSub;
+  bool _refreshing = false;
+  bool _refining = false;
 
   @override
   LocationState build() {
@@ -344,8 +354,20 @@ class LocationController extends Notifier<LocationState> {
   }
 
   /// GPS ile konumu tazeler. Başarısız olursa [LocationState.error] doludur.
+  ///
+  /// **Hız:** Kullanıcı hiçbir zaman GPS kilidi beklemez.
+  /// 1. İşletim sisteminin son bilinen konumu varsa **anında** uygulanır.
+  /// 2. Canlı konum [(LocationService.getCurrentPosition)] toplam ~9 sn
+  ///    bütçeyle alınır ve geldiğinde güncellenir.
+  /// 3. Hassas konum gerekiyorsa [refineInBackground] çağrılır; ilçe
+  ///    değişirse vakitler kendiliğinden yenilenir.
   Future<bool> refreshFromGps({bool requestPermission = true}) async {
-    state = state.copyWith(busy: true);
+    if (_refreshing) return state.location.city != null;
+    _refreshing = true;
+    // İlk açılışta kaydedilmiş bir ilçe varsa "yükleniyor" göstergesi
+    // gösterme; ekran anında kullanılabilir kalsın.
+    final bool hadCity = state.location.city != null;
+    if (!hadCity) state = state.copyWith(busy: true);
     try {
       final AppRuntime runtime = ref.read(runtimeProvider);
       LocationStatus status = await runtime.location.checkStatus();
@@ -356,7 +378,8 @@ class LocationController extends Notifier<LocationState> {
         state = state.copyWith(
           busy: false,
           error: switch (status) {
-            LocationStatus.deniedForever => 'Konum izni kalıcı olarak reddedilmiş. Ayarlardan izin verebilirsiniz.',
+            LocationStatus.deniedForever =>
+              'Konum izni kalıcı olarak reddedilmiş. Ayarlardan izin verebilirsiniz.',
             LocationStatus.serviceDisabled =>
               'Konum servisi kapalı. Açtıktan sonra tekrar deneyin.',
             _ => 'Konum izni verilmedi. Dilerseniz şehir seçebilirsiniz.',
@@ -365,30 +388,32 @@ class LocationController extends Notifier<LocationState> {
         return false;
       }
 
-      // İlk açılışta uydu kilidi beklenirken işletim sisteminin son bilinen
-      // konumunu (<10 ms) hemen uygula; böylece ilçe (ör. Bağcılar) anında görünür.
-      if (state.location.city == null) {
-        try {
-          final LocationFix? fastFix = await runtime.location
-              .getLastKnownFastPosition();
-          if (fastFix != null) {
-            final City? fastCity = await runtime.cities.nearest(
-              fastFix.latitude,
-              fastFix.longitude,
-            );
-            await _persist(
-              UserLocation(
-                mode: LocationMode.gps,
-                latitude: fastFix.latitude,
-                longitude: fastFix.longitude,
-                city: fastCity,
-                updatedAt: DateTime.now(),
-                gpsAccuracyMeters: fastFix.accuracyMeters,
-              ),
-              restartWatch: false,
-            );
-          }
-        } catch (_) {}
+      // 1) Son bilinen konum: beklemeden uygula (Bağcılar gibi ilçe anında
+      //    görünür). Kayıtlı ilçe yoksa veya mevcut konum kaba ise uygulanır.
+      final LocationFix? fastFix = await runtime.location
+          .getLastKnownFastPosition();
+      final bool fastBetter =
+          fastFix != null &&
+          (state.location.city == null ||
+              (state.location.gpsAccuracyMeters ?? 1e9) >
+                  (fastFix.accuracyMeters ?? 1e9) + 250);
+      if (fastBetter) {
+        final City? fastCity = await runtime.cities.nearest(
+          fastFix.latitude,
+          fastFix.longitude,
+        );
+        await _persist(
+          UserLocation(
+            mode: LocationMode.gps,
+            latitude: fastFix.latitude,
+            longitude: fastFix.longitude,
+            city: fastCity,
+            updatedAt: fastFix.timestamp ?? DateTime.now(),
+            gpsAccuracyMeters: fastFix.accuracyMeters,
+          ),
+          restartWatch: false,
+        );
+        state = state.copyWith(busy: false);
       }
 
       final LocationFix fix = await runtime.location.getCurrentPosition();
@@ -410,6 +435,12 @@ class LocationController extends Notifier<LocationState> {
         ),
       );
       state = state.copyWith(busy: false, error: null);
+
+      // 2) Kaba konumla (Wi-Fi/baz istasyonu) bulunduysa ilçe yanlış olabilir;
+      //    arka planda hassas konum isteyip ilçe değişirse düzelt.
+      if (!fix.isDistrictAccurate) {
+        unawaited(_refineDistrict());
+      }
       return true;
     } on AppException catch (error) {
       state = state.copyWith(busy: false, error: error.message);
@@ -421,6 +452,45 @@ class LocationController extends Notifier<LocationState> {
         error: 'Konum alınamadı. Lütfen tekrar deneyin.',
       );
       return false;
+    } finally {
+      _refreshing = false;
+    }
+  }
+
+  /// Arka planda hassas konum alır ve ilçe değiştiyse vakitleri yeniler.
+  Future<void> _refineDistrict() async {
+    if (_refining) return;
+    _refining = true;
+    try {
+      final AppRuntime runtime = ref.read(runtimeProvider);
+      final LocationFix? precise = await runtime.location.refineInBackground();
+      if (precise == null) return;
+      final City? matched = await runtime.cities.nearest(
+        precise.latitude,
+        precise.longitude,
+      );
+      final bool moved =
+          matched?.id != state.location.city?.id ||
+          (state.location.latitude - precise.latitude).abs() > 0.002 ||
+          (state.location.longitude - precise.longitude).abs() > 0.002;
+      if (!moved) return;
+      if (state.location.mode != LocationMode.gps) return;
+      AppLog.debug('Hassas konum ilçeyi güncelledi: ${matched?.displayName}');
+      await _persist(
+        UserLocation(
+          mode: LocationMode.gps,
+          latitude: precise.latitude,
+          longitude: precise.longitude,
+          city: matched,
+          updatedAt: DateTime.now(),
+          gpsAccuracyMeters: precise.accuracyMeters,
+        ),
+        restartWatch: false,
+      );
+    } catch (error) {
+      AppLog.warning('Hassas konum alınamadı: $error');
+    } finally {
+      _refining = false;
     }
   }
 

@@ -17,9 +17,12 @@ import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Debug
+import android.os.Handler
+import android.os.Looper
 import android.os.PowerManager
 import android.provider.Settings
 import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import android.view.Surface
 import android.view.WindowManager
 import io.flutter.embedding.android.FlutterActivity
@@ -53,6 +56,7 @@ class MainActivity : FlutterActivity(), SensorEventListener {
     private var ttsReady = false
     private var ttsPendingChunks: MutableList<String> = mutableListOf()
     private var ttsRate: Float = 0.95f
+    private val mainHandler = Handler(Looper.getMainLooper())
 
     private val gravity = FloatArray(3)
     private val geomagnetic = FloatArray(3)
@@ -248,18 +252,42 @@ class MainActivity : FlutterActivity(), SensorEventListener {
                 ttsPendingChunks.clear()
             }
         }
+        // **Düzeltme:** parça dinleyicisi yoktu; bu yüzden uzun hutbe/dua
+        // metinlerinde yalnızca İLK parça okunuyor, gerisi sessizce
+        // düşüyordu. Artık her parça bitince sıradaki okunur.
+        textToSpeech?.setOnUtteranceProgressListener(
+            object : UtteranceProgressListener() {
+                override fun onStart(utteranceId: String?) {}
+
+                override fun onDone(utteranceId: String?) {
+                    mainHandler.post { speakNextChunk() }
+                }
+
+                @Deprecated("Deprecated in Java")
+                override fun onError(utteranceId: String?) {
+                    mainHandler.post { speakNextChunk() }
+                }
+
+                override fun onError(utteranceId: String?, errorCode: Int) {
+                    mainHandler.post { speakNextChunk() }
+                }
+            },
+        )
     }
 
     private fun speakNextChunk() {
         val engine = textToSpeech ?: return
         if (!ttsReady || ttsPendingChunks.isEmpty()) return
         val chunk = ttsPendingChunks.removeAt(0)
+        val utteranceId = "ezanai-${System.currentTimeMillis()}"
         try {
-            engine.speak(chunk, TextToSpeech.QUEUE_ADD, Bundle(), "ezanai-${System.currentTimeMillis()}")
+            engine.speak(chunk, TextToSpeech.QUEUE_ADD, Bundle(), utteranceId)
         } catch (_: Throwable) {}
     }
 
     private fun stopSpeaking() {
+        // Liste boşaltıldığında yarım kalan parçanın `onDone` çağrısı
+        // `speakNextChunk` içinde hiçbir şey yapmaz (yarış koşulu yok).
         ttsPendingChunks.clear()
         try {
             textToSpeech?.stop()

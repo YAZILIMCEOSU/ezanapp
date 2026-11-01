@@ -21,7 +21,7 @@ class LocalCalculationSource implements PrayerTimesSource {
 
   @override
   String get description =>
-      'Astronomik hesap; Diyanet resmî vakitleriyle kalibre edilmiştir (ortalama sapma ±0,2 dk).';
+      'Astronomik hesap; Diyanet resmî vakitleriyle kalibre edilmiştir (55 resmî kayıtta ortalama sapma ±0,2 dk, en büyük fark ±1 dk).';
 
   @override
   bool get requiresNetwork => false;

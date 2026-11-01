@@ -117,11 +117,54 @@ class SettingsScreen extends ConsumerWidget {
           ListTile(
             leading: const Icon(Icons.tune_rounded),
             title: const Text('Vakit bazlı düzeltme'),
-            subtitle: const Text(
-              'Diyanet vakitlerine ±30 dakika ekleyip çıkarın',
+            subtitle: Text(
+              settings.manualOffsets.values.any((int v) => v != 0)
+                  ? 'AÇIK: ${settings.manualOffsets.entries.where((MapEntry<String, int> e) => e.value != 0).map((MapEntry<String, int> e) => '${e.key} ${e.value > 0 ? '+' : ''}${e.value} dk').join(', ')} · sıfırlamak için dokunun'
+                  : 'Diyanet vakitlerine ±30 dakika ekleyip çıkarın',
             ),
             trailing: const Icon(Icons.chevron_right_rounded),
             onTap: () => context.go(AppRoutes.prayers),
+          ),
+          ListTile(
+            leading: const Icon(Icons.fact_check_outlined),
+            title: const Text('Vakit doğrulama'),
+            subtitle: const Text(
+              'Gösterilen saat ile Diyanet resmî saatini yan yana karşılaştırın',
+            ),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () => context.push(AppRoutes.prayerVerify),
+          ),
+          ListTile(
+            leading: const Icon(Icons.my_location_rounded),
+            title: const Text('Konumu şimdi yenile'),
+            subtitle: const Text(
+              'GPS kapalıysa/izin yoksa şehir seçmeyi önerir',
+            ),
+            trailing: ref.watch(locationControllerProvider).busy
+                ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.refresh_rounded),
+            onTap: () async {
+              final bool ok = await ref
+                  .read(locationControllerProvider.notifier)
+                  .refreshFromGps();
+              if (!context.mounted) return;
+              final String? error = ref
+                  .read(locationControllerProvider)
+                  .error;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    ok
+                        ? 'Konum güncellendi: ${ref.read(activeLocationProvider).label}'
+                        : error ?? 'Konum alınamadı.',
+                  ),
+                ),
+              );
+            },
           ),
           if (ref.read(runtimeProvider).ads.privacyOptionsRequired)
             ListTile(

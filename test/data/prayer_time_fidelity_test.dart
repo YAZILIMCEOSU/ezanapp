@@ -36,6 +36,9 @@ import '../support/test_runtime.dart';
 /// | V5 | Aralık önbelleği tazelik denetimi yapmıyordu → bildirim eski saate kuruluyordu | `bayat aralık önbelleği` |
 /// | V6 | Yerel hesapta temkin yanlıydı (yatsı +1 dk, akşam +8 dk) | `temkin ... yansız` |
 /// | V7 | Dünya şehirlerinde saat dilimi yok sayılıp +3 varsayılıyordu | `Kâbil ... +4,5` |
+/// | V9 | Aralık isteği ay sınırını aşınca sonraki ayın günleri hiç gelmiyordu (bildirim boşluğu) | `ay sonunu aşan aralık` |
+/// | V10 | Yedek servis bütün ayı döndürünce haftalık tablo 31 güne çıkıyordu | `aralık dışındaki günler` |
+/// | V11 | İkindi yuvarlaması: hesaplanan vakit resmî saatten 1 dakikadan fazla geç olamaz | `ikindi asla 1 dk'dan fazla geç` |
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   initTestDatabaseFactory();
@@ -197,6 +200,61 @@ void main() {
         }
       },
     );
+
+    test('ikindi asla 1 dk\'dan fazla geç olmaz (V11)', () async {
+      // **Kullanıcı bildirimi:** "İkindi hâlâ 1 dakika geç."
+      //
+      // Resmî Diyanet verisi geldiğinde fark zaten 0'dır; bu test *cihaz
+      // hesabına* düşülen durumu (çevrimdışı / servis hatası) kapsar.
+      // Diyanet'in yuvarlaması ile cihazın yuvarlaması ayrı ayrı yapıldığı
+      // için ikindi ±1 dakika oynayabilir; **geç taraf 1 dakikayı aşmamalı**
+      // (kullanıcı vaktinden önce kılmasın diye erken taraf da 2 dakikayla
+      // sınırlı).
+      final List<Map<String, Object?>> records = await loadSamples();
+      int exact = 0;
+      int late = 0;
+      int early = 0;
+      final List<String> lateBad = <String>[];
+      final List<String> earlyBad = <String>[];
+
+      for (final Map<String, Object?> record in records) {
+        final DateTime date = DateTime.parse(record['date']! as String);
+        final CalculatedTimes times = PrayerCalculator.calculate(
+          date: date,
+          latitude: (record['lat']! as num).toDouble(),
+          longitude: (record['lon']! as num).toDouble(),
+          method: CalculationMethod.diyanet,
+          timeZoneOffsetHours: (record['tz'] as num?)?.toDouble() ?? 3.0,
+        );
+        final List<String> parts = (record['ikindi']! as String).split(':');
+        final int official = int.parse(parts[0]) * 60 + int.parse(parts[1]);
+        final int shown = (times.ikindi * 60).round();
+        final int diff = shown - official;
+        if (diff == 0) {
+          exact++;
+        } else if (diff > 0) {
+          late++;
+          if (diff > 1) {
+            lateBad.add('${record['city']} ${record['date']}: +$diff dk');
+          }
+        } else {
+          early++;
+          if (diff < -3) {
+            earlyBad.add('${record['city']} ${record['date']}: $diff dk');
+          }
+        }
+      }
+
+      expect(lateBad, isEmpty, reason: lateBad.join('\n'));
+      expect(earlyBad, isEmpty, reason: earlyBad.join('\n'));
+      expect(
+        exact / records.length,
+        greaterThan(0.55),
+        reason:
+            'İkindi örneklerinde resmî saatle birebir aynılık oranı yüzde 55 altına düşmemeli '
+            '(tam: $exact, geç: $late, erken: $early)',
+      );
+    });
 
     test('temkin: akşam/yatsı düzeltmeleri Diyanet ile aynı (V6)', () {
       const Temkin temkin = Temkin.diyanet;
@@ -578,6 +636,83 @@ void main() {
     });
   });
 
+  // ------------------------------------------------------------- V9 / V10
+  group('V9 — aralık eksiksiz (ay sınırı, bildirim boşluğu)', () {
+    dbTest('ay sonunu aşan aralıkta tüm günler döner', () async {
+      // **Düzeltilen hata:** Diyanet "monthly" uç noktası yalnızca içinde
+      // bulunulan ayı döndürür; 28 Ekim → 11 Kasım aralığında Kasım günleri
+      // hiç gelmiyor, bildirimler o günler için kurulmuyordu.
+      final DateTime start = DateTime(2026, 10, 28);
+      final DateTime end = DateTime(2026, 11, 11);
+      final List<PrayerTimesDay> onlyOctober = <PrayerTimesDay>[
+        for (int i = 0; i < 4; i++)
+          _officialDay(start.add(Duration(days: i))),
+      ];
+
+      final _StubSource diyanet = _StubSource.success(
+        'diyanet',
+        _officialDay(start),
+        range: onlyOctober,
+        builder: _officialDay,
+      );
+      final PrayerTimesRepository repository = PrayerTimesRepository(
+        cache: cache,
+        connectivity: _FixedConnectivity(true),
+        diyanet: diyanet,
+        aladhan: _StubSource.failing('aladhan'),
+      );
+
+      final List<PrayerTimesDay> range = await repository.getRange(
+        location: bagcilarLocation,
+        startDate: start,
+        endDate: end,
+        method: CalculationMethod.diyanet,
+      );
+
+      expect(range.length, 15, reason: 'Eksik gün kalmamalı');
+      expect(
+        range.map((PrayerTimesDay d) => d.date.day).toList(),
+        <int>[28, 29, 30, 31, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+      );
+      expect(
+        range.where((PrayerTimesDay d) => d.date.month == 11).length,
+        11,
+        reason: 'Kasım günleri de gelmeli',
+      );
+      // Eksik günler resmî kaynaktan (Diyanet) tamamlanmalı.
+      expect(diyanet.dayCalls, greaterThan(0));
+    });
+
+    dbTest('istediğin aralık dışındaki günler atılır', () async {
+      // AlAdhan bütün ayı döndürür; haftalık tablo 31 güne çıkmamalı.
+      final DateTime start = DateTime(2026, 10, 5);
+      final List<PrayerTimesDay> wholeMonth = <PrayerTimesDay>[
+        for (int i = 1; i <= 31; i++) _officialDay(DateTime(2026, 10, i)),
+      ];
+      final PrayerTimesRepository repository = PrayerTimesRepository(
+        cache: cache,
+        connectivity: _FixedConnectivity(true),
+        diyanet: _StubSource.failing('diyanet'),
+        aladhan: _StubSource.success(
+          'aladhan',
+          _officialDay(start),
+          range: wholeMonth,
+        ),
+      );
+
+      final List<PrayerTimesDay> range = await repository.getRange(
+        location: bagcilarLocation,
+        startDate: start,
+        endDate: start.add(const Duration(days: 6)),
+        method: CalculationMethod.diyanet,
+      );
+
+      expect(range.length, 7);
+      expect(range.first.date.day, 5);
+      expect(range.last.date.day, 11);
+    });
+  });
+
   // --------------------------------------------------------------------- V7
   group('V7 — dünya şehri saat dilimi', () {
     test('Kâbil çevrimdışı hesapta +4,5 saat dilimini kullanır', () async {
@@ -695,17 +830,22 @@ class _StubSource implements PrayerTimesSource {
     this.id,
     this.day, {
     this.range = const <PrayerTimesDay>[],
+    this.builder,
   }) : failure = null;
 
   _StubSource.failing(this.id)
     : day = null,
       failure = 'test: kaynak kullanılamıyor',
-      range = const <PrayerTimesDay>[];
+      range = const <PrayerTimesDay>[],
+      builder = null;
 
   @override
   final String id;
 
   final PrayerTimesDay? day;
+
+  /// İstenen tarihe göre gün üretir (aralık tamamlama testleri için).
+  final PrayerTimesDay Function(DateTime date)? builder;
   final String? failure;
   final List<PrayerTimesDay> range;
 
@@ -730,6 +870,8 @@ class _StubSource implements PrayerTimesSource {
     dayCalls++;
     final String? message = failure;
     if (message != null) throw PrayerTimesSourceException(id, message);
+    final PrayerTimesDay Function(DateTime date)? build = builder;
+    if (build != null) return build(date);
     return day!;
   }
 

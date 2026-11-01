@@ -160,7 +160,13 @@ class PrayerTimesRepository {
     return fallback;
   }
 
-  /// Aralık (haftalık/aylık tablo).
+  /// Aralık (haftalık/aylık tablo ve **bildirim zamanlaması**).
+  ///
+  /// Dönen listenin her zaman istenen **her günü** içermesi garanti edilir;
+  /// eksik günler tek tek [getDay] ile tamamlanır. Böylece ana ekranda görünen
+  /// saat ile bildirime kurulan saat **aynı kaynaktan** gelir (eskiden aralık
+  /// isteği başarısız olunca bildirim yedek servisten, ekran resmî veriden
+  /// beslenebiliyor ve 1–2 dakika fark oluşuyordu).
   Future<List<PrayerTimesDay>> getRange({
     required UserLocation location,
     required DateTime startDate,
@@ -173,7 +179,9 @@ class PrayerTimesRepository {
       final List<PrayerTimesDay>? memo = _rangeMemory[key];
       // Bellek önbelleği de tazelik denetiminden geçer; aksi halde uygulama
       // açık kaldığı sürece (günlerce) eski saatler kullanılmaya devam ederdi.
-      if (memo != null && _isRangeFresh(memo)) return memo;
+      if (memo != null && _isRangeFresh(memo) && _covers(memo, startDate, endDate)) {
+        return memo;
+      }
       _rangeMemory.remove(key);
     }
 
@@ -183,23 +191,14 @@ class PrayerTimesRepository {
       startDate,
       endDate,
     );
-    // **Düzeltme (off-by-one):** gün farkına +1 eklenmezse 1 günlük aralıkta
-    // (bugün → bugün) `>= 0` her zaman doğru çıkıyor, 7 günlük aralıkta ise
-    // 6 kayıt "yeterli" sayılıp son gün (yarın) eksik kalıyordu. Eksik gün
-    // yüzünden yarının imsakı bulunamayınca sabah bildirimi kurulmuyordu.
-    final int requestedDays =
-        DateTime(endDate.year, endDate.month, endDate.day)
-            .difference(
-              DateTime(startDate.year, startDate.month, startDate.day),
-            )
-            .inDays +
-        1;
-    final bool cacheCoversRange = cached.length >= requestedDays;
+    final bool cacheCoversRange = _covers(cached, startDate, endDate);
     // **Düzeltme:** aralık önbelleği hiç tazelik denetimi yapmıyordu.
     // Cihazda hesaplanmış (ya da 1 hafta önce çekilmiş) kayıtlar "taze"
     // sayılıp bildirimler bu eski saatlere kuruluyordu; ekran ise güncel
     // resmî veriyi gösterdiği için ezan 1–2 dakika **erken** çalabiliyordu.
     final bool cacheFresh = cached.isEmpty ? false : _isRangeFresh(cached);
+
+    List<PrayerTimesDay>? resolved;
 
     if (_connectivity.isOnline &&
         location.city != null &&
@@ -219,12 +218,15 @@ class PrayerTimesRepository {
             if (fetched.first.source != 'calculation') {
               await _cache.saveMany(locationKey, fetched);
             }
-            final List<PrayerTimesDay> refined = <PrayerTimesDay>[
+            resolved = <PrayerTimesDay>[
               for (final PrayerTimesDay day in fetched)
                 _refineRemote(day, method, location),
             ];
-            _rangeMemory[key] = refined;
-            return refined;
+            // **Resmî veri kısmi de olsa korunur.** Eksik günler aşağıda
+            // `_fillMissingDays` ile Diyanet'in tek-gün uç noktasından
+            // tamamlanır; tüm aralığı yedek servise çevirmek dakika farkına
+            // yol açardı.
+            if (source.id == 'diyanet') break;
           }
         } on PrayerTimesSourceException catch (error) {
           AppLog.warning('Aralık kaynağı başarısız → $error');
@@ -234,28 +236,128 @@ class PrayerTimesRepository {
       }
     }
 
-    if (cached.isNotEmpty) {
-      // Önbellekteki resmî veri kullanıcı düzeltmeleriyle birlikte sunulur;
-      // böylece ekran ile bildirim aynı dakikayı gösterir. Kaynak etiketi
-      // en sonda "Kayıtlı veri" yapılır; düzeltmeler ise **özgün kaynağa**
-      // (Diyanet) göre uygulanır.
-      final List<PrayerTimesDay> refined = <PrayerTimesDay>[
-        for (final PrayerTimesDay day in cached)
-          _refineRemote(day, method, location).copyWith(source: 'cache'),
-      ];
-      _rangeMemory[key] = refined;
-      return refined;
-    }
+    resolved ??= cached.isNotEmpty
+        ? <PrayerTimesDay>[
+            // Önbellekteki resmî veri kullanıcı düzeltmeleriyle birlikte
+            // sunulur; böylece ekran ile bildirim aynı dakikayı gösterir.
+            // Kaynak etiketi "Kayıtlı veri"; düzeltmeler **özgün kaynağa**
+            // (Diyanet) göre uygulanır.
+            for (final PrayerTimesDay day in cached)
+              _refineRemote(day, method, location).copyWith(source: 'cache'),
+          ]
+        : await _local.fetchRange(
+            location: location,
+            startDate: startDate,
+            endDate: endDate,
+            method: method,
+          );
 
-    final List<PrayerTimesDay> calculated = await _local.fetchRange(
+    // Her koşulda eksik günleri tamamla (bildirim boşluğu kalmasın).
+    final List<PrayerTimesDay> complete = await _fillMissingDays(
+      resolved,
       location: location,
       startDate: startDate,
       endDate: endDate,
       method: method,
     );
-    _rangeMemory[key] = calculated;
-    return calculated;
+    _rangeMemory[key] = complete;
+    return complete;
   }
+
+  /// Aralıktaki eksik günleri tek-gün zinciriyle (Diyanet → yedek → hesap)
+  /// tamamlar ve tarihe göre sıralar.
+  Future<List<PrayerTimesDay>> _fillMissingDays(
+    List<PrayerTimesDay> days, {
+    required UserLocation location,
+    required DateTime startDate,
+    required DateTime endDate,
+    required CalculationMethod method,
+  }) async {
+    final int expected = _daysBetween(startDate, endDate);
+    final DateTime windowStart = DateTime(
+      startDate.year,
+      startDate.month,
+      startDate.day,
+    );
+    final DateTime windowEnd = DateTime(
+      endDate.year,
+      endDate.month,
+      endDate.day,
+    ).add(const Duration(days: 1));
+    String keyOf(DateTime d) => '${d.year}-${d.month}-${d.day}';
+    // **Düzeltme:** kaynak istenen aralığın dışında gün döndürebiliyordu
+    // (AlAdhan bütün ayı döner). Haftalık tablo 31 gün gösteriyor, bildirim
+    // ufku kayıyordu. Pencere dışındaki günler atılır.
+    final Map<String, PrayerTimesDay> byDate = <String, PrayerTimesDay>{
+      for (final PrayerTimesDay day in days)
+        if (!day.date.isBefore(windowStart) && day.date.isBefore(windowEnd))
+          keyOf(day.date): day,
+    };
+    if (byDate.length >= expected) {
+      final List<PrayerTimesDay> sorted = byDate.values.toList()
+        ..sort((PrayerTimesDay a, PrayerTimesDay b) => a.date.compareTo(b.date));
+      return sorted;
+    }
+    // Güvenlik sınırı: iki aydan uzun aralıkta gün gün istek atmayalım.
+    if (expected > 62) {
+      final List<PrayerTimesDay> sorted = byDate.values.toList()
+        ..sort((PrayerTimesDay a, PrayerTimesDay b) => a.date.compareTo(b.date));
+      return sorted;
+    }
+    final DateTime first = DateTime(
+      startDate.year,
+      startDate.month,
+      startDate.day,
+    );
+    for (int i = 0; i < expected; i++) {
+      final DateTime day = first.add(Duration(days: i));
+      if (byDate.containsKey(keyOf(day))) continue;
+      try {
+        final PrayerTimesDay filled = await getDay(
+          location: location,
+          date: day,
+          method: method,
+        );
+        byDate[keyOf(day)] = filled;
+      } catch (error) {
+        AppLog.warning('Aralıkta eksik gün tamamlanamadı ($day)', error: error);
+      }
+    }
+    final List<PrayerTimesDay> sorted = byDate.values.toList()
+      ..sort((PrayerTimesDay a, PrayerTimesDay b) => a.date.compareTo(b.date));
+    return sorted;
+  }
+
+  /// Aralık, istenen günlerin **tamamını** içeriyor mu?
+  static bool _covers(
+    List<PrayerTimesDay> days,
+    DateTime startDate,
+    DateTime endDate,
+  ) {
+    if (days.isEmpty) return false;
+    final Set<String> keys = <String>{
+      for (final PrayerTimesDay day in days)
+        '${day.date.year}-${day.date.month}-${day.date.day}',
+    };
+    final DateTime first = DateTime(
+      startDate.year,
+      startDate.month,
+      startDate.day,
+    );
+    final int expected = _daysBetween(startDate, endDate);
+    for (int i = 0; i < expected; i++) {
+      final DateTime day = first.add(Duration(days: i));
+      if (!keys.contains('${day.year}-${day.month}-${day.day}')) return false;
+    }
+    return true;
+  }
+
+  /// İki tarih arasındaki gün sayısı (**dahil** — off-by-one koruması).
+  static int _daysBetween(DateTime startDate, DateTime endDate) =>
+      DateTime(endDate.year, endDate.month, endDate.day)
+          .difference(DateTime(startDate.year, startDate.month, startDate.day))
+          .inDays +
+      1;
 
   /// Ayarlar ekranı için: hangi kaynağın kullanıldığı bilgisi.
   Future<String> describeActiveSource(UserLocation location) async {

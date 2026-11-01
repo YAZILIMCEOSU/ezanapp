@@ -121,17 +121,26 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp>
       appRouter.go(AppRoutes.onboarding);
     } else {
       unawaited(() async {
+        // **Hız düzeltmesi:** konum isteği artık bildirim izni penceresinin
+        // arkasında beklemiyor. Önceden kullanıcı izin penceresini kapatana
+        // kadar GPS hiç başlamıyordu; uygulama açılışında vakitler geç
+        // doluyordu. İkisi artık **paralel** yürür.
+        final Future<void> locationReady = () async {
+          try {
+            if (ref.read(activeLocationProvider).mode == LocationMode.gps) {
+              await ref
+                  .read(locationControllerProvider.notifier)
+                  .refreshFromGps(requestPermission: false);
+            }
+          } catch (_) {}
+        }();
         try {
           final bool permitted = await runtime.notifications.hasPermission();
           if (!permitted) {
             await runtime.notifications.requestPermission();
           }
+          await locationReady;
           await ref.read(notificationCoordinatorProvider).reschedule();
-          if (ref.read(activeLocationProvider).mode == LocationMode.gps) {
-            await ref
-                .read(locationControllerProvider.notifier)
-                .refreshFromGps(requestPermission: false);
-          }
         } catch (_) {}
       }());
     }

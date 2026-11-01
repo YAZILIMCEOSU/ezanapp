@@ -92,22 +92,37 @@ class DiyanetApiSource implements PrayerTimesSource {
       );
     }
     final int daySpan = endDate.difference(startDate).inDays;
-    // Uzun aralıklar için yıllık uç nokta tek istekle döner.
-    final List<PrayerTimesDay> days = await _fetch(
-      districtId,
-      daySpan > 45 ? 'yearly' : 'monthly',
+    final DateTime first = DateTime(
+      startDate.year,
+      startDate.month,
+      startDate.day,
     );
-    return days
+    final DateTime last = DateTime(endDate.year, endDate.month, endDate.day);
+    List<PrayerTimesDay> slice(List<PrayerTimesDay> days) => days
         .where(
           (PrayerTimesDay d) =>
-              !d.date.isBefore(
-                DateTime(startDate.year, startDate.month, startDate.day),
-              ) &&
-              !d.date.isAfter(
-                DateTime(endDate.year, endDate.month, endDate.day),
-              ),
+              !d.date.isBefore(first) && !d.date.isAfter(last),
         )
         .toList();
+
+    // Uzun aralıklar için yıllık uç nokta tek istekle döner.
+    final String period = daySpan > 45 ? 'yearly' : 'monthly';
+    List<PrayerTimesDay> days = slice(await _fetch(districtId, period));
+
+    // **Düzeltme (ay sınırı boşluğu):** "monthly" uç noktası yalnızca içinde
+    // bulunulan ayı döndürür. Aralık ay sonunu aşıyorsa (ör. 28 Ekim → 11
+    // Kasım) sonraki ayın günleri **hiç gelmiyordu**; bildirimler o günler
+    // için kurulmuyor, kullanıcı ezan duymuyordu. Eksik kaldıysa yıllık
+    // uç noktadan tamamlanır (6 saat bellek önbelleği sayesinde ek maliyet
+    // yok).
+    final int expected = daySpan + 1;
+    if (days.length < expected && period != 'yearly') {
+      final List<PrayerTimesDay> yearly = slice(
+        await _fetch(districtId, 'yearly'),
+      );
+      if (yearly.length > days.length) days = yearly;
+    }
+    return days;
   }
 
   Future<List<PrayerTimesDay>> _fetch(String districtId, String period) async {

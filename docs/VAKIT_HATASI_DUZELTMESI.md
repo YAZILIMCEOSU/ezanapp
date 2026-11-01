@@ -259,3 +259,58 @@ lib/data/models/app_settings.dart             daysToSchedule = 14
 
 Doğrulama: GitHub Actions `analyze` iş akışı (analyze + test + kıble 6/6 + APK).
 Sonuç raporu depodaki `.ci/report.md` dosyasında ve Actions sekmesinde görünür.
+
+---
+
+## 8. 1 Kasım 2026 — "ikindi 1 dk geç" + "konum geç geliyor"
+
+Kullanıcı bildirimi iki başlıktı: **ikindi hâlâ 1 dakika geç** ve **konum
+bilgisi geç alınıyor**. Yapılan incelemede üç ayrı kök neden bulundu.
+
+### 8.1 Konum neden geç geliyordu?
+
+| # | Neden | Düzeltme |
+|---|---|---|
+| K1 | Uygulama açılışında GPS isteği **bildirim izni penceresinin arkasında** bekliyordu: kullanıcı izin penceresini kapatana kadar konum hiç başlamıyordu. | Konum isteği artık izin penceresiyle **paralel** başlıyor (`lib/app/app.dart`). |
+| K2 | Her açılışta GPS kilidi bekleniyordu (açık havada 5–30 sn). | Sıra: **son bilinen konum (10 dk'dan yeni, ≈10 ms)** → düşük doğruluk (Wi-Fi) → orta → yüksek; toplam **9 sn** bütçe (`LocationService.defaultBudget`). |
+| K3 | İzin durumu her konum isteğinde platformdan yeniden okunuyordu. | 20 saniyelik izin önbelleği (`_statusTtl`). |
+| K4 | Kaba (Wi-Fi) konum yanlış ilçeye eşleşip vakitleri 1–2 dk kaydırabiliyordu. | Kaba konumla vakit hemen gösterilir, **arka planda** hassas konum alınıp ilçe düzeltilir (`_refineDistrict`); ilçe değişirse vakitler kendiliğinden yenilenir. |
+
+### 8.2 İkindi neden 1 dakika oynayabiliyordu?
+
+1. **Asıl kaynak karışıklığı (düzeltildi):** Ana ekran Diyanet resmî verisini
+   gösterirken, haftalık tablo ve **bildirim zamanlaması** aralık isteğinden
+   besleniyordu. Aralık isteği başarısız olunca yedek servise (AlAdhan)
+   düşüyor, aynı gün için ekranda 16:26, bildirimde 16:27 olabiliyordu.
+   Artık **tek zincir** var: Diyanet → eksik günler tek tek Diyanet'ten
+   tamamlanır → ancak o da olmazsa yedek/hesap. `getRange` her zaman istenen
+   **her günü** döndürür (`_fillMissingDays`).
+2. **Aralık önbelleği tazelik denetimi yapmıyordu:** günlerce eski saatler
+   "taze" sayılıp bildirim o saatlere kuruluyordu. Artık `_isRangeFresh`.
+3. **Ay sınırı boşluğu:** Diyanet'in `monthly` uç noktası yalnızca içinde
+   bulunulan ayı döndürüyordu; 28 Ekim → 11 Kasım gibi aralıklarda Kasım
+   günleri hiç gelmiyor, o günler için **bildirim kurulmuyordu**. Eksik
+   kaldıysa `yearly` uç noktasından tamamlanır.
+4. **Yedek servis bütün ayı döndürüyordu:** haftalık tablo 31 güne çıkıyor,
+   bildirim ufku kayıyordu. Artık istenen pencere dışındaki günler atılır.
+
+### 8.3 Kalan ±1 dakika hakkında dürüst açıklama
+
+Diyanet resmî verisi kullanıldığında fark **0 dakikadır**. Fark yalnızca
+**cihaz hesabına** düşüldüğünde (çevrimdışı ya da servis hatası) oluşur:
+55 resmî kayıtla yapılan doğrulamada ikindi **41/55 birebir**, 4 kayıtta +1 dk,
+10 kayıtta −1…−2 dk. Bu, iki ayrı yuvarlamanın (Diyanet ve cihaz) kaçınılmaz
+sonucudur; ±1 dakika fark **hiçbir hesap yöntemiyle sıfırlanamaz**.
+
+Bu yüzden uygulama artık farkı saklamıyor, **söylüyor**:
+
+* Vakit altındaki kaynak etiketi: `Cihazda hesaplandı (Diyanet kalibrasyonlu, ±1 dk)`.
+* Ana ekranda **manuel düzeltme uyarısı**: "Manuel düzeltme açık: ikindi +1 dk… [Sıfırla]".
+* Ayarlar → **Vakit doğrulama**: uygulamanın gösterdiği saat ile Diyanet'in
+  resmî saati yan yana, fark dakika olarak; konum/koordinat/hassasiyet, saat
+  dilimi, yöntem ve açık düzeltmeler tek ekranda.
+
+Kanıt testleri: `test/data/prayer_time_fidelity_test.dart`
+(V9 ay sınırı, V10 aralık dışı günler, V11 ikindi asla 1 dk'dan fazla geç
+olmaz) ve `test/data/location_speed_test.dart` (tazelik, ilçe hassasiyeti,
+bütçe sabitleri).

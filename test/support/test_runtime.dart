@@ -134,7 +134,7 @@ Future<AppRuntime> createTestRuntime({
     database: database,
     preferences: prefs,
     connectivity: connectivity,
-    location: const LocationService(),
+    location: LocationService(),
     notifications: NotificationService(),
     audio: AppAudioService(),
     ads: AdsService(),
