@@ -9,6 +9,7 @@ import 'package:ezanai/features/prayers/prayers_screen.dart';
 import 'package:ezanai/features/quran/quran_screen.dart';
 import 'package:ezanai/features/settings/about_screen.dart';
 import 'package:ezanai/features/settings/notification_settings_screen.dart';
+import 'package:ezanai/features/settings/prayer_verify_screen.dart';
 import 'package:ezanai/features/settings/settings_screen.dart';
 import 'package:ezanai/features/widgets/state_views.dart';
 import 'package:ezanai/features/zikir/zikir_screen.dart';
@@ -60,6 +61,7 @@ void main() {
     'Ayarlar': SettingsScreen.new,
     'Bildirim ayarları': NotificationSettingsScreen.new,
     'Hakkında': AboutScreen.new,
+    'Vakit doğrulama': PrayerVerifyScreen.new,
   };
 
   group('taşma ve çizim hatası yok', () {
@@ -79,6 +81,29 @@ void main() {
   });
 
   group('içerik gerçekten çiziliyor', () {
+    screenTest('Vakit doğrulama: konum, yöntem ve gösterilen vakitler çizilir', (
+      WidgetTester tester,
+    ) async {
+      await renderScreen(
+        tester,
+        const PrayerVerifyScreen(),
+        runtime: runtime,
+        times: times,
+        verify: () {
+          expect(find.text('Vakit doğrulama'), findsWidgets);
+          expect(find.text('Konum'), findsWidgets);
+          // **Manuel düzeltme** durumu her koşulda yazılmalı: kullanıcı
+          // "1 dakika geç/erken" şikâyetinin kaynağını buradan görür.
+          final bool offsetInfo =
+              find.textContaining('Manuel düzeltme').evaluate().isNotEmpty;
+          expect(offsetInfo, isTrue);
+          // Çevrimdışı test ortamında düğme "İnternet yok..." yazar; iki metin
+          // de "karşılaştır" kökünü taşır.
+          expect(find.textContaining('karşılaştır'), findsWidgets);
+        },
+      );
+    });
+
     screenTest('Dualar: künye özeti ve kategori çipleri görünür', (
       WidgetTester tester,
     ) async {
