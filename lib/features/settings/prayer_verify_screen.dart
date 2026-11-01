@@ -202,7 +202,7 @@ class _PrayerVerifyScreenState extends ConsumerState<PrayerVerifyScreen> {
                 ),
               ),
             _ComparisonTable(
-              shown: ref.watch(prayerTimesProvider).valueOrNull?.day,
+              shown: ref.watch(prayerTimesProvider).value?.day,
               official: _official!,
               use24Hour: settings.use24Hour,
             ),
@@ -234,7 +234,7 @@ class _PrayerVerifyScreenState extends ConsumerState<PrayerVerifyScreen> {
     WidgetRef ref,
     ThemeData theme,
   ) {
-    final TodayTimes? times = ref.watch(prayerTimesProvider).valueOrNull;
+    final TodayTimes? times = ref.watch(prayerTimesProvider).value;
     if (times == null) {
       return const <Widget>[
         ListTile(
