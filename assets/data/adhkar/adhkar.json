@@ -1,0 +1,532 @@
+{
+  "sources": {
+    "note": "Metinler Kur'an-ı Kerim ve muteber hadis kaynaklarından derlenmiştir. Her kaydın künyesi ilgili alanda belirtilir.",
+    "references": [
+      "Kur'an-ı Kerim",
+      "Buhârî, Müslim, Tirmizî, Ebû Dâvûd, Nesâî, İbn Mâce",
+      "Riyâzü's-sâlihîn (İmâm Nevevî)"
+    ],
+    "dua_note": "Dua metinleri Kur'an-ı Kerim mealleriyle birlikte muteber hadis kaynaklarından derlenmiştir; her kaydın künyesi 'reference' alanında belirtilir. Yayın öncesi içeriğin bir ilahiyat uzmanınca gözden geçirilmesi önerilir."
+  },
+  "zikirler": [
+    {
+      "key": "subhanallah",
+      "name": "Sübhânallâh",
+      "arabic": "سُبْحَانَ اللَّهِ",
+      "transliteration": "Sübhânallâh",
+      "meaning": "Allah'ı tüm eksikliklerden tenzih ederim.",
+      "target": 33,
+      "virtue": "Farz namazlardan sonra 33 kez söylenmesi sünnettir.",
+      "reference": "Müslim, Mesâcid 146"
+    },
+    {
+      "key": "elhamdulillah",
+      "name": "Elhamdülillâh",
+      "arabic": "الْحَمْدُ لِلَّهِ",
+      "transliteration": "Elhamdülillâh",
+      "meaning": "Hamd (her türlü övgü) Allah'a mahsustur.",
+      "target": 33,
+      "virtue": "Namaz sonrası tesbihlerin ikincisidir.",
+      "reference": "Müslim, Mesâcid 146"
+    },
+    {
+      "key": "allahuekber",
+      "name": "Allâhü Ekber",
+      "arabic": "اللَّهُ أَكْبَرُ",
+      "transliteration": "Allâhü Ekber",
+      "meaning": "Allah en büyüktür.",
+      "target": 34,
+      "virtue": "Namaz sonrası tesbihin tamamlayıcısıdır.",
+      "reference": "Müslim, Mesâcid 146"
+    },
+    {
+      "key": "la_ilahe_illallah",
+      "name": "Lâ ilâhe illallâh",
+      "arabic": "لَا إِلَٰهَ إِلَّا اللَّهُ",
+      "transliteration": "Lâ ilâhe illallâh",
+      "meaning": "Allah'tan başka ilâh yoktur.",
+      "target": 100,
+      "virtue": "Zikirlerin en faziletlisidir.",
+      "reference": "Tirmizî, Deavât 9"
+    },
+    {
+      "key": "estagfirullah",
+      "name": "Estağfirullâh",
+      "arabic": "أَسْتَغْفِرُ اللَّهَ",
+      "transliteration": "Estağfirullâh",
+      "meaning": "Allah'tan bağışlanma dilerim.",
+      "target": 100,
+      "virtue": "Peygamberimiz (s.a.v.) günde yetmişten fazla istiğfar ederdi.",
+      "reference": "Buhârî, Deavât 3"
+    },
+    {
+      "key": "la_havle",
+      "name": "Lâ havle velâ kuvvete illâ billâh",
+      "arabic": "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ",
+      "transliteration": "Lâ havle velâ kuvvete illâ billâh",
+      "meaning": "Güç ve kuvvet ancak Allah'ın yardımıyladır.",
+      "target": 33,
+      "virtue": "Cennet hazinelerinden bir hazinedir.",
+      "reference": "Buhârî, Deavât 50"
+    },
+    {
+      "key": "subhanallahi_ve_bihamdihi",
+      "name": "Sübhânallâhi ve bihamdihî",
+      "arabic": "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
+      "transliteration": "Sübhânallâhi ve bihamdihî",
+      "meaning": "Allah'ı hamd ile tesbih ederim.",
+      "target": 100,
+      "virtue": "Günahları deniz köpüğü kadar olsa bile siler.",
+      "reference": "Buhârî, Deavât 65"
+    },
+    {
+      "key": "subhanallahil_azim",
+      "name": "Sübhânallâhi'l-azîm",
+      "arabic": "سُبْحَانَ اللَّهِ الْعَظِيمِ",
+      "transliteration": "Sübhânallâhi'l-azîm",
+      "meaning": "Yüce Allah'ı tesbih ederim.",
+      "target": 33,
+      "virtue": "Teraziye konulduğunda en ağır zikirlerdendir.",
+      "reference": "Müslim, Zikir 31"
+    },
+    {
+      "key": "salavat",
+      "name": "Salavât",
+      "arabic": "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ",
+      "transliteration": "Allâhümme salli alâ Muhammedin ve alâ âli Muhammed",
+      "meaning": "Allah'ım! Muhammed'e ve Muhammed'in ailesine rahmet et.",
+      "target": 100,
+      "virtue": "Cuma günü salavat getirmek faziletlidir.",
+      "reference": "Ebû Dâvûd, Salât 201"
+    },
+    {
+      "key": "hasbunallah",
+      "name": "Hasbünallâhü ve ni'me'l-vekîl",
+      "arabic": "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ",
+      "transliteration": "Hasbünallâhü ve ni'me'l-vekîl",
+      "meaning": "Allah bize kâfîdir; O ne güzel vekildir.",
+      "target": 33,
+      "virtue": "Sıkıntı anlarında okunan zikirdir.",
+      "reference": "Buhârî, Tefsîr (Âl-i İmrân) 13"
+    },
+    {
+      "key": "tehlil",
+      "name": "Tehlîl",
+      "arabic": "لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+      "transliteration": "Lâ ilâhe illallâhü vahdehû lâ şerîke leh, lehü'l-mülkü ve lehü'l-hamdü ve hüve alâ külli şey'in kadîr",
+      "meaning": "Allah'tan başka ilâh yoktur; O birdir, ortağı yoktur. Mülk O'nundur, hamd O'na mahsustur. O her şeye kadirdir.",
+      "target": 10,
+      "virtue": "Sabah on kez okuyana bir köle âzat etme sevabı verilir.",
+      "reference": "Buhârî, Deavât 64"
+    },
+    {
+      "key": "subhanallahi_adede_halkihi",
+      "name": "Sübhânallâhi adede halkihî",
+      "arabic": "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ، عَدَدَ خَلْقِهِ، وَرِضَا نَفْسِهِ، وَزِنَةَ عَرْشِهِ، وَمِدَادَ كَلِمَاتِهِ",
+      "transliteration": "Sübhânallâhi ve bihamdihî adede halkihî ve ridâ nefsihî ve zinete arşihî ve midâde kelimâtih",
+      "meaning": "Yarattıklarının sayısınca, kendisinin razı olduğu kadar, arşının ağırlığınca ve kelimelerinin mürekkebi adedince Allah'ı hamd ile tesbih ederim.",
+      "target": 3,
+      "virtue": "Sabah akşam üç kez okunduğunda büyük ecir vadedilmiştir.",
+      "reference": "Müslim, Zikir 79"
+    },
+    {
+      "key": "ya_hayyu_ya_kayyum",
+      "name": "Yâ Hayyu yâ Kayyûm",
+      "arabic": "يَا حَيُّ يَا قَيُّومُ، بِرَحْمَتِكَ أَسْتَغِيثُ",
+      "transliteration": "Yâ Hayyu yâ Kayyûm, bi rahmetike estağîs",
+      "meaning": "Ey Hayy ve Kayyûm olan Allah'ım! Rahmetinle senden yardım dilerim.",
+      "target": 21,
+      "virtue": "Sıkıntı ve keder anlarında okunması tavsiye edilmiştir.",
+      "reference": "Tirmizî, Deavât 91"
+    },
+    {
+      "key": "lailahe_illallahul_azim",
+      "name": "Sıkıntı anı duası",
+      "arabic": "لَا إِلَٰهَ إِلَّا اللَّهُ الْعَظِيمُ الْحَلِيمُ، لَا إِلَٰهَ إِلَّا اللَّهُ رَبُّ الْعَرْشِ الْعَظِيمِ، لَا إِلَٰهَ إِلَّا اللَّهُ رَبُّ السَّمَاوَاتِ وَرَبُّ الْأَرْضِ وَرَبُّ الْعَرْشِ الْكَرِيمِ",
+      "transliteration": "Lâ ilâhe illallâhü'l-azîmü'l-halîm, lâ ilâhe illallâhü Rabbü'l-arşi'l-azîm, lâ ilâhe illallâhü Rabbü's-semâvâti ve Rabbü'l-ardi ve Rabbü'l-arşi'l-kerîm",
+      "meaning": "Azîm ve Halîm olan Allah'tan başka ilâh yoktur. Yüce arşın Rabbi olan Allah'tan başka ilâh yoktur. Göklerin, yerin ve şerefli arşın Rabbi olan Allah'tan başka ilâh yoktur.",
+      "target": 3,
+      "virtue": "Üzüntü ve keder anlarında okunan duadır.",
+      "reference": "Buhârî, Deavât 27"
+    },
+    {
+      "key": "bismillah",
+      "name": "Bismillâhirrahmânirrahîm",
+      "arabic": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
+      "transliteration": "Bismillâhirrahmânirrahîm",
+      "meaning": "Rahmân ve Rahîm olan Allah'ın adıyla.",
+      "target": 33,
+      "virtue": "Her hayırlı işe besmele ile başlamak sünnettir.",
+      "reference": "Buhârî, Edeb 109"
+    }
+  ],
+  "dualar": [
+    {
+      "key": "sabah_aksam",
+      "name": "Sabah–Akşam Duası",
+      "arabic": "اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ النُّشُورُ",
+      "transliteration": "Allâhümme bike asbahnâ ve bike emseynâ ve bike nahyâ ve bike nemûtü ve ileyke'n-nüşûr",
+      "meaning": "Allah'ım! Senin sayende sabaha erdik, senin sayende akşama kavuştuk, seninle yaşar ve seninle ölürüz; dönüş de sanadır.",
+      "reference": "Tirmizî, Deavât 13",
+      "time": "Sabah ve akşam",
+      "category": "sabah"
+    },
+    {
+      "key": "uyku",
+      "name": "Uyku Duası",
+      "arabic": "اللَّهُمَّ بِاسْمِكَ أَمُوتُ وَأَحْيَا",
+      "transliteration": "Allâhümme bismike emûtü ve ahyâ",
+      "meaning": "Allah'ım! Senin adınla ölür (uyur) ve senin adınla dirilirim (uyanırım).",
+      "reference": "Buhârî, Deavât 7",
+      "time": "Gece",
+      "category": "aksam"
+    },
+    {
+      "key": "uyanma",
+      "name": "Uyanma Duası",
+      "arabic": "الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ",
+      "transliteration": "Elhamdülillâhillezî ahyânâ ba'de mâ emâtenâ ve ileyhi'n-nüşûr",
+      "meaning": "Bizi öldürdükten (uyuttuktan) sonra dirilten (uyandıran) Allah'a hamd olsun; dönüş O'nadır.",
+      "reference": "Buhârî, Deavât 8",
+      "time": "Sabah",
+      "category": "gunluk"
+    },
+    {
+      "key": "yemek_oncesi",
+      "name": "Yemek Öncesi",
+      "arabic": "بِسْمِ اللَّهِ",
+      "transliteration": "Bismillâh",
+      "meaning": "Allah'ın adıyla.",
+      "reference": "Ebû Dâvûd, Et'ime 15",
+      "time": "Yemek",
+      "category": "gunluk"
+    },
+    {
+      "key": "yemek_sonrasi",
+      "name": "Yemek Sonrası",
+      "arabic": "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا وَجَعَلَنَا مِنَ الْمُسْلِمِينَ",
+      "transliteration": "Elhamdülillâhillezî et'amenâ ve sekânâ ve ce'alenâ mine'l-müslimîn",
+      "meaning": "Bizi yediren, içiren ve müslümanlardan kılan Allah'a hamd olsun.",
+      "reference": "Tirmizî, Deavât 56",
+      "time": "Yemek",
+      "category": "gunluk"
+    },
+    {
+      "key": "yolculuk",
+      "name": "Yolculuk Duası",
+      "arabic": "سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ، وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ",
+      "transliteration": "Sübhânellezî sahhara lenâ hâzâ ve mâ künnâ lehû mukrinîn, ve innâ ilâ Rabbinâ le münkalibûn",
+      "meaning": "Bunu bizim hizmetimize veren Allah'ı tesbih ederiz; yoksa biz buna güç yetiremezdik. Şüphesiz biz Rabbimize döneceğiz.",
+      "reference": "Müslim, Hac 425",
+      "time": "Yolculuk",
+      "category": "gunluk"
+    },
+    {
+      "key": "hastalik",
+      "name": "Şifa Duası",
+      "arabic": "اللَّهُمَّ رَبَّ النَّاسِ، أَذْهِبِ الْبَأْسَ، اشْفِ أَنْتَ الشَّافِي، لَا شَافِيَ إِلَّا أَنْتَ",
+      "transliteration": "Allâhümme Rabbe'n-nâs, ezhibi'l-be's, işfi ente'ş-Şâfî, lâ şâfiye illâ ente",
+      "meaning": "Ey insanların Rabbi olan Allah'ım! Sıkıntıyı gider, şifa ver. Şifa veren yalnız sensin; senden başka şifa veren yoktur.",
+      "reference": "Buhârî, Merdâ 20",
+      "time": "Hastalık",
+      "category": "sikinti"
+    },
+    {
+      "key": "kadir",
+      "name": "Kadir Gecesi Duası",
+      "arabic": "اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي",
+      "transliteration": "Allâhümme inneke afüvvün tuhibbü'l-afve fa'fü annî",
+      "meaning": "Allah'ım! Sen çok affedicisin, affetmeyi seversin; beni affet.",
+      "reference": "Tirmizî, Deavât 84",
+      "time": "Ramazan",
+      "category": "ramazan"
+    },
+    {
+      "key": "iftar",
+      "name": "İftar Duası",
+      "arabic": "ذَهَبَ الظَّمَأُ وَابْتَلَّتِ الْعُرُوقُ وَثَبَتَ الْأَجْرُ إِنْ شَاءَ اللَّهُ",
+      "transliteration": "Zehebe'z-zamâü vebtelleti'l-urûk ve sebete'l-ecr inşâallâh",
+      "meaning": "Susuzluk gitti, damarlar ıslandı, inşallah ecir de sabit oldu.",
+      "reference": "Ebû Dâvûd, Sıyâm 22",
+      "time": "Ramazan",
+      "category": "ramazan"
+    },
+    {
+      "key": "kandil",
+      "name": "Kandil Duası",
+      "arabic": "اللَّهُمَّ بَارِكْ لَنَا فِي رَجَبَ وَشَعْبَانَ وَبَلِّغْنَا رَمَضَانَ",
+      "transliteration": "Allâhümme bârik lenâ fî Recebe ve Şa'bân ve belliğnâ Ramazân",
+      "meaning": "Allah'ım! Recep ve Şaban aylarını bize mübarek kıl ve bizi Ramazan'a ulaştır.",
+      "reference": "Taberânî, el-Mu'cemü'l-Evsat",
+      "time": "Üç aylar",
+      "category": "salavat"
+    },
+    {
+      "key": "kabir_ziyareti",
+      "name": "Kabir Ziyareti Duası",
+      "arabic": "السَّلَامُ عَلَيْكُمْ أَهْلَ الدِّيَارِ مِنَ الْمُؤْمِنِينَ وَالْمُسْلِمِينَ، وَإِنَّا إِنْ شَاءَ اللَّهُ بِكُمْ لَاحِقُونَ",
+      "transliteration": "Esselâmü aleyküm ehle'd-diyâri mine'l-mü'minîne ve'l-müslimîn, ve innâ inşâallâhü biküm lâhikûn",
+      "meaning": "Ey bu diyarın mümin ve müslüman sakinleri! Selam size. İnşallah biz de size katılacağız.",
+      "reference": "Müslim, Cenâiz 104",
+      "time": "Ziyaret",
+      "category": "ziyaret"
+    },
+    {
+      "key": "cuma_salavat",
+      "name": "Cuma Günü Salavât",
+      "arabic": "اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ",
+      "transliteration": "Allâhümme salli ve sellim alâ nebiyyinâ Muhammed",
+      "meaning": "Allah'ım! Peygamberimiz Muhammed'e salât ve selâm et.",
+      "reference": "Ebû Dâvûd, Salât 201",
+      "time": "Cuma",
+      "category": "salavat"
+    },
+    {
+      "key": "helal_rizik",
+      "name": "Helâl Rızık Duası",
+      "arabic": "اللَّهُمَّ اكْفِنِي بِحَلَالِكَ عَنْ حَرَامِكَ، وَأَغْنِنِي بِفَضْلِكَ عَمَّنْ سِوَاكَ",
+      "transliteration": "Allâhümme'kfinî bi halâlike an harâmik, ve ağninî bi fadlike ammen sivâk",
+      "meaning": "Allah'ım! Helâlinle yetindir, haramına düşürme; lütfunla beni senden başkasına muhtaç etme.",
+      "reference": "Tirmizî, Deavât 110",
+      "time": "Günlük",
+      "category": "gunluk"
+    },
+    {
+      "key": "sifa_hasta_ziyareti",
+      "name": "Hasta Ziyareti Duası",
+      "arabic": "أَسْأَلُ اللَّهَ الْعَظِيمَ رَبَّ الْعَرْشِ الْعَظِيمِ أَنْ يَشْفِيَكَ",
+      "transliteration": "Es'elüllâhe'l-azîme Rabbe'l-arşi'l-azîmi en yeşfiyek",
+      "meaning": "Yüce Arş'ın Rabbi olan büyük Allah'tan sana şifa vermesini dilerim.",
+      "reference": "Tirmizî, Tıb 32",
+      "time": "Ziyaret",
+      "category": "ziyaret"
+    },
+    {
+      "key": "sabah_duasi",
+      "name": "Sabah Duası",
+      "category": "sabah",
+      "time": "Sabah",
+      "arabic": "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ",
+      "transliteration": "Asbahnâ ve asbaha'l-mülkü lillâh, vel-hamdü lillâh, lâ ilâhe illallâhü vahdehû lâ şerîke leh",
+      "meaning": "Sabaha erdik, mülk de Allah'ın oldu; hamd Allah'a mahsustur. O'ndan başka ilah yoktur; tektir, ortağı yoktur.",
+      "reference": "Müslim, Zikir 75"
+    },
+    {
+      "key": "aksam_duasi",
+      "name": "Akşam Duası",
+      "category": "aksam",
+      "time": "Akşam",
+      "arabic": "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ",
+      "transliteration": "Emseynâ ve emse'l-mülkü lillâh, vel-hamdü lillâh, lâ ilâhe illallâhü vahdehû lâ şerîke leh",
+      "meaning": "Akşama erdik, mülk de Allah'ın oldu; hamd Allah'a mahsustur. O'ndan başka ilah yoktur; tektir, ortağı yoktur.",
+      "reference": "Müslim, Zikir 75"
+    },
+    {
+      "key": "sabah_ilim_rizik",
+      "name": "İlim ve Rızık Duası",
+      "category": "sabah",
+      "time": "Sabah",
+      "arabic": "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا، وَرِزْقًا طَيِّبًا، وَعَمَلًا مُتَقَبَّلًا",
+      "transliteration": "Allâhümme innî es'elüke ilmen nâfian ve rizkan tayyiben ve amelen mütekabbelâ",
+      "meaning": "Allah'ım! Senden faydalı ilim, temiz rızık ve kabul edilmiş amel isterim.",
+      "reference": "Ebû Dâvûd, Vitr 32; İbn Mâce, İkâme 32"
+    },
+    {
+      "key": "sabah_aksam_koruma",
+      "name": "Sabah–Akşam Koruma Duası",
+      "category": "sabah",
+      "time": "Sabah ve akşam (üç kez)",
+      "arabic": "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ",
+      "transliteration": "Bismillâhillezî lâ yedurru ma'asmihî şey'ün fil ardı ve lâ fis-semâi ve hüves-semî'ul-alîm",
+      "meaning": "Adı anıldığında yerde ve gökte hiçbir şeyin zarar veremeyeceği Allah'ın adıyla. O, her şeyi işiten ve bilendir.",
+      "reference": "Tirmizî, Deavât 13; Ebû Dâvûd, Edeb 101"
+    },
+    {
+      "key": "namaz_subhaneke",
+      "name": "Sübhâneke (Namaz Başlangıcı)",
+      "category": "namaz",
+      "time": "Namaz",
+      "arabic": "سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ وَتَبَارَكَ اسْمُكَ وَتَعَالَى جَدُّكَ وَلَا إِلَهَ غَيْرُكَ",
+      "transliteration": "Sübhânekellâhümme ve bihamdike ve tebârekesmüke ve teâlâ ceddüke ve lâ ilâhe gayruk",
+      "meaning": "Allah'ım! Sen her türlü eksiklikten uzaksın; hamd sana mahsustur. Adın mübarektir, azametin yücedir. Senden başka ilah yoktur.",
+      "reference": "Ebû Dâvûd, Salât 121; Tirmizî, Salât 179"
+    },
+    {
+      "key": "namaz_tahiyyat",
+      "name": "Tahiyyât Duası",
+      "category": "namaz",
+      "time": "Namaz (oturuş)",
+      "arabic": "التَّحِيَّاتُ لِلَّهِ وَالصَّلَوَاتُ وَالطَّيِّبَاتُ، السَّلَامُ عَلَيْكَ أَيُّهَا النَّبِيُّ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ، السَّلَامُ عَلَيْنَا وَعَلَى عِبَادِ اللَّهِ الصَّالِحِينَ، أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ",
+      "transliteration": "Et-tahiyyâtü lillâhi ves-salevâtü vet-tayyibât, es-selâmü aleyke eyyühen-nebiyyü ve rahmetüllâhi ve berakâtüh, es-selâmü aleynâ ve alâ ibâdillâhis-sâlihîn, eşhedü en lâ ilâhe illallâh ve eşhedü enne Muhammeden abdühû ve rasûlüh",
+      "meaning": "Bütün tâzimler, ibadetler ve güzel sözler Allah'a mahsustur. Ey Peygamber! Selam, Allah'ın rahmeti ve bereketi senin üzerine olsun. Selam bizim ve Allah'ın salih kulları üzerine olsun. Şahitlik ederim ki Allah'tan başka ilah yoktur ve yine şahitlik ederim ki Muhammed O'nun kulu ve resulüdür.",
+      "reference": "Buhârî, Ezân 150; Müslim, Salât 60"
+    },
+    {
+      "key": "namaz_salli_barik",
+      "name": "Salli–Bârik (Salavat)",
+      "category": "namaz",
+      "time": "Namaz (son oturuş)",
+      "arabic": "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ، كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ. اللَّهُمَّ بَارِكْ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ، كَمَا بَارَكْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ",
+      "transliteration": "Allâhümme salli alâ Muhammedin ve alâ âli Muhammed, kemâ salleyte alâ İbrâhîme ve alâ âli İbrâhîm, inneke hamîdün mecîd. Allâhümme bârik alâ Muhammedin ve alâ âli Muhammed, kemâ bârekte alâ İbrâhîme ve alâ âli İbrâhîm, inneke hamîdün mecîd",
+      "meaning": "Allah'ım! İbrahim'e ve İbrahim'in ailesine rahmet ettiğin gibi Muhammed'e ve Muhammed'in ailesine de rahmet et. Şüphesiz sen övgüye layıksın, şan ve şeref sahibisin. Allah'ım! İbrahim'e ve ailesine bereket verdiğin gibi Muhammed'e ve ailesine de bereket ver. Şüphesiz sen övgüye layıksın, şan ve şeref sahibisin.",
+      "reference": "Buhârî, Deavât 32; Müslim, Salât 65"
+    },
+    {
+      "key": "namaz_sonrasi_selam",
+      "name": "Namaz Sonrası Selam Duası",
+      "category": "namaz",
+      "time": "Namaz sonrası",
+      "arabic": "اللَّهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ، تَبَارَكْتَ يَا ذَا الْجَلَالِ وَالْإِكْرَامِ",
+      "transliteration": "Allâhümme entes-selâmü ve minkes-selâm, tebârekte yâ zel-celâli vel-ikrâm",
+      "meaning": "Allah'ım! Selam sensin, esenlik sendendir. Ey azamet ve ikram sahibi, sen ne yücesin!",
+      "reference": "Müslim, Mesâcid 135"
+    },
+    {
+      "key": "abdest_sonrasi",
+      "name": "Abdest Sonrası Duası",
+      "category": "namaz",
+      "time": "Abdest sonrası",
+      "arabic": "أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ",
+      "transliteration": "Eşhedü en lâ ilâhe illallâhü vahdehû lâ şerîke leh, ve eşhedü enne Muhammeden abdühû ve rasûlüh",
+      "meaning": "Şahitlik ederim ki Allah'tan başka ilah yoktur; O tektir ve ortağı yoktur. Yine şahitlik ederim ki Muhammed O'nun kulu ve resulüdür.",
+      "reference": "Müslim, Tahâret 17"
+    },
+    {
+      "key": "evden_cikis",
+      "name": "Evden Çıkış Duası",
+      "category": "gunluk",
+      "time": "Günlük",
+      "arabic": "بِسْمِ اللَّهِ، تَوَكَّلْتُ عَلَى اللَّهِ، وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ",
+      "transliteration": "Bismillâhi, tevekkeltü alallâhi, ve lâ havle ve lâ kuvvete illâ billâh",
+      "meaning": "Allah'ın adıyla (çıkıyorum); Allah'a güvendim. Güç ve kuvvet ancak Allah'ın yardımıyladır.",
+      "reference": "Tirmizî, Deavât 34; Ebû Dâvûd, Edeb 103"
+    },
+    {
+      "key": "tuvalet_giris",
+      "name": "Tuvalete Girerken",
+      "category": "gunluk",
+      "time": "Günlük",
+      "arabic": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ",
+      "transliteration": "Allâhümme innî e'ûzü bike minel-hubsi vel-habâis",
+      "meaning": "Allah'ım! (Kötülük ve pislikten) sana sığınırım.",
+      "reference": "Buhârî, Vudû 9; Müslim, Hayz 122"
+    },
+    {
+      "key": "kurandan_rabbena_atina",
+      "name": "Rabbenâ Âtinâ (Bakara 201)",
+      "category": "kuran",
+      "time": "Günlük",
+      "arabic": "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+      "transliteration": "Rabbenâ âtinâ fid-dünyâ haseneten ve fil âhirati haseneten ve kınâ azâbennâr",
+      "meaning": "Rabbimiz! Bize dünyada da iyilik ver, ahirette de iyilik ver ve bizi ateş azabından koru.",
+      "reference": "Kur'an-ı Kerim, Bakara 2/201"
+    },
+    {
+      "key": "kurandan_la_tuakhizna",
+      "name": "Rabbenâ Lâ Tüâhıznâ (Bakara 286)",
+      "category": "kuran",
+      "time": "Günlük",
+      "arabic": "رَبَّنَا لَا تُؤَاخِذْنَا إِنْ نَسِينَا أَوْ أَخْطَأْنَا",
+      "transliteration": "Rabbenâ lâ tüâhıznâ in nesînâ ev ahta'nâ",
+      "meaning": "Rabbimiz! Unutur veya yanılırsak bizi sorumlu tutma.",
+      "reference": "Kur'an-ı Kerim, Bakara 2/286"
+    },
+    {
+      "key": "kurandan_rabbi_zidni",
+      "name": "Rabbi Zidnî İlmâ (Tâhâ 114)",
+      "category": "kuran",
+      "time": "Günlük",
+      "arabic": "رَبِّ زِدْنِي عِلْمًا",
+      "transliteration": "Rabbi zidnî ilmâ",
+      "meaning": "Rabbim! İlmimi artır.",
+      "reference": "Kur'an-ı Kerim, Tâhâ 20/114"
+    },
+    {
+      "key": "kurandan_rabbi_rhamhuma",
+      "name": "Anne–Baba İçin Dua (İsrâ 24)",
+      "category": "kuran",
+      "time": "Günlük",
+      "arabic": "رَبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا",
+      "transliteration": "Rabbirhamhümâ kemâ rabbeyânî sagîrâ",
+      "meaning": "Rabbim! Onlar beni küçüklüğümde nasıl büyütüp yetiştirdiyse, sen de onlara öylece merhamet et.",
+      "reference": "Kur'an-ı Kerim, İsrâ 17/24"
+    },
+    {
+      "key": "kurandan_hasbunallah",
+      "name": "Hasbünallâh (Âl-i İmrân 173)",
+      "category": "kuran",
+      "time": "Günlük",
+      "arabic": "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ",
+      "transliteration": "Hasbünallâhü ve ni'mel-vekîl",
+      "meaning": "Allah bize kâfidir; O ne güzel vekildir.",
+      "reference": "Kur'an-ı Kerim, Âl-i İmrân 3/173"
+    },
+    {
+      "key": "kurandan_rabbena_heb_lana",
+      "name": "Kalplerin Kaymasına Karşı Dua (Âl-i İmrân 8)",
+      "category": "kuran",
+      "time": "Günlük",
+      "arabic": "رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا وَهَبْ لَنَا مِنْ لَدُنْكَ رَحْمَةً إِنَّكَ أَنْتَ الْوَهَّابُ",
+      "transliteration": "Rabbenâ lâ tüziğ kulûbenâ ba'de iz hedeytenâ veheb lenâ min ledünke rahmeten inneke entel-vehhâb",
+      "meaning": "Rabbimiz! Bizi doğru yola erdirdikten sonra kalplerimizi eğriltme; bize katından bir rahmet bağışla. Şüphesiz sen çok bağışlayansın.",
+      "reference": "Kur'an-ı Kerim, Âl-i İmrân 3/8"
+    },
+    {
+      "key": "sikinti_duasi",
+      "name": "Sıkıntı ve Keder Duası",
+      "category": "sikinti",
+      "time": "Sıkıntı anı",
+      "arabic": "لَا إِلَهَ إِلَّا اللَّهُ الْعَظِيمُ الْحَلِيمُ، لَا إِلَهَ إِلَّا اللَّهُ رَبُّ الْعَرْشِ الْعَظِيمِ، لَا إِلَهَ إِلَّا اللَّهُ رَبُّ السَّمَاوَاتِ وَرَبُّ الْأَرْضِ وَرَبُّ الْعَرْشِ الْكَرِيمِ",
+      "transliteration": "Lâ ilâhe illallâhül-azîmül-halîm, lâ ilâhe illallâhü rabbül-arşil-azîm, lâ ilâhe illallâhü rabbüs-semâvâti ve rabbül-ardı ve rabbül-arşil-kerîm",
+      "meaning": "Azîm ve Halîm olan Allah'tan başka ilah yoktur. Büyük arşın Rabbi olan Allah'tan başka ilah yoktur. Göklerin Rabbi, yerin Rabbi ve şerefli arşın Rabbinden başka ilah yoktur.",
+      "reference": "Buhârî, Deavât 27; Müslim, Zikir 83"
+    }
+  ],
+  "dua_categories": [
+    {
+      "key": "sabah",
+      "label": "Sabah",
+      "description": "Güne başlarken okunan dualar"
+    },
+    {
+      "key": "aksam",
+      "label": "Akşam",
+      "description": "Akşam ve gece duaları"
+    },
+    {
+      "key": "namaz",
+      "label": "Namaz",
+      "description": "Namaz içi ve namaz sonrası dualar"
+    },
+    {
+      "key": "gunluk",
+      "label": "Günlük Hayat",
+      "description": "Yemek, yolculuk, uyku ve günlük işler"
+    },
+    {
+      "key": "kuran",
+      "label": "Kur'an'dan",
+      "description": "Ayetlerden dualar"
+    },
+    {
+      "key": "ramazan",
+      "label": "Ramazan",
+      "description": "İftar, sahur ve Kadir Gecesi duaları"
+    },
+    {
+      "key": "sikinti",
+      "label": "Sıkıntı Anı",
+      "description": "Üzüntü, keder ve hastalık hâlleri"
+    },
+    {
+      "key": "ziyaret",
+      "label": "Ziyaret ve Şifa",
+      "description": "Kabir ve hasta ziyareti duaları"
+    },
+    {
+      "key": "salavat",
+      "label": "Salavat ve Mübarek Günler",
+      "description": "Salavatlar, kandil ve Cuma duaları"
+    }
+  ]
+}
