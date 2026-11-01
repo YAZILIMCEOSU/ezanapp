@@ -378,8 +378,7 @@ class LocationController extends Notifier<LocationState> {
         state = state.copyWith(
           busy: false,
           error: switch (status) {
-            LocationStatus.deniedForever =>
-              'Konum izni kalıcı olarak reddedilmiş. Ayarlardan izin verebilirsiniz.',
+            LocationStatus.deniedForever => 'Konum izni kalıcı olarak reddedilmiş. Ayarlardan izin verebilirsiniz.',
             LocationStatus.serviceDisabled =>
               'Konum servisi kapalı. Açtıktan sonra tekrar deneyin.',
             _ => 'Konum izni verilmedi. Dilerseniz şehir seçebilirsiniz.',

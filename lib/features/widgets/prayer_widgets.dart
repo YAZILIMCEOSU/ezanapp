@@ -352,10 +352,7 @@ class ManualOffsetNotice extends StatelessWidget {
                   style: theme.textTheme.bodySmall,
                 ),
               ),
-              TextButton(
-                onPressed: onReset,
-                child: const Text('Sıfırla'),
-              ),
+              TextButton(onPressed: onReset, child: const Text('Sıfırla')),
             ],
           ),
         ),

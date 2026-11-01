@@ -152,9 +152,7 @@ class SettingsScreen extends ConsumerWidget {
                   .read(locationControllerProvider.notifier)
                   .refreshFromGps();
               if (!context.mounted) return;
-              final String? error = ref
-                  .read(locationControllerProvider)
-                  .error;
+              final String? error = ref.read(locationControllerProvider).error;
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(

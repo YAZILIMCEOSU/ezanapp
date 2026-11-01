@@ -645,8 +645,7 @@ void main() {
       final DateTime start = DateTime(2026, 10, 28);
       final DateTime end = DateTime(2026, 11, 11);
       final List<PrayerTimesDay> onlyOctober = <PrayerTimesDay>[
-        for (int i = 0; i < 4; i++)
-          _officialDay(start.add(Duration(days: i))),
+        for (int i = 0; i < 4; i++) _officialDay(start.add(Duration(days: i))),
       ];
 
       final _StubSource diyanet = _StubSource.success(
@@ -670,10 +669,23 @@ void main() {
       );
 
       expect(range.length, 15, reason: 'Eksik gün kalmamalı');
-      expect(
-        range.map((PrayerTimesDay d) => d.date.day).toList(),
-        <int>[28, 29, 30, 31, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-      );
+      expect(range.map((PrayerTimesDay d) => d.date.day).toList(), <int>[
+        28,
+        29,
+        30,
+        31,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+      ]);
       expect(
         range.where((PrayerTimesDay d) => d.date.month == 11).length,
         11,

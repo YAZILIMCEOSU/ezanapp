@@ -269,11 +269,7 @@ class AladhanApiSource implements PrayerTimesSource {
         startDate.month,
         startDate.day,
       );
-      final DateTime last = DateTime(
-        endDate.year,
-        endDate.month,
-        endDate.day,
-      );
+      final DateTime last = DateTime(endDate.year, endDate.month, endDate.day);
       return days
           .where(
             (PrayerTimesDay d) =>

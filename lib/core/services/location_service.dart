@@ -144,15 +144,18 @@ class LocationService {
     }
   }
 
-  static LocationStatus _map(LocationPermission permission) => switch (permission) {
-    LocationPermission.always ||
-    LocationPermission.whileInUse => LocationStatus.granted,
-    LocationPermission.deniedForever => LocationStatus.deniedForever,
-    _ => LocationStatus.denied,
-  };
+  static LocationStatus _map(LocationPermission permission) =>
+      switch (permission) {
+        LocationPermission.always ||
+        LocationPermission.whileInUse => LocationStatus.granted,
+        LocationPermission.deniedForever => LocationStatus.deniedForever,
+        _ => LocationStatus.denied,
+      };
 
   /// Sistem önbelleğindeki son bilinen konumu beklemeden (≈10 ms) döndürür.
-  Future<LocationFix?> getLastKnownFastPosition({bool requireFresh = false}) async {
+  Future<LocationFix?> getLastKnownFastPosition({
+    bool requireFresh = false,
+  }) async {
     try {
       final LocationStatus status = await checkStatus();
       if (status != LocationStatus.granted) return null;

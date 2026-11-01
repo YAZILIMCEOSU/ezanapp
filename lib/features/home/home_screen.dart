@@ -364,11 +364,15 @@ class _TodayTimesCard extends ConsumerWidget {
         ManualOffsetNotice(
           offsets: ref.watch(settingsControllerProvider).manualOffsets,
           onReset: () async {
-            await ref.read(settingsControllerProvider.notifier).clearManualOffsets();
+            await ref
+                .read(settingsControllerProvider.notifier)
+                .clearManualOffsets();
             if (!context.mounted) return;
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: Text('Manuel düzeltmeler kaldırıldı; vakitler resmî saatle aynı.'),
+                content: Text(
+                  'Manuel düzeltmeler kaldırıldı; vakitler resmî saatle aynı.',
+                ),
               ),
             );
           },

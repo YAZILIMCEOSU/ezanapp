@@ -179,7 +179,9 @@ class PrayerTimesRepository {
       final List<PrayerTimesDay>? memo = _rangeMemory[key];
       // Bellek önbelleği de tazelik denetiminden geçer; aksi halde uygulama
       // açık kaldığı sürece (günlerce) eski saatler kullanılmaya devam ederdi.
-      if (memo != null && _isRangeFresh(memo) && _covers(memo, startDate, endDate)) {
+      if (memo != null &&
+          _isRangeFresh(memo) &&
+          _covers(memo, startDate, endDate)) {
         return memo;
       }
       _rangeMemory.remove(key);
@@ -295,13 +297,17 @@ class PrayerTimesRepository {
     };
     if (byDate.length >= expected) {
       final List<PrayerTimesDay> sorted = byDate.values.toList()
-        ..sort((PrayerTimesDay a, PrayerTimesDay b) => a.date.compareTo(b.date));
+        ..sort(
+          (PrayerTimesDay a, PrayerTimesDay b) => a.date.compareTo(b.date),
+        );
       return sorted;
     }
     // Güvenlik sınırı: iki aydan uzun aralıkta gün gün istek atmayalım.
     if (expected > 62) {
       final List<PrayerTimesDay> sorted = byDate.values.toList()
-        ..sort((PrayerTimesDay a, PrayerTimesDay b) => a.date.compareTo(b.date));
+        ..sort(
+          (PrayerTimesDay a, PrayerTimesDay b) => a.date.compareTo(b.date),
+        );
       return sorted;
     }
     final DateTime first = DateTime(

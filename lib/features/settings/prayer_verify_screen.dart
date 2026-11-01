@@ -63,16 +63,15 @@ class _PrayerVerifyScreenState extends ConsumerState<PrayerVerifyScreen> {
     } catch (_) {
       if (!mounted) return;
       setState(() {
-        _error = 'Karşılaştırma yapılamadı. İnternet bağlantınızı kontrol edin.';
+        _error =
+            'Karşılaştırma yapılamadı. İnternet bağlantınızı kontrol edin.';
         _busy = false;
       });
     }
   }
 
   Future<void> _resetOffsets() async {
-    await ref
-        .read(settingsControllerProvider.notifier)
-        .clearManualOffsets();
+    await ref.read(settingsControllerProvider.notifier).clearManualOffsets();
     ref.invalidate(prayerTimesProvider);
     ref.invalidate(prayerRangeProvider);
     if (!mounted) return;
@@ -151,7 +150,9 @@ class _PrayerVerifyScreenState extends ConsumerState<PrayerVerifyScreen> {
             const ListTile(
               leading: Icon(Icons.check_circle_outline_rounded),
               title: Text('Manuel düzeltme yok'),
-              subtitle: Text('Vakitler doğrudan resmî/hesaplanan saatten geliyor.'),
+              subtitle: Text(
+                'Vakitler doğrudan resmî/hesaplanan saatten geliyor.',
+              ),
             ),
           const SectionHeader(title: 'Uygulamanın gösterdiği vakitler'),
           ..._timesBlock(context, ref, theme),
@@ -189,7 +190,7 @@ class _PrayerVerifyScreenState extends ConsumerState<PrayerVerifyScreen> {
               ),
             ),
           if (_official != null) ...<Widget>[
-            SectionHeader(title: 'Karşılaştırma'),
+            const SectionHeader(title: 'Karşılaştırma'),
             if (_officialWarning != null)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
@@ -258,9 +259,7 @@ class _PrayerVerifyScreenState extends ConsumerState<PrayerVerifyScreen> {
                   ),
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w700,
-              fontFeatures: const <FontFeature>[
-                FontFeature.tabularFigures(),
-              ],
+              fontFeatures: const <FontFeature>[FontFeature.tabularFigures()],
             ),
           ),
         ),
