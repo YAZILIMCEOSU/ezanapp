@@ -5,6 +5,7 @@ import 'package:audio_session/audio_session.dart';
 import 'package:flutter/services.dart'
     show ByteData, MethodChannel, Uint8List, rootBundle;
 import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 
 import '../../data/models/app_settings.dart';
 import '../utils/logger.dart';
@@ -259,6 +260,18 @@ class AppAudioService {
     });
   }
 
+  /// `just_audio_background` her ses kaynağında bir [MediaItem] etiketi
+  /// ister; yoksa oynatma hata verir. Bildirim çubuğundaki medya bildirimi
+  /// bu etiketten beslenir.
+  MediaItem _queueMediaItem(String url, int index) => MediaItem(
+    id: url,
+    title: _activeSurahName == null
+        ? (_activeCustomTitle ?? 'Ezan Vaktim Pro')
+        : '${_activeSurahName!} • ${index + 1}. ayet',
+    artist: _activeReciterName ?? 'Ezan Vaktim Pro',
+    album: 'Ezan Vaktim Pro',
+  );
+
   Future<void> _advanceQueue() async {
     if (_advancingQueue) return;
     _advancingQueue = true;
@@ -273,7 +286,10 @@ class AppAudioService {
         final String nextUrl = _queueUrls[_queueIndex];
         try {
           final Duration? d = await _player.setAudioSource(
-            AudioSource.uri(Uri.parse(nextUrl)),
+            AudioSource.uri(
+              Uri.parse(nextUrl),
+              tag: _queueMediaItem(nextUrl, _queueIndex),
+            ),
           );
           if (d != null && d > Duration.zero) {
             _lastDuration = d;
@@ -310,7 +326,10 @@ class AppAudioService {
         _queueIndexController.add(_queueIndex);
       }
       final Duration? d = await _player.setAudioSource(
-        AudioSource.uri(Uri.parse(_queueUrls[_queueIndex])),
+        AudioSource.uri(
+          Uri.parse(_queueUrls[_queueIndex]),
+          tag: _queueMediaItem(_queueUrls[_queueIndex], _queueIndex),
+        ),
       );
       if (op != _operationId) return false;
       if (d != null && d > Duration.zero) {
@@ -387,7 +406,17 @@ class AppAudioService {
         await _player.stop();
       } catch (_) {}
       if (op != _operationId) return false;
-      await _player.setAudioSource(AudioSource.file(path));
+      await _player.setAudioSource(
+        AudioSource.file(
+          path,
+          tag: MediaItem(
+            id: path,
+            title: title ?? 'Ezan Vaktim Pro',
+            artist: 'Ezan Vaktim Pro',
+            album: subtitle ?? 'Ezan Vaktim Pro',
+          ),
+        ),
+      );
       if (op != _operationId) return false;
       await _player.setLoopMode(loop ? LoopMode.one : LoopMode.off);
       if (volume != null) {
@@ -457,7 +486,15 @@ class AppAudioService {
         await tempFile.writeAsBytes(bytes, flush: true);
       }
       if (op != _operationId) return false;
-      await _player.setAudioSource(AudioSource.file(tempFile.path));
+      final MediaItem assetItem = MediaItem(
+        id: resolvedAsset,
+        title: title ?? 'Ezan Vaktim Pro',
+        artist: 'Ezan Vaktim Pro',
+        album: subtitle ?? 'Ezan Vaktim Pro',
+      );
+      await _player.setAudioSource(
+        AudioSource.file(tempFile.path, tag: assetItem),
+      );
       if (op != _operationId) return false;
       await _player.setLoopMode(loop ? LoopMode.one : LoopMode.off);
       await _player.setVolume(_lastVolume);
@@ -468,7 +505,17 @@ class AppAudioService {
     } catch (_) {
       try {
         if (op != _operationId) return false;
-        await _player.setAudioSource(AudioSource.asset(resolvedAsset));
+        await _player.setAudioSource(
+          AudioSource.asset(
+            resolvedAsset,
+            tag: MediaItem(
+              id: resolvedAsset,
+              title: title ?? 'Ezan Vaktim Pro',
+              artist: 'Ezan Vaktim Pro',
+              album: subtitle ?? 'Ezan Vaktim Pro',
+            ),
+          ),
+        );
         if (op != _operationId) return false;
         await _player.setLoopMode(loop ? LoopMode.one : LoopMode.off);
         await _player.setVolume(_lastVolume);
@@ -519,7 +566,18 @@ class AppAudioService {
         await _player.stop();
       } catch (_) {}
       if (op != _operationId) return false;
-      await _player.setAudioSource(AudioSource.uri(Uri.parse(url)));
+      await _player.setAudioSource(
+        AudioSource.uri(
+          Uri.parse(url),
+          tag: MediaItem(
+            id: id ?? url,
+            title: title ?? 'Ezan Vaktim Pro',
+            artist: artist ?? 'Ezan Vaktim Pro',
+            album: album,
+            artUri: artUri == null ? null : Uri.tryParse(artUri),
+          ),
+        ),
+      );
       if (op != _operationId) return false;
       await _player.setLoopMode(loop ? LoopMode.one : LoopMode.off);
       if (volume != null) {
@@ -575,7 +633,10 @@ class AppAudioService {
         _queueIndexController.add(_queueIndex);
       }
       await _player.setAudioSource(
-        AudioSource.uri(Uri.parse(_queueUrls[_queueIndex])),
+        AudioSource.uri(
+          Uri.parse(_queueUrls[_queueIndex]),
+          tag: _queueMediaItem(_queueUrls[_queueIndex], _queueIndex),
+        ),
       );
       if (op != _operationId) return false;
       await _player.setLoopMode(LoopMode.off);

@@ -402,3 +402,85 @@ başlatıyordu.
 Telefonda doğrulama: **Ayarlar → Bildirimler → "Kesin alarm izni"** satırı
 "Açık: ezan tam vakitte çalar" demeli. Kapalıysa ana ekrandaki **İzin ver**
 düğmesine dokunun; Android "Alarmlar ve hatırlatıcılar" ekranı açılır.
+
+## 11. Kasım 2026 — "Bildirim çubuğunda hiç çıkmıyor"
+
+Kullanıcı bildirimi: *"Bildirim çubuğunda telefonda da çıkmıyor."* Bu, tek bir
+hatadan değil, birbirinden bağımsız **beş ayrı halkadan** kaynaklanabiliyordu.
+Hepsi kapatıldı ve her halka artık ekranda görünür.
+
+### 11.1 Simge hatası bütün bildirim sistemini durduruyordu
+
+`initialize()` küçük simge olarak `@mipmap/ic_launcher` kullanıyordu. Android
+küçük simgesinin **drawable** olması gerekir; bazı cihaz/derlemelerde bu isim
+çözülemiyor ve `invalid_icon` hatası fırlıyor. Hata `_warmUp` içinde yutulduğu
+için uygulama açılıyor ama **hiçbir bildirim** kurulamıyordu.
+
+* `res/drawable/ic_stat_ezan.xml` (beyaz hilal) eklendi.
+* `initialize()` önce bu simgeyi, başarısızsa `@mipmap/ic_launcher`'ı dener.
+* İki deneme de başarısız olursa durum **gizlenmez**: ana ekranda
+  "Bildirim sistemi başlatılamadı" uyarısı çıkar.
+* `keep.xml` zaten `@drawable/*` koruyor; R8 release derlemesinde simge
+  silinmiyor.
+
+### 11.2 İzin bir kez reddedilince bir daha sorulmuyordu
+
+Android 13+ `POST_NOTIFICATIONS` izni ikinci redden sonra **pencere
+göstermez**. Uygulama yalnızca `requestNotificationsPermission()` çağırdığı
+için kullanıcı "izin ver" dese bile hiçbir şey olmuyordu.
+
+* Ana ekrana **"Bildirim iznini aç"** uyarısı eklendi.
+* İzin penceresi açılmazsa doğrudan **uygulamanın bildirim ayarları** açılır
+  (`ezanai/notifications` yerel köprüsü → `ACTION_APP_NOTIFICATION_SETTINGS`).
+* Sistem ayarlarından dönüşte izin durumu yeniden okunur ve izin yeni
+  verildiyse bildirimler anında yeniden zamanlanır.
+
+### 11.3 Kanal sessizce kapatılabiliyordu
+
+Uygulama düzeyinde izin açık olsa bile kullanıcı "Ezan ve vakit bildirimleri"
+**kanalını** kapatabilir. Bu durumda `areNotificationsEnabled()` `true` kalır,
+bildirim yine görünmez.
+
+* Kanal önemi yerel köprüden okunur (`channelState`).
+* Kanal kapalıysa ana ekran ve Bildirim ayarları uyarı gösterir; **"Kanalı aç"**
+  doğrudan o kanalın sistem ayarını açar.
+
+### 11.4 Tek bir bildirim hatası bütün planı düşürüyordu
+
+`_schedule` hata fırlattığında `scheduleForDays` döngüsü tamamen duruyor,
+kalan günler/vakitler hiç kurulmuyordu. Artık her bildirim ayrı denenir;
+başarısız olan sayılır, tur devam eder ve sonuç raporlanır
+(`NotificationScheduleReport`).
+
+Ek olarak iptal ufku 14 → **20 gün** yapıldı; 15 günlük plan ile iptal aralığı
+artık çakışmıyor.
+
+### 11.5 Eşzamanlı yeniden zamanlama birbirini siliyordu
+
+Açılış, ayar değişikliği ve konum yenilemesi aynı anda `reschedule()`
+çağırabiliyor; biri `cancel`, diğeri `schedule` yaparken araya girerse
+bildirimler silinebiliyordu. Tüm turlar artık tek bir kuyrukta sırayla çalışır.
+
+### 11.6 Medya bildirimi hiç başlatılmıyordu (bildirim çubuğu boş kalıyordu)
+
+`just_audio_background` paketi `pubspec.yaml`'da vardı ama
+`JustAudioBackground.init()` **hiç çağrılmıyordu**. Bu yüzden ezan/Kur'an
+çalarken kilit ekranı ve bildirim çubuğunda medya denetimi görünmüyor,
+uygulama arka plana atıldığında ses kesilebiliyordu.
+
+* `main()` içinde ilk `AudioPlayer`'dan önce `JustAudioBackground.init()`
+  çağrılıyor; kanal adı, simgesi ve "çalarken bildirimi koru" ayarları verildi.
+* Her ses kaynağına `MediaItem` etiketi eklendi (paketin zorunlu şartı):
+  ezan, Kur'an kuyruğu, ilahi ve indirilen dosyalar.
+* `MainActivity` artık `AudioServiceActivity`'den türüyor; bildirime
+  dokunulduğunda uygulama ön plana gelir.
+
+### 11.7 Telefonda 30 saniyelik doğrulama
+
+1. **Ayarlar → Bildirimler → "Test bildirimi gönder"**.
+2. Ekrana çıkan pencerede "Test bildirimi kuruldu" yazmalı ve yaklaşık
+   **8 saniye sonra** bildirim çubuğunda görünmeli.
+3. Görünmezse pencere size hangi ayarın kapalı olduğunu söyler ve
+   **"Ayarları aç"** düğmesi doğrudan ilgili sistem ekranına götürür.
+4. Aynı ekranda **"Zamanlanmış bildirim: N"** satırı görünmeli; `N = 0` ise
+   hiçbir alarm kurulamamış demektir.

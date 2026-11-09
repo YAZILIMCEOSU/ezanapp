@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/services/notification_service.dart';
 import '../../core/utils/app_time.dart';
 import '../../core/utils/logger.dart';
 import '../../data/models/app_settings.dart';
@@ -23,29 +24,45 @@ class NotificationSettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _NotificationSettingsScreenState
-    extends ConsumerState<NotificationSettingsScreen> {
+    extends ConsumerState<NotificationSettingsScreen>
+    with WidgetsBindingObserver {
   bool? _systemPermission;
   bool? _exactAlarmAllowed;
   int _pending = 0;
   bool _busy = false;
+  NotificationHealth? _health;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _refreshStatus();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Kullanıcı "Ayarları aç" ile sistem ekranına gidip geri dönebilir;
+    // durum hemen yeniden okunmalı.
+    if (state == AppLifecycleState.resumed) _refreshStatus();
   }
 
   Future<void> _refreshStatus() async {
     final runtime = ref.read(runtimeProvider);
     try {
-      final bool granted = await runtime.notifications.hasPermission();
-      final int pending = await runtime.notifications.pendingCount();
-      final bool exact = await runtime.notifications.canScheduleExactAlarms();
+      final NotificationHealth health = await runtime.notifications
+          .checkHealth();
       if (!mounted) return;
       setState(() {
-        _systemPermission = granted;
-        _exactAlarmAllowed = exact;
-        _pending = pending;
+        _health = health;
+        _systemPermission = health.appNotificationsEnabled;
+        _exactAlarmAllowed = health.exactAlarmsAvailable;
+        _pending = health.pendingCount;
       });
     } catch (error) {
       AppLog.warning('Bildirim durumu okunamadı: $error');
@@ -74,6 +91,10 @@ class _NotificationSettingsScreenState
         .watch(settingsProvider)
         .notifications;
     final ThemeData theme = Theme.of(context);
+    final NotificationHealth? health = _health;
+    final String channelLabel = health == null
+        ? ''
+        : ' • Kanal: ${health.channelBlocked ? 'kapalı' : 'açık'}';
 
     return Scaffold(
       appBar: AppBar(
@@ -93,6 +114,14 @@ class _NotificationSettingsScreenState
       body: ListView(
         padding: const EdgeInsets.only(bottom: AppSpacing.xxl),
         children: <Widget>[
+          if (health != null && health.supported && !health.ready)
+            const StatusBanner(
+              icon: Icons.notifications_paused_outlined,
+              message:
+                  'Bildirim servisi başlatılamadı (simge veya kanal hatası). '
+                  'Uygulamayı kapatıp açın; sorun sürerse bildirimler '
+                  'görünmez.',
+            ),
           if (_systemPermission == false)
             StatusBanner(
               icon: Icons.notifications_off_outlined,
@@ -101,14 +130,39 @@ class _NotificationSettingsScreenState
                   'sistem ayarlarından izin vermeniz gerekir.',
               action: TextButton(
                 onPressed: () async {
-                  await ref
+                  final notifications = ref
                       .read(runtimeProvider)
-                      .notifications
-                      .requestPermission();
+                      .notifications;
+                  final bool granted = await notifications.requestPermission();
+                  if (!granted) {
+                    // Kalıcı red: izin penceresi artık açılmaz, ayarlar açılır.
+                    await notifications.openNotificationSettings();
+                  }
                   await ref.read(notificationCoordinatorProvider).reschedule();
                   await _refreshStatus();
                 },
                 child: const Text('Ayarları aç'),
+              ),
+            ),
+          if (health != null && health.channelBlocked)
+            StatusBanner(
+              icon: Icons.volume_off_outlined,
+              message:
+                  'Ezan bildirim kanalı telefon ayarlarından kapatılmış. '
+                  'Kanal açılmadan vakit bildirimi görünmez.',
+              action: TextButton(
+                onPressed: () async {
+                  await ref
+                      .read(runtimeProvider)
+                      .notifications
+                      .openNotificationSettings(
+                        channelId: NotificationService.adhanChannelId(
+                          settings.adhanSound,
+                        ),
+                      );
+                  await _refreshStatus();
+                },
+                child: const Text('Kanalı aç'),
               ),
             ),
           if (_systemPermission == true)
@@ -120,7 +174,7 @@ class _NotificationSettingsScreenState
                 0,
               ),
               child: Text(
-                'Zamanlanmış bildirim: $_pending',
+                'Zamanlanmış bildirim: $_pending$channelLabel',
                 style: theme.textTheme.labelSmall?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
@@ -453,19 +507,54 @@ class _NotificationSettingsScreenState
             title: const Text('Test bildirimi gönder'),
             subtitle: const Text('Bildirimlerin çalıştığını doğrulayın'),
             onTap: () async {
-              await ref
+              setState(() => _busy = true);
+              final NotificationTestResult result = await ref
                   .read(runtimeProvider)
                   .notifications
-                  .showNow(
-                    title: 'Ezan Vaktim Pro test bildirimi',
-                    body: 'Bildirimler çalışıyor. Vakitlerde görüşmek üzere!',
-                  );
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Test bildirimi gönderildi.')),
-                );
-              }
+                  .sendTestNotification(settings: settings);
               await _refreshStatus();
+              if (!mounted) return;
+              setState(() => _busy = false);
+              await showDialog<void>(
+                context: context,
+                builder: (BuildContext dialogContext) => AlertDialog(
+                  title: Text(
+                    result.scheduled
+                        ? 'Test bildirimi kuruldu'
+                        : 'Test bildirimi kurulamadı',
+                  ),
+                  content: Text(
+                    result.scheduled
+                        ? 'Yaklaşık 8 saniye içinde bildirim çubuğunda '
+                              'görünmeli.\n\nZamanlanmış bildirim sayısı: '
+                              '${result.pending}'
+                              '${result.mode == NotificationScheduleMode.inexact ? '\n\nKesin alarm izni kapalı olduğu için birkaç dakika gecikebilir.' : ''}'
+                        : 'Bildirim sistemi kaydı kabul etmedi. '
+                              'Aşağıdaki ayarları kontrol edin:\n'
+                              '• Bildirim izni\n'
+                              '• Ezan bildirim kanalı\n'
+                              '• Pil optimizasyonu',
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.of(dialogContext).pop(),
+                      child: const Text('Tamam'),
+                    ),
+                    if (!result.scheduled)
+                      TextButton(
+                        onPressed: () async {
+                          Navigator.of(dialogContext).pop();
+                          await ref
+                              .read(runtimeProvider)
+                              .notifications
+                              .openNotificationSettings();
+                          await _refreshStatus();
+                        },
+                        child: const Text('Ayarları aç'),
+                      ),
+                  ],
+                ),
+              );
             },
           ),
           ListTile(

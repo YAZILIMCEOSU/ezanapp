@@ -38,6 +38,10 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp>
   Duration _lastTimeZoneOffset = DateTime.now().timeZoneOffset;
   String? _lastTriggeredPrayerKey;
 
+  /// Sistem ayarlarından dönüldüğünde izin değişimini yakalamak için.
+  bool? _lastNotificationsGranted;
+  bool? _lastExactAlarms;
+
   /// Uygulama gerçekten ön planda mı?
   ///
   /// Telefon uykuya geçtiğinde saniyelik saat durur; uygulamaya dönüldüğünde
@@ -69,6 +73,8 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp>
       // Kullanıcı ayarlardan "Alarmlar ve hatırlatıcılar" iznini açmış olabilir:
       // durum yeniden okunur, izin yeni verildiyse bildirimler tazelenir.
       ref.invalidate(exactAlarmAvailabilityProvider);
+      ref.invalidate(notificationHealthProvider);
+      unawaited(_refreshNotificationPermission());
       final UserLocation currentLoc = ref.read(activeLocationProvider);
       if (currentLoc.mode == LocationMode.gps) {
         final DateTime? updated = currentLoc.updatedAt;
@@ -88,6 +94,33 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp>
         ref.invalidate(hijriTodayProvider);
         unawaited(ref.read(notificationCoordinatorProvider).reschedule());
       }
+    }
+  }
+
+  /// Sistem ayarlarından dönünce bildirim izinlerini yeniden okur.
+  ///
+  /// Kullanıcı "Ayarları aç" ile bildirim iznini veya kesin alarm iznini
+  /// açtıysa, uygulamaya döndüğünde alarmlar **hemen** yeni modda kurulur;
+  /// bir sonraki açılışı beklemez.
+  Future<void> _refreshNotificationPermission() async {
+    final runtime = ref.read(runtimeProvider);
+    try {
+      final bool granted = await runtime.notifications.hasPermission();
+      final bool exact = await runtime.notifications.refreshExactAlarmStatus();
+      final bool changed =
+          (_lastNotificationsGranted != null &&
+              _lastNotificationsGranted != granted) ||
+          (_lastExactAlarms != null && _lastExactAlarms != exact);
+      _lastNotificationsGranted = granted;
+      _lastExactAlarms = exact;
+      if (!mounted) return;
+      ref.invalidate(exactAlarmAvailabilityProvider);
+      ref.invalidate(notificationHealthProvider);
+      if (changed && granted) {
+        unawaited(ref.read(notificationCoordinatorProvider).reschedule());
+      }
+    } catch (error) {
+      AppLog.warning('Bildirim izin durumu okunamadı: $error');
     }
   }
 
@@ -147,8 +180,18 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp>
         }();
         try {
           final bool permitted = await runtime.notifications.hasPermission();
+          _lastNotificationsGranted = permitted;
+          _lastExactAlarms = runtime.notifications.exactAlarmsAvailable;
           if (!permitted) {
-            await runtime.notifications.requestPermission();
+            final bool granted = await runtime.notifications
+                .requestPermission();
+            _lastNotificationsGranted = granted;
+            // İzin penceresi kapandıktan sonra ana ekrandaki uyarı hemen
+            // güncellenmeli (bir sonraki açılışı beklemesin).
+            if (mounted) {
+              ref.invalidate(notificationHealthProvider);
+              ref.invalidate(exactAlarmAvailabilityProvider);
+            }
           }
           await locationReady;
           await ref.read(notificationCoordinatorProvider).reschedule();
@@ -247,11 +290,18 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp>
       started = await runtime.audio.playFile(
         notif.customAdhanPath!,
         volume: initialVolume,
+        title: '${prayer.label} ezanı',
+        subtitle: 'Ezan Vaktim Pro',
       );
     } else {
       final String? asset = BundledSounds.assetFor(sound);
       if (asset != null) {
-        started = await runtime.audio.playAsset(asset, volume: initialVolume);
+        started = await runtime.audio.playAsset(
+          asset,
+          volume: initialVolume,
+          title: '${prayer.label} ezanı',
+          subtitle: 'Ezan Vaktim Pro',
+        );
       }
     }
 

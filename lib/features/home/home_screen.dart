@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -5,6 +7,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../core/config/app_features.dart';
 import '../../core/constants/app_constants.dart';
+import '../../core/services/notification_service.dart';
 import '../../core/utils/app_time.dart';
 import '../../data/models/app_settings.dart';
 import '../../data/models/dua_models.dart';
@@ -71,6 +74,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ref.watch(exactAlarmAvailabilityProvider).value ?? true;
     final bool showExactAlarmBanner =
         settings.notifications.enabled && !exactAlarms;
+    // "Bildirim çubukta hiç çıkmıyor" sorunu izin veya kanal kapalıysa
+    // hiçbir zaman çözülmez; sebep ana ekranda görünmeli.
+    final NotificationHealth health = ref
+        .watch(notificationHealthProvider)
+        .value ??
+        NotificationHealth.notApplicable;
+    final bool notificationsOn = settings.notifications.enabled;
+    final bool showServiceBanner =
+        notificationsOn && health.supported && !health.ready;
+    final bool showPermissionBanner =
+        notificationsOn &&
+        health.supported &&
+        health.ready &&
+        !health.appNotificationsEnabled;
+    final bool showChannelBanner =
+        notificationsOn &&
+        health.supported &&
+        health.ready &&
+        health.appNotificationsEnabled &&
+        health.channelBlocked;
 
     TodayTimes buildInstantFallback() {
       const LocalCalculationSource local = LocalCalculationSource();
@@ -89,6 +112,70 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     Widget buildTimesContent(TodayTimes value) => Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
+        if (showServiceBanner)
+          StatusBanner(
+            icon: Icons.notifications_paused_outlined,
+            message:
+                'Bildirim sistemi başlatılamadı; vakit bildirimleri '
+                'görünmeyebilir. Yeniden denemek için dokunun.',
+            action: TextButton(
+              onPressed: () {
+                ref.invalidate(notificationHealthProvider);
+                unawaited(
+                  ref.read(notificationCoordinatorProvider).reschedule(),
+                );
+              },
+              child: const Text('Yeniden dene'),
+            ),
+          ),
+        if (showPermissionBanner)
+          StatusBanner(
+            icon: Icons.notifications_off_outlined,
+            message:
+                'Bildirim izni kapalı: vakit bildirimleri telefonun bildirim '
+                'çubuğunda görünmez.',
+            action: TextButton(
+              onPressed: () async {
+                final notifications = ref
+                    .read(runtimeProvider)
+                    .notifications;
+                final bool granted = await notifications.requestPermission();
+                if (!granted) {
+                  // İkinci redden sonra sistem penceresi açılmaz; doğrudan
+                  // uygulamanın bildirim ayarları açılır.
+                  await notifications.openNotificationSettings();
+                }
+                ref.invalidate(notificationHealthProvider);
+                ref.invalidate(exactAlarmAvailabilityProvider);
+                if (granted) {
+                  await ref.read(notificationCoordinatorProvider).reschedule();
+                }
+              },
+              child: const Text('Bildirim iznini aç'),
+            ),
+          ),
+        if (showChannelBanner)
+          StatusBanner(
+            icon: Icons.volume_off_outlined,
+            message:
+                'Ezan bildirim kanalı kapalı; vakit bildirimi gösterilmez. '
+                'Telefon ayarlarından kanalı açın.',
+            action: TextButton(
+              onPressed: () async {
+                await ref
+                    .read(runtimeProvider)
+                    .notifications
+                    .openNotificationSettings(
+                      channelId: NotificationService.adhanChannelId(
+                        settings.notifications.adhanSound,
+                      ),
+                    );
+                ref.invalidate(notificationHealthProvider);
+                await ref.read(notificationCoordinatorProvider).reschedule();
+              },
+              child: const Text('Ayarları aç'),
+            ),
+          ),
         if (showExactAlarmBanner)
           StatusBanner(
             icon: Icons.alarm_off_rounded,

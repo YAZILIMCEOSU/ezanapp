@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 
 import 'app/app.dart';
 import 'app/app_runtime.dart';
@@ -32,6 +33,26 @@ Future<void> main() async {
     DeviceOrientation.landscapeLeft,
     DeviceOrientation.landscapeRight,
   ]);
+
+  // Arka plan sesi + **bildirim çubuğundaki medya bildirimi**.
+  //
+  // Bu çağrı eksikti: ezan/Kur'an çalarken kilit ekranı ve bildirim
+  // çubuğunda hiçbir denetim görünmüyor, uygulama arka plana atıldığında
+  // ses kesilebiliyordu. İlk `AudioPlayer` oluşturulmadan önce yapılmalıdır.
+  try {
+    await JustAudioBackground.init(
+      androidNotificationChannelId: 'com.yazilimceosu.ezanai.audio',
+      androidNotificationChannelName: 'Ezan ve Kur an sesi',
+      androidNotificationChannelDescription:
+          'Ezan, Kur an ve ilahi çalarken gösterilir.',
+      androidNotificationIcon: 'drawable/ic_stat_ezan',
+      androidNotificationOngoing: true,
+      androidStopForegroundOnPause: false,
+    );
+  } catch (error) {
+    // Ses yine çalışır; yalnızca arka plan bildirimi devre dışı kalır.
+    AppLog.warning('Arka plan ses bildirimi başlatılamadı: $error');
+  }
 
   try {
     final AppRuntime runtime = await AppRuntime.create();

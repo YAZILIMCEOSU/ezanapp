@@ -3,7 +3,8 @@ import 'dart:io';
 import 'dart:ui' show Color;
 
 import 'package:flutter/foundation.dart' show visibleForTesting;
-import 'package:flutter/services.dart' show PlatformException;
+import 'package:flutter/services.dart'
+    show MethodChannel, PlatformException;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
@@ -61,6 +62,100 @@ abstract final class NotificationIds {
 
   static int nafile(int dayIndex, int slot) =>
       baseNafile + dayIndex * 10 + slot;
+
+  /// İptal edilen gün sayısı.
+  ///
+  /// Planlama ufku 15 gündür (`NotificationCoordinator.scheduleHorizonDays`);
+  /// kullanıcı ayarı düşürdüğünde eski günlerin alarmları kalmasın diye
+  /// iptal aralığı ufkun üzerinde tutulur.
+  static const int maxCancelDays = 20;
+}
+
+/// Android'in hangi zamanlama modunu kabul ettiği.
+enum NotificationScheduleMode {
+  alarmClock('alarmClock'),
+  exact('exact'),
+  inexact('inexact'),
+  skipped('skipped'),
+  failed('failed');
+
+  const NotificationScheduleMode(this.value);
+
+  final String value;
+
+  bool get delivered =>
+      this == alarmClock || this == exact || this == inexact;
+}
+
+/// Bir zamanlama turunun sonucu.
+class NotificationScheduleReport {
+  const NotificationScheduleReport({
+    this.scheduled = 0,
+    this.failed = 0,
+    this.inexact = 0,
+    this.error,
+  });
+
+  final int scheduled;
+  final int failed;
+  final int inexact;
+  final String? error;
+
+  bool get ok => failed == 0;
+}
+
+/// Test bildiriminin kurulum sonucu.
+class NotificationTestResult {
+  const NotificationTestResult({
+    required this.scheduled,
+    required this.mode,
+    this.pending = 0,
+    this.error,
+  });
+
+  final bool scheduled;
+  final NotificationScheduleMode mode;
+  final int pending;
+  final String? error;
+}
+
+/// Bildirim görünürlüğünü etkileyen tüm sistem durumları.
+///
+/// "Bildirim çubukta hiç çıkmıyor" şikâyetinde sorun tek bir yerde değil,
+/// zincirin herhangi bir halkasında olabilir: uygulama başlatılamamış,
+/// bildirim izni verilmemiş veya kanal kullanıcı tarafından kapatılmış.
+/// Bu sınıf üçünü birlikte raporlar.
+class NotificationHealth {
+  const NotificationHealth({
+    this.supported = true,
+    this.ready = true,
+    this.appNotificationsEnabled = true,
+    this.channelImportance = -1,
+    this.exactAlarmsAvailable = true,
+    this.pendingCount = 0,
+    this.error,
+  });
+
+  /// Android dışı ortam (test/masaüstü): uyarı gösterilmez.
+  static const NotificationHealth notApplicable = NotificationHealth(
+    supported: false,
+  );
+
+  final bool supported;
+  final bool ready;
+  final bool appNotificationsEnabled;
+
+  /// 0 = kanal kullanıcı tarafından kapatılmış, -1 = bilinmiyor.
+  final int channelImportance;
+  final bool exactAlarmsAvailable;
+  final int pendingCount;
+  final String? error;
+
+  bool get channelBlocked => channelImportance == 0;
+
+  /// Sistem bildirimi hiç görünmeyecek mi?
+  bool get blocked =>
+      supported && (!ready || !appNotificationsEnabled || channelBlocked);
 }
 
 /// Ezan, vakit, Ramazan ve içerik bildirimlerini yönetir.
@@ -76,6 +171,22 @@ class NotificationService {
 
   bool _initialized = false;
   bool _timeZoneReady = false;
+  bool _initializationFailed = false;
+  String? _lastError;
+
+  /// Bildirimlerde kullanılan küçük simge.
+  ///
+  /// Android küçük simgesi **drawable** olmalıdır. `@mipmap/ic_launcher`
+  /// (eski değer) bazı cihaz/derlemelerde `invalid_icon` hatası veriyor ve
+  /// bu hata bütün bildirim sistemini sessizce durduruyordu.
+  static const String notificationIcon = 'ic_stat_ezan';
+  static const String _fallbackIcon = '@mipmap/ic_launcher';
+
+  /// Bildirim servisi hazır mı? (Simge/kanal hatası tanılamada görünür.)
+  bool get ready => _initialized && !_initializationFailed;
+
+  /// Son başlatma/zamanlama hatası (kullanıcıya ham hata gösterilmez).
+  String? get lastError => _lastError;
 
   /// Kullanıcı bildirime dokunduğunda çağrılır.
   final StreamController<NotificationRoute> _routeController =
@@ -87,35 +198,70 @@ class NotificationService {
       StreamController<Prayer>.broadcast();
   Stream<Prayer> get onAdhanNow => _adhanController.stream;
 
-  Future<void> initialize() async {
-    if (_initialized) return;
+  /// Başlatma sürüyorsa ikinci bir tur başlatılmaz.
+  ///
+  /// Açılışta `_warmUp` ile ana ekranın ilk karesi neredeyse aynı anda
+  /// `initialize()` çağırıyor; iki paralel başlatma kanal oluşturma ve simge
+  /// denemelerini birbirine karıştırabiliyordu.
+  Future<void>? _initializing;
 
-    const AndroidInitializationSettings android = AndroidInitializationSettings(
-      '@mipmap/ic_launcher',
-    );
+  Future<void> initialize() {
+    if (_initialized) return Future<void>.value();
+    return _initializing ??= _initializeOnce().whenComplete(() {
+      _initializing = null;
+    });
+  }
+
+  Future<void> _initializeOnce() async {
+
     const DarwinInitializationSettings ios = DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
       requestSoundPermission: false,
     );
-    await _plugin.initialize(
-      settings: const InitializationSettings(android: android, iOS: ios),
-      onDidReceiveNotificationResponse: (NotificationResponse response) {
-        final String? payload = response.payload;
-        _routeController.add(NotificationRoute.fromPayload(payload));
-      },
-      onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
-    );
-
     await _prepareTimeZone();
+
+    // Küçük simge bulunamazsa (R8 kaynak budaması, üretici ROM'u) yedek
+    // simgeyle tekrar denenir. İki deneme de başarısız olursa hata
+    // **yutulmaz**: `NotificationHealth.ready == false` olarak raporlanır ve
+    // ana ekranda görünür.
+    _initializationFailed = false;
+    _lastError = null;
+    for (final String icon in <String>[notificationIcon, _fallbackIcon]) {
+      try {
+        await _plugin.initialize(
+          settings: InitializationSettings(
+            android: AndroidInitializationSettings(icon),
+            iOS: ios,
+          ),
+          onDidReceiveNotificationResponse: (NotificationResponse response) {
+            final String? payload = response.payload;
+            _routeController.add(NotificationRoute.fromPayload(payload));
+          },
+          onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
+        );
+        _lastError = null;
+        break;
+      } catch (error) {
+        _lastError = '$error';
+        AppLog.warning('Bildirim başlatılamadı (simge: $icon)', error: error);
+      }
+    }
+    _initializationFailed = _lastError != null;
+
     if (Platform.isAndroid) {
-      await _createAndroidChannels();
+      try {
+        await _createAndroidChannels();
+      } catch (error) {
+        AppLog.warning('Bildirim kanalları oluşturulamadı', error: error);
+      }
       await refreshExactAlarmStatus();
     }
     _initialized = true;
     AppLog.debug(
       'Bildirim servisi hazır (tz: ${tz.local.name}, '
-      'kesin alarm: $_exactAlarmsAvailable)',
+      'kesin alarm: $_exactAlarmsAvailable, simge: '
+      '${_initializationFailed ? 'HATA' : notificationIcon})',
     );
   }
 
@@ -173,7 +319,7 @@ class NotificationService {
     return 'Etc/GMT${hours > 0 ? '-' : '+'}${hours.abs()}';
   }
 
-  static String _adhanChannelId(AdhanSound sound) {
+  static String adhanChannelId(AdhanSound sound) {
     if (sound.isSilent) return NotificationChannels.prayer;
     if (sound == AdhanSound.systemDefault) {
       return '${NotificationChannels.adhan}_v5_system_default';
@@ -267,7 +413,7 @@ class NotificationService {
       for (final AdhanSound sound in AdhanSound.values)
         if (!sound.isSilent)
           channel(
-            _adhanChannelId(sound),
+            adhanChannelId(sound),
             sound == AdhanSound.systemDefault
                 ? 'Vakit bildirimi (Telefonun bildirim sesi)'
                 : 'Ezan bildirimi (${sound.label})',
@@ -305,6 +451,12 @@ class NotificationService {
         'Güncellemeler ve önemli duyurular.',
         silent: true,
       ),
+      channel(
+        NotificationChannels.test,
+        'Bildirim testi',
+        'Bildirimlerin gerçekten ulaştığını doğrulayan deneme bildirimi.',
+        useNotificationStream: true,
+      ),
     ];
     await Future.wait(creations);
   }
@@ -318,8 +470,17 @@ class NotificationService {
           .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin
           >();
-      granted = await android?.requestNotificationsPermission() ?? true;
-      await android?.requestExactAlarmsPermission();
+      try {
+        granted = await android?.requestNotificationsPermission() ?? true;
+      } catch (error) {
+        _lastError = '$error';
+        granted = false;
+      }
+      try {
+        await android?.requestExactAlarmsPermission();
+      } catch (error) {
+        AppLog.warning('Kesin alarm izni istenemedi: $error');
+      }
     } else if (Platform.isIOS) {
       final IOSFlutterLocalNotificationsPlugin? ios = _plugin
           .resolvePlatformSpecificImplementation<
@@ -340,11 +501,16 @@ class NotificationService {
   Future<bool> hasPermission() async {
     await initialize();
     if (Platform.isAndroid) {
-      final AndroidFlutterLocalNotificationsPlugin? android = _plugin
-          .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin
-          >();
-      return await android?.areNotificationsEnabled() ?? true;
+      try {
+        final AndroidFlutterLocalNotificationsPlugin? android = _plugin
+            .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin
+            >();
+        return await android?.areNotificationsEnabled() ?? true;
+      } catch (error) {
+        _lastError = '$error';
+        return false;
+      }
     }
     return true;
   }
@@ -413,14 +579,82 @@ class NotificationService {
     }
   }
 
-  Future<void> openSystemSettings() async {
-    if (Platform.isAndroid) {
+  /// Android'in uygulama/kanal bildirim ayarlarını açan yerel köprü.
+  ///
+  /// `requestNotificationsPermission()` yalnızca **ilk** istekte pencere
+  /// gösterir; kullanıcı bir kez reddettiyse hiçbir şey olmaz ve kullanıcı
+  /// "bildirim gelmiyor" der. Bu köprü doğrudan sistem ayarını açar.
+  static const MethodChannel _platform = MethodChannel('ezanai/notifications');
+
+  /// Uygulamanın bildirim ayarlarını (veya belirli bir kanalın ayarını) açar.
+  Future<bool> openNotificationSettings({String? channelId}) async {
+    if (!Platform.isAndroid) return false;
+    try {
+      final bool? opened = await _platform.invokeMethod<bool>(
+        channelId == null ? 'openSettings' : 'openChannelSettings',
+        channelId == null ? null : <String, Object?>{'channelId': channelId},
+      );
+      if (opened == true) return true;
+    } catch (error) {
+      AppLog.warning('Bildirim ayarları açılamadı: $error');
+    }
+    // Yerel köprü yoksa son çare: izin penceresini tekrar dene.
+    try {
       await _plugin
           .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin
           >()
           ?.requestNotificationsPermission();
+    } catch (_) {}
+    return false;
+  }
+
+  /// Kanalın sistemdeki önemi: 0 = kullanıcı kanalı kapatmış, -1 = bilinmiyor.
+  Future<int> channelImportance(String channelId) async {
+    if (!Platform.isAndroid) return -1;
+    try {
+      final Map<Object?, Object?>? state = await _platform
+          .invokeMethod<Map<Object?, Object?>>(
+            'channelState',
+            <String, Object?>{'channelId': channelId},
+          );
+      final Object? importance = state?['importance'];
+      if (importance is num) return importance.toInt();
+    } catch (_) {}
+    return -1;
+  }
+
+  /// Bildirim zincirinin tamamının sağlığını okur.
+  ///
+  /// Uygulama başlatma, bildirim izni ve kanal durumu ayrı ayrı kontrol
+  /// edilir; böylece "hiç bildirim gelmiyor" sorunu tek dokunuşla
+  /// düzeltilebilecek şekilde ekranda gösterilir.
+  Future<NotificationHealth> checkHealth({String? channelId}) async {
+    if (!Platform.isAndroid) return NotificationHealth.notApplicable;
+    await initialize();
+    final int pending = await pendingCount();
+    final bool exact = await refreshExactAlarmStatus();
+    final int importance = await channelImportance(
+      channelId ?? adhanChannelId(AdhanSound.ezanMelodi),
+    );
+    bool enabled = false;
+    try {
+      enabled = await hasPermission();
+    } catch (error) {
+      _lastError ??= '$error';
     }
+    return NotificationHealth(
+      ready: !_initializationFailed,
+      appNotificationsEnabled: enabled,
+      channelImportance: importance,
+      exactAlarmsAvailable: exact,
+      pendingCount: pending,
+      error: _lastError,
+    );
+  }
+
+  Future<void> openSystemSettings() async {
+    await openNotificationSettings();
   }
 
   /// Belirtilen günler için vakit bildirimlerini zamanlar.
@@ -435,6 +669,10 @@ class NotificationService {
   }) async {
     await initialize();
     await cancelPrayerNotifications();
+    _failedThisRun = 0;
+    _inexactThisRun = 0;
+    _lastScheduleError = null;
+    _lastReport = const NotificationScheduleReport();
     if (!settings.enabled) return 0;
 
     int scheduled = 0;
@@ -463,7 +701,7 @@ class NotificationService {
             title: _titleFor(prayer, quiet),
             body: _bodyFor(prayer, locationLabel, day),
             when: when,
-            channelId: _adhanChannelId(prayerSound),
+            channelId: adhanChannelId(prayerSound),
             settings: settings,
             quiet: quiet || prayerSound.isSilent,
             soundOverride: prayerSound,
@@ -500,7 +738,7 @@ class NotificationService {
 
       // --- Nafile ve Özel Vakitli Namaz Alarmları ---
       final AdhanSound nafileSound = settings.adhanSound;
-      final String nafileChannel = _adhanChannelId(nafileSound);
+      final String nafileChannel = adhanChannelId(nafileSound);
 
       // 0) İşrak Namazı Alarmı (Güneş doğduktan +47 dk sonra, kerahet çıkışı, 2 rekât)
       if (settings.israkAlarm) {
@@ -688,8 +926,20 @@ class NotificationService {
       scheduled++;
     }
 
-    AppLog.debug('$scheduled bildirim zamanlandı (${days.length} gün)');
-    return scheduled;
+    final int success = scheduled > _failedThisRun
+        ? scheduled - _failedThisRun
+        : 0;
+    _lastReport = NotificationScheduleReport(
+      scheduled: success,
+      failed: _failedThisRun,
+      inexact: _inexactThisRun,
+      error: _lastScheduleError,
+    );
+    AppLog.debug(
+      '$success bildirim zamanlandı (${days.length} gün, '
+      '$_inexactThisRun yaklaşık, $_failedThisRun başarısız)',
+    );
+    return success;
   }
 
   /// Ramazan sahur ve iftar hatırlatmaları.
@@ -762,16 +1012,22 @@ class NotificationService {
     await initialize();
     await _plugin.cancel(id: id);
     final tz.TZDateTime when = _nextInstanceOf(weekday, hour, minute);
-    await _plugin.zonedSchedule(
-      id: id,
-      title: title,
-      body: body,
-      scheduledDate: when,
-      notificationDetails: _details(channelId, settings, silent: true),
-      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-      matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
-      payload: payload,
-    );
+    try {
+      await _plugin.zonedSchedule(
+        id: id,
+        title: title,
+        body: body,
+        scheduledDate: when,
+        notificationDetails: _details(channelId, settings, silent: true),
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+        matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
+        payload: payload,
+      );
+    } catch (error) {
+      _lastScheduleError = '$error';
+      _lastError = '$error';
+      AppLog.warning('Haftalık bildirim kurulamadı (id: $id)', error: error);
+    }
   }
 
   /// Günlük içerik/zikir/hatim hatırlatması.
@@ -790,16 +1046,22 @@ class NotificationService {
     await _plugin.cancel(id: id);
     if (!enabled || !settings.enabled) return;
     final tz.TZDateTime when = _nextInstanceOf(null, hour, minute);
-    await _plugin.zonedSchedule(
-      id: id,
-      title: title,
-      body: body,
-      scheduledDate: when,
-      notificationDetails: _details(channelId, settings, silent: true),
-      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-      matchDateTimeComponents: DateTimeComponents.time,
-      payload: payload,
-    );
+    try {
+      await _plugin.zonedSchedule(
+        id: id,
+        title: title,
+        body: body,
+        scheduledDate: when,
+        notificationDetails: _details(channelId, settings, silent: true),
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+        matchDateTimeComponents: DateTimeComponents.time,
+        payload: payload,
+      );
+    } catch (error) {
+      _lastScheduleError = '$error';
+      _lastError = '$error';
+      AppLog.warning('Günlük bildirim kurulamadı (id: $id)', error: error);
+    }
   }
 
   /// Gün içinde bir kez gösterilecek özel bildirim (ör. Kadir gecesi, bayram).
@@ -827,25 +1089,37 @@ class NotificationService {
   }
 
   /// Uygulama açıkken anında bildirim gösterir.
-  Future<void> showNow({
+  ///
+  /// Başarısız olursa `false` döner; çağıran ekran "gönderildi" demez.
+  Future<bool> showNow({
     required String title,
     required String body,
     String channelId = NotificationChannels.system,
     String? payload,
     int id = NotificationIds.test,
+    bool silent = true,
+    AdhanSound? soundOverride,
   }) async {
     await initialize();
-    await _plugin.show(
-      id: id,
-      title: title,
-      body: body,
-      notificationDetails: _details(
-        channelId,
-        const NotificationSettings(),
-        silent: true,
-      ),
-      payload: payload,
-    );
+    try {
+      await _plugin.show(
+        id: id,
+        title: title,
+        body: body,
+        notificationDetails: _details(
+          channelId,
+          const NotificationSettings(),
+          silent: silent,
+          soundOverride: soundOverride,
+        ),
+        payload: payload,
+      );
+      return true;
+    } catch (error) {
+      _lastError = '$error';
+      AppLog.warning('Bildirim gösterilemedi: $error');
+      return false;
+    }
   }
 
   /// Telefonun varsayılan bildirim sesiyle (ezan okumadan) anında bildirim gösterir.
@@ -856,24 +1130,61 @@ class NotificationService {
     int id = NotificationIds.test,
   }) async {
     await initialize();
-    final String channelId = _adhanChannelId(AdhanSound.systemDefault);
-    await _plugin.show(
-      id: id,
-      title: title,
-      body: body,
-      notificationDetails: _details(
-        channelId,
-        const NotificationSettings(adhanSound: AdhanSound.systemDefault),
-        silent: false,
-        soundOverride: AdhanSound.systemDefault,
-      ),
-      payload: payload,
+    final String channelId = adhanChannelId(AdhanSound.systemDefault);
+    try {
+      await _plugin.show(
+        id: id,
+        title: title,
+        body: body,
+        notificationDetails: _details(
+          channelId,
+          const NotificationSettings(adhanSound: AdhanSound.systemDefault),
+          silent: false,
+          soundOverride: AdhanSound.systemDefault,
+        ),
+        payload: payload,
+      );
+    } catch (error) {
+      _lastError = '$error';
+      AppLog.warning('Sistem sesli bildirim gösterilemedi', error: error);
+    }
+  }
+
+  /// Deneme bildirimini [delaySeconds] saniye sonrası için **zamanlar**.
+  ///
+  /// Anında `show()` yalnızca kanalın açık olduğunu gösterir; asıl arıza
+  /// çoğu zaman zamanlanmış bildirimin kurulamamasıdır. Bu yüzden test,
+  /// ezanla aynı `zonedSchedule` yolunu kullanır ve sonucu geri döndürür.
+  Future<NotificationTestResult> sendTestNotification({
+    NotificationSettings settings = const NotificationSettings(),
+    int delaySeconds = 8,
+  }) async {
+    await initialize();
+    final NotificationScheduleMode mode = await _schedule(
+      id: NotificationIds.test,
+      title: 'Ezan Vaktim Pro bildirim testi',
+      body: 'Bu bildirimi görüyorsanız vakit bildirimleri çalışıyor.',
+      when: DateTime.now().add(Duration(seconds: delaySeconds)),
+      channelId: NotificationChannels.test,
+      settings: settings,
+      quiet: false,
+      soundOverride: AdhanSound.systemDefault,
+      payload: NotificationRoute.home.value,
+    );
+    final int pending = await pendingCount();
+    return NotificationTestResult(
+      scheduled: mode.delivered,
+      mode: mode,
+      pending: pending,
+      error: mode == NotificationScheduleMode.failed
+          ? _lastScheduleError
+          : null,
     );
   }
 
   Future<void> cancelPrayerNotifications() async {
     await initialize();
-    for (int day = 0; day < 14; day++) {
+    for (int day = 0; day < NotificationIds.maxCancelDays; day++) {
       for (final Prayer prayer in Prayer.values) {
         await _plugin.cancel(id: NotificationIds.adhan(day, prayer));
         await _plugin.cancel(id: NotificationIds.pre(day, prayer));
@@ -904,6 +1215,14 @@ class NotificationService {
   /// Kesin alarm izni yoksa yalnızca bir kez loglanır (ekranı kirletmemek için).
   bool _exactAlarmWarningLogged = false;
 
+  /// Son zamanlama turunun sayaçları ve raporu.
+  int _failedThisRun = 0;
+  int _inexactThisRun = 0;
+  String? _lastScheduleError;
+  NotificationScheduleReport _lastReport = const NotificationScheduleReport();
+
+  NotificationScheduleReport get lastReport => _lastReport;
+
   /// Uygulama içi ezanın çalma penceresi.
   ///
   /// **Düzeltilen hata ("1 dk gecikmeli ezan"):** Telefon uykuya geçtiğinde
@@ -924,7 +1243,13 @@ class NotificationService {
   static tz.TZDateTime scheduledInstant(DateTime when) =>
       tz.TZDateTime.from(when, tz.local);
 
-  Future<void> _schedule({
+  /// Tek bir bildirimi kurar ve hangi modun tuttuğunu döndürür.
+  ///
+  /// **Asla dışarıya hata fırlatmaz.** Önceden tek bir bildirimin hatası
+  /// (ör. geçersiz simge) bütün zamanlama turunu durduruyor ve kullanıcı
+  /// hiçbir bildirim almıyordu; artık hata sayılır, tur devam eder ve
+  /// sonuç `NotificationScheduleReport` içinde raporlanır.
+  Future<NotificationScheduleMode> _schedule({
     required int id,
     required String title,
     required String body,
@@ -937,69 +1262,78 @@ class NotificationService {
     int hijriOffsetDays = 0,
   }) async {
     final tz.TZDateTime scheduled = scheduledInstant(when);
-    if (scheduled.isBefore(tz.TZDateTime.now(tz.local))) return;
+    if (scheduled.isBefore(tz.TZDateTime.now(tz.local))) {
+      return NotificationScheduleMode.skipped;
+    }
     final NotificationDetails details = _details(
       channelId,
       settings,
       silent: quiet,
       soundOverride: soundOverride,
     );
+
+    Future<void> scheduleWith(AndroidScheduleMode mode) =>
+        _plugin.zonedSchedule(
+          id: id,
+          title: title,
+          body: body,
+          scheduledDate: scheduled,
+          notificationDetails: details,
+          androidScheduleMode: mode,
+          payload: payload,
+        );
+
     try {
       // Android 12-15+ cihazlarda uygulama tamamen kapalıyken ve derin uyku
       // (Doze) modundayken dahi zamanında çalması için önce alarmClock denenir.
-      await _plugin.zonedSchedule(
-        id: id,
-        title: title,
-        body: body,
-        scheduledDate: scheduled,
-        notificationDetails: details,
-        androidScheduleMode: AndroidScheduleMode.alarmClock,
-        payload: payload,
-      );
-    } catch (_) {
+      await scheduleWith(AndroidScheduleMode.alarmClock);
+      return NotificationScheduleMode.alarmClock;
+    } catch (firstError) {
+      if (firstError is PlatformException &&
+          _isExactAlarmPermissionError(firstError)) {
+        _markExactAlarmMissing(firstError);
+      }
       try {
-        await _plugin.zonedSchedule(
-          id: id,
-          title: title,
-          body: body,
-          scheduledDate: scheduled,
-          notificationDetails: details,
-          androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-          payload: payload,
-        );
-      } on PlatformException catch (error) {
-        // Kesin alarm izni yok: sistem alarmı dakikalarca geciktirebilir.
-        // Durum ana ekranda gösterilir (sessizce yutulmaz).
-        _exactAlarmsAvailable = false;
-        if (!_exactAlarmWarningLogged) {
-          _exactAlarmWarningLogged = true;
-          AppLog.warning(
-            'Kesin alarm izni yok; ezan dakikası birkaç dakika kayabilir. '
-            'Ayarlar > Bildirimler > "Kesin alarm izni" bölümünden açın '
-            '(${error.code})',
-          );
+        await scheduleWith(AndroidScheduleMode.exactAllowWhileIdle);
+        return NotificationScheduleMode.exact;
+      } catch (exactError) {
+        if (exactError is PlatformException &&
+            _isExactAlarmPermissionError(exactError)) {
+          _markExactAlarmMissing(exactError);
         }
-        await _plugin.zonedSchedule(
-          id: id,
-          title: title,
-          body: body,
-          scheduledDate: scheduled,
-          notificationDetails: details,
-          androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-          payload: payload,
-        );
-      } catch (_) {
-        await _plugin.zonedSchedule(
-          id: id,
-          title: title,
-          body: body,
-          scheduledDate: scheduled,
-          notificationDetails: details,
-          androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-          payload: payload,
-        );
+        try {
+          await scheduleWith(AndroidScheduleMode.inexactAllowWhileIdle);
+          _inexactThisRun++;
+          return NotificationScheduleMode.inexact;
+        } catch (error) {
+          _failedThisRun++;
+          _lastScheduleError = '$error';
+          _lastError = '$error';
+          AppLog.warning(
+            'Bildirim zamanlanamadı (id: $id, ${_format(when)})',
+            error: error,
+          );
+          return NotificationScheduleMode.failed;
+        }
       }
     }
+  }
+
+  /// Hatanın "kesin alarm izni yok" türünden olup olmadığı.
+  static bool _isExactAlarmPermissionError(PlatformException error) {
+    final String text = '${error.code} ${error.message}'.toLowerCase();
+    return text.contains('exact') || text.contains('permission');
+  }
+
+  void _markExactAlarmMissing(PlatformException error) {
+    _exactAlarmsAvailable = false;
+    if (_exactAlarmWarningLogged) return;
+    _exactAlarmWarningLogged = true;
+    AppLog.warning(
+      'Kesin alarm izni yok; ezan dakikası birkaç dakika kayabilir. '
+      'Ayarlar > Bildirimler > "Kesin alarm izni" bölümünden açın '
+      '(${error.code})',
+    );
   }
 
   NotificationDetails _details(

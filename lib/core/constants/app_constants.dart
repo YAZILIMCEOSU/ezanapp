@@ -68,6 +68,9 @@ abstract final class NotificationChannels {
   static const String daily = 'ezanai_daily_content';
   static const String zikir = 'ezanai_zikir';
   static const String system = 'ezanai_system';
+
+  /// Yalnızca "Bildirim testi" düğmesinin kullandığı kanal.
+  static const String test = 'ezanai_test';
 }
 
 /// Tercihlerde kullanılan anahtarlar (shared_preferences).

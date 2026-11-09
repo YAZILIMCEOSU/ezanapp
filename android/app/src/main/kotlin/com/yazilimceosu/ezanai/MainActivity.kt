@@ -1,5 +1,6 @@
 package com.yazilimceosu.ezanai
 
+import android.app.NotificationManager
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
@@ -25,7 +26,7 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.view.Surface
 import android.view.WindowManager
-import io.flutter.embedding.android.FlutterActivity
+import com.ryanheise.audioservice.AudioServiceActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
@@ -40,7 +41,10 @@ import java.util.Locale
  * - Ezan, Kur'an ve ilahi oynatılırken ekran kapansa bile sesin 30-40 sn
  *   sonra kesilmemesi için donanım WakeLock ve WifiLock kilidi yönetir.
  */
-class MainActivity : FlutterActivity(), SensorEventListener {
+// `AudioServiceActivity`, medya bildirimine dokunulduğunda uygulamanın ön
+// plana gelmesini ve ses hizmetiyle aynı motorun kullanılmasını sağlar.
+// (just_audio_background / audio_service gereksinimi.)
+class MainActivity : AudioServiceActivity(), SensorEventListener {
     private val channelName = "ezanai/sensors"
     private var eventSink: EventChannel.EventSink? = null
     private var sensorManager: SensorManager? = null
@@ -172,6 +176,87 @@ class MainActivity : FlutterActivity(), SensorEventListener {
                         result.success(true)
                     }
                     else -> result.notImplemented()
+                }
+            }
+
+        // Bildirim ayarları köprüsü.
+        //
+        // Flutter tarafı `requestNotificationsPermission()` yalnızca ilk
+        // istekte pencere gösterir; kullanıcı reddettikten sonra hiçbir şey
+        // olmaz. Bu kanal doğrudan sistem bildirim ayarlarını (veya belirli
+        // bir kanalın ayarını) açar; "bildirim çubukta çıkmıyor" sorununun
+        // en sık nedeni olan kalıcı red buradan çözülür.
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "ezanai/notifications")
+            .setMethodCallHandler { call, result ->
+                try {
+                    when (call.method) {
+                        "openSettings" -> {
+                            val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                                    .putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+                            } else {
+                                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                    .setData(Uri.parse("package:$packageName"))
+                            }
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            startActivity(intent)
+                            result.success(true)
+                        }
+                        "openChannelSettings" -> {
+                            val channelId = call.argument<String>("channelId") ?: ""
+                            val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+                                    .putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+                                    .putExtra(Settings.EXTRA_CHANNEL_ID, channelId)
+                            } else {
+                                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                    .setData(Uri.parse("package:$packageName"))
+                            }
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            startActivity(intent)
+                            result.success(true)
+                        }
+                        "channelState" -> {
+                            val channelId = call.argument<String>("channelId") ?: ""
+                            val manager =
+                                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                val channel = manager.getNotificationChannel(channelId)
+                                if (channel == null) {
+                                    result.success(
+                                        mapOf("exists" to false, "importance" to -1),
+                                    )
+                                } else {
+                                    result.success(
+                                        mapOf(
+                                            "exists" to true,
+                                            "importance" to channel.importance,
+                                            "sound" to (channel.sound?.toString() ?: ""),
+                                        ),
+                                    )
+                                }
+                            } else {
+                                // Android 7 ve altında kanal yok: uygulama izni geçerli.
+                                result.success(
+                                    mapOf("exists" to true, "importance" to 4),
+                                )
+                            }
+                        }
+                        "appNotificationsEnabled" -> {
+                            val manager =
+                                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                            val enabled =
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                    manager.areNotificationsEnabled()
+                                } else {
+                                    true
+                                }
+                            result.success(enabled)
+                        }
+                        else -> result.notImplemented()
+                    }
+                } catch (error: Throwable) {
+                    result.success(false)
                 }
             }
 

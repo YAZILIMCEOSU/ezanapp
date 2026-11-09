@@ -12,6 +12,7 @@ import '../core/services/billing_service.dart';
 import '../core/services/compass_service.dart';
 import '../core/services/home_widget_service.dart';
 import '../core/services/location_service.dart';
+import '../core/services/notification_service.dart';
 import '../core/services/tts_service.dart';
 import '../core/utils/geo.dart';
 import '../core/utils/logger.dart';
@@ -44,6 +45,29 @@ final FutureProvider<bool> exactAlarmAvailabilityProvider =
       } catch (_) {
         // Platform kanalı yoksa (test/masaüstü) uyarı gösterilmez.
         return true;
+      }
+    });
+
+/// Bildirimlerin gerçekten görünüp görünmeyeceği.
+///
+/// Tek bir bayrak yeterli değil: uygulama başlatma, bildirim izni ve kanal
+/// durumu ayrı ayrı kontrol edilir. "Bildirim çubukta hiç çıkmıyor"
+/// durumunun hangi halkada koptuğu ana ekranda görünür.
+final FutureProvider<NotificationHealth> notificationHealthProvider =
+    FutureProvider<NotificationHealth>((Ref ref) async {
+      final AppRuntime runtime = ref.watch(runtimeProvider);
+      final AdhanSound sound = ref.watch(
+        settingsProvider.select(
+          (AppSettings s) => s.notifications.adhanSound,
+        ),
+      );
+      try {
+        return await runtime.notifications.checkHealth(
+          channelId: NotificationService.adhanChannelId(sound),
+        );
+      } catch (_) {
+        // Test/masaüstü ortamı: uyarı gösterilmez.
+        return NotificationHealth.notApplicable;
       }
     });
 
@@ -822,7 +846,33 @@ class NotificationCoordinator {
   /// duruyordu).
   static const int scheduleHorizonDays = 15;
 
+  /// Aynı anda iki `reschedule()` çalışırsa biri diğerinin iptal ettiği
+  /// bildirimleri silebilir (cancel/schedule yarışı). Tüm turlar sıraya alınır.
+  Future<void> _queue = Future<void>.value();
+  NotificationScheduleReport? _lastReport;
+  String? _lastError;
+
+  NotificationScheduleReport? get lastReport => _lastReport;
+  String? get lastError => _lastError;
+
   Future<int> reschedule({
+    AppSettings? settings,
+    int days = scheduleHorizonDays,
+  }) {
+    final Completer<int> completer = Completer<int>();
+    _queue = _queue.then((_) async {
+      try {
+        completer.complete(await _reschedule(settings: settings, days: days));
+      } catch (error) {
+        // `unawaited` çağıranlar hata yutmasın: tur 0 ile tamamlanır.
+        AppLog.warning('Bildirim yeniden zamanlanamadı: $error');
+        if (!completer.isCompleted) completer.complete(0);
+      }
+    });
+    return completer.future;
+  }
+
+  Future<int> _reschedule({
     AppSettings? settings,
     int days = scheduleHorizonDays,
   }) async {
@@ -836,6 +886,7 @@ class NotificationCoordinator {
 
     if (!current.notifications.enabled) {
       await _runtime.notifications.cancelPrayerNotifications();
+      _ref.invalidate(notificationHealthProvider);
       return 0;
     }
 
@@ -874,6 +925,18 @@ class NotificationCoordinator {
         locationLabel: resolvedLabel,
         hijriOffsetDays: current.hijriOffsetDays,
       );
+
+      // Hangi modun tuttuğu ve kaç bildirimin kurulamadığı tanılama için
+      // saklanır; ayarlar ekranı ve test bunu gösterir.
+      final NotificationScheduleReport? report =
+          _runtime.notifications.lastReport;
+      _lastReport = report;
+      if (report != null && !report.ok) {
+        AppLog.warning(
+          'Bazı vakit bildirimleri kurulamadı: ${report.failed} hata',
+          error: report.error,
+        );
+      }
 
       if (range.length >= 2 && _runtime.ramadan.isRamadan) {
         await _runtime.notifications.scheduleRamadan(
@@ -920,8 +983,11 @@ class NotificationCoordinator {
       );
       return scheduled;
     } catch (error) {
+      _lastError = '$error';
       AppLog.warning('Bildirimler zamanlanamadı: $error');
       return 0;
+    } finally {
+      _ref.invalidate(notificationHealthProvider);
     }
   }
 }
