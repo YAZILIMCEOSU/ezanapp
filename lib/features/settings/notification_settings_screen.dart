@@ -511,7 +511,7 @@ class _NotificationSettingsScreenState
                   .notifications
                   .sendTestNotification(settings: settings);
               await _refreshStatus();
-              if (!mounted) return;
+              if (!context.mounted) return;
               setState(() => _busy = false);
               await showDialog<void>(
                 context: context,
