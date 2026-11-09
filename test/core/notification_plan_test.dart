@@ -19,12 +19,16 @@ void main() {
   });
 
   group('ezan tam vaktinde (1 dakika gecikme)', () {
+    /// Cihazın yerel saatinde (test ortamında UTC) 15:33 duvar saatini üretir.
+    DateTime wallClock(int year, int month, int day, int hour, int minute) =>
+        tz.TZDateTime(tz.local, year, month, day, hour, minute).toLocal();
+
     test('kurulan alarm duvar saatini kaydırmaz', () {
       // **Regresyon kilidi:** 15:33 için kurulan ezan 15:33:00'da çalmalı.
       // Burada bir dakika eklenmesi "ezan 1 dk gecikmeli" şikâyetinin
       // kaynağıydı; yardımcı tek zamanlama noktasıdır.
       final tz.TZDateTime scheduled = NotificationService.scheduledInstant(
-        DateTime(2026, 11, 10, 15, 33),
+        wallClock(2026, 11, 10, 15, 33),
       );
       expect(scheduled.hour, 15);
       expect(scheduled.minute, 33);
@@ -34,14 +38,14 @@ void main() {
 
     test('gece yarısı ve gün sınırı korunur', () {
       final tz.TZDateTime midnight = NotificationService.scheduledInstant(
-        DateTime(2026, 11, 11),
+        wallClock(2026, 11, 11, 0, 0),
       );
       expect(midnight.day, 11);
       expect(midnight.hour, 0);
       expect(midnight.minute, 0);
 
       final tz.TZDateTime imsak = NotificationService.scheduledInstant(
-        DateTime(2026, 11, 10, 6, 11),
+        wallClock(2026, 11, 10, 6, 11),
       );
       expect(imsak.day, 10);
       expect(imsak.hour, 6);
