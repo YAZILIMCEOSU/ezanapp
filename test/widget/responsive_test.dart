@@ -316,14 +316,19 @@ void main() {
         const HomeScreen(),
         runtime: runtime,
         times: fixedTimes(DateTime.now()),
-        overrides: <Override>[
-          settingsProvider.overrideWithValue(
-            testSettings().copyWith(
-              notifications: const NotificationSettings(enabled: true),
+        wrap: (Widget child) => ProviderScope(
+          overrides: [
+            settingsProvider.overrideWithValue(
+              testSettings().copyWith(
+                notifications: const NotificationSettings(enabled: true),
+              ),
             ),
-          ),
-          exactAlarmAvailabilityProvider.overrideWith((Ref ref) async => false),
-        ],
+            exactAlarmAvailabilityProvider.overrideWith(
+              (Ref ref) async => false,
+            ),
+          ],
+          child: child,
+        ),
         verify: () {
           // Android 14+ izin kapalıyken ezan 1–2 dakika gecikebilir; sebep
           // ana ekranda görünmeli ve tek dokunuşla düzeltilmeli.
