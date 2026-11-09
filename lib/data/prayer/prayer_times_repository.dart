@@ -124,11 +124,7 @@ class PrayerTimesRepository {
     // Önceden bu durumda doğrudan cihaz hesabına düşülüyor ve kullanıcı
     // "resmî vakit servisine ulaşılamadı" uyarısı görüyordu.
     final List<PrayerTimesSource> chain = online
-        ? <PrayerTimesSource>[
-            if (turkishCity) _diyanet,
-            _aladhan,
-            _local,
-          ]
+        ? <PrayerTimesSource>[if (turkishCity) _diyanet, _aladhan, _local]
         : <PrayerTimesSource>[_local];
 
     final List<String> failures = <String>[];
@@ -202,9 +198,8 @@ class PrayerTimesRepository {
       if (memo != null &&
           _isRangeFresh(memo) &&
           _covers(memo, startDate, endDate)) {
-        lastSourceDetail = memo.any(
-          (PrayerTimesDay d) => d.source == 'calculation',
-        )
+        lastSourceDetail =
+            memo.any((PrayerTimesDay d) => d.source == 'calculation')
             ? 'Cihaz hesabı'
             : 'Kayıtlı resmî veri';
         return memo;
@@ -281,8 +276,7 @@ class PrayerTimesRepository {
       ];
       lastSourceDetail = 'Kayıtlı resmî veri';
       if (!online) {
-        lastWarning =
-            'Çevrimdışı: son kaydedilen resmî vakitler gösteriliyor.';
+        lastWarning = 'Çevrimdışı: son kaydedilen resmî vakitler gösteriliyor.';
       } else if (!cacheFresh || !cacheCoversRange) {
         // Taze ve tam önbellek bilinçli kullanılır (uyarı gerekmez). Buraya
         // yalnızca ağ denendi ve başarısız olduysa düşülür.
@@ -299,11 +293,7 @@ class PrayerTimesRepository {
         method: method,
       );
       lastSourceDetail = 'Cihaz hesabı';
-      lastWarning = _warningFor(
-        _local,
-        location,
-        turkishCity: turkishCity,
-      );
+      lastWarning = _warningFor(_local, location, turkishCity: turkishCity);
     }
 
     // Her koşulda eksik günleri tamamla (bildirim boşluğu kalmasın).
@@ -607,9 +597,10 @@ class PrayerTimesRepository {
 
   /// Son başarılı kaynağın okunabilir etiketi (tanılama için).
   String _describeSource(PrayerTimesSource source) => switch (source.id) {
-    'diyanet' => source is DiyanetApiSource && source.lastEndpointLabel != null
-        ? source.lastEndpointLabel!
-        : 'Diyanet resmî verisi',
+    'diyanet' =>
+      source is DiyanetApiSource && source.lastEndpointLabel != null
+          ? source.lastEndpointLabel!
+          : 'Diyanet resmî verisi',
     'aladhan' => 'Yedek servis (AlAdhan · Diyanet temkinli)',
     'calculation' => 'Cihaz hesabı (Diyanet kalibrasyonlu, ±1 dk)',
     _ => source.label,

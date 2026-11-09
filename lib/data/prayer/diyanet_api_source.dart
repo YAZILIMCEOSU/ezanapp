@@ -88,10 +88,13 @@ class DiyanetApiSource implements PrayerTimesSource {
     required CalculationMethod method,
   }) async {
     try {
-      return await _fetchDayChain(location: location, date: date)
-          .timeout(_dayBudget);
+      return await _fetchDayChain(
+        location: location,
+        date: date,
+      ).timeout(_dayBudget);
     } on TimeoutException {
-      lastError = 'Resmî servis ${_dayBudget.inSeconds} saniyede yanıt vermedi.';
+      lastError =
+          'Resmî servis ${_dayBudget.inSeconds} saniyede yanıt vermedi.';
       throw const PrayerTimesSourceException(
         'diyanet',
         'Zaman aşımı.',
@@ -403,9 +406,7 @@ class DiyanetApiSource implements PrayerTimesSource {
         isTransient: false,
       );
     }
-    days.sort(
-      (PrayerTimesDay a, PrayerTimesDay b) => a.date.compareTo(b.date),
-    );
+    days.sort((PrayerTimesDay a, PrayerTimesDay b) => a.date.compareTo(b.date));
     if (_periodCache.length >= 40) _periodCache.clear();
     _periodCache[cacheKey] = _CachedPeriod(days, DateTime.now());
     return days;
@@ -437,9 +438,7 @@ class DiyanetApiSource implements PrayerTimesSource {
       districtId.split('_').first;
 
   PrayerTimesDay? _findDay(List<PrayerTimesDay> days, DateTime date) =>
-      days.firstWhereOrNull(
-        (PrayerTimesDay d) => _sameDay(d.date, date),
-      );
+      days.firstWhereOrNull((PrayerTimesDay d) => _sameDay(d.date, date));
 
   /// Farklı yanıt zarflarını tolere eder: `{data: [...]}`, `[...]`, `{data: {items: []}}`.
   List<Map<String, Object?>> _extractRecords(Object? decoded) {

@@ -278,40 +278,30 @@ void main() {
       },
     );
 
-    chainTest(
-      'ilçe seçilmemişse (GPS) Diyanet atlanır, koordinatla yedek servis denenir',
-      () async {
-        // **Düzeltme (1 Kasım 2026):** Önceden ilçe yoksa yedek servis de
-        // atlanıyor ve doğrudan "resmî vakit servisine ulaşılamadı" deniyordu.
-        // Oysa AlAdhan koordinatla çalışır; ilçe seçilmemiş olması servis
-        // hatası değildir.
-        final _StubSource diyanet = _StubSource.failing('diyanet');
-        final _StubSource aladhan = _StubSource.failing('aladhan');
-        final PrayerTimesRepository repository = buildRepository(
-          online: true,
-          diyanet: diyanet,
-          aladhan: aladhan,
-        );
+    chainTest('ilçe seçilmemişse (GPS) Diyanet atlanır, koordinatla yedek servis denenir', () async {
+      // **Düzeltme (1 Kasım 2026):** Önceden ilçe yoksa yedek servis de
+      // atlanıyor ve doğrudan "resmî vakit servisine ulaşılamadı" deniyordu.
+      // Oysa AlAdhan koordinatla çalışır; ilçe seçilmemiş olması servis
+      // hatası değildir.
+      final _StubSource diyanet = _StubSource.failing('diyanet');
+      final _StubSource aladhan = _StubSource.failing('aladhan');
+      final PrayerTimesRepository repository = buildRepository(
+        online: true,
+        diyanet: diyanet,
+        aladhan: aladhan,
+      );
 
-        final PrayerTimesDay day = await repository.getDay(
-          location: gpsLocation,
-          date: today,
-          method: CalculationMethod.diyanet,
-        );
+      final PrayerTimesDay day = await repository.getDay(
+        location: gpsLocation,
+        date: today,
+        method: CalculationMethod.diyanet,
+      );
 
-        expect(day.source, 'calculation');
-        expect(diyanet.dayCalls, 0, reason: 'İlçe kimliği yok');
-        expect(
-          aladhan.dayCalls,
-          1,
-          reason: 'Yedek servis koordinatla denenmeli',
-        );
-        expect(
-          repository.lastWarning,
-          contains('ilçeyle eşleştirilemedi'),
-        );
-      },
-    );
+      expect(day.source, 'calculation');
+      expect(diyanet.dayCalls, 0, reason: 'İlçe kimliği yok');
+      expect(aladhan.dayCalls, 1, reason: 'Yedek servis koordinatla denenmeli');
+      expect(repository.lastWarning, contains('ilçeyle eşleştirilemedi'));
+    });
 
     chainTest(
       'bellek önbelleği aynı gün için tekrar sorguda ağa çıkmaz',
@@ -631,7 +621,8 @@ void main() {
       expect(
         client.requested.first.path,
         isNot(contains('bagcilar')),
-        reason: 'Servis üretilmiş kimliği tanımaz; il merkezi verisi kullanılır',
+        reason:
+            'Servis üretilmiş kimliği tanımaz; il merkezi verisi kullanılır',
       );
     });
 
@@ -670,17 +661,17 @@ void main() {
       final List<DateTime> days = <DateTime>[
         for (int i = 0; i < 7; i++) today.add(Duration(days: i)),
       ];
-      final _StubHttpClient client = _StubHttpClient(
-        (http.BaseRequest request) {
-          if (request.url.path.endsWith('/range')) {
-            return http.Response.bytes(
-              utf8.encode(_diyanetPayloadDays(days)),
-              200,
-            );
-          }
-          return http.Response('{}', 404);
-        },
-      );
+      final _StubHttpClient client = _StubHttpClient((
+        http.BaseRequest request,
+      ) {
+        if (request.url.path.endsWith('/range')) {
+          return http.Response.bytes(
+            utf8.encode(_diyanetPayloadDays(days)),
+            200,
+          );
+        }
+        return http.Response('{}', 404);
+      });
       final DiyanetApiSource source = DiyanetApiSource(client: client);
 
       final List<PrayerTimesDay> range = await source.fetchRange(
@@ -698,9 +689,12 @@ void main() {
       expect(requested.queryParameters['endDate'], '2026-10-11');
     });
 
-    chainTest('birincil sunucu boş dönerse yedek resmî sunucu kullanılır', () async {
-      final _StubHttpClient client = _StubHttpClient(
-        (http.BaseRequest request) {
+    chainTest(
+      'birincil sunucu boş dönerse yedek resmî sunucu kullanılır',
+      () async {
+        final _StubHttpClient client = _StubHttpClient((
+          http.BaseRequest request,
+        ) {
           if (request.url.host == 'ezanvakti.emushaf.net') {
             return http.Response.bytes(
               utf8.encode(_emushafPayload(today)),
@@ -711,29 +705,32 @@ void main() {
             jsonEncode(<String, Object?>{'success': true, 'data': <Object?>[]}),
             200,
           );
-        },
-      );
-      final DiyanetApiSource source = DiyanetApiSource(client: client);
+        });
+        final DiyanetApiSource source = DiyanetApiSource(client: client);
 
-      final PrayerTimesDay day = await source.fetchDay(
-        location: cityLocation,
-        date: today,
-        method: CalculationMethod.diyanet,
-      );
+        final PrayerTimesDay day = await source.fetchDay(
+          location: cityLocation,
+          date: today,
+          method: CalculationMethod.diyanet,
+        );
 
-      expect(day.source, 'diyanet');
-      expect(day.timeOf(Prayer.imsak), DateTime(2026, 10, 5, 5, 12));
-      expect(day.hijriDate, '15 Rebîülevvel 1448');
-      expect(
-        client.requested.last.host,
-        'ezanvakti.emushaf.net',
-        reason: 'Yedek resmî sunucu denenmeli',
-      );
-      expect(source.lastEndpointLabel, contains('yedek'));
-    });
+        expect(day.source, 'diyanet');
+        expect(day.timeOf(Prayer.imsak), DateTime(2026, 10, 5, 5, 12));
+        expect(day.hijriDate, '15 Rebîülevvel 1448');
+        expect(
+          client.requested.last.host,
+          'ezanvakti.emushaf.net',
+          reason: 'Yedek resmî sunucu denenmeli',
+        );
+        expect(source.lastEndpointLabel, contains('yedek'));
+      },
+    );
 
     chainTest('konum ilçeyle eşleşmese de yedek servis kullanılır', () async {
-      final _StubSource diyanet = _StubSource.success('diyanet', saneDay(today));
+      final _StubSource diyanet = _StubSource.success(
+        'diyanet',
+        saneDay(today),
+      );
       final _StubSource aladhan = _StubSource.success(
         'aladhan',
         saneDay(today, source: 'aladhan'),
@@ -760,7 +757,10 @@ void main() {
     });
 
     chainTest('yurt dışı şehirde Diyanet atlanır (kimlik çakışması)', () async {
-      final _StubSource diyanet = _StubSource.success('diyanet', saneDay(today));
+      final _StubSource diyanet = _StubSource.success(
+        'diyanet',
+        saneDay(today),
+      );
       final _StubSource aladhan = _StubSource.success(
         'aladhan',
         saneDay(today, source: 'aladhan'),
@@ -956,24 +956,25 @@ PrayerTimesDay unsortedDay(DateTime date) {
 }
 
 /// Birden çok günü tek yanıtta döndürür (range uç noktası testi).
-String _diyanetPayloadDays(List<DateTime> dates) => jsonEncode(<String, Object?>{
-  'success': true,
-  'code': 200,
-  'data': <Object?>[
-    for (final DateTime date in dates)
-      <String, Object?>{
-        'date': _iso(date),
-        'times': <String, String>{
-          'imsak': '05:12',
-          'gunes': '06:34',
-          'ogle': '13:05',
-          'ikindi': '16:28',
-          'aksam': '19:41',
-          'yatsi': '21:09',
-        },
-      },
-  ],
-});
+String _diyanetPayloadDays(List<DateTime> dates) =>
+    jsonEncode(<String, Object?>{
+      'success': true,
+      'code': 200,
+      'data': <Object?>[
+        for (final DateTime date in dates)
+          <String, Object?>{
+            'date': _iso(date),
+            'times': <String, String>{
+              'imsak': '05:12',
+              'gunes': '06:34',
+              'ogle': '13:05',
+              'ikindi': '16:28',
+              'aksam': '19:41',
+              'yatsi': '21:09',
+            },
+          },
+      ],
+    });
 
 /// Eski EzanVakti (yedek) sunucusunun PascalCase yanıtı.
 String _emushafPayload(DateTime date) => jsonEncode(<Object?>[

@@ -95,9 +95,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               onPressed: value.needsCitySelection
                   ? () => context.push(AppRoutes.cities)
                   : () => ref.read(prayerTimesProvider.notifier).refresh(),
-              child: Text(
-                value.needsCitySelection ? 'Şehir seç' : 'Yenile',
-              ),
+              child: Text(value.needsCitySelection ? 'Şehir seç' : 'Yenile'),
             ),
           ),
         _EDiyanetSplitPrayerCard(
