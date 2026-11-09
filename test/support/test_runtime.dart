@@ -233,6 +233,7 @@ Future<List<FlutterErrorDetails>> renderScreen(
   AppFeatures? features,
   Duration settle = const Duration(milliseconds: 400),
   bool strict = true,
+
   /// Ekranı saran isteğe bağlı sarmalayıcı (ör. ek provider geçersiz kılmaları).
   ///
   /// Riverpod 3 `Override` tipini dışa aktarmadığı için liste yerine
@@ -273,7 +274,7 @@ Future<List<FlutterErrorDetails>> renderScreen(
         prayerTimesProvider.overrideWith(() => FixedPrayerTimesNotifier(times)),
       if (features != null) appFeaturesProvider.overrideWithValue(features),
     ],
-    child: wrap == null ? content : wrap!(content),
+    child: wrap == null ? content : wrap(content),
   );
 
   await tester.pumpWidget(app);
