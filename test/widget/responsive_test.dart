@@ -322,9 +322,7 @@ void main() {
               notifications: const NotificationSettings(enabled: true),
             ),
           ),
-          exactAlarmAvailabilityProvider.overrideWith(
-            (Ref ref) async => false,
-          ),
+          exactAlarmAvailabilityProvider.overrideWith((Ref ref) async => false),
         ],
         verify: () {
           // Android 14+ izin kapalıyken ezan 1–2 dakika gecikebilir; sebep
