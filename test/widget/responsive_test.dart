@@ -282,5 +282,47 @@ void main() {
         },
       );
     });
+
+    screenTest('konum ilçeyle eşleşmediyse "Şehir seç" düğmesi çıkar', (
+      WidgetTester tester,
+    ) async {
+      await renderScreen(
+        tester,
+        const HomeScreen(),
+        runtime: runtime,
+        times: fixedTimes(
+          DateTime.now(),
+          warning:
+              'Konumunuz bir ilçeyle eşleştirilemedi; vakitler koordinatınıza '
+              'göre uluslararası servisten alındı.',
+          needsCitySelection: true,
+        ),
+        verify: () {
+          // Yenilemek ilçe eşleşmesini düzeltmez; kullanıcı şehir seçimine
+          // yönlendirilir.
+          expect(find.text('Şehir seç'), findsOneWidget);
+          expect(find.text('Yenile'), findsNothing);
+        },
+      );
+    });
+
+    screenTest('servis hatasında "Yenile" düğmesi çıkar', (
+      WidgetTester tester,
+    ) async {
+      await renderScreen(
+        tester,
+        const HomeScreen(),
+        runtime: runtime,
+        times: fixedTimes(
+          DateTime.now(),
+          warning:
+              'Resmî vakit servisine ulaşılamadı; vakitler cihazda hesaplandı.',
+        ),
+        verify: () {
+          expect(find.text('Yenile'), findsOneWidget);
+          expect(find.text('Şehir seç'), findsNothing);
+        },
+      );
+    });
   });
 }

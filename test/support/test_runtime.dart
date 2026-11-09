@@ -173,11 +173,13 @@ TodayTimes fixedTimes(
   DateTime date, {
   String label = 'İstanbul',
   String? warning,
+  bool needsCitySelection = false,
 }) => TodayTimes(
   day: dayFor(date),
   tomorrow: dayFor(date.add(const Duration(days: 1))),
   warning: warning,
   locationLabel: label,
+  needsCitySelection: needsCitySelection,
 );
 
 /// Sıralı (geçerli) bir gün üretir.
