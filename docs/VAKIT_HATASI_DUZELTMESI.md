@@ -356,3 +356,49 @@ Kanıt testleri (`test/data/prayer_chain_test.dart` → "resmî servis
 dayanıklılığı"): üretilmiş kimlik indirgeme, tek istekle günlük veri, aralık
 uç noktası, yedek sunucuya düşüş, ilçe yokken AlAdhan'ın denenmesi,
 yurt dışında Diyanet'in atlanması.
+
+---
+
+## 10. Kasım 2026 — "1 dakika gecikmeli ezan"
+
+Kullanıcı bildirimi: **ezan, vakit girdikten yaklaşık 1 dakika sonra
+duyuluyor.** İncelemede iki ayrı kök neden bulundu; ikisi de düzeltildi.
+
+### 10.1 Android kesin alarm izni verilmemiş olabilir (asıl neden)
+
+Android 14 (API 34) ile birlikte `SCHEDULE_EXACT_ALARM` izni **yeni
+kurulumlarda varsayılan olarak kapalıdır**. İzin yoksa uygulama alarmı
+`alarmClock` → `exactAllowWhileIdle` sırasıyla kurmayı dener; ikisi de
+`exact_alarms_not_permitted` hatası verir ve kod sessizce
+`inexactAllowWhileIdle` moduna düşer. Bu modda Android alarmı dakika sınırına
+yuvarlar / erteler — tam olarak "1 dakika gecikmeli ezan" olarak görülür.
+
+| # | Neden | Düzeltme |
+|---|---|---|
+| E1 | Manifest'te yalnızca `SCHEDULE_EXACT_ALARM` vardı; Android 14+ yeni kurulumlarda bu izin kapalı. | `USE_EXACT_ALARM` eklendi (Android 13+ çekirdek işlevi alarm olan uygulamalarda kurulumda otomatik verilir; Play "Alarmlar ve hatırlatıcılar" kapsamında beyan edilir). |
+| E2 | İzin yalnızca **bildirim izni ilk kez istenirken** talep ediliyordu; bildirim izni zaten verilmiş kullanıcıda kesin alarm izni hiç istenmiyordu. | Açılışta durum okunuyor (`refreshExactAlarmStatus`), eksikse ana ekranda **"İzin ver"** düğmeli uyarı çıkıyor. |
+| E3 | İzin sonradan verilse bile eski (inexact) alarmlar bir sonraki açılışa kadar kalıyordu. | İzin verildiğinde bildirimler **anında** yeniden zamanlanıyor; uygulamaya dönüşte durum tazeleniyor. |
+| E4 | Hata yalnızca log'a yazılıyordu, kullanıcı göremiyordu. | Ana ekran uyarısı + Bildirim ayarlarındaki "Kesin alarm izni" satırı. |
+
+### 10.2 Uygulama içi ezan uykudan sonra geç tetikleniyordu
+
+Saniyelik saat (`clockProvider`) telefon uykuya geçince durur. Uygulamaya
+dönüldüğünde ilk tik vaktin **40 saniye** sonrasına düşebiliyor ve
+`_checkPrayerTimeEntered` 45 saniyelik geniş pencere nedeniyle ezanı gecikmeli
+başlatıyordu.
+
+* Pencere **5 saniyeye** indirildi (`NotificationService.isAdhanWindow`).
+* Ek olarak uygulamanın gerçekten **ön planda** olması şartı eklendi
+  (`_foreground`); arka plandan dönüşte ezan ikinci kez okunmaz, çünkü sistem
+  bildirimi zaten çalmıştır.
+
+### 10.3 Zamanlama matematiği kilitlendi
+
+* `NotificationService.scheduledInstant` tek zamanlama noktası oldu; 15:33 için
+  kurulan alarmın **15:33:00** olduğu testle kilitlendi (bir dakika eklenmesi
+  artık testten geçemez).
+* Gece yarısı / gün sınırı ve yaz saati kaydırması da test edilir.
+
+Telefonda doğrulama: **Ayarlar → Bildirimler → "Kesin alarm izni"** satırı
+"Açık: ezan tam vakitte çalar" demeli. Kapalıysa ana ekrandaki **İzin ver**
+düğmesine dokunun; Android "Alarmlar ve hatırlatıcılar" ekranı açılır.

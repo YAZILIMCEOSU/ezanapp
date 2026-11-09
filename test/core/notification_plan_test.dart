@@ -2,6 +2,8 @@ import 'package:ezanai/core/services/notification_service.dart';
 import 'package:ezanai/data/models/app_settings.dart';
 import 'package:ezanai/data/models/prayer.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:timezone/data/latest_all.dart' as tzdata;
+import 'package:timezone/timezone.dart' as tz;
 
 /// Bildirim planlamasının **saf mantık** testleri.
 ///
@@ -10,6 +12,57 @@ import 'package:flutter_test/flutter_test.dart';
 /// çakışır mı, sessiz saat uygulanır mı, bildirim yükü doğru ekrana gider mi.
 /// Cihaz üzerindeki gerçek bildirim testi `docs/PHASES.md` §5'te listelenir.
 void main() {
+  // Zamanlama testleri Türkiye saat diliminde (UTC+3) yapılır.
+  setUpAll(() {
+    tzdata.initializeTimeZones();
+    tz.setLocalLocation(tz.getLocation('Europe/Istanbul'));
+  });
+
+  group('ezan tam vaktinde (1 dakika gecikme)', () {
+    test('kurulan alarm duvar saatini kaydırmaz', () {
+      // **Regresyon kilidi:** 15:33 için kurulan ezan 15:33:00'da çalmalı.
+      // Burada bir dakika eklenmesi "ezan 1 dk gecikmeli" şikâyetinin
+      // kaynağıydı; yardımcı tek zamanlama noktasıdır.
+      final tz.TZDateTime scheduled = NotificationService.scheduledInstant(
+        DateTime(2026, 11, 10, 15, 33),
+      );
+      expect(scheduled.hour, 15);
+      expect(scheduled.minute, 33);
+      expect(scheduled.second, 0);
+      expect(scheduled.timeZoneOffset, const Duration(hours: 3));
+    });
+
+    test('gece yarısı ve gün sınırı korunur', () {
+      final tz.TZDateTime midnight = NotificationService.scheduledInstant(
+        DateTime(2026, 11, 11),
+      );
+      expect(midnight.day, 11);
+      expect(midnight.hour, 0);
+      expect(midnight.minute, 0);
+
+      final tz.TZDateTime imsak = NotificationService.scheduledInstant(
+        DateTime(2026, 11, 10, 6, 11),
+      );
+      expect(imsak.day, 10);
+      expect(imsak.hour, 6);
+      expect(imsak.minute, 11);
+    });
+
+    test('uygulama içi ezan yalnızca ilk saniyelerde çalar', () {
+      expect(NotificationService.isAdhanWindow(0, foreground: true), isTrue);
+      expect(NotificationService.isAdhanWindow(2, foreground: true), isTrue);
+      expect(NotificationService.isAdhanWindow(5, foreground: true), isTrue);
+      // Telefon uykudan dönünce ilk tik geç gelebilir; ezan gecikmeli
+      // okunmamalı (sistem bildirimi zaten çaldı).
+      expect(NotificationService.isAdhanWindow(6, foreground: true), isFalse);
+      expect(NotificationService.isAdhanWindow(40, foreground: true), isFalse);
+      // Arka planda/uygulama kapalıyken uygulama içi ses çalınmaz.
+      expect(NotificationService.isAdhanWindow(1, foreground: false), isFalse);
+      // Vakitten önce tetiklenmez.
+      expect(NotificationService.isAdhanWindow(-1, foreground: true), isFalse);
+    });
+  });
+
   group('bildirim kimlikleri', () {
     test('yedi gün × altı vakit için kimlikler benzersiz', () {
       final Set<int> ids = <int>{};

@@ -233,6 +233,7 @@ Future<List<FlutterErrorDetails>> renderScreen(
   AppFeatures? features,
   Duration settle = const Duration(milliseconds: 400),
   bool strict = true,
+  List<Override> overrides = const <Override>[],
   void Function()? verify,
 }) async {
   final List<FlutterErrorDetails> reported = <FlutterErrorDetails>[];
@@ -267,6 +268,7 @@ Future<List<FlutterErrorDetails>> renderScreen(
       if (times != null)
         prayerTimesProvider.overrideWith(() => FixedPrayerTimesNotifier(times)),
       if (features != null) appFeaturesProvider.overrideWithValue(features),
+      ...overrides,
     ],
     child: content,
   );

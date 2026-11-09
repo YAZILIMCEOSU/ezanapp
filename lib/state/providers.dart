@@ -31,6 +31,22 @@ final Provider<AppRuntime> runtimeProvider = Provider<AppRuntime>(
       throw StateError('AppRuntime sağlanmadı (main.dart override etmeli).'),
 );
 
+/// Android'de **kesin alarm** izni verili mi?
+///
+/// İzin yoksa sistem ezan alarmını dakikalarca geciktirebilir; bu yüzden ana
+/// ekranda tek dokunuşluk bir uyarı gösterilir. Android dışında (ve testlerde)
+/// her zaman `true` döner.
+final FutureProvider<bool> exactAlarmAvailabilityProvider =
+    FutureProvider<bool>((Ref ref) async {
+      final AppRuntime runtime = ref.watch(runtimeProvider);
+      try {
+        return await runtime.notifications.canScheduleExactAlarms();
+      } catch (_) {
+        // Platform kanalı yoksa (test/masaüstü) uyarı gösterilmez.
+        return true;
+      }
+    });
+
 /// Bağlantı durumu — çevrimdışı bilgilendirmeleri için.
 final StreamProvider<bool> connectivityProvider = StreamProvider<bool>(
   (Ref ref) => ref.watch(runtimeProvider).connectivity.onStatusChange,

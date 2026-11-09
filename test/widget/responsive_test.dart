@@ -1,5 +1,6 @@
 import 'package:ezanai/app/app_runtime.dart';
 import 'package:ezanai/core/errors/app_exception.dart';
+import 'package:ezanai/data/models/app_settings.dart';
 import 'package:ezanai/features/dua/dua_screen.dart';
 import 'package:ezanai/features/hadith/hadith_screen.dart';
 import 'package:ezanai/features/home/home_screen.dart';
@@ -15,6 +16,7 @@ import 'package:ezanai/features/widgets/state_views.dart';
 import 'package:ezanai/features/zikir/zikir_screen.dart';
 import 'package:ezanai/state/providers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../support/test_runtime.dart';
@@ -302,6 +304,36 @@ void main() {
           // yönlendirilir.
           expect(find.text('Şehir seç'), findsOneWidget);
           expect(find.text('Yenile'), findsNothing);
+        },
+      );
+    });
+
+    screenTest('kesin alarm izni yoksa ana ekranda uyarı ve "İzin ver" çıkar', (
+      WidgetTester tester,
+    ) async {
+      await renderScreen(
+        tester,
+        const HomeScreen(),
+        runtime: runtime,
+        times: fixedTimes(DateTime.now()),
+        overrides: <Override>[
+          settingsProvider.overrideWithValue(
+            testSettings().copyWith(
+              notifications: const NotificationSettings(enabled: true),
+            ),
+          ),
+          exactAlarmAvailabilityProvider.overrideWith(
+            (Ref ref) async => false,
+          ),
+        ],
+        verify: () {
+          // Android 14+ izin kapalıyken ezan 1–2 dakika gecikebilir; sebep
+          // ana ekranda görünmeli ve tek dokunuşla düzeltilmeli.
+          expect(
+            find.textContaining('Alarmlar ve hatırlatıcılar'),
+            findsOneWidget,
+          );
+          expect(find.text('İzin ver'), findsOneWidget);
         },
       );
     });

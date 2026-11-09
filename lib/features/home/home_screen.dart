@@ -65,6 +65,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final bool isRamadan = ref.watch(runtimeProvider).ramadan.isRamadan;
     final location = ref.watch(activeLocationProvider);
     final method = ref.watch(calculationMethodProvider);
+    // Kesin alarm izni yoksa sistem ezanı 1–2 dakika geciktirebilir; sebep
+    // kullanıcıya görünür olmalı (ayarların derinliğinde kalmasın).
+    final bool exactAlarms =
+        ref.watch(exactAlarmAvailabilityProvider).value ?? true;
+    final bool showExactAlarmBanner =
+        settings.notifications.enabled && !exactAlarms;
 
     TodayTimes buildInstantFallback() {
       const LocalCalculationSource local = LocalCalculationSource();
@@ -83,6 +89,34 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     Widget buildTimesContent(TodayTimes value) => Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
+        if (showExactAlarmBanner)
+          StatusBanner(
+            icon: Icons.alarm_off_rounded,
+            message:
+                'Ezanı tam vaktinde duymak için Android ayarlarından '
+                '"Alarmlar ve hatırlatıcılar" iznini açın. İzin kapalıyken '
+                'sistem bildirimi 1–2 dakika geciktirebilir.',
+            action: TextButton(
+              onPressed: () async {
+                await ref
+                    .read(runtimeProvider)
+                    .notifications
+                    .openExactAlarmSettings();
+                final bool allowed = await ref
+                    .read(runtimeProvider)
+                    .notifications
+                    .refreshExactAlarmStatus();
+                ref.invalidate(exactAlarmAvailabilityProvider);
+                // İzin yeni verildiyse alarmlar **kesin** moda yeniden kurulur;
+                // aksi hâlde bir sonraki açılışa kadar eski (geciken) alarmlar
+                // kullanılmaya devam ederdi.
+                if (allowed) {
+                  await ref.read(notificationCoordinatorProvider).reschedule();
+                }
+              },
+              child: const Text('İzin ver'),
+            ),
+          ),
         if (value.warning != null)
           StatusBanner(
             message: value.warning!,

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui' show Color;
 
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tzdata;
@@ -109,9 +110,13 @@ class NotificationService {
     await _prepareTimeZone();
     if (Platform.isAndroid) {
       await _createAndroidChannels();
+      await refreshExactAlarmStatus();
     }
     _initialized = true;
-    AppLog.debug('Bildirim servisi hazır (tz: ${tz.local.name})');
+    AppLog.debug(
+      'Bildirim servisi hazır (tz: ${tz.local.name}, '
+      'kesin alarm: $_exactAlarmsAvailable)',
+    );
   }
 
   /// Cihazın yerel saat dilimini timezone veritabanından çözer.
@@ -342,6 +347,36 @@ class NotificationService {
       return await android?.areNotificationsEnabled() ?? true;
     }
     return true;
+  }
+
+  /// Android'de kesin alarm izni var mı? (Son okunan durum.)
+  ///
+  /// `false` ise vakit bildirimleri sistem tarafından **birkaç dakika
+  /// kaydırılabilir**; ana ekranda uyarı gösterilir.
+  bool _exactAlarmsAvailable = true;
+  bool get exactAlarmsAvailable => _exactAlarmsAvailable;
+
+  /// İzin durumunu yeniden okur (açılış, ekran açılışı ve izin dönüşü).
+  ///
+  /// **Dikkat:** `canScheduleExactAlarms()` kendisi `initialize()` çağırır;
+  /// buradan o çağrılırsa `initialize → refresh → initialize` döngüsü oluşur.
+  /// Bu yüzden platform kontrolü doğrudan yapılır, hazırlık çağrılmaz.
+  Future<bool> refreshExactAlarmStatus() async {
+    if (!Platform.isAndroid) {
+      _exactAlarmsAvailable = true;
+      return true;
+    }
+    try {
+      final AndroidFlutterLocalNotificationsPlugin? android = _plugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
+      _exactAlarmsAvailable =
+          await android?.canScheduleExactNotifications() ?? true;
+    } catch (_) {
+      _exactAlarmsAvailable = true;
+    }
+    return _exactAlarmsAvailable;
   }
 
   /// Android 14+ **kesin alarm** izni verilmiş mi?
@@ -869,6 +904,26 @@ class NotificationService {
   /// Kesin alarm izni yoksa yalnızca bir kez loglanır (ekranı kirletmemek için).
   bool _exactAlarmWarningLogged = false;
 
+  /// Uygulama içi ezanın çalma penceresi.
+  ///
+  /// **Düzeltilen hata ("1 dk gecikmeli ezan"):** Telefon uykuya geçtiğinde
+  /// saniyelik saat durur. Uygulama açıldığında ilk tik vaktin 40 saniye
+  /// sonrasına düşebiliyor ve ezan neredeyse bir dakika **gecikmeli**
+  /// başlıyordu. Artık ezan yalnızca vakit girdiği **ilk 5 saniye** içinde ve
+  /// uygulama gerçekten ön planda çalışırken tetiklenir; geç kalındıysa
+  /// sistem bildirimi zaten ezanı çalmıştır, ikinci kez okunmaz.
+  static bool isAdhanWindow(int diffSeconds, {required bool foreground}) =>
+      foreground && diffSeconds >= 0 && diffSeconds <= 5;
+
+  /// Duvar saatini cihazın saat dilimine **kaydırmadan** çevirir.
+  ///
+  /// Tek zamanlama noktası: ezan 15:33 için kurulduysa alarm 15:33:00'da
+  /// çalmalıdır. Bu yardımcı, ileride eklenecek bir "+1 dakika" hatasının
+  /// fark edilmesi için test edilir (`notification_plan_test.dart`).
+  @visibleForTesting
+  static tz.TZDateTime scheduledInstant(DateTime when) =>
+      tz.TZDateTime.from(when, tz.local);
+
   Future<void> _schedule({
     required int id,
     required String title,
@@ -881,7 +936,7 @@ class NotificationService {
     String? payload,
     int hijriOffsetDays = 0,
   }) async {
-    final tz.TZDateTime scheduled = tz.TZDateTime.from(when, tz.local);
+    final tz.TZDateTime scheduled = scheduledInstant(when);
     if (scheduled.isBefore(tz.TZDateTime.now(tz.local))) return;
     final NotificationDetails details = _details(
       channelId,
@@ -913,6 +968,9 @@ class NotificationService {
           payload: payload,
         );
       } on PlatformException catch (error) {
+        // Kesin alarm izni yok: sistem alarmı dakikalarca geciktirebilir.
+        // Durum ana ekranda gösterilir (sessizce yutulmaz).
+        _exactAlarmsAvailable = false;
         if (!_exactAlarmWarningLogged) {
           _exactAlarmWarningLogged = true;
           AppLog.warning(

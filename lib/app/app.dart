@@ -38,6 +38,13 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp>
   Duration _lastTimeZoneOffset = DateTime.now().timeZoneOffset;
   String? _lastTriggeredPrayerKey;
 
+  /// Uygulama gerçekten ön planda mı?
+  ///
+  /// Telefon uykuya geçtiğinde saniyelik saat durur; uygulamaya dönüldüğünde
+  /// ilk tik vaktin onlarca saniye sonrasına düşebilir. Bu bayrak olmadan
+  /// ezan gecikmeli okunuyordu (bkz. `NotificationService.isAdhanWindow`).
+  bool _foreground = true;
+
   @override
   void initState() {
     super.initState();
@@ -47,6 +54,7 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    _foreground = state == AppLifecycleState.resumed;
     if (state == AppLifecycleState.resumed) {
       final DateTime now = DateTime.now();
       final bool dayChanged =
@@ -58,6 +66,9 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp>
       _lastTimeZoneOffset = now.timeZoneOffset;
 
       ref.invalidate(clockProvider);
+      // Kullanıcı ayarlardan "Alarmlar ve hatırlatıcılar" iznini açmış olabilir:
+      // durum yeniden okunur, izin yeni verildiyse bildirimler tazelenir.
+      ref.invalidate(exactAlarmAvailabilityProvider);
       final UserLocation currentLoc = ref.read(activeLocationProvider);
       if (currentLoc.mode == LocationMode.gps) {
         final DateTime? updated = currentLoc.updatedAt;
@@ -158,7 +169,12 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp>
       final DateTime? when = snapshot.activeDay.timeOf(prayer);
       if (when == null) continue;
       final int diffSeconds = now.difference(when).inSeconds;
-      if (diffSeconds >= 0 && diffSeconds < 45) {
+      // Vakit girdikten sonra en fazla 5 saniye: daha geç bir tetikleme,
+      // ezanı gecikmeli okumak (ve sistem bildiriminin üzerine binmek) olur.
+      if (NotificationService.isAdhanWindow(
+        diffSeconds,
+        foreground: _foreground,
+      )) {
         final String key =
             '${when.year}-${when.month}-${when.day}:${prayer.key}';
         if (_lastTriggeredPrayerKey == key) continue;

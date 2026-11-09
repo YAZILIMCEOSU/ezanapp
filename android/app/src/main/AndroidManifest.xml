@@ -13,6 +13,14 @@
 
     <!-- Bildirimler ve zamanlanmış ezan bildirimleri -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Android 14+ (API 34+): SCHEDULE_EXACT_ALARM yeni kurulumlarda varsayılan
+         olarak KAPALIDIR; kullanıcı izin vermezse sistem ezan alarmını dakikalarca
+         kaydırabiliyordu ("ezan 1 dakika geç çalıyor" şikâyetinin kök nedeni).
+         USE_EXACT_ALARM, Android 13+ cihazlarda kurulumda otomatik verilir ve
+         yalnızca çekirdek işlevi saat/alarm olan uygulamalar içindir; bu uygulamanın
+         çekirdek işlevi namaz vakti ezanıdır. Play "Alarmlar ve hatırlatıcılar"
+         politikası kapsamında beyan edilir. -->
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
