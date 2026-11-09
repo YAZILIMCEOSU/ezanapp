@@ -53,6 +53,10 @@ class PrayerTimesRepository {
   PrayerTimesDay? lastDay;
   String? lastWarning;
 
+  /// Son başarılı verinin **hangi yoldan** geldiğini anlatan kısa etiket
+  /// (tanılama ekranında gösterilir): resmî sunucu, yedek servis, cihaz.
+  String? lastSourceDetail;
+
   /// Kaynak zinciri (öncelik sırası).
   List<PrayerTimesSource> get sources => <PrayerTimesSource>[
     _diyanet,
@@ -69,10 +73,16 @@ class PrayerTimesRepository {
   }) async {
     final String key = _cacheKey(location, method, date);
     lastWarning = null;
+    lastSourceDetail = null;
 
     if (!forceRefresh) {
       final PrayerTimesDay? memo = _memory[key];
-      if (memo != null && !_isStale(memo)) return memo;
+      if (memo != null && !_isStale(memo)) {
+        lastSourceDetail = memo.source == 'calculation'
+            ? 'Cihaz hesabı (Diyanet kalibrasyonlu, ±1 dk)'
+            : 'Kayıtlı resmî veri';
+        return memo;
+      }
 
       final PrayerTimesDay? cached = await _cache.get(
         _locationKey(location, method),
@@ -88,6 +98,7 @@ class PrayerTimesRepository {
           location,
         ).copyWith(source: 'cache');
         _memory[key] = resolved;
+        lastSourceDetail = 'Kayıtlı resmî veri';
         if (!_connectivity.isOnline) {
           lastWarning =
               'Çevrimdışı: son kaydedilen resmî vakitler gösteriliyor.';
@@ -102,9 +113,22 @@ class PrayerTimesRepository {
     // ikindi ~4, yatsı ~1 dakika **erken** görünüyordu. Artık resmî veri her
     // zaman ilk sırada; Hanefî farkı ve manuel düzeltme `_refineRemote`
     // içinde resmî vakitlerin **üzerine** uygulanır.
-    final List<PrayerTimesSource> chain =
-        _connectivity.isOnline && location.city != null
-        ? <PrayerTimesSource>[_diyanet, _aladhan, _local]
+    final bool online = _connectivity.isOnline;
+    // **Diyanet yalnızca Türkiye ilçeleri için geçerlidir.** Dünya şehir
+    // kimlikleri Diyanet ilçe kimlikleriyle çakışabiliyor (ör. Londra'nın
+    // kimliği bir Türkiye ilçesine denk gelebiliyor); yanlış ilçenin resmî
+    // vakitleri gösterilmesin diye yurt dışında Diyanet atlanır.
+    final bool turkishCity = location.city?.isTurkish ?? false;
+    // **Konum ilçeyle eşleşmese bile** (ör. şehir merkezine 25 km'den uzak
+    // kırsal alan) yedek servis koordinatla çalışabildiği için zincire girer.
+    // Önceden bu durumda doğrudan cihaz hesabına düşülüyor ve kullanıcı
+    // "resmî vakit servisine ulaşılamadı" uyarısı görüyordu.
+    final List<PrayerTimesSource> chain = online
+        ? <PrayerTimesSource>[
+            if (turkishCity) _diyanet,
+            _aladhan,
+            _local,
+          ]
         : <PrayerTimesSource>[_local];
 
     final List<String> failures = <String>[];
@@ -131,15 +155,8 @@ class PrayerTimesRepository {
         if (rawResult.source != 'calculation') {
           await _cache.save(_locationKey(location, method), rawResult);
         }
-        if (source.id == 'calculation' && _connectivity.isOnline) {
-          lastWarning =
-              'Resmî vakit servisine ulaşılamadı; vakitler cihazda hesaplandı.';
-        } else if (source.id == 'aladhan' && location.city != null) {
-          lastWarning =
-              'Diyanet resmî verisine şu an ulaşılamadı; yedek servis '
-              'kullanıldı (Diyanet temkinine göre düzeltildi). '
-              'Listeyi yenilemeyi deneyin.';
-        }
+        lastSourceDetail = _describeSource(source);
+        lastWarning = _warningFor(source, location, turkishCity: turkishCity);
         return result;
       } on PrayerTimesSourceException catch (error) {
         failures.add('${error.sourceId}: ${error.message}');
@@ -157,6 +174,7 @@ class PrayerTimesRepository {
       method: method,
     );
     lastWarning = 'Vakitler cihazda hesaplandı.';
+    lastSourceDetail = 'Cihaz hesabı';
     return fallback;
   }
 
@@ -175,6 +193,8 @@ class PrayerTimesRepository {
     bool forceRefresh = false,
   }) async {
     final String key = _rangeKey(location, method, startDate, endDate);
+    lastWarning = null;
+    lastSourceDetail = null;
     if (!forceRefresh) {
       final List<PrayerTimesDay>? memo = _rangeMemory[key];
       // Bellek önbelleği de tazelik denetiminden geçer; aksi halde uygulama
@@ -182,6 +202,11 @@ class PrayerTimesRepository {
       if (memo != null &&
           _isRangeFresh(memo) &&
           _covers(memo, startDate, endDate)) {
+        lastSourceDetail = memo.any(
+          (PrayerTimesDay d) => d.source == 'calculation',
+        )
+            ? 'Cihaz hesabı'
+            : 'Kayıtlı resmî veri';
         return memo;
       }
       _rangeMemory.remove(key);
@@ -200,13 +225,15 @@ class PrayerTimesRepository {
     // resmî veriyi gösterdiği için ezan 1–2 dakika **erken** çalabiliyordu.
     final bool cacheFresh = cached.isEmpty ? false : _isRangeFresh(cached);
 
+    lastWarning = null;
+    lastSourceDetail = null;
     List<PrayerTimesDay>? resolved;
+    final bool online = _connectivity.isOnline;
+    final bool turkishCity = location.city?.isTurkish ?? false;
 
-    if (_connectivity.isOnline &&
-        location.city != null &&
-        (!cacheCoversRange || forceRefresh || !cacheFresh)) {
+    if (online && (!cacheCoversRange || forceRefresh || !cacheFresh)) {
       for (final PrayerTimesSource source in <PrayerTimesSource>[
-        _diyanet,
+        if (turkishCity) _diyanet,
         _aladhan,
       ]) {
         try {
@@ -224,6 +251,12 @@ class PrayerTimesRepository {
               for (final PrayerTimesDay day in fetched)
                 _refineRemote(day, method, location),
             ];
+            lastSourceDetail = _describeSource(source);
+            lastWarning = _warningFor(
+              source,
+              location,
+              turkishCity: turkishCity,
+            );
             // **Resmî veri kısmi de olsa korunur.** Eksik günler aşağıda
             // `_fillMissingDays` ile Diyanet'in tek-gün uç noktasından
             // tamamlanır; tüm aralığı yedek servise çevirmek dakika farkına
@@ -238,21 +271,40 @@ class PrayerTimesRepository {
       }
     }
 
-    resolved ??= cached.isNotEmpty
-        ? <PrayerTimesDay>[
-            // Önbellekteki resmî veri kullanıcı düzeltmeleriyle birlikte
-            // sunulur; böylece ekran ile bildirim aynı dakikayı gösterir.
-            // Kaynak etiketi "Kayıtlı veri"; düzeltmeler **özgün kaynağa**
-            // (Diyanet) göre uygulanır.
-            for (final PrayerTimesDay day in cached)
-              _refineRemote(day, method, location).copyWith(source: 'cache'),
-          ]
-        : await _local.fetchRange(
-            location: location,
-            startDate: startDate,
-            endDate: endDate,
-            method: method,
-          );
+    if (resolved == null && cached.isNotEmpty) {
+      // Önbellekteki resmî veri kullanıcı düzeltmeleriyle birlikte sunulur;
+      // böylece ekran ile bildirim aynı dakikayı gösterir. Kaynak etiketi
+      // "Kayıtlı veri"; düzeltmeler **özgün kaynağa** (Diyanet) göre uygulanır.
+      resolved = <PrayerTimesDay>[
+        for (final PrayerTimesDay day in cached)
+          _refineRemote(day, method, location).copyWith(source: 'cache'),
+      ];
+      lastSourceDetail = 'Kayıtlı resmî veri';
+      if (!online) {
+        lastWarning =
+            'Çevrimdışı: son kaydedilen resmî vakitler gösteriliyor.';
+      } else if (!cacheFresh || !cacheCoversRange) {
+        // Taze ve tam önbellek bilinçli kullanılır (uyarı gerekmez). Buraya
+        // yalnızca ağ denendi ve başarısız olduysa düşülür.
+        lastWarning =
+            'Resmî vakit servisine şu an ulaşılamadı; son kaydedilen resmî '
+            'vakitler gösteriliyor.';
+      }
+    }
+    if (resolved == null) {
+      resolved = await _local.fetchRange(
+        location: location,
+        startDate: startDate,
+        endDate: endDate,
+        method: method,
+      );
+      lastSourceDetail = 'Cihaz hesabı';
+      lastWarning = _warningFor(
+        _local,
+        location,
+        turkishCity: turkishCity,
+      );
+    }
 
     // Her koşulda eksik günleri tamamla (bildirim boşluğu kalmasın).
     final List<PrayerTimesDay> complete = await _fillMissingDays(
@@ -367,13 +419,21 @@ class PrayerTimesRepository {
 
   /// Ayarlar ekranı için: hangi kaynağın kullanıldığı bilgisi.
   Future<String> describeActiveSource(UserLocation location) async {
+    // Son başarılı isteğin gerçek kaynağı (resmî sunucu / yedek servis /
+    // cihaz hesabı). Önceden yalnızca "ilçe seçili mi?" bakılıyor ve servis
+    // çökmüş olsa bile "Diyanet resmî verisi" yazıyordu.
+    final String? detail = lastSourceDetail;
     if (location.city != null) {
       final DateTime? last = await _cache.lastFetch(_locationKey(location));
+      final String base = detail ?? 'Diyanet resmî verisi';
       if (last != null) {
-        return 'Diyanet resmî verisi • ilçe: ${location.city!.name} · '
+        return '$base • ilçe: ${location.city!.name} · '
             'son kontrol ${_relative(last)}';
       }
-      return 'Diyanet resmî verisi • ilçe: ${location.city!.name}';
+      return '$base • ilçe: ${location.city!.name}';
+    }
+    if (detail != null) {
+      return '$detail • GPS koordinatı';
     }
     return 'Konum seçilmedi: vakitler GPS koordinatına göre cihazda hesaplanır';
   }
@@ -400,9 +460,13 @@ class PrayerTimesRepository {
     return elapsed.isNegative ? Duration.zero : elapsed;
   }
 
-  void clearMemoryCache() {
+  void clearMemoryCache({bool includingSource = false}) {
     _memory.clear();
     _rangeMemory.clear();
+    if (includingSource) {
+      final PrayerTimesSource source = _diyanet;
+      if (source is DiyanetApiSource) source.clearMemoryCache();
+    }
   }
 
   /// Aralık önbelleği taze mi? (en eski kayıt TTL'den yeni olmalı)
@@ -539,6 +603,59 @@ class PrayerTimesRepository {
     if (diff.inHours < 1) return '${diff.inMinutes} dk önce';
     if (diff.inDays < 1) return '${diff.inHours} saat önce';
     return '${diff.inDays} gün önce';
+  }
+
+  /// Son başarılı kaynağın okunabilir etiketi (tanılama için).
+  String _describeSource(PrayerTimesSource source) => switch (source.id) {
+    'diyanet' => source is DiyanetApiSource && source.lastEndpointLabel != null
+        ? source.lastEndpointLabel!
+        : 'Diyanet resmî verisi',
+    'aladhan' => 'Yedek servis (AlAdhan · Diyanet temkinli)',
+    'calculation' => 'Cihaz hesabı (Diyanet kalibrasyonlu, ±1 dk)',
+    _ => source.label,
+  };
+
+  /// Kaynak düştüğünde kullanıcıya **neden** anlatılır.
+  ///
+  /// Önceden konum bir ilçeyle eşleşmediğinde de "resmî vakit servisine
+  /// ulaşılamadı" deniyordu; oysa servis çalışıyor, sadece ilçe yoktu.
+  /// Artık üç durum ayrı ayrı söylenir: çevrimdışı, ilçe eşleşmedi, servis
+  /// gerçekten ulaşılamadı.
+  String? _warningFor(
+    PrayerTimesSource source,
+    UserLocation location, {
+    required bool turkishCity,
+  }) {
+    if (source.id == 'calculation') {
+      if (!_connectivity.isOnline) {
+        return 'Çevrimdışısınız; vakitler cihazda hesaplandı. '
+            'İnternet gelince otomatik yenilenir.';
+      }
+      if (location.city == null) {
+        return 'Konumunuz bir ilçeyle eşleştirilemedi ve resmî servise '
+            'ulaşılamadı; vakitler koordinatınıza göre cihazda hesaplandı '
+            '(±1 dk). Şehir seçerek resmî saate geçebilirsiniz.';
+      }
+      if (!turkishCity) {
+        return 'Vakit servisine ulaşılamadı; vakitler koordinatınıza göre '
+            'cihazda hesaplandı (±1 dk). "Yenile" ile tekrar deneyin.';
+      }
+      return 'Resmî vakit servisine ulaşılamadı; vakitler cihazda '
+          'hesaplandı (±1 dk). "Yenile" ile tekrar deneyin.';
+    }
+    if (source.id == 'aladhan') {
+      if (location.city == null) {
+        return 'Konumunuz bir ilçeyle eşleştirilemedi; vakitler '
+            'koordinatınıza göre uluslararası servisten alındı (Diyanet '
+            'temkinli). Resmî Diyanet saati için şehir seçebilirsiniz.';
+      }
+      if (turkishCity) {
+        return 'Diyanet resmî verisine şu an ulaşılamadı; yedek servis '
+            'kullanıldı (Diyanet temkinine göre düzeltildi). '
+            '"Yenile" ile tekrar deneyin.';
+      }
+    }
+    return null;
   }
 
   /// Kullanıcı dostu hata mesajı — boş durum ekranlarında gösterilir.

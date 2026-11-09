@@ -579,6 +579,8 @@ final FutureProvider<String> activeSourceInfoProvider = FutureProvider<String>((
   Ref ref,
 ) async {
   final UserLocation location = ref.watch(activeLocationProvider);
+  // Vakitler yenilendiğinde kaynak etiketi de güncellensin.
+  ref.watch(prayerTimesProvider);
   return ref.watch(runtimeProvider).prayerTimes.describeActiveSource(location);
 });
 

@@ -279,8 +279,12 @@ void main() {
     );
 
     chainTest(
-      'ilçe seçilmemişse (GPS) resmî servis çağrılmaz, hesap kullanılır',
+      'ilçe seçilmemişse (GPS) Diyanet atlanır, koordinatla yedek servis denenir',
       () async {
+        // **Düzeltme (1 Kasım 2026):** Önceden ilçe yoksa yedek servis de
+        // atlanıyor ve doğrudan "resmî vakit servisine ulaşılamadı" deniyordu.
+        // Oysa AlAdhan koordinatla çalışır; ilçe seçilmemiş olması servis
+        // hatası değildir.
         final _StubSource diyanet = _StubSource.failing('diyanet');
         final _StubSource aladhan = _StubSource.failing('aladhan');
         final PrayerTimesRepository repository = buildRepository(
@@ -296,8 +300,16 @@ void main() {
         );
 
         expect(day.source, 'calculation');
-        expect(diyanet.dayCalls, 0);
-        expect(aladhan.dayCalls, 0);
+        expect(diyanet.dayCalls, 0, reason: 'İlçe kimliği yok');
+        expect(
+          aladhan.dayCalls,
+          1,
+          reason: 'Yedek servis koordinatla denenmeli',
+        );
+        expect(
+          repository.lastWarning,
+          contains('ilçeyle eşleştirilemedi'),
+        );
       },
     );
 
@@ -572,6 +584,209 @@ void main() {
     });
   });
 
+  group('resmî servis dayanıklılığı (Kasım 2026)', () {
+    const City bagcilar = City(
+      id: '9541_bagcilar',
+      name: 'Bağcılar',
+      latitude: 41.0339,
+      longitude: 28.8567,
+      province: 'İstanbul',
+    );
+    const UserLocation bagcilarLocation = UserLocation(
+      mode: LocationMode.manual,
+      latitude: 41.0339,
+      longitude: 28.8567,
+      city: bagcilar,
+    );
+    const City london = City(
+      id: '14096',
+      name: 'London',
+      latitude: 51.50853,
+      longitude: -0.12574,
+      province: 'Birleşik Krallık',
+      country: 'Birleşik Krallık',
+      isTurkish: false,
+    );
+    const UserLocation londonLocation = UserLocation(
+      mode: LocationMode.manual,
+      latitude: 51.50853,
+      longitude: -0.12574,
+      city: london,
+    );
+
+    chainTest('üretilmiş ilçe kimliği il kimliğine indirgenir', () async {
+      final _StubHttpClient client = _StubHttpClient(
+        (http.BaseRequest request) =>
+            http.Response.bytes(utf8.encode(_diyanetPayload(today)), 200),
+      );
+      final DiyanetApiSource source = DiyanetApiSource(client: client);
+
+      await source.fetchDay(
+        location: bagcilarLocation,
+        date: today,
+        method: CalculationMethod.diyanet,
+      );
+
+      expect(client.requested.first.path, contains('/prayer-times/9541/'));
+      expect(
+        client.requested.first.path,
+        isNot(contains('bagcilar')),
+        reason: 'Servis üretilmiş kimliği tanımaz; il merkezi verisi kullanılır',
+      );
+    });
+
+    chainTest('gün, tek istekle daily uç noktasından alınır', () async {
+      // **Düzeltilen hata:** Ay sınırında (31 Ekim → 1 Kasım) "monthly"
+      // yalnızca içinde bulunulan ayı döndürdüğü için ertesi gün
+      // bulunamıyor, uygulama yedek servise/cihaz hesabına düşüyordu.
+      // Artık gün doğrudan `daily?startDate=` ile istenir.
+      final DateTime target = DateTime(today.year, today.month + 1, 5);
+      final _StubHttpClient client = _StubHttpClient(
+        (http.BaseRequest request) => http.Response.bytes(
+          utf8.encode(
+            request.url.path.contains('/daily')
+                ? _diyanetPayload(target)
+                : _diyanetPayload(today),
+          ),
+          200,
+        ),
+      );
+      final DiyanetApiSource source = DiyanetApiSource(client: client);
+
+      final PrayerTimesDay day = await source.fetchDay(
+        location: cityLocation,
+        date: target,
+        method: CalculationMethod.diyanet,
+      );
+
+      expect(day.date, DateTime(target.year, target.month, 5));
+      final Uri requested = client.requested.single;
+      expect(requested.path, contains('/daily'));
+      expect(requested.queryParameters['startDate'], _iso(target));
+      expect(source.lastEndpointLabel, contains('günlük'));
+    });
+
+    chainTest('aralık isteği range uç noktasını kullanır', () async {
+      final List<DateTime> days = <DateTime>[
+        for (int i = 0; i < 7; i++) today.add(Duration(days: i)),
+      ];
+      final _StubHttpClient client = _StubHttpClient(
+        (http.BaseRequest request) {
+          if (request.url.path.endsWith('/range')) {
+            return http.Response.bytes(
+              utf8.encode(_diyanetPayloadDays(days)),
+              200,
+            );
+          }
+          return http.Response('{}', 404);
+        },
+      );
+      final DiyanetApiSource source = DiyanetApiSource(client: client);
+
+      final List<PrayerTimesDay> range = await source.fetchRange(
+        location: cityLocation,
+        startDate: days.first,
+        endDate: days.last,
+        method: CalculationMethod.diyanet,
+      );
+
+      expect(range.length, 7);
+      expect(range.first.date, DateTime(2026, 10, 5));
+      final Uri requested = client.requested.single;
+      expect(requested.path, contains('/range'));
+      expect(requested.queryParameters['startDate'], '2026-10-05');
+      expect(requested.queryParameters['endDate'], '2026-10-11');
+    });
+
+    chainTest('birincil sunucu boş dönerse yedek resmî sunucu kullanılır', () async {
+      final _StubHttpClient client = _StubHttpClient(
+        (http.BaseRequest request) {
+          if (request.url.host == 'ezanvakti.emushaf.net') {
+            return http.Response.bytes(
+              utf8.encode(_emushafPayload(today)),
+              200,
+            );
+          }
+          return http.Response(
+            jsonEncode(<String, Object?>{'success': true, 'data': <Object?>[]}),
+            200,
+          );
+        },
+      );
+      final DiyanetApiSource source = DiyanetApiSource(client: client);
+
+      final PrayerTimesDay day = await source.fetchDay(
+        location: cityLocation,
+        date: today,
+        method: CalculationMethod.diyanet,
+      );
+
+      expect(day.source, 'diyanet');
+      expect(day.timeOf(Prayer.imsak), DateTime(2026, 10, 5, 5, 12));
+      expect(day.hijriDate, '15 Rebîülevvel 1448');
+      expect(
+        client.requested.last.host,
+        'ezanvakti.emushaf.net',
+        reason: 'Yedek resmî sunucu denenmeli',
+      );
+      expect(source.lastEndpointLabel, contains('yedek'));
+    });
+
+    chainTest('konum ilçeyle eşleşmese de yedek servis kullanılır', () async {
+      final _StubSource diyanet = _StubSource.success('diyanet', saneDay(today));
+      final _StubSource aladhan = _StubSource.success(
+        'aladhan',
+        saneDay(today, source: 'aladhan'),
+      );
+      final PrayerTimesRepository repository = buildRepository(
+        online: true,
+        diyanet: diyanet,
+        aladhan: aladhan,
+      );
+
+      final PrayerTimesDay day = await repository.getDay(
+        location: gpsLocation,
+        date: today,
+        method: CalculationMethod.diyanet,
+      );
+
+      expect(day.source, 'aladhan');
+      expect(diyanet.dayCalls, 0, reason: 'İlçe yoksa Diyanet çağrılmaz');
+      expect(
+        repository.lastWarning,
+        contains('ilçeyle eşleştirilemedi'),
+        reason: 'Kullanıcı neden resmî saat görmediğini bilmeli',
+      );
+    });
+
+    chainTest('yurt dışı şehirde Diyanet atlanır (kimlik çakışması)', () async {
+      final _StubSource diyanet = _StubSource.success('diyanet', saneDay(today));
+      final _StubSource aladhan = _StubSource.success(
+        'aladhan',
+        saneDay(today, source: 'aladhan'),
+      );
+      final PrayerTimesRepository repository = buildRepository(
+        online: true,
+        diyanet: diyanet,
+        aladhan: aladhan,
+      );
+
+      final PrayerTimesDay day = await repository.getDay(
+        location: londonLocation,
+        date: today,
+        method: CalculationMethod.diyanet,
+      );
+
+      expect(day.source, 'aladhan');
+      expect(diyanet.dayCalls, 0);
+      expect(
+        repository.lastWarning,
+        isNull,
+        reason: 'Yurt dışında yedek servis normal akıştır; uyarı gösterilmez',
+      );
+    });
+  });
+
   group('yerel hesap kalibrasyonu', () {
     chainTest(
       'Diyanet yöntemiyle İstanbul için tutarlı vakitler üretir',
@@ -739,6 +954,40 @@ PrayerTimesDay unsortedDay(DateTime date) {
     },
   );
 }
+
+/// Birden çok günü tek yanıtta döndürür (range uç noktası testi).
+String _diyanetPayloadDays(List<DateTime> dates) => jsonEncode(<String, Object?>{
+  'success': true,
+  'code': 200,
+  'data': <Object?>[
+    for (final DateTime date in dates)
+      <String, Object?>{
+        'date': _iso(date),
+        'times': <String, String>{
+          'imsak': '05:12',
+          'gunes': '06:34',
+          'ogle': '13:05',
+          'ikindi': '16:28',
+          'aksam': '19:41',
+          'yatsi': '21:09',
+        },
+      },
+  ],
+});
+
+/// Eski EzanVakti (yedek) sunucusunun PascalCase yanıtı.
+String _emushafPayload(DateTime date) => jsonEncode(<Object?>[
+  <String, Object?>{
+    'HicriTarihUzun': '15 Rebîülevvel 1448',
+    'MiladiTarihKisaIso8601': _iso(date),
+    'Imsak': '05:12',
+    'Gunes': '06:34',
+    'Ogle': '13:05',
+    'Ikindi': '16:28',
+    'Aksam': '19:41',
+    'Yatsi': '21:09',
+  },
+]);
 
 String _diyanetPayload(DateTime date) => jsonEncode(<String, Object?>{
   'success': true,

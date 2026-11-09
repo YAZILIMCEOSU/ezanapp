@@ -314,3 +314,45 @@ Kanıt testleri: `test/data/prayer_time_fidelity_test.dart`
 (V9 ay sınırı, V10 aralık dışı günler, V11 ikindi asla 1 dk'dan fazla geç
 olmaz) ve `test/data/location_speed_test.dart` (tazelik, ilçe hassasiyeti,
 bütçe sabitleri).
+
+---
+
+## 9. Kasım 2026 — "Resmî vakit servisine ulaşılamadı" uyarısı haksız yere çıkıyordu
+
+Kullanıcı bildirimi: *"Resmî vakit servisine ulaşılamadı; vakitler cihazda
+hesaplandı"* yazıyor. Oysa internet vardı ve Diyanet servisi ayaktaydı.
+İncelemede **üç ayrı kök neden** bulundu.
+
+### 9.1 Kök nedenler
+
+| # | Neden | Düzeltme |
+|---|---|---|
+| V1 | Veri kümesindeki 96 yeni ilçe **üretilmiş kimlik** taşıyor (`9541_bagcilar`). Servis bu kimliği tanımıyor, `200 + data: []` dönüyor. Uygulama bunu "servis yok" sayıp cihaz hesabına düşüyordu. | `_apiDistrictId` üretilmiş kimliği **il kimliğine** indirger (`9541_bagcilar` → `9541`). API'de bu ilçeler zaten il merkezi verisine yönlenir; vakitler birebir resmîdir. |
+| V2 | İlçe eşleşmediğinde (salt GPS) zincir `[cihaz hesabı]` oluyordu; **AlAdhan hiç denenmiyordu**. | Zincir artık `online ? [Diyanet (TR ise), AlAdhan, cihaz] : [cihaz]`. AlAdhan koordinatla çalışır; ilçe seçilmemiş olması servis hatası değildir. |
+| V3 | Ana ekran yarının verisini de çekiyor; `lastWarning` tek alan olduğu için **yarının** uyarısı bugünün şeridinde görünebiliyordu. | Uyarı ve kaynak detayı `TodayTimes` içinde **bugüne sabitlenir** (`warning`, `sourceDetail`). |
+
+Ek olarak: `monthly` uç noktası **istenen günü kapsamıyorsa** (ay sınırı) artık
+`daily?startDate=` → `monthly` → `yearly` → **yedek resmî sunucu**
+(`ezanvakti.emushaf.net`) sırası denenir. Tüm zincir 8 saniyelik toplam
+bütçeyle sınırlıdır; açılış dakikalarca beklemez.
+
+### 9.2 Uyarı metinleri artık üç durumu ayırıyor
+
+| Durum | Metin |
+|---|---|
+| Çevrimdışı | "Çevrimdışısınız; vakitler cihazda hesaplandı. İnternet gelince otomatik yenilenir." |
+| İlçe eşleşmedi | "Konumunuz bir ilçeyle eşleştirilemedi… Resmî Diyanet saati için şehir seçebilirsiniz." (düğme: **Şehir seç**) |
+| Servis gerçekten yok | "Resmî vakit servisine ulaşılamadı; vakitler cihazda hesaplandı (±1 dk). 'Yenile' ile tekrar deneyin." |
+| Diyanet yok, AlAdhan var | "Diyanet resmî verisine şu an ulaşılamadı; yedek servis kullanıldı (Diyanet temkinine göre düzeltildi)." |
+
+### 9.3 Tanılama
+
+Ayarlar → **Vakit doğrulama** ekranı artık hangi yoldan gelindiğini yazar:
+"günlük / aylık / yıllık / aralık / yedek sunucu", "Yedek servis (AlAdhan)",
+"Kayıtlı resmî veri", "Cihaz hesabı". "Karşılaştır" düğmesi 6 saatlik bellek
+önbelleğini de atlar, yani **şu anda** servisin cevap verip vermediğini gösterir.
+
+Kanıt testleri (`test/data/prayer_chain_test.dart` → "resmî servis
+dayanıklılığı"): üretilmiş kimlik indirgeme, tek istekle günlük veri, aralık
+uç noktası, yedek sunucuya düşüş, ilçe yokken AlAdhan'ın denenmesi,
+yurt dışında Diyanet'in atlanması.

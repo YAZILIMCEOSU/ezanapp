@@ -38,6 +38,7 @@ class _PrayerVerifyScreenState extends ConsumerState<PrayerVerifyScreen> {
   String? _error;
   PrayerTimesDay? _official;
   String? _officialWarning;
+  String? _officialDetail;
 
   Future<void> _compare() async {
     setState(() {
@@ -47,6 +48,9 @@ class _PrayerVerifyScreenState extends ConsumerState<PrayerVerifyScreen> {
     try {
       final AppRuntime runtime = ref.read(runtimeProvider);
       final UserLocation location = ref.read(activeLocationProvider);
+      // Bellekteki 6 saatlik resmî veri önbelleği atlanır: kullanıcı
+      // "şu anda servis çalışıyor mu?" sorusunun cevabını görmek istiyor.
+      runtime.prayerTimes.clearMemoryCache(includingSource: true);
       // Referans: **düzeltmesiz** Diyanet yöntemi, zorla yeniden çekilir.
       final PrayerTimesDay official = await runtime.prayerTimes.getDay(
         location: location,
@@ -58,6 +62,7 @@ class _PrayerVerifyScreenState extends ConsumerState<PrayerVerifyScreen> {
       setState(() {
         _official = official;
         _officialWarning = runtime.prayerTimes.lastWarning;
+        _officialDetail = runtime.prayerTimes.lastSourceDetail;
         _busy = false;
       });
     } catch (_) {
@@ -191,6 +196,18 @@ class _PrayerVerifyScreenState extends ConsumerState<PrayerVerifyScreen> {
             ),
           if (_official != null) ...<Widget>[
             const SectionHeader(title: 'Karşılaştırma'),
+            if (_officialDetail != null)
+              ListTile(
+                dense: true,
+                leading: const Icon(Icons.dns_outlined, size: 20),
+                title: Text(_officialDetail!),
+                subtitle: Text(
+                  _official!.source == 'diyanet'
+                      ? 'Resmî veri alındı; fark 0 dakika olmalı.'
+                      : 'Resmî veri alınamadı; sonuç yedek kaynaktan. '
+                            'Aşağıdaki fark bilgilendirme amaçlıdır.',
+                ),
+              ),
             if (_officialWarning != null)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
@@ -244,6 +261,10 @@ class _PrayerVerifyScreenState extends ConsumerState<PrayerVerifyScreen> {
       ];
     }
     final AppSettings settings = ref.watch(settingsProvider);
+    final String infoFootnote = <String>[
+      if (times.sourceDetail != null) times.sourceDetail!,
+      if (times.warning != null) times.warning!,
+    ].join('\n');
     return <Widget>[
       for (final Prayer prayer in Prayer.values)
         ListTile(
@@ -267,7 +288,7 @@ class _PrayerVerifyScreenState extends ConsumerState<PrayerVerifyScreen> {
         dense: true,
         leading: const Icon(Icons.info_outline_rounded, size: 20),
         title: Text(times.day.displaySource),
-        subtitle: times.warning == null ? null : Text(times.warning!),
+        subtitle: infoFootnote.isEmpty ? null : Text(infoFootnote),
       ),
       if (times.day.cachedAt != null)
         ListTile(

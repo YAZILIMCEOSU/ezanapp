@@ -571,12 +571,25 @@ class TodayTimes {
     required this.tomorrow,
     required this.warning,
     required this.locationLabel,
+    this.needsCitySelection = false,
+    this.sourceDetail,
   });
 
   final PrayerTimesDay day;
   final PrayerTimesDay tomorrow;
   final String? warning;
   final String locationLabel;
+
+  /// Bugünün vakitlerinin hangi yoldan alındığı (tanılama ekranı için).
+  ///
+  /// `PrayerTimesRepository.lastSourceDetail` tek alan; yarının verisi
+  /// çekilirken üzerine yazılıyordu. Tanılama ekranı bu yüzden yarının
+  /// kaynağını gösterebiliyordu. Bugünün değeri burada sabitlenir.
+  final String? sourceDetail;
+
+  /// Uyarı şeridindeki eylem "Yenile" yerine "Şehir seç" olmalı mı?
+  /// (Konum hiçbir ilçeyle eşleşmediyse yenilemek sorunu çözmez.)
+  final bool needsCitySelection;
 
   /// Aktif vakit, sıradaki vakit, geri sayım ve gün devri için tek model.
   PrayerScheduleSnapshot snapshot(DateTime now) =>
@@ -612,6 +625,7 @@ class PrayerTimesNotifier extends AsyncNotifier<TodayTimes> {
     // `lastWarning` repository üzerinde tek alan; yarının verisi çekilirken
     // sıfırlanıyordu. Bu yüzden bugünün uyarısı hemen saklanır.
     final String? todayWarning = runtime.prayerTimes.lastWarning;
+    final String? todayDetail = runtime.prayerTimes.lastSourceDetail;
     final PrayerTimesDay tomorrow = await runtime.prayerTimes.getDay(
       location: location,
       date: now.add(const Duration(days: 1)),
@@ -625,14 +639,22 @@ class PrayerTimesNotifier extends AsyncNotifier<TodayTimes> {
     return TodayTimes(
       day: day,
       tomorrow: tomorrow,
-      warning: todayWarning ?? runtime.prayerTimes.lastWarning,
+      // **Yalnızca bugünün uyarısı.** Önceden yarının verisi çekilirken
+      // `lastWarning` sıfırlanıp yarının uyarısı gösterilebiliyordu: bugünün
+      // vakitleri resmî veriden gelmiş olsa bile ekranda "resmî vakit
+      // servisine ulaşılamadı" yazıyordu.
+      warning: todayWarning,
       locationLabel: location.city?.displayName ?? label,
+      needsCitySelection: location.city == null,
+      sourceDetail: todayDetail,
     );
   }
 
   Future<void> refresh() async {
     final AppRuntime runtime = ref.read(runtimeProvider);
-    runtime.prayerTimes.clearMemoryCache();
+    // "Yenile" kullanıcının servis denemesi: kaynak düzeyindeki 6 saatlik
+    // önbellek de atlanır, aksi hâlde tekrar deneme ağa hiç çıkmazdı.
+    runtime.prayerTimes.clearMemoryCache(includingSource: true);
     state = const AsyncLoading<TodayTimes>();
     state = await AsyncValue.guard<TodayTimes>(() async {
       final UserLocation location = ref.read(activeLocationProvider);
@@ -645,6 +667,7 @@ class PrayerTimesNotifier extends AsyncNotifier<TodayTimes> {
         forceRefresh: true,
       );
       final String? todayWarning = runtime.prayerTimes.lastWarning;
+      final String? todayDetail = runtime.prayerTimes.lastSourceDetail;
       final PrayerTimesDay tomorrow = await runtime.prayerTimes.getDay(
         location: location,
         date: now.add(const Duration(days: 1)),
@@ -654,13 +677,15 @@ class PrayerTimesNotifier extends AsyncNotifier<TodayTimes> {
       return TodayTimes(
         day: day,
         tomorrow: tomorrow,
-        warning: todayWarning ?? runtime.prayerTimes.lastWarning,
+        warning: todayWarning,
+        sourceDetail: todayDetail,
         locationLabel:
             location.city?.displayName ??
             await runtime.cities.describePoint(
               location.latitude,
               location.longitude,
             ),
+        needsCitySelection: location.city == null,
       );
     });
     unawaited(ref.read(notificationCoordinatorProvider).reschedule());
@@ -720,7 +745,10 @@ class PrayerRangeNotifier extends AsyncNotifier<List<PrayerTimesDay>> {
   }
 
   Future<void> refresh() async {
-    ref.read(runtimeProvider).prayerTimes.clearMemoryCache();
+    ref
+        .read(runtimeProvider)
+        .prayerTimes
+        .clearMemoryCache(includingSource: true);
     ref.invalidateSelf();
     await future;
   }

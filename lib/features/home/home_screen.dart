@@ -86,9 +86,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         if (value.warning != null)
           StatusBanner(
             message: value.warning!,
+            icon: value.needsCitySelection
+                ? Icons.location_off_outlined
+                : Icons.cloud_off_rounded,
+            // Konum hiçbir ilçeyle eşleşmediyse "Yenile" sorunu çözmez;
+            // kullanıcıyı doğrudan şehir seçimine götür.
             action: TextButton(
-              onPressed: () => ref.read(prayerTimesProvider.notifier).refresh(),
-              child: const Text('Yenile'),
+              onPressed: value.needsCitySelection
+                  ? () => context.push(AppRoutes.cities)
+                  : () => ref.read(prayerTimesProvider.notifier).refresh(),
+              child: Text(
+                value.needsCitySelection ? 'Şehir seç' : 'Yenile',
+              ),
             ),
           ),
         _EDiyanetSplitPrayerCard(
