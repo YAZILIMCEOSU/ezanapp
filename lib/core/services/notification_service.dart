@@ -3,8 +3,7 @@ import 'dart:io';
 import 'dart:ui' show Color;
 
 import 'package:flutter/foundation.dart' show visibleForTesting;
-import 'package:flutter/services.dart'
-    show MethodChannel, PlatformException;
+import 'package:flutter/services.dart' show MethodChannel, PlatformException;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
@@ -83,8 +82,7 @@ enum NotificationScheduleMode {
 
   final String value;
 
-  bool get delivered =>
-      this == alarmClock || this == exact || this == inexact;
+  bool get delivered => this == alarmClock || this == exact || this == inexact;
 }
 
 /// Bir zamanlama turunun sonucu.
@@ -213,7 +211,6 @@ class NotificationService {
   }
 
   Future<void> _initializeOnce() async {
-
     const DarwinInitializationSettings ios = DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,

@@ -57,9 +57,7 @@ final FutureProvider<NotificationHealth> notificationHealthProvider =
     FutureProvider<NotificationHealth>((Ref ref) async {
       final AppRuntime runtime = ref.watch(runtimeProvider);
       final AdhanSound sound = ref.watch(
-        settingsProvider.select(
-          (AppSettings s) => s.notifications.adhanSound,
-        ),
+        settingsProvider.select((AppSettings s) => s.notifications.adhanSound),
       );
       try {
         return await runtime.notifications.checkHealth(
@@ -928,10 +926,10 @@ class NotificationCoordinator {
 
       // Hangi modun tuttuğu ve kaç bildirimin kurulamadığı tanılama için
       // saklanır; ayarlar ekranı ve test bunu gösterir.
-      final NotificationScheduleReport? report =
+      final NotificationScheduleReport report =
           _runtime.notifications.lastReport;
       _lastReport = report;
-      if (report != null && !report.ok) {
+      if (!report.ok) {
         AppLog.warning(
           'Bazı vakit bildirimleri kurulamadı: ${report.failed} hata',
           error: report.error,

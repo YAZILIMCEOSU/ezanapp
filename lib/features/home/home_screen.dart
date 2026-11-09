@@ -76,9 +76,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         settings.notifications.enabled && !exactAlarms;
     // "Bildirim çubukta hiç çıkmıyor" sorunu izin veya kanal kapalıysa
     // hiçbir zaman çözülmez; sebep ana ekranda görünmeli.
-    final NotificationHealth health = ref
-        .watch(notificationHealthProvider)
-        .value ??
+    final NotificationHealth health =
+        ref.watch(notificationHealthProvider).value ??
         NotificationHealth.notApplicable;
     final bool notificationsOn = settings.notifications.enabled;
     final bool showServiceBanner =
@@ -136,9 +135,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 'çubuğunda görünmez.',
             action: TextButton(
               onPressed: () async {
-                final notifications = ref
-                    .read(runtimeProvider)
-                    .notifications;
+                final notifications = ref.read(runtimeProvider).notifications;
                 final bool granted = await notifications.requestPermission();
                 if (!granted) {
                   // İkinci redden sonra sistem penceresi açılmaz; doğrudan

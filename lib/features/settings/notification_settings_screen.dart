@@ -130,9 +130,7 @@ class _NotificationSettingsScreenState
                   'sistem ayarlarından izin vermeniz gerekir.',
               action: TextButton(
                 onPressed: () async {
-                  final notifications = ref
-                      .read(runtimeProvider)
-                      .notifications;
+                  final notifications = ref.read(runtimeProvider).notifications;
                   final bool granted = await notifications.requestPermission();
                   if (!granted) {
                     // Kalıcı red: izin penceresi artık açılmaz, ayarlar açılır.
