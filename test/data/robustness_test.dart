@@ -3,6 +3,7 @@ import 'package:ezanai/data/models/app_settings.dart';
 import 'package:ezanai/data/models/prayer.dart';
 import 'package:ezanai/data/models/prayer_times_day.dart';
 import 'package:ezanai/data/prayer/prayer_times_cache.dart';
+import 'package:ezanai/design/app_theme.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
