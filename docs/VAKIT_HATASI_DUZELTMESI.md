@@ -484,3 +484,64 @@ uygulama arka plana atıldığında ses kesilebiliyordu.
    **"Ayarları aç"** düğmesi doğrudan ilgili sistem ekranına götürür.
 4. Aynı ekranda **"Zamanlanmış bildirim: N"** satırı görünmeli; `N = 0` ise
    hiçbir alarm kurulamamış demektir.
+
+## 12. Kasım 2026 — genel hata taraması
+
+Bildirim sorununun ardından bütün kod tabanı tarandı; kullanıcıya
+dokunabilecek beş hata daha bulunup düzeltildi.
+
+### 12.1 Yaz saati / yolculuk sonrası alarmlar bir saat kayıyordu
+
+`tz.local` yalnızca uygulama açılırken **bir kez** çözülüyordu. Yaz saati
+uygulamasına geçen bir ülkede veya uçakla başka saat dilimine gidildiğinde
+eski kaydırma kullanılmaya devam ediyor, kurulan alarmlar **bir saat**
+kayıyordu.
+
+* `NotificationService.refreshTimeZone()` eklendi; kaydırma değiştiğinde
+  bölge yeniden çözülür.
+* Her zamanlama turundan (ve test bildiriminden) önce çağrılır.
+* Haftalık/günlük tekrarlayan bildirimlerin "sonraki gün" hesabı
+  `add(Duration(days: 1))` yerine tarih yeniden kurularak yapılır; 23/25
+  saatlik günlerde saat kaymaz.
+
+### 12.2 Ezan iki kez üst üste çalıyordu
+
+Uygulama açıkken vakit girdiğinde hem sistem bildirimi (ezan sesiyle) hem de
+uygulama içi ezan aynı saniyede başlıyordu. Artık uygulama içi ezan
+tetiklendiğinde o vakit için kurulmuş sistem bildirimi iptal edilir
+(`suppressSystemAdhan`); tek ezan duyulur.
+
+### 12.3 Bozuk önbellek satırı bütün vakitleri kilitleyebiliyordu
+
+`prayer_times_cache` okunurken `DateTime.parse` / `int.parse` doğrudan
+kullanılıyordu. Eski şemadan kalan ya da yarım yazılmış tek bir satır
+`FormatException` fırlatıyor ve vakit listesi hiç yüklenemiyordu.
+
+* Satırlar artık doğrulanarak okunur; bozuk satır **atlanır**.
+* Tarih/saat alanları `tryParse` + aralık kontrolünden geçer.
+* Bozuk kayıt yüzünden uygulama çökmez; vakitler ağ/hesap yedeğinden gelir.
+
+### 12.4 Geçersiz ayar yedeği bütün ayarları siliyordu
+
+"Yedekten geri yükle" ekranına rastgele bir metin yapıştırıldığında
+`importJson` hata yutup **varsayılan ayarları** döndürüyor, ekran da
+"Ayarlar geri yüklendi" diyordu. Kullanıcının tema, konum, bildirim gibi tüm
+tercihleri sessizce sıfırlanıyordu.
+
+* `AppSettings.tryImportJson` eklendi: metin geçerli bir ayar yedeği değilse
+  `null` döner ve **hiçbir şey değişmez**.
+* Ekran "Yedek okunamadı; ayarlar değiştirilmedi." uyarısı gösterir.
+
+### 12.5 Bozuk ayar verisi uygulamayı açılmaz hâle getirebiliyordu
+
+`AppSettings.fromPrefs` ve `NotificationSettings.fromJson` alanları doğrudan
+`as bool` / `as num` / `as String` ile okuyordu. Yanlış türde tek bir alan
+(TypeError) uygulamanın **açılışta** çökmesine yol açabilirdi. Tüm alanlar
+tür kontrolünden geçirilerek okunur; hatalı değer varsayılana düşer.
+
+### 12.6 Küçük düzeltmeler
+
+* Diyalogda oluşturulan iki `TextEditingController` artık `dispose` ediliyor.
+* Ezan sesi başlatılamazsa kullanıcı sessiz kalmıyor: "Ezan sesi
+  başlatılamadı" uyarısı gösteriliyor.
+* Planlanan gün sayısı (14) ile bildirim ufku (15) hizalandı.

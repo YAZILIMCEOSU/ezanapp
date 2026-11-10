@@ -115,7 +115,7 @@ class NotificationSettings {
     this.eidAlarm = true,
     this.abdestSukurReminder = false,
     this.inAppAdhanEnabled = true,
-    this.daysToSchedule = 14,
+    this.daysToSchedule = 15,
   });
 
   final bool enabled;
@@ -321,34 +321,53 @@ class NotificationSettings {
 
   factory NotificationSettings.fromJson(Map<String, Object?>? json) {
     if (json == null) return const NotificationSettings();
-    final Map<String, Object?> prayers =
-        (json['prayerEnabled'] as Map?)?.cast<String, Object?>() ??
-        <String, Object?>{};
-    final Map<String, Object?> rawPerPrayer =
-        (json['perPrayerSound'] as Map?)?.cast<String, Object?>() ??
-        <String, Object?>{};
+    final Object? rawPrayers = json['prayerEnabled'];
+    final Map<String, Object?> prayers = rawPrayers is Map
+        ? rawPrayers.cast<String, Object?>()
+        : <String, Object?>{};
+    final Object? rawSounds = json['perPrayerSound'];
+    final Map<String, Object?> rawPerPrayer = rawSounds is Map
+        ? rawSounds.cast<String, Object?>()
+        : <String, Object?>{};
     final Map<Prayer, AdhanSound> parsedPerPrayer = <Prayer, AdhanSound>{};
     for (final Prayer p in Prayer.values) {
-      final String? soundName = rawPerPrayer[p.key] as String?;
-      if (soundName != null && soundName.isNotEmpty) {
-        parsedPerPrayer[p] = AdhanSound.fromName(soundName);
+      final Object? rawSound = rawPerPrayer[p.key];
+      if (rawSound is String && rawSound.isNotEmpty) {
+        parsedPerPrayer[p] = AdhanSound.fromName(rawSound);
       }
     }
-    int intOr(String key, int fallback) =>
-        (json[key] as num?)?.toInt() ?? fallback;
-    bool boolOr(String key, bool fallback) => json[key] as bool? ?? fallback;
+    // Bozuk/eski yedek dosyaları uygulamayı açılmaz hâle getirmesin:
+    // her alan türü kontrol edilerek okunur, hatalı değer varsayılana düşer.
+    int intOr(String key, int fallback) {
+      final Object? value = json[key];
+      return value is num ? value.toInt() : fallback;
+    }
+
+    bool boolOr(String key, bool fallback) {
+      final Object? value = json[key];
+      return value is bool ? value : fallback;
+    }
+
+    String? stringOr(String key) {
+      final Object? value = json[key];
+      return value is String ? value : null;
+    }
     return NotificationSettings(
       enabled: boolOr('enabled', true),
       prayerEnabled: <Prayer, bool>{
         for (final Prayer p in Prayer.values)
-          p: prayers[p.key] as bool? ?? (p != Prayer.gunes),
+          p: prayers[p.key] is bool
+              ? prayers[p.key] as bool
+              : (p != Prayer.gunes),
       },
       preReminderMinutes: intOr('preReminderMinutes', 0),
-      adhanSound: AdhanSound.fromName(json['adhanSound'] as String?),
+      adhanSound: AdhanSound.fromName(stringOr('adhanSound')),
       perPrayerSound: parsedPerPrayer,
-      customAdhanPath: json['customAdhanPath'] as String?,
-      customAdhanTitle: json['customAdhanTitle'] as String?,
-      adhanVolume: (json['adhanVolume'] as num?)?.toDouble() ?? 0.85,
+      customAdhanPath: stringOr('customAdhanPath'),
+      customAdhanTitle: stringOr('customAdhanTitle'),
+      adhanVolume: (json['adhanVolume'] is num)
+          ? (json['adhanVolume'] as num).toDouble()
+          : 0.85,
       adhanFadeIn: boolOr('adhanFadeIn', true),
       vibrationEnabled: boolOr('vibrationEnabled', true),
       quietHoursEnabled: boolOr('quietHoursEnabled', false),
@@ -376,7 +395,7 @@ class NotificationSettings {
       eidAlarm: boolOr('eidAlarm', true),
       abdestSukurReminder: boolOr('abdestSukurReminder', false),
       inAppAdhanEnabled: boolOr('inAppAdhanEnabled', true),
-      daysToSchedule: intOr('daysToSchedule', 14),
+      daysToSchedule: intOr('daysToSchedule', 15),
     );
   }
 }
@@ -458,37 +477,54 @@ class AppSettings {
 
   /// Tercihlerden okur.
   factory AppSettings.fromPrefs(Map<String, Object?> prefs) {
-    int intOr(String key, int fallback) =>
-        (prefs[key] as num?)?.toInt() ?? fallback;
-    double doubleOr(String key, double fallback) =>
-        (prefs[key] as num?)?.toDouble() ?? fallback;
-    bool boolOr(String key, bool fallback) => prefs[key] as bool? ?? fallback;
-    final Map<String, Object?>? offsets =
-        prefs['manualOffsets'] as Map<String, Object?>?;
-    final Map<String, Object?>? notif =
-        prefs['notifications'] as Map<String, Object?>?;
+    int intOr(String key, int fallback) {
+      final Object? value = prefs[key];
+      return value is num ? value.toInt() : fallback;
+    }
+
+    double doubleOr(String key, double fallback) {
+      final Object? value = prefs[key];
+      return value is num ? value.toDouble() : fallback;
+    }
+
+    bool boolOr(String key, bool fallback) {
+      final Object? value = prefs[key];
+      return value is bool ? value : fallback;
+    }
+
+    String? stringOr(String key) {
+      final Object? value = prefs[key];
+      return value is String ? value : null;
+    }
+
+    Map<String, Object?>? mapOr(String key) {
+      final Object? value = prefs[key];
+      return value is Map ? value.cast<String, Object?>() : null;
+    }
+
+    final Map<String, Object?>? offsets = mapOr('manualOffsets');
+    final Map<String, Object?>? notif = mapOr('notifications');
     return AppSettings(
       themeMode: AppThemeMode.values.firstWhere(
-        (AppThemeMode m) => m.name == prefs['themeMode'],
+        (AppThemeMode m) => m.name == stringOr('themeMode'),
         orElse: () => AppThemeMode.system,
       ),
-      localeCode: prefs['localeCode'] as String? ?? 'tr',
-      calculationMethodId: prefs['calculationMethodId'] as String? ?? 'diyanet',
+      localeCode: stringOr('localeCode') ?? 'tr',
+      calculationMethodId: stringOr('calculationMethodId') ?? 'diyanet',
       asrHanafi: boolOr('asrHanafi', false),
       manualOffsets: offsets == null
           ? const <String, int>{}
           : <String, int>{
               for (final MapEntry<String, Object?> e in offsets.entries)
-                e.key: (e.value as num).toInt(),
+                if (e.value is num) e.key: (e.value as num).toInt(),
             },
       use24Hour: boolOr('use24Hour', true),
       hijriOffsetDays: intOr('hijriOffsetDays', 0),
       quranFontSize: doubleOr('quranFontSize', 28),
       quranShowTranslation: boolOr('quranShowTranslation', true),
       quranShowTransliteration: boolOr('quranShowTransliteration', false),
-      quranReciterId: prefs['quranReciterId'] as String? ?? 'ar.alafasy',
-      quranTranslationId:
-          prefs['quranTranslationId'] as String? ?? 'tr.diyanet',
+      quranReciterId: stringOr('quranReciterId') ?? 'ar.alafasy',
+      quranTranslationId: stringOr('quranTranslationId') ?? 'tr.diyanet',
       quranAutoScroll: boolOr('quranAutoScroll', true),
       keepScreenOnWhileReading: boolOr('keepScreenOnWhileReading', false),
       zikirVibrationEnabled: boolOr('zikirVibrationEnabled', true),
@@ -592,17 +628,56 @@ class AppSettings {
   /// Ayar dışa/içe aktarma (bulut senkronizasyonu ve yedekleme için).
   String exportJson() => jsonEncode(toPrefs());
 
-  static AppSettings importJson(String raw) {
+  /// Ayar yedeğinde bulunabilecek alanlar.
+  static const Set<String> _knownKeys = <String>{
+    'themeMode',
+    'localeCode',
+    'calculationMethodId',
+    'asrHanafi',
+    'manualOffsets',
+    'use24Hour',
+    'hijriOffsetDays',
+    'quranFontSize',
+    'quranShowTranslation',
+    'quranShowTransliteration',
+    'quranReciterId',
+    'quranTranslationId',
+    'quranAutoScroll',
+    'keepScreenOnWhileReading',
+    'zikirVibrationEnabled',
+    'zikirSoundEnabled',
+    'zikirAutoAdvance',
+    'zikirDefaultTarget',
+    'notifications',
+    'lastHatimTarget',
+    'hatimAutoAdvance',
+    'analyticsEnabled',
+    'crashReportingEnabled',
+    'streamingOnlyOnWifi',
+    'adhanPlaybackDucking',
+  };
+
+  /// Yedeği güvenle okur; metin geçerli bir ayar yedeği değilse `null`.
+  ///
+  /// **Düzeltme:** Önceden rastgele bir metin yapıştırıldığında bile
+  /// "Ayarlar geri yüklendi" deniyor ve tüm ayarlar sessizce varsayılana
+  /// dönüyordu. Artık geçersiz yedek **hiçbir şeyi değiştirmez** ve ekran
+  /// kullanıcıya hata gösterir.
+  static AppSettings? tryImportJson(String raw) {
     try {
       final Object? decoded = jsonDecode(raw);
-      if (decoded is! Map) return const AppSettings();
-      return AppSettings.fromPrefs(decoded.cast<String, Object?>());
+      if (decoded is! Map) return null;
+      final Map<String, Object?> map = decoded.cast<String, Object?>();
+      if (!map.keys.any(_knownKeys.contains)) return null;
+      return AppSettings.fromPrefs(map);
     } catch (error) {
-      // Bozuk/eksik yedek: kullanıcıya hata göstermek yerine varsayılanlar.
       AppLog.warning('Ayarlar içe aktarılamadı: $error');
-      return const AppSettings();
+      return null;
     }
   }
+
+  static AppSettings importJson(String raw) =>
+      tryImportJson(raw) ?? const AppSettings();
 
   /// Seçili yönteme kullanıcı tercihlerini uygular:
   /// * Hanefî ikindi (asr-ı sânî) yalnızca ilgili yöntemlerde geçersiz kılınır.

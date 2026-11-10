@@ -519,15 +519,23 @@ class SettingsScreen extends ConsumerWidget {
         ],
       ),
     );
+    final String pasted = controller.text;
+    controller.dispose();
     if (confirmed != true || !context.mounted) return;
     try {
-      await ref
+      final bool ok = await ref
           .read(settingsControllerProvider.notifier)
-          .restoreFromJson(controller.text);
+          .restoreFromJson(pasted);
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Ayarlar geri yüklendi.')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              ok
+                  ? 'Ayarlar geri yüklendi.'
+                  : 'Yedek okunamadı; ayarlar değiştirilmedi.',
+            ),
+          ),
+        );
       }
     } catch (_) {
       if (context.mounted) {

@@ -227,7 +227,11 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp>
         if (settings.notifications.isInQuietHours(now.hour * 60 + now.minute)) {
           continue;
         }
-        ref.read(runtimeProvider).notifications.emitAdhanNow(prayer);
+        // Ezanı uygulama içinde çalacağız; aynı vakit için kurulmuş sistem
+        // bildirimini kaldır. Aksi hâlde iki ezan üst üste çalıyordu.
+        final notifications = ref.read(runtimeProvider).notifications;
+        unawaited(notifications.suppressSystemAdhan(prayer, when));
+        notifications.emitAdhanNow(prayer);
       }
     }
   }
@@ -305,7 +309,22 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp>
       }
     }
 
-    if (!started || !mounted) return;
+    if (!started || !mounted) {
+      // Sessiz başarısızlık: kullanıcı "ezan çalmadı" der ama nedenini
+      // bilemez. Ses dosyası/oynatıcı sorununda görünür uyarı verilir.
+      if (!started && mounted) {
+        _messengerKey.currentState?.showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Ezan sesi başlatılamadı. Ayarlar > Ezan sesi bölümünden '
+              'sesi kontrol edebilirsiniz.',
+            ),
+            duration: Duration(seconds: 8),
+          ),
+        );
+      }
+      return;
+    }
     if (notif.adhanFadeIn) {
       unawaited(runtime.audio.fadeIn(to: targetVolume));
     }

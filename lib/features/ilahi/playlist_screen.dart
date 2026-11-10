@@ -127,8 +127,9 @@ class _PlaylistIndex extends ConsumerWidget {
         ],
       ),
     );
-    if (confirmed != true) return;
     final String name = controller.text.trim();
+    controller.dispose();
+    if (confirmed != true) return;
     if (name.isEmpty) {
       if (context.mounted) {
         ScaffoldMessenger.of(

@@ -133,8 +133,13 @@ class SettingsController extends Notifier<AppSettings> {
   }
 
   /// Yedekten geri yükleme.
-  Future<void> restoreFromJson(String raw) =>
-      update(AppSettings.importJson(raw));
+  /// Yedeği uygular. Metin geçersizse **false** döner ve ayarlar değişmez.
+  Future<bool> restoreFromJson(String raw) async {
+    final AppSettings? parsed = AppSettings.tryImportJson(raw);
+    if (parsed == null) return false;
+    await update(parsed);
+    return true;
+  }
 
   Future<void> setThemeMode(AppThemeMode mode) =>
       update(state.copyWith(themeMode: mode));

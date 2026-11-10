@@ -262,19 +262,30 @@ class NotificationService {
     );
   }
 
-  /// Cihazın yerel saat dilimini timezone veritabanından çözer.
-  Future<void> _prepareTimeZone() async {
-    if (_timeZoneReady) return;
-    tzdata.initializeTimeZones();
+  Duration? _resolvedOffset;
+
+  /// Cihazın yerel saat dilimini çözer.
+  ///
+  /// **Düzeltme:** Önceden yalnızca açılışta bir kez çözülüyordu. Yaz saati
+  /// uygulamasına geçen bölgelerde veya uçakla başka saat dilimine
+  /// gidildiğinde `tz.local` eski kaydırmada kalıyor ve kurulan alarmlar
+  /// **bir saat** kayıyordu. Artık kaydırma değiştiğinde yeniden çözülür ve
+  /// her zamanlama turundan önce çağrılır.
+  Future<void> refreshTimeZone() async {
     final Duration offset = DateTime.now().timeZoneOffset;
+    if (_timeZoneReady && _resolvedOffset == offset) return;
+    tzdata.initializeTimeZones();
     final String resolved = _resolveLocationName(offset);
     try {
       tz.setLocalLocation(tz.getLocation(resolved));
     } catch (_) {
       tz.setLocalLocation(tz.UTC);
     }
+    _resolvedOffset = offset;
     _timeZoneReady = true;
   }
+
+  Future<void> _prepareTimeZone() => refreshTimeZone();
 
   /// Cihaz kaydırmasına karşılık gelen bölge adını bulur.
   ///
@@ -665,7 +676,12 @@ class NotificationService {
     int hijriOffsetDays = 0,
   }) async {
     await initialize();
+    await refreshTimeZone();
     await cancelPrayerNotifications();
+    if (days.isNotEmpty) {
+      final DateTime first = days.first.date;
+      _scheduleAnchorDate = DateTime(first.year, first.month, first.day);
+    }
     _failedThisRun = 0;
     _inexactThisRun = 0;
     _lastScheduleError = null;
@@ -1157,6 +1173,7 @@ class NotificationService {
     int delaySeconds = 8,
   }) async {
     await initialize();
+    await refreshTimeZone();
     final NotificationScheduleMode mode = await _schedule(
       id: NotificationIds.test,
       title: 'Ezan Vaktim Pro bildirim testi',
@@ -1219,6 +1236,30 @@ class NotificationService {
   NotificationScheduleReport _lastReport = const NotificationScheduleReport();
 
   NotificationScheduleReport get lastReport => _lastReport;
+
+  /// Zamanlanan listenin ilk günü (bildirim kimliğindeki gün indeksi için).
+  DateTime? _scheduleAnchorDate;
+
+  /// Uygulama ezanı kendisi çalarken aynı vakit için kurulmuş **sistem
+  /// bildirimini** iptal eder.
+  ///
+  /// Aksi hâlde ezan iki kez (bildirim sesi + uygulama içi ses) üst üste
+  /// çalıyordu. İptal, bildirim sesi başladıktan hemen sonra yapılır; Android
+  /// bildirimi kaldırınca ses de kesilir.
+  Future<void> suppressSystemAdhan(Prayer prayer, DateTime when) async {
+    final DateTime? anchor = _scheduleAnchorDate;
+    if (anchor == null) return;
+    final int dayIndex = DateTime(when.year, when.month, when.day)
+        .difference(anchor)
+        .inDays;
+    if (dayIndex < 0 || dayIndex >= NotificationIds.maxCancelDays) return;
+    try {
+      await initialize();
+      await _plugin.cancel(id: NotificationIds.adhan(dayIndex, prayer));
+    } catch (error) {
+      AppLog.debug('Sistem ezan bildirimi iptal edilemedi: $error');
+    }
+  }
 
   /// Uygulama içi ezanın çalma penceresi.
   ///
@@ -1424,21 +1465,33 @@ class NotificationService {
 
   tz.TZDateTime _nextInstanceOf(int? weekday, int hour, int minute) {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    DateTime cursor = DateTime(now.year, now.month, now.day);
+    if (weekday != null) {
+      while (cursor.weekday != weekday) {
+        cursor = DateTime(cursor.year, cursor.month, cursor.day + 1);
+      }
+    }
+    // **Düzeltme:** `add(Duration(days: 1))` yaz saati geçişlerinde 23/25
+    // saatlik gün üretir ve saat bir saat kayar. Tarih her seferinde yeniden
+    // kurulur; `TZDateTime` duvar saatini doğru çözer.
     tz.TZDateTime scheduled = tz.TZDateTime(
       tz.local,
-      now.year,
-      now.month,
-      now.day,
+      cursor.year,
+      cursor.month,
+      cursor.day,
       hour,
       minute,
     );
-    if (weekday != null) {
-      while (scheduled.weekday != weekday) {
-        scheduled = scheduled.add(const Duration(days: 1));
-      }
-    }
     while (!scheduled.isAfter(now)) {
-      scheduled = scheduled.add(const Duration(days: 1));
+      cursor = DateTime(cursor.year, cursor.month, cursor.day + 1);
+      scheduled = tz.TZDateTime(
+        tz.local,
+        cursor.year,
+        cursor.month,
+        cursor.day,
+        hour,
+        minute,
+      );
     }
     return scheduled;
   }

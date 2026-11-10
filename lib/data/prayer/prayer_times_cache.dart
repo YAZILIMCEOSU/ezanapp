@@ -51,7 +51,12 @@ class PrayerTimesCache {
       whereArgs: <Object?>[locationKey, _dateKey(start), _dateKey(end)],
       orderBy: 'date ASC',
     );
-    return rows.map(_fromRow).toList();
+    // Bozuk/eski şema satırları sessizce atlanır; tek bir hatalı kayıt
+    // yüzünden bütün önbellek okunamaz hâle gelmez.
+    return rows
+        .map(_fromRow)
+        .whereType<PrayerTimesDay>()
+        .toList(growable: false);
   }
 
   Future<DateTime?> lastFetch(String locationKey) async {
@@ -93,38 +98,57 @@ class PrayerTimesCache {
         'fetched_at': (day.cachedAt ?? DateTime.now()).millisecondsSinceEpoch,
       };
 
-  PrayerTimesDay _fromRow(Map<String, Object?> row) {
-    final DateTime date = DateTime.parse(row['date']! as String);
-    DateTime build(String key) {
-      final List<String> parts = (row[key]! as String).split(':');
-      return DateTime(
-        date.year,
-        date.month,
-        date.day,
-        int.parse(parts[0]),
-        int.parse(parts[1]),
-      );
+  /// Veritabanı satırını modele çevirir; satır bozuksa `null` döner.
+  ///
+  /// Önceden `DateTime.parse` / `int.parse` doğrudan çağrılıyordu: eski şema
+  /// ya da yarım yazılmış bir satır **FormatException** fırlatıyor ve vakit
+  /// önbelleğinin tamamı okunamıyordu ("vakitler yüklenemedi" ekranı).
+  PrayerTimesDay? _fromRow(Map<String, Object?> row) {
+    final Object? rawDate = row['date'];
+    if (rawDate is! String) return null;
+    final DateTime? parsed = DateTime.tryParse(rawDate);
+    if (parsed == null) return null;
+    final DateTime date = DateTime(parsed.year, parsed.month, parsed.day);
+
+    DateTime? build(String key) {
+      final Object? raw = row[key];
+      if (raw is! String) return null;
+      final List<String> parts = raw.split(':');
+      if (parts.length != 2) return null;
+      final int? hour = int.tryParse(parts[0]);
+      final int? minute = int.tryParse(parts[1]);
+      if (hour == null || minute == null) return null;
+      if (hour < 0 || hour > 23 || minute < 0 || minute > 59) return null;
+      return DateTime(date.year, date.month, date.day, hour, minute);
     }
+
+    final Map<Prayer, DateTime> times = <Prayer, DateTime>{};
+    for (final Prayer prayer in Prayer.values) {
+      final DateTime? time = build(prayer.key);
+      // Eksik vakitli bir gün yanlış geri sayıma yol açar; hiç dönmemek
+      // (ağ/hesap yedeğine düşmek) daha doğrudur.
+      if (time == null) return null;
+      times[prayer] = time;
+    }
+
+    final Object? fetchedAt = row['fetched_at'];
+    final Object? rawSource = row['source'];
+    final Object? rawHijri = row['hijri'];
 
     return PrayerTimesDay(
       date: date,
-      times: <Prayer, DateTime>{
-        Prayer.imsak: build('imsak'),
-        Prayer.gunes: build('gunes'),
-        Prayer.ogle: build('ogle'),
-        Prayer.ikindi: build('ikindi'),
-        Prayer.aksam: build('aksam'),
-        Prayer.yatsi: build('yatsi'),
-      },
+      times: times,
       // **Düzeltme:** kaynak bilgisi `'cache'` olarak eziliyordu. Bu yüzden
       // önbellekten okunan resmî Diyanet verisi "resmî" sayılmıyor, Hanefî
       // ikindi kaydırması uygulanmıyordu (ekran 15:46, bildirim 16:26 gibi
       // tutarsızlık). Kaynak olduğu gibi korunur; ekranda "Kayıtlı veri"
       // yazılmasını repository kendi `copyWith(source: 'cache')` çağrısıyla
       // yapar.
-      source: (row['source'] as String?) ?? 'diyanet',
-      hijriDate: row['hijri'] as String?,
-      cachedAt: DateTime.fromMillisecondsSinceEpoch(row['fetched_at']! as int),
+      source: rawSource is String ? rawSource : 'diyanet',
+      hijriDate: rawHijri is String ? rawHijri : null,
+      cachedAt: fetchedAt is int
+          ? DateTime.fromMillisecondsSinceEpoch(fetchedAt)
+          : null,
     );
   }
 
