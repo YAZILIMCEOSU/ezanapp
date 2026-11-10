@@ -1249,9 +1249,11 @@ class NotificationService {
   Future<void> suppressSystemAdhan(Prayer prayer, DateTime when) async {
     final DateTime? anchor = _scheduleAnchorDate;
     if (anchor == null) return;
-    final int dayIndex = DateTime(when.year, when.month, when.day)
-        .difference(anchor)
-        .inDays;
+    final int dayIndex = DateTime(
+      when.year,
+      when.month,
+      when.day,
+    ).difference(anchor).inDays;
     if (dayIndex < 0 || dayIndex >= NotificationIds.maxCancelDays) return;
     try {
       await initialize();

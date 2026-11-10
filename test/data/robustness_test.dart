@@ -17,18 +17,16 @@ void main() {
 
   group('ayarlar bozuk veriye dayanıklı', () {
     test('yanlış türdeki alanlar varsayılana düşer', () {
-      final AppSettings settings = AppSettings.fromPrefs(
-        <String, Object?>{
-          'themeMode': 42,
-          'localeCode': false,
-          'calculationMethodId': <String>['diyanet'],
-          'asrHanafi': 'evet',
-          'use24Hour': null,
-          'manualOffsets': 'bozuk',
-          'notifications': 'bozuk',
-          'quranFontSize': 'büyük',
-        },
-      );
+      final AppSettings settings = AppSettings.fromPrefs(<String, Object?>{
+        'themeMode': 42,
+        'localeCode': false,
+        'calculationMethodId': <String>['diyanet'],
+        'asrHanafi': 'evet',
+        'use24Hour': null,
+        'manualOffsets': 'bozuk',
+        'notifications': 'bozuk',
+        'quranFontSize': 'büyük',
+      });
       expect(settings.localeCode, 'tr');
       expect(settings.calculationMethodId, 'diyanet');
       expect(settings.asrHanafi, isFalse);

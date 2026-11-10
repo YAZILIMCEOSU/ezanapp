@@ -352,6 +352,7 @@ class NotificationSettings {
       final Object? value = json[key];
       return value is String ? value : null;
     }
+
     return NotificationSettings(
       enabled: boolOr('enabled', true),
       prayerEnabled: <Prayer, bool>{
