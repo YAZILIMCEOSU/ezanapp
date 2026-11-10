@@ -192,7 +192,7 @@ void main() {
         'yatsi': '19:21',
         'source': 'diyanet',
         'hijri': null,
-        'fetched_at': null,
+        'fetched_at': DateTime.now().millisecondsSinceEpoch,
       });
       final PrayerTimesDay? day = await cache.get(
         'district:9543',
