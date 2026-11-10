@@ -184,7 +184,7 @@ void main() {
       await database.raw.insert('prayer_times_cache', <String, Object?>{
         'district_id': 'district:9543',
         'date': '2026-11-12',
-        'imsak': '06:12',
+        'imsak': 'xx:yy',
         'gunes': '07:39',
         'ogle': '12:54',
         'ikindi': '15:34',
