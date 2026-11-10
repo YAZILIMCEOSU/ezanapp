@@ -9,8 +9,7 @@ class _FailingPlugin implements FlutterLocalNotificationsPlugin {
   int initializeCalls = 0;
 
   @override
-  dynamic noSuchMethod(Invocation invocation) =>
-      super.noSuchMethod(invocation);
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 
   @override
   Future<bool?> initialize({
