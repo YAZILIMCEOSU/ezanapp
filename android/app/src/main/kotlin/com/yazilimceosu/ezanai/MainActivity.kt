@@ -242,6 +242,12 @@ class MainActivity : AudioServiceActivity(), SensorEventListener {
                                 )
                             }
                         }
+                        "timeZone" -> {
+                            // Cihazın IANA saat dilimi (ör. Europe/Istanbul).
+                            // Dart tarafı, bildirimleri yaz saati geçişinde
+                            // kaymadan kurmak için bunu kullanır.
+                            result.success(java.util.TimeZone.getDefault().id)
+                        }
                         "appNotificationsEnabled" -> {
                             val manager =
                                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

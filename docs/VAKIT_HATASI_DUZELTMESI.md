@@ -545,3 +545,55 @@ tür kontrolünden geçirilerek okunur; hatalı değer varsayılana düşer.
 * Ezan sesi başlatılamazsa kullanıcı sessiz kalmıyor: "Ezan sesi
   başlatılamadı" uyarısı gösteriliyor.
 * Planlanan gün sayısı (14) ile bildirim ufku (15) hizalandı.
+
+---
+
+## 13. Kalıcı hata taraması (2026-11-10, 3. tur)
+
+Kullanıcı isteği: "Hataları kontrol et, düzelt; her istekte kalıcı olarak bu
+işlem yapılsın." İki parça uygulandı: (A) bu turda bulunan gerçek hata, (B)
+kalıcı kalite kapısı.
+
+### 13.1 Yaz saati/günlük hatırlatma kayması (saat dilimi çözümü)
+
+Bildirimler `tz.local` bölgesine göre kurulur. Bölge adı yalnızca cihazın
+**o anki UTC kaydırmasına** bakılarak tahmin ediliyordu. Sabit listelerde
+aynı kaydırmayı paylaşan bölgeler karışabildiği için (ör. Berlin kışın +1 iken
+liste önce Londra'yı seçebiliyordu) günlük/haftalık tekrarlayan hatırlatmalar
+yaz saati geçişinden sonra **bir saat** kayabiliyordu.
+
+* Android tarafına `timeZone` kanal metodu eklendi:
+  `java.util.TimeZone.getDefault().id` → gerçek IANA adı (`Europe/Istanbul`).
+* `refreshTimeZone` önce bu adı dener; ad geçerli ve kaydırmayla uyumluysa
+  doğrudan kullanır.
+* Yedek çözüm: yaygın bölge listesi → **tam kaydırma eşleşen herhangi bir
+  bölge** → `Etc/GMT±N`.
+* Yarım saatlik dilimlerde (±5:30, +3:30, −3:30) eski `~/ 60` kısaltması 30
+  dakikalık kayma üretiyordu; tam eşleşme araması bunu kaldırdı.
+* Test: `test/core/timezone_resolution_test.dart` (4 test).
+
+### 13.2 Başlatma hatası oturumu kalıcı susturuyordu
+
+Bildirim servisi bir kez başlatılamadığında `_initialized = true` kalıyor ve
+uygulama kapanana kadar **bir daha hiç denenmiyordu**. Açılışta eklenti
+motoru henüz hazır değilse (geçici hata) bütün bildirimler sessizce ölü
+kalıyordu.
+
+* `initialize()` artık başarısız durumda en fazla **3 kez** yeniden dener;
+  "Test bildirimi" ve ekran açılışları da bu turları tetikler.
+* Üst sınır aşıldığında gereksiz deneme yapılmaz, hata sağlık ekranında kalır.
+* Test: `test/core/notification_init_retry_test.dart`.
+
+### 13.3 Kalıcı kalite kapısı
+
+* `AGENTS.md`: her istekte uygulanacak sıra (senkron → tarama → düzeltme →
+  test → doküman → yeşil CI → Türkçe rapor) ve değişmez kurallar.
+* `docs/KALITE_KAPISI.md`: kapının adımları, kanıt standardı, sık dönen hata
+  sınıfları.
+* `tools/quality_gate.sh`: Flutter varsa biçim/analiz/test/kıble; yoksa yeşil
+  sonuç uydurmadan CI'ya yönlendirir.
+* CI'ya **test sayısı kapısı** eklendi: 300'den az test keşfedilirse iş
+  kırmızı olur (derleme hatası yüzünden testlerin sessizce atlanması önlenir).
+
+Bundan sonraki her istekte bu üç adım zorunludur: **tara → düzelt → yeşil CI
+ile kanıtla.**

@@ -203,14 +203,30 @@ class NotificationService {
   /// denemelerini birbirine karıştırabiliyordu.
   Future<void>? _initializing;
 
+  /// Başarısız başlatma denemelerinin sayısı.
+  ///
+  /// **Düzeltme:** Önceden başlatma bir kez başarısız olduğunda
+  /// `_initialized = true` kalıyor ve oturum boyunca bir daha **hiç
+  /// denenmiyordu**; geçici bir eklenti hatası (açılışta motor henüz hazır
+  /// değilken) bütün bildirimleri kalıcı olarak susturuyordu. Artık en fazla
+  /// üç kez yeniden denenir; kullanıcı "Test bildirimi"ne bastığında da
+  /// başlatma yeniden çalışır.
+  static const int _maxInitializeAttempts = 3;
+  int _initializeAttempts = 0;
+
   Future<void> initialize() {
-    if (_initialized) return Future<void>.value();
+    if (_initialized && !_initializationFailed) return Future<void>.value();
+    if (_initializationFailed &&
+        _initializeAttempts >= _maxInitializeAttempts) {
+      return Future<void>.value();
+    }
     return _initializing ??= _initializeOnce().whenComplete(() {
       _initializing = null;
     });
   }
 
   Future<void> _initializeOnce() async {
+    _initializeAttempts++;
     const DarwinInitializationSettings ios = DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
@@ -274,8 +290,11 @@ class NotificationService {
   Future<void> refreshTimeZone() async {
     final Duration offset = DateTime.now().timeZoneOffset;
     if (_timeZoneReady && _resolvedOffset == offset) return;
-    tzdata.initializeTimeZones();
-    final String resolved = _resolveLocationName(offset);
+    _ensureTimeZoneData();
+    final String resolved = resolveLocationName(
+      await _deviceTimeZoneName(),
+      offset,
+    );
     try {
       tz.setLocalLocation(tz.getLocation(resolved));
     } catch (_) {
@@ -285,47 +304,100 @@ class NotificationService {
     _timeZoneReady = true;
   }
 
+  /// Cihazın IANA saat dilimi adını (ör. `Europe/Istanbul`) okur.
+  ///
+  /// Android tarafı `java.util.TimeZone.getDefault().id` döndürür. Bu ad,
+  /// yalnızca kaydırmadan türetilen tahmini bölgeden **daha güvenlidir**:
+  /// Berlin'de kışın +1 olan kaydırma, kaydırma listesinde Londra ile de
+  /// eşleşebilir ve yaz saati geçişinden sonra günlük/haftalık hatırlatmalar
+  /// bir saat kayabilirdi.
+  Future<String?> _deviceTimeZoneName() async {
+    if (!Platform.isAndroid) return null;
+    try {
+      final String? name = await _platform.invokeMethod<String>('timeZone');
+      final String? trimmed = name?.trim();
+      return (trimmed == null || trimmed.isEmpty) ? null : trimmed;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static bool _timeZoneDataReady = false;
+
+  static void _ensureTimeZoneData() {
+    if (_timeZoneDataReady) return;
+    tzdata.initializeTimeZones();
+    _timeZoneDataReady = true;
+  }
+
   Future<void> _prepareTimeZone() => refreshTimeZone();
 
-  /// Cihaz kaydırmasına karşılık gelen bölge adını bulur.
+  /// Cihaz kaydırmasına karşılık gelen bölge adını çözer.
   ///
-  /// Türkiye ve yaygın bölgeler için sabit bir tercih listesi kullanılır;
-  /// bulunamazsa tam kaydırmalı `Etc/GMT±N` bölgesine düşülür.
-  String _resolveLocationName(Duration offset) {
-    const List<String> preferred = <String>[
-      'Europe/Istanbul',
-      'Europe/London',
-      'Europe/Berlin',
-      'Europe/Paris',
-      'Europe/Moscow',
-      'Asia/Riyadh',
-      'Asia/Dubai',
-      'Asia/Karachi',
-      'Asia/Kolkata',
-      'Asia/Jakarta',
-      'Asia/Kuala_Lumpur',
-      'Africa/Cairo',
-      'Africa/Casablanca',
-      'America/New_York',
-      'America/Chicago',
-      'America/Denver',
-      'America/Los_Angeles',
-      'Australia/Sydney',
-      'UTC',
-    ];
-    for (final String name in preferred) {
+  /// Sıra: cihazın IANA adı → yaygın bölge listesi → **tam kaydırma eşleşen
+  /// herhangi bir bölge** → `Etc/GMT±N`.
+  ///
+  /// Son adımda tam eşleşme aranması yarım saatlik dilimlerde (±5:30, +3:30,
+  /// −3:30 …) eski `~/ 60` kısaltmasının oluşturduğu 30 dakikalık kaymayı
+  /// önler; `Etc/GMT` yalnızca tam saatleri desteklediği için son çare kalır.
+  @visibleForTesting
+  static String resolveLocationName(String? deviceZone, Duration offset) {
+    _ensureTimeZoneData();
+    final String? candidate = deviceZone?.trim();
+    if (candidate != null && candidate.isNotEmpty) {
       try {
-        final tz.Location location = tz.getLocation(name);
-        if (location.currentTimeZone.offset == offset) return name;
+        if (tz.getLocation(candidate).currentTimeZone.offset == offset) {
+          return candidate;
+        }
+      } catch (_) {
+        // Bilinmeyen bölge adı: kaydırma tabanlı çözüme düş.
+      }
+    }
+    for (final String name in _preferredZones) {
+      try {
+        if (tz.getLocation(name).currentTimeZone.offset == offset) return name;
       } catch (_) {
         continue;
       }
     }
+    String? etcFallback;
+    for (final tz.Location location in tz.timeZoneDatabase.locations.values) {
+      if (location.currentTimeZone.offset != offset) continue;
+      final String name = location.name;
+      if (name == 'UTC' || name.startsWith('Etc/')) {
+        etcFallback ??= name;
+        continue;
+      }
+      return name;
+    }
+    if (etcFallback != null) return etcFallback;
     final int hours = offset.inMinutes ~/ 60;
     if (hours == 0) return 'UTC';
     // Etc bölgelerinde işaret terstir: UTC+3 → Etc/GMT-3
     return 'Etc/GMT${hours > 0 ? '-' : '+'}${hours.abs()}';
   }
+
+  static const List<String> _preferredZones = <String>[
+    'Europe/Istanbul',
+    'Europe/London',
+    'Europe/Berlin',
+    'Europe/Paris',
+    'Europe/Moscow',
+    'Asia/Riyadh',
+    'Asia/Dubai',
+    'Asia/Karachi',
+    'Asia/Kolkata',
+    'Asia/Jakarta',
+    'Asia/Kuala_Lumpur',
+    'Africa/Cairo',
+    'Africa/Casablanca',
+    'America/New_York',
+    'America/Chicago',
+    'America/Denver',
+    'America/Los_Angeles',
+    'Australia/Sydney',
+    'UTC',
+  ];
 
   static String adhanChannelId(AdhanSound sound) {
     if (sound.isSilent) return NotificationChannels.prayer;

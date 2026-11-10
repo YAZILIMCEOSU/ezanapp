@@ -75,6 +75,20 @@ jobs:
         continue-on-error: true
         run: set -o pipefail; flutter test --no-pub --reporter expanded 2>&1 | tail -400 | tee /tmp/test.log
 
+      # Test keşfi sessizce bozulursa (derleme hatası, yanlış dizin, atlanan
+      # dosya) yeşil görünen bir koşu fark edilmesin: alt sınır kapısı.
+      - name: Test sayısı kapısı
+        id: testcount
+        if: steps.test.outcome == 'success'
+        run: |
+          set -euo pipefail
+          count=$(grep -oE '\+[0-9]+' /tmp/test.log | tail -1 | tr -d '+' || true)
+          echo "geçen test sayısı: ${count:-0}"
+          if [ "${count:-0}" -lt 300 ]; then
+            echo "::error::Beklenen en az 300 test; bulunan: ${count:-0}"
+            exit 1
+          fi
+
       # Uzak AI sözleşmesi: backend adresi tanımlıyken kaynak zorunluluğu, hata
       # durumunda zarif bozulma ve öneri üretimi doğrulanır.
       # (Aynı dosya normal koşuda atlanır, bkz. test/data/ai_remote_test.dart.)
@@ -193,6 +207,7 @@ jobs:
             echo "| format | ${{ steps.fmt.outcome }} |"
             echo "| analyze | ${{ steps.analyze.outcome }} |"
             echo "| test | ${{ steps.test.outcome }} |"
+            echo "| test sayısı kapısı | ${{ steps.testcount.outcome }} |"
             echo "| test (uzak AI sözleşmesi) | ${{ steps.ai.outcome }} |"
             echo "| kıble doğrulaması (6 kontrol) | ${{ steps.kible.outcome }} |"
             echo "| imza doğrulaması (apksigner) | ${{ steps.sign.outcome }} |"
@@ -220,5 +235,5 @@ jobs:
           git commit -m "ci(report): doğrulama sonuçları [skip ci]" || echo "değişiklik yok"
           git push origin HEAD:${{ github.ref_name }} || true
       - name: Adımlardan biri başarısızsa işi düşür
-        if: steps.pubget.outcome == 'failure' || steps.analyze.outcome == 'failure' || steps.test.outcome == 'failure' || steps.ai.outcome == 'failure' || steps.kible.outcome == 'failure' || steps.build.outcome == 'failure' || steps.release.outcome == 'failure'
+        if: steps.pubget.outcome == 'failure' || steps.analyze.outcome == 'failure' || steps.test.outcome == 'failure' || steps.testcount.outcome == 'failure' || steps.ai.outcome == 'failure' || steps.kible.outcome == 'failure' || steps.build.outcome == 'failure' || steps.release.outcome == 'failure'
         run: exit 1
