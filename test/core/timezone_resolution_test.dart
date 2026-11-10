@@ -37,11 +37,16 @@ void main() {
     });
 
     test('yarım saatlik dilimler 30 dakika kaymaz', () {
-      for (final Duration offset in <Duration>[
-        const Duration(hours: 5, minutes: 30),
-        const Duration(hours: 3, minutes: 30),
-        const Duration(hours: -3, minutes: 30),
+      // Cihazın gerçek kaydırması her zaman tz veritabanındaki bir bölgenin
+      // **o anki** kaydırmasıdır. Bu yüzden test, sabit uydurma kaydırma
+      // yerine gerçek yarım saatlik bölgelerin bugünkü kaydırmasını kullanır.
+      for (final String zone in <String>[
+        'Asia/Kolkata',
+        'Asia/Tehran',
+        'America/St_Johns',
       ]) {
+        final Duration offset = tz.getLocation(zone).currentTimeZone.offset;
+        expect(offset.inMinutes % 60, isNot(0), reason: '$zone tam saat değil');
         final String resolved = NotificationService.resolveLocationName(
           null,
           offset,
@@ -49,9 +54,20 @@ void main() {
         expect(
           tz.getLocation(resolved).currentTimeZone.offset,
           offset,
-          reason: '$offset için ${resolved.isEmpty ? '(boş)' : resolved}',
+          reason: '$zone ($offset) -> $resolved',
         );
       }
+    });
+
+    test('veritabanında karşılığı olmayan kaydırma çökertmez', () {
+      // Örnek: hiçbir bölgenin o an -2:30 olmadığı bir tarihte (kışın
+      // Newfoundland -3:30'dur) son çare tam saatlik dilime düşer.
+      final String resolved = NotificationService.resolveLocationName(
+        null,
+        const Duration(hours: -2, minutes: -30),
+      );
+      expect(resolved, isNotEmpty);
+      expect(tz.getLocation(resolved).currentTimeZone.offset.inMinutes % 60, 0);
     });
   });
 }

@@ -5,8 +5,12 @@ import 'package:flutter_test/flutter_test.dart';
 
 /// Simge hatası yüzünden başlatma düşerse servisin **kalıcı olarak
 /// susmadığını** doğrular: en fazla üç tur yeniden denenir.
-class _FailingPlugin extends FlutterLocalNotificationsPlugin {
+class _FailingPlugin implements FlutterLocalNotificationsPlugin {
   int initializeCalls = 0;
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) =>
+      super.noSuchMethod(invocation);
 
   @override
   Future<bool?> initialize({
