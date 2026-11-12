@@ -26,7 +26,7 @@
 | Ne | Nerede |
 |---|---|
 | **Telefonda denemek için APK** | `https://github.com/YAZILIMCEOSU/ezanapp/releases/download/dene-apk/ezanai-kurulum.apk` |
-| Boyut / imza | **92,7 MB** · CI'nın geçici anahtarıyla imzalı (deneme sürümü) |
+| Boyut / imza | **82,6 MB** · CI'nın geçici anahtarıyla imzalı (deneme sürümü) |
 | Hangi derlemeden? | `dene-apk` etiketi — CI **yeşil** |
 | Play'e yüklenecek dosya (AAB) | CI → *Actions* → son çalışma → **Artifacts → ezanai-derlemeleri** → `app-release.aab` |
 
