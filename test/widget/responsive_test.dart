@@ -15,9 +15,9 @@ import 'package:ezanai/features/settings/settings_screen.dart';
 import 'package:ezanai/features/widgets/state_views.dart';
 import 'package:ezanai/features/zikir/zikir_screen.dart';
 import 'package:ezanai/state/providers.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../support/test_runtime.dart';
 

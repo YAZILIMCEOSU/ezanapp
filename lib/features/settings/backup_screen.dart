@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../core/config/app_config.dart';
 import '../../core/constants/app_constants.dart';
@@ -27,10 +27,8 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
   bool _busy = false;
   String? _status;
 
-  String? get _consentAt => ref
-      .read(runtimeProvider)
-      .preferences
-      .getString(PrefKeys.backupConsentAt);
+  String? get _consentAt =>
+      ref.read(runtimeProvider).preferences.getString(PrefKeys.backupConsentAt);
 
   static String _formatConsent(String iso) {
     final DateTime? at = DateTime.tryParse(iso);
@@ -256,7 +254,8 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
     if (!await _ensureConsent()) {
       if (!mounted) return;
       setState(() {
-        _status = 'Bulut yedekleme için açık rıza gerekir. '
+        _status =
+            'Bulut yedekleme için açık rıza gerekir. '
             'Verileriniz yalnızca cihazınızda kaldı.';
       });
       return;

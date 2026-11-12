@@ -20,15 +20,16 @@ void main() {
 
     test('JSON gidiş-dönüşünde kapalı tercih korunur', () {
       const AppSettings settings = AppSettings();
-      final AppSettings restored = AppSettings.importJson(settings.exportJson());
+      final AppSettings restored = AppSettings.importJson(
+        settings.exportJson(),
+      );
       expect(restored.analyticsEnabled, isFalse);
       expect(restored.crashReportingEnabled, isFalse);
     });
   });
 
   group('Ses etiketleri', () {
-    test('hiçbir ses etiketi doğrulanmamış sanatçı/müezzin adı içermez',
-        () {
+    test('hiçbir ses etiketi doğrulanmamış sanatçı/müezzin adı içermez', () {
       const List<String> forbidden = <String>[
         'abdülbâsıt',
         'abdulbasit',
@@ -40,8 +41,7 @@ void main() {
         'gerçek müezzin',
       ];
       for (final AdhanSound sound in AdhanSound.values) {
-        final String text =
-            '${sound.label} ${sound.description}'.toLowerCase();
+        final String text = '${sound.label} ${sound.description}'.toLowerCase();
         for (final String word in forbidden) {
           expect(
             text.contains(word),

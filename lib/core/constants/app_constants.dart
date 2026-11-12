@@ -18,6 +18,7 @@ abstract final class AppConstants {
     'SUPPORT_EMAIL',
     defaultValue: 'destek@ezanai.app',
   );
+
   /// Yasal sayfalar GitHub Pages üzerinde yayımlanır (`/docs` klasörü).
   /// Mağaza kaydındaki adresle **aynı** olmalıdır. Alan adı değişirse
   /// `--dart-define` ile güncellenir.

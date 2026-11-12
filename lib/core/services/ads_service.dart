@@ -23,9 +23,8 @@ import 'preferences_service.dart';
 /// * Geçiş (interstitial) reklamları **en fazla 3 dakikada bir** ve yalnızca
 ///   doğal duraklamalarda (ör. tesbih hedefi tamamlandığında) gösterilir.
 class AdsService {
-  AdsService({AdsConsent? consent, PreferencesService? preferences})
-    : _consent = consent ?? AdsConsent(),
-      _preferences = preferences;
+  AdsService({AdsConsent? consent, this._preferences})
+    : _consent = consent ?? AdsConsent();
 
   final AdsConsent _consent;
   final PreferencesService? _preferences;

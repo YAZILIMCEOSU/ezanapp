@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../app/app_runtime.dart';
 import '../core/config/app_features.dart';
@@ -226,10 +226,8 @@ class SettingsController extends Notifier<AppSettings> {
   String? get aiConsentAt =>
       ref.read(runtimeProvider).preferences.getString(PrefKeys.aiConsentAt);
 
-  String? get backupConsentAt => ref
-      .read(runtimeProvider)
-      .preferences
-      .getString(PrefKeys.backupConsentAt);
+  String? get backupConsentAt =>
+      ref.read(runtimeProvider).preferences.getString(PrefKeys.backupConsentAt);
 
   Future<void> grantAiConsent() => ref
       .read(runtimeProvider)

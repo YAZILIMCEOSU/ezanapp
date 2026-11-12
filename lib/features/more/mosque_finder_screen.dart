@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
+import 'package:material_ui/material_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -587,7 +587,8 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
           .get(
             uri,
             headers: const <String, String>{
-              'User-Agent': 'EzanVaktimPro/1.0 (+https://yazilimceosu.github.io/ezanapp)',
+              'User-Agent':
+                  'EzanVaktimPro/1.0 (+https://yazilimceosu.github.io/ezanapp)',
             },
           )
           .timeout(const Duration(seconds: 7));

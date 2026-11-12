@@ -43,24 +43,27 @@ void main() {
       expect(AdsService.interstitialCooldown, const Duration(minutes: 3));
     });
 
-    test('kişiselleştirilmiş reklam rızası varsayılan kapalıdır (KVKK)', () async {
-      SharedPreferences.setMockInitialValues(<String, Object>{});
-      final PreferencesService prefs = await PreferencesService.create();
-      final AdsService ads = AdsService(preferences: prefs);
+    test(
+      'kişiselleştirilmiş reklam rızası varsayılan kapalıdır (KVKK)',
+      () async {
+        SharedPreferences.setMockInitialValues(<String, Object>{});
+        final PreferencesService prefs = await PreferencesService.create();
+        final AdsService ads = AdsService(preferences: prefs);
 
-      // Rıza yoksa AdMob'a npa=1 (kişiselleştirilmemiş) sinyali gider.
-      expect(ads.personalizedAdsConsent, isFalse);
+        // Rıza yoksa AdMob'a npa=1 (kişiselleştirilmemiş) sinyali gider.
+        expect(ads.personalizedAdsConsent, isFalse);
 
-      await prefs.setString(
-        PrefKeys.personalizedAdsConsentAt,
-        DateTime.now().toIso8601String(),
-      );
-      expect(ads.personalizedAdsConsent, isTrue);
+        await prefs.setString(
+          PrefKeys.personalizedAdsConsentAt,
+          DateTime.now().toIso8601String(),
+        );
+        expect(ads.personalizedAdsConsent, isTrue);
 
-      // Geri çekme kaydı siler; reklamlar yeniden NPA'ya döner.
-      await prefs.remove(PrefKeys.personalizedAdsConsentAt);
-      expect(ads.personalizedAdsConsent, isFalse);
-    });
+        // Geri çekme kaydı siler; reklamlar yeniden NPA'ya döner.
+        await prefs.remove(PrefKeys.personalizedAdsConsentAt);
+        expect(ads.personalizedAdsConsent, isFalse);
+      },
+    );
 
     test('reklam anahtarı varsayılan olarak açık, test modu kapalı', () {
       expect(AppConfig.adsEnabled, isTrue);
