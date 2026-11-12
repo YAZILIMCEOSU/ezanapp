@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Gradle 8.14 ile uyumlu JDK: runner görüntüsü Java 25'e geçtiğinde
+      # Gradle 9.3.1 ile uyumlu JDK: runner görüntüsü Java 25'e geçtiğinde
       # derleme "Java/Gradle incompatibility" ile düşmesin.
       - uses: actions/setup-java@v4
         with:
@@ -57,6 +57,8 @@ jobs:
       - name: RLS politika denetimi (statik)
         id: rls
         run: set -o pipefail; python3 tools/verify_rls.py 2>&1 | tee /tmp/rls.log
+
+      - name: flutter pub get
         id: pubget
         continue-on-error: true
         run: set -o pipefail; flutter pub get 2>&1 | tee /tmp/pubget.log
