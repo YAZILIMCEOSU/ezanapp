@@ -16,14 +16,15 @@ kayıtları ve tedarikçi denetimi için tek kaynak.
 | Supabase (PostgREST/Auth) | Supabase Inc. | Bulut yedekleme | 15 tablo içeriği, anonim UUID | Anonim oturum | AB (Frankfurt) veya ABD | Açık rıza | **Var** (`sync_service.dart`) |
 | AI backend (`/ai/ask`) | Proje backend’i | Kaynaklı cevap | Soru, son 6 mesaj, mezhep, kaynak bağlamı | Hayır | Yapılandırmaya göre | Açık rıza | **Var** (`ai_service.dart`) |
 | Firebase Cloud Messaging | Google LLC | Push bildirim | FCM jetonu, cihaz bilgisi | Jeton | ABD | Bildirim izni | **Koşullu** (`push_service.dart`) |
-| Diyanet vakit servisi (İmsakiyem) | Üçüncü taraf | Resmî vakit | İlçe kimliği, tarih | Hayır | TR | Sözleşme ifası | **Var** (`diyanet_api_source.dart`) |
+| Diyanet vakit servisi (İmsakiyem + emushaf yedeği) | Üçüncü taraf | Resmî vakit | İlçe kimliği, tarih | Hayır | TR | Sözleşme ifası | **Var** (`diyanet_api_source.dart`) |
 | AlAdhan API | AlAdhan | Yedek vakit | **Yaklaşık enlem/boylam (2 ondalık, ~1 km)** | Hayır | AB/İngiltere | Sözleşme ifası | **Var** (`aladhan_api_source.dart`) — yuvarlama uygulandı |
 | EveryAyah CDN | EveryAyah | Kur’an tilaveti | IP, ayet yolu | Hayır | ABD/AB | Hizmet | **Var** — lisans teyidi gerekli |
 | QuranEnc / Tanzil | — | Meal/metin | Yok (paket içi) | — | — | — | **Var** |
 | alquran.cloud | AlQuran Cloud | Meal/tefsir çevrimiçi | Sure/edition | Hayır | AB | Hizmet | **Var** (`quran_repository.dart`) |
-| OpenStreetMap tile / Overpass | OSM Vakfı / topluluk | Harita, cami arama | Görüntü alanı koordinatları / arama kutucuğu, IP | Hayır | AB | Hizmet | **Var** (`mosque_finder_screen.dart`, harita) |
+| OpenStreetMap tile / Overpass | OSM Vakfı / topluluk | Harita, cami arama | Görüntü alanı; aramada **3 ondalık (~110 m)** konum, IP | Hayır | AB | Hizmet | **Var** (`mosque_finder_screen.dart`) — yuvarlama uygulandı |
 | Esri ArcGIS tiles | Esri | Uydu harita | Görüntü alanı koordinatları, IP | Hayır | ABD | Hizmet | **Var** (`qibla_screen.dart`) |
-| cdn.jsdelivr.net (GitHub) | jsDelivr | Uzak ilahi/ezan akışı | IP, dosya yolu | Hayır | ABD | — | **Var** — lisanssız, kaldırılmalı |
+| cdn.jsdelivr.net (GitHub) | jsDelivr | Uzak ilahi/ezan akışı | IP, dosya yolu | Hayır | ABD | — | **Kaldırıldı** (12.11.2026) — kodda yok |
+| unpkg (Leaflet CDN) | Cloudflare | Harita kütüphanesi | IP, user-agent | Hayır | ABD | Hizmet | **Var** — SRI ile sabitlendi (`sha256`) |
 | Google Maps (dış link) | Google | Yol tarifi | Yalnızca kullanıcı tıklarsa | — | ABD | Kullanıcı eylemi | **Var** |
 
 ## 2. Veri akışları
@@ -32,7 +33,7 @@ kayıtları ve tedarikçi denetimi için tek kaynak.
 Cihaz
  ├─ Konum ──► yerel vakit/kıble hesabı        (koordinat sunucuya gitmez)
  ├─ İlçe kimliği ──► Diyanet servisi          (koordinat yok)
- ├─ Konum (yedek) ──► AlAdhan                 (koordinat — 2 ondalığa yuvarlanmalı)
+ ├─ Konum (yedek) ──► AlAdhan                 (2 ondalık, ~1 km)
  ├─ Harita ekranı ──► OSM/Esri tile            (görüntü alanı)
  ├─ Cami ara ──► Overpass                     (arama kutucuğu)
  ├─ AI sorusu ──► AI backend                  (yalnızca rıza ile)
@@ -51,7 +52,7 @@ Cihaz
 | `flutter_local_notifications` | pubspec | Bildirim | Yerel |
 | `just_audio`, `audio_service` | pubspec | Medya | Yerel/uzak ses |
 | `url_launcher` | pubspec | Dış link | Kullanıcı eylemi |
-| `flutter_map` (leaflet benzeri) | pubspec | Harita tile | Ağ |
+| Leaflet 1.9.4 (WebView, unpkg + SRI) | HTML | Harita tile | Ağ |
 | `http`, `dio` | pubspec | Ağ | TLS |
 
 > Tam liste `pubspec.lock` ve `flutter pub deps` çıktısından üretilir; CI
@@ -88,11 +89,11 @@ Her yeni tedarikçi için:
 
 | # | Konu | Risk | Aksiyon | Öncelik |
 |---|---|---|---|---|
-| 1 | `cdn.jsdelivr.net` üzerinden ilahi/ezan akışı | Telif + kaynak belirsizliği | Yerel lisanslı varlıkla değiştir veya kaldır | **P0** |
+| 1 | `cdn.jsdelivr.net` üzerinden ilahi/ezan akışı | Telif + kaynak belirsizliği | **Yapıldı:** uzak akış kaldırıldı; tüm ilahiler yerel lisanslı varlık | **P0 ✓** |
 | 2 | AlAdhan’a tam koordinat | Gizlilik beyanıyla çelişki | **Yapıldı:** 2 ondalığa yuvarlandı + politikada belirtildi | **P0** |
 | 3 | EveryAyah ticari kullanım teyidi | Lisans uyumsuzluğu | Yazılı izin/alternatif kaynak | **P1** |
 | 4 | AdMob kişiselleştirme varsayılanı | UMP/consent uyumu | **Yapıldı:** varsayılan NPA (`nonPersonalizedAds: true`); rıza ile açılır | **P0 ✓** |
-| 5 | Supabase RLS doğrulaması | Veri sızıntısı | Politikaları test et | **P0** |
+| 5 | Supabase RLS doğrulaması | Veri sızıntısı | Statik denetim CI'da (`verify_rls.py`); canlı iki kullanıcı testi yayın öncesi | **P0 (kısmi)** |
 | 6 | AI sağlayıcısında saklama | KVKK m.9 | Zero-retention sözleşmesi | **P1** |
 | 7 | Firebase jetonu | Veri minimizasyonu | Yapılandırma yoksa paketleri devre dışı bırak | **P2** |
 | 8 | OSM/Esri tile kullanımı | Kullanım koşulları | Atıf + kullanım limiti | **P2** |

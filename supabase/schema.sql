@@ -15,6 +15,23 @@ comment on table public.user_data is
 
 alter table public.user_data enable row level security;
 
+-- Tablo sahibi (postgres) bile RLS'e tabi olsun: yanlışlıkla service_role
+-- anahtarıyla yapılan sorguların veri sızdırmasını engeller.
+alter table public.user_data force row level security;
+
+-- Kötüye kullanım koruması: tek yedek 10 MB'ı aşamaz (Supabase kota ve
+-- maliyet sınırı). Uygulama yedeği normalde 1 MB'ın altındadır.
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint where conname = 'user_data_payload_size'
+  ) then
+    alter table public.user_data
+      add constraint user_data_payload_size
+      check (pg_column_size(payload) <= 10 * 1024 * 1024);
+  end if;
+end $$;
+
 drop policy if exists "kendi satiri okunur" on public.user_data;
 create policy "kendi satiri okunur" on public.user_data
   for select using (auth.uid() = user_id);

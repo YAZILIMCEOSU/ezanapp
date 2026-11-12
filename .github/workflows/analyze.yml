@@ -51,7 +51,12 @@ jobs:
           print('Yasal sayfa bağlantıları geçerli.')
           PY
 
-      - name: flutter pub get
+      # Canlı veritabanına bağlanmadan RLS politikalarını denetler: her CRUD
+      # politikası var mı, hepsi auth.uid() = user_id koşulunu içeriyor mu,
+      # herkese açık (true) politika eklenmiş mi?
+      - name: RLS politika denetimi (statik)
+        id: rls
+        run: set -o pipefail; python3 tools/verify_rls.py 2>&1 | tee /tmp/rls.log
         id: pubget
         continue-on-error: true
         run: set -o pipefail; flutter pub get 2>&1 | tee /tmp/pubget.log
@@ -229,12 +234,13 @@ jobs:
             echo "| test | ${{ steps.test.outcome }} |"
             echo "| test sayısı kapısı | ${{ steps.testcount.outcome }} |"
             echo "| test (uzak AI sözleşmesi) | ${{ steps.ai.outcome }} |"
+            echo "| RLS politika denetimi | ${{ steps.rls.outcome }} |"
             echo "| kıble doğrulaması (6 kontrol) | ${{ steps.kible.outcome }} |"
             echo "| imza doğrulaması (apksigner) | ${{ steps.sign.outcome }} |"
             echo "| build (debug apk) | ${{ steps.build.outcome }} |"
             echo "| build (release appbundle) | ${{ steps.release.outcome }} |"
             echo "| dene-apk indirmeye açıldı | ${{ steps.apk_release.outcome }} |"
-            for f in pubget fmt analyze test ai kible sign build release; do
+            for f in pubget fmt analyze test ai rls kible sign build release; do
               if [ -f /tmp/$f.log ]; then
                 echo
                 echo "## $f"
@@ -255,5 +261,5 @@ jobs:
           git commit -m "ci(report): doğrulama sonuçları [skip ci]" || echo "değişiklik yok"
           git push origin HEAD:${{ github.ref_name }} || true
       - name: Adımlardan biri başarısızsa işi düşür
-        if: steps.pubget.outcome == 'failure' || steps.analyze.outcome == 'failure' || steps.test.outcome == 'failure' || steps.testcount.outcome == 'failure' || steps.ai.outcome == 'failure' || steps.kible.outcome == 'failure' || steps.build.outcome == 'failure' || steps.release.outcome == 'failure'
+        if: steps.pubget.outcome == 'failure' || steps.analyze.outcome == 'failure' || steps.test.outcome == 'failure' || steps.testcount.outcome == 'failure' || steps.ai.outcome == 'failure' || steps.rls.outcome == 'failure' || steps.kible.outcome == 'failure' || steps.build.outcome == 'failure' || steps.release.outcome == 'failure'
         run: exit 1

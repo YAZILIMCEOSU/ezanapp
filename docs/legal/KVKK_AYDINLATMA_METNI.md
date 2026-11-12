@@ -40,7 +40,7 @@ uygulamanın kendi işlemlerini kapsar.
 | 6 | Abonelik durumu | Satın alma/abonelik durumu, ürün kimliği | Premium özellikleri açmak | m.5/2-c | Google Play / App Store; ödeme kartı bilgisi bize ulaşmaz |
 | 7 | Destek yazışması | E-posta adresiniz, yazışma içeriği | Destek ve talep yönetimi | m.5/2-c ve m.5/2-f | E-posta sağlayıcısı; 2 yıl saklanır |
 | 8 | Bildirim jetonu (yalnızca Firebase yapılandırılırsa) | FCM cihaz jetonu | Duyuru/hatırlatma bildirimi | m.5/2-c; bildirim izni ayrıca alınır | Google Firebase (yurt dışı) |
-| 9 | Harita ve cami arama | Harita görüntü alanı koordinatları; cami arama kutucuğu | Harita gösterimi, yakındaki camiler | m.5/2-c | OpenStreetMap/Esri (karolar), Overpass API; kimlik gönderilmez |
+| 9 | Harita ve cami arama | Harita görüntü alanı; cami aramasında 3 ondalık (~110 m) konum | Harita gösterimi, yakındaki camiler | m.5/2-c | OpenStreetMap/Esri (karolar), unpkg (Leaflet), Overpass API; kimlik gönderilmez |
 
 ### 2.1 İşlemediğimiz veriler
 

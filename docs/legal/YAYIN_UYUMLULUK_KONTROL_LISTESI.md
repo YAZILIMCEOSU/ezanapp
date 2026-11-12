@@ -75,7 +75,7 @@ kanıt bağlantısı yazılır. İşaretlenmemiş **P0** maddesi varsa yayın ya
 ## E. Ses ve içerik lisansları (P0)
 
 - [x] `ezan_saba.mp3` lisans kanıtı olmadığı için kaldırıldı
-- [ ] `cdn.jsdelivr.net` bağımlılığı kaldırıldı (kodda yok)
+- [x] `cdn.jsdelivr.net` bağımlılığı kaldırıldı (kodda yok)
 - [ ] Tüm “gerçek müezzin/sanatçı” etiketleri kaldırıldı (kodda yok)
 - [ ] EveryAyah ticari kullanım izni alındı **veya** kaynak değişti
 - [ ] MP3 ID3 lisans/üretici etiketleri eklendi (P2)
@@ -88,6 +88,8 @@ kanıt bağlantısı yazılır. İşaretlenmemiş **P0** maddesi varsa yayın ya
 
 - [ ] Tüm yönetici hesaplarında 2FA
 - [ ] Supabase RLS testleri geçti (başka kullanıcı verisi okunamıyor)
+  - [x] Statik politika denetimi: `tools/verify_rls.py` — 16/16, CI kapısı
+  - [ ] Canlı test: iki anonim kullanıcı, A'nın satırı B tarafından okunamıyor
 - [ ] `service_role` anahtarı istemcide/repoda yok (gitleaks temiz)
 - [ ] TLS zorunlu, cleartext kapalı
 - [ ] Release keystore yedeği + parola kasası

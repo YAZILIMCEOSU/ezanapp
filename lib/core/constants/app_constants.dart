@@ -12,7 +12,7 @@ abstract final class AppConstants {
   ///
   /// ```bash
   /// flutter build appbundle --release \
-  ///   --dart-define=PRIVACY_URL=https://ornek.github.io/ezanapp/privacy.html
+  ///   --dart-define=PRIVACY_URL=https://yazilimceosu.github.io/ezanapp/privacy.html
   /// ```
   static const String supportEmail = String.fromEnvironment(
     'SUPPORT_EMAIL',

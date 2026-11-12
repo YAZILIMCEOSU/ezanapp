@@ -183,7 +183,7 @@ güncellenmelidir.</p>
 <td><strong>Koşullu</strong> (<code>push_service.dart</code>)</td>
 </tr>
 <tr>
-<td>Diyanet vakit servisi (İmsakiyem)</td>
+<td>Diyanet vakit servisi (İmsakiyem + emushaf yedeği)</td>
 <td>Üçüncü taraf</td>
 <td>Resmî vakit</td>
 <td>İlçe kimliği, tarih</td>
@@ -236,11 +236,11 @@ güncellenmelidir.</p>
 <td>OpenStreetMap tile / Overpass</td>
 <td>OSM Vakfı / topluluk</td>
 <td>Harita, cami arama</td>
-<td>Görüntü alanı koordinatları / arama kutucuğu, IP</td>
+<td>Görüntü alanı; aramada <strong>3 ondalık (~110 m)</strong> konum, IP</td>
 <td>Hayır</td>
 <td>AB</td>
 <td>Hizmet</td>
-<td><strong>Var</strong> (<code>mosque_finder_screen.dart</code>, harita)</td>
+<td><strong>Var</strong> (<code>mosque_finder_screen.dart</code>) — yuvarlama uygulandı</td>
 </tr>
 <tr>
 <td>Esri ArcGIS tiles</td>
@@ -260,7 +260,17 @@ güncellenmelidir.</p>
 <td>Hayır</td>
 <td>ABD</td>
 <td>—</td>
-<td><strong>Var</strong> — lisanssız, kaldırılmalı</td>
+<td><strong>Kaldırıldı</strong> (12.11.2026) — kodda yok</td>
+</tr>
+<tr>
+<td>unpkg (Leaflet CDN)</td>
+<td>Cloudflare</td>
+<td>Harita kütüphanesi</td>
+<td>IP, user-agent</td>
+<td>Hayır</td>
+<td>ABD</td>
+<td>Hizmet</td>
+<td><strong>Var</strong> — SRI ile sabitlendi (<code>sha256</code>)</td>
 </tr>
 <tr>
 <td>Google Maps (dış link)</td>
@@ -278,7 +288,7 @@ güncellenmelidir.</p>
 <pre><code>Cihaz
  ├─ Konum ──► yerel vakit/kıble hesabı        (koordinat sunucuya gitmez)
  ├─ İlçe kimliği ──► Diyanet servisi          (koordinat yok)
- ├─ Konum (yedek) ──► AlAdhan                 (koordinat — 2 ondalığa yuvarlanmalı)
+ ├─ Konum (yedek) ──► AlAdhan                 (2 ondalık, ~1 km)
  ├─ Harita ekranı ──► OSM/Esri tile            (görüntü alanı)
  ├─ Cami ara ──► Overpass                     (arama kutucuğu)
  ├─ AI sorusu ──► AI backend                  (yalnızca rıza ile)
@@ -339,8 +349,8 @@ güncellenmelidir.</p>
 <td>Kullanıcı eylemi</td>
 </tr>
 <tr>
-<td><code>flutter_map</code> (leaflet benzeri)</td>
-<td>pubspec</td>
+<td>Leaflet 1.9.4 (WebView, unpkg + SRI)</td>
+<td>HTML</td>
 <td>Harita tile</td>
 <td>Ağ</td>
 </tr>
@@ -436,8 +446,8 @@ saklanır (depoya commit edilmez).</p>
 <td>1</td>
 <td><code>cdn.jsdelivr.net</code> üzerinden ilahi/ezan akışı</td>
 <td>Telif + kaynak belirsizliği</td>
-<td>Yerel lisanslı varlıkla değiştir veya kaldır</td>
-<td><strong>P0</strong></td>
+<td><strong>Yapıldı:</strong> uzak akış kaldırıldı; tüm ilahiler yerel lisanslı varlık</td>
+<td><strong>P0 ✓</strong></td>
 </tr>
 <tr>
 <td>2</td>
@@ -464,8 +474,8 @@ saklanır (depoya commit edilmez).</p>
 <td>5</td>
 <td>Supabase RLS doğrulaması</td>
 <td>Veri sızıntısı</td>
-<td>Politikaları test et</td>
-<td><strong>P0</strong></td>
+<td>Statik denetim CI'da (<code>verify_rls.py</code>); canlı iki kullanıcı testi yayın öncesi</td>
+<td><strong>P0 (kısmi)</strong></td>
 </tr>
 <tr>
 <td>6</td>

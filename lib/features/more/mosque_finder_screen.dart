@@ -17,6 +17,28 @@ import '../../design/app_spacing.dart';
 import '../../router/app_router.dart';
 import '../../state/providers.dart';
 
+/// Overpass'a gönderilen koordinatı ~110 m hassasiyete yuvarlar.
+///
+/// KVKK veri minimizasyonu: cami araması için metre altı hassasiyet gerekmez;
+/// 3 ondalık, 2,5 km yarıçapında sonucu değiştirmez.
+String _approxCoordinate(double value) => value.toStringAsFixed(3);
+
+/// Cami arama sorgusunu üretir (test edilebilir, ağ erişimi yok).
+String buildOverpassQuery({
+  required double latitude,
+  required double longitude,
+}) {
+  final String lat = _approxCoordinate(latitude);
+  final String lon = _approxCoordinate(longitude);
+  return '[out:json][timeout:12];('
+      'node["amenity"="place_of_worship"]["religion"="muslim"](around:2500,$lat,$lon);'
+      'way["amenity"="place_of_worship"]["religion"="muslim"](around:2500,$lat,$lon);'
+      'relation["amenity"="place_of_worship"]["religion"="muslim"](around:2500,$lat,$lon);'
+      'node["building"="mosque"](around:2500,$lat,$lon);'
+      'way["building"="mosque"](around:2500,$lat,$lon);'
+      ');out center;';
+}
+
 /// Bir cami kaydı (konum, mesafe, yön ve imkânlar).
 @immutable
 class MosquePlace {
@@ -385,14 +407,10 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
     // ilk 60 kaydı kesip en yakın sokak camilerini düşürüyordu!
     // Bu yüzden 2.5 km mahalle yarıçapındaki TÜM cami ve mescitler (`out center;`)
     // eksiksiz çekilip Dart tarafında metre hassasiyetinde sıralanır.
-    final String overpassQuery =
-        '[out:json][timeout:12];('
-        'node["amenity"="place_of_worship"]["religion"="muslim"](around:2500,${loc.latitude},${loc.longitude});'
-        'way["amenity"="place_of_worship"]["religion"="muslim"](around:2500,${loc.latitude},${loc.longitude});'
-        'relation["amenity"="place_of_worship"]["religion"="muslim"](around:2500,${loc.latitude},${loc.longitude});'
-        'node["building"="mosque"](around:2500,${loc.latitude},${loc.longitude});'
-        'way["building"="mosque"](around:2500,${loc.latitude},${loc.longitude});'
-        ');out center;';
+    final String overpassQuery = buildOverpassQuery(
+      latitude: loc.latitude,
+      longitude: loc.longitude,
+    );
     const List<String> endpoints = <String>[
       'https://overpass-api.de/api/interpreter',
       'https://lz4.overpass-api.de/api/interpreter',
@@ -1706,8 +1724,10 @@ class _LiveMosquesInteractiveMapState
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
 <style>
   html, body, #map { margin:0; padding:0; width:100%; height:100%; background:#E0F2F1; font-family:sans-serif; }
   .m-btn {
