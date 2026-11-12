@@ -31,7 +31,8 @@ kanıt bağlantısı yazılır. İşaretlenmemiş **P0** maddesi varsa yayın ya
 - [ ] `USE_EXACT_ALARM` beyanı hazır veya izin kaldırıldı (P1)
 - [x] Reklamlar: kişiselleştirme UMP ile yönetiliyor; varsayılan NPA
   (`AdsService.nonPersonalizedAds`, rıza `personalizedAdsConsentAt` ile)
-- [ ] Premium: Play Billing, otomatik yenileme bilgisi, “Aboneliği yönet”
+- [x] Premium: Play Billing, otomatik yenileme bilgisi, “Aboneliği yönet”,
+  abonelik/EULA/gizlilik bağlantıları (Premium ekranı)
 - [ ] Hesap/veri silme: uygulama içi + web sayfası
 - [ ] İçerik derecesi anketi tamamlandı (dinî içerik, 3+/7+)
 - [ ] Hedef kitle 13+, çocuk politikası beyanı

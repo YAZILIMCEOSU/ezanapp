@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/config/app_config.dart';
 import '../../core/errors/app_exception.dart';
 import '../../core/services/billing_service.dart';
 import '../../core/services/compass_service.dart';
@@ -364,24 +365,43 @@ class _PremiumScreenState extends ConsumerState<PremiumScreen> {
               style: TextStyle(height: 1.6, fontSize: 12),
             ),
           ),
-          Center(
-            child: TextButton(
-              onPressed: () async {
-                final Uri uri = Uri.parse(
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: AppSpacing.md,
+            children: <Widget>[
+              TextButton(
+                onPressed: () => _openLegal(
                   'https://play.google.com/store/account/subscriptions',
-                );
-                try {
-                  await launchUrl(uri, mode: LaunchMode.externalApplication);
-                } catch (error) {
-                  AppLog.warning('Abonelik sayfası açılamadı: $error');
-                }
-              },
-              child: const Text('Aboneliği Play Store\'da yönet'),
-            ),
+                ),
+                child: const Text('Aboneliği Play Store\'da yönet'),
+              ),
+              TextButton(
+                onPressed: () =>
+                    _openLegal(AppConfig.subscriptionTermsUrl),
+                child: const Text('Abonelik koşulları ve iade'),
+              ),
+              TextButton(
+                onPressed: () => _openLegal(AppConfig.termsUrl),
+                child: const Text('Kullanım koşulları'),
+              ),
+              TextButton(
+                onPressed: () => _openLegal(AppConfig.privacyPolicyUrl),
+                child: const Text('Gizlilik politikası'),
+              ),
+            ],
           ),
         ],
       ),
     );
+  }
+
+  /// Yasal ve mağaza bağlantılarını tarayıcıda açar; hata uygulamayı durdurmaz.
+  Future<void> _openLegal(String url) async {
+    try {
+      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    } catch (error) {
+      AppLog.warning('Bağlantı açılamadı: $error');
+    }
   }
 
   Future<void> _purchase(PremiumProduct product) async {

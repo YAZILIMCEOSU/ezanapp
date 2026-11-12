@@ -137,7 +137,9 @@ Her uygulama ve üçüncü taraf SDK için zorunludur (ITMS-91053 reddi).
 - Harici ödeme yönlendirmesi yok (3.1.3 istisnaları Türkiye’de geçerli
   değildir).
 - Abonelik ekranında: ürün adı, süre, fiyat, otomatik yenileme, iptal yolu,
-  gizlilik ve kullanım koşulları bağlantıları (3.1.2).
+  gizlilik ve kullanım koşulları bağlantıları (3.1.2). **Premium ekranında
+  “Abonelik koşulları ve iade”, “Kullanım koşulları” ve “Gizlilik politikası”
+  bağlantıları eklendi.**
 - “Restore Purchases” düğmesi zorunlu.
 - Abonelik grubu: `ezanai_premium`; ürünler `monthly/yearly/lifetime`.
 
