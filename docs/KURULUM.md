@@ -170,7 +170,6 @@ duruyor: `docs/privacy.html` (+ `docs/terms.html`, `docs/index.html`).
    https://yazilimceosu.github.io/ezanapp/privacy.html
    ```
 
-   (`KULLANICI` = GitHub kullanıcı adınız, ör. `yazilimceosu`.)
 4. Play Console → Uygulama içeriği → **Gizlilik politikası** alanına bu adresi girin.
 5. Uygulama içi bağlantıların aynı adrese gitmesi için derlemede
    `--dart-define=PRIVACY_URL=... --dart-define=TERMS_URL=...` verin (§6).

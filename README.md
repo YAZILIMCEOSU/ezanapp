@@ -36,6 +36,7 @@ Yayın (web) sayfaları `docs/*.html` olarak üretilir
 - [Google Play uyum](docs/legal/GOOGLE_PLAY_UYUM.md)
 - [Apple App Store uyum](docs/legal/APPLE_APP_STORE_UYUM.md)
 - [Siber güvenlik protokolü](docs/legal/SIBER_GUVENLIK_PROTOKOLU.md)
+- [Güvenlik açığı bildirim politikası (SECURITY.md)](SECURITY.md)
 - [Yayın kontrol listesi](docs/legal/YAYIN_UYUMLULUK_KONTROL_LISTESI.md)
 
 > Yasal metinlerdeki bir ifade kodla çelişiyorsa ikisi birlikte düzeltilir;

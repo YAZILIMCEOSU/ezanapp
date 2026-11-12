@@ -1,7 +1,7 @@
 # KOPYALA-YAPIŞTIR kutusu
 
 Bu dosyadaki metinleri Play Console'daki ilgili alanlara **olduğu gibi** yapıştır.
-Hiçbir şeyi değiştirmen gerekmiyor. (Yer tutucular: `KULLANICI` = GitHub kullanıcı adın.)
+Hiçbir şeyi değiştirmen gerekmiyor. Adresler gerçek GitHub Pages adresidir.
 
 > Yazı tipleri bozulmasın diye metinleri kopyalarken bloğun tamamını seç
 > (telefonda: metne uzun bas → "Tümünü seç" → "Kopyala").
@@ -61,7 +61,7 @@ Vakitlerde tereddüt hâlinde bulunduğunuz yerin resmî ilanlarını esas alın
 https://yazilimceosu.github.io/ezanapp/privacy.html
 ```
 
-(Kendi adresini 3. adımda gördüğün gibi yaz: `KULLANICI` yerine GitHub kullanıcı adın.)
+(Adres `main` birleşmesinden sonra GitHub Pages'te yayımlanır.)
 
 ## 5. Sürüm notları (dahili test ve kapalı test yüklerken sorulur)
 

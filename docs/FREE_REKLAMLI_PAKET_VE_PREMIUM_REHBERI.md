@@ -48,11 +48,11 @@ uygulamanın içinde **"reklamsız + ek özellikler"** olarak açılır.
 | Konu | 2026 kuralı | Bizim durumumuz |
 |---|---|---|
 | **Hedef API** | Yeni uygulama/güncelleme: **API 36** (31.08.2026'dan beri) | ✅ `targetSdk 36` |
-| **16 KB sayfa boyutu** | Android 15+ cihazlar için `targetSdk 35+` uygulamalarda zorunlu | ✅ Flutter 3.47 / AGP 8.12 uyumlu |
+| **16 KB sayfa boyutu** | Android 15+ cihazlar için `targetSdk 35+` uygulamalarda zorunlu | ✅ Flutter 3.47 / AGP 9.1 uyumlu |
 | **Paket biçimi** | Play'e **AAB** yüklenir (APK değil) | ✅ CI `appbundle` üretiyor |
 | **Reklam beyanı** | "Bu uygulama reklam içeriyor" → **Evet** | Ücretsiz pakette Evet |
 | **Veri güvenliği formu** | Konum, cihaz kimliği (reklam kimliği) beyanı zorunlu | AdMob entegrasyonu ile beyan edilecek (Bölüm 3.7) |
-| **Gizlilik politikası** | Zorunlu, herkese açık URL | `AppConstants.privacyUrl` (ezanai.app/privacy.html) — **yayında olmalı** |
+| **Gizlilik politikası** | Zorunlu, herkese açık URL | `AppConstants.privacyUrl` (`yazilimceosu.github.io/ezanapp/privacy.html`) — **yayında olmalı** |
 | **Kapalı test** | **Kişisel** geliştirici hesapları üretime geçmeden önce **12 test kullanıcısı ile 14 gün** kesintisiz kapalı test yapmalı | Planlandı (Bölüm 6) |
 | **AI üreten içerik** | Üretken AI sunan uygulamalarda **kullanıcı bildirim/şikâyet mekanizması** ve politika uyumu | İslami AI Asistanı ekranında "Bildir" akışı (Faz 4) |
 | **Ön plan servisi** | Android 14+ `FOREGROUND_SERVICE_MEDIA_PLAYBACK` Play Console'da **beyan** edilmeli | Ses oynatma için beyan edilecek (Bölüm 6.4) |

@@ -59,11 +59,11 @@ CI'nın doğrulamadığı (gerçek yayın öncesi sizin yapmanız gereken) adım
 
 ### Araç zinciri sürümleri (bilinçli seçim)
 
-`Gradle 8.14.3 / AGP 8.12.1 / Kotlin 2.2.20` kullanılır. Flutter'ın derleme
-uyarıları bu sürümler için "yakında desteklenmeyecek" der; Google Services
-eklentisi ve Kotlin uyumluluğu doğrulanana kadar AGP 9 / Kotlin 2.3'e
-**yükseltilmemelidir**. Yükseltme yapılacaksa önce bu iş akışının yeşil kalması
-(gerekirse deneme anahtarıyla) doğrulanmalıdır.
+`Gradle 9.3.1 / AGP 9.1.1 / Kotlin 2.4.0` kullanılır (Flutter 3.47.6'nın
+desteklediği aralık). `android.newDsl=false` ve `android.builtInKotlin=false`
+bayrakları AGP 9'un eski DSL ile uyumunu korur; Kotlin hedefi
+`kotlin.compilerOptions` ile verilir. Sürüm yükseltmelerinden sonra CI'da
+`flutter analyze`, testler, APK ve AAB derlemeleri **yeşil** olmalıdır.
 
 ## 3. Derleme zamanı yapılandırması
 
