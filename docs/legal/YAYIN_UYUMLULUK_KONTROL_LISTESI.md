@@ -43,6 +43,9 @@ kanıt bağlantısı yazılır. İşaretlenmemiş **P0** maddesi varsa yayın ya
 - [ ] Kapalı test: **12 test kullanıcısı / 14 gün** tamamlandı
 - [ ] Aşamalı yayın planı (%10 → %50 → %100) hazır
 - [ ] Destek e-postası ve geliştirici iletişimi doğrulandı
+- [ ] **Marka/ad çakışması:** Turkpatent’te “Ezan Vakti/Vaktim” (sınıf 9, 42)
+      araştırıldı; benzer adlı Play/App Store uygulamalarıyla karışma riski
+      değerlendirildi (bkz. `GOOGLE_PLAY_UYUM.md` §1.1)
 
 ## C. Apple App Store (iOS hazırlanırken)
 
@@ -125,7 +128,7 @@ kanıt bağlantısı yazılır. İşaretlenmemiş **P0** maddesi varsa yayın ya
 
 | Rol | Ad | Tarih | İmza |
 |---|---|---|---|
-| Geliştirici | YazılımCeosu |  |  |
+| Geliştirici | YazılımCeosu (gerçek kişi — şirket yok, MERSİS/VKN yok) |  |  |
 | Hukuk danışmanı (varsa) |  |  |  |
 
 > **Kural:** P0 maddelerinden biri açıksa yayın **durdurulur**. P1 maddeleri

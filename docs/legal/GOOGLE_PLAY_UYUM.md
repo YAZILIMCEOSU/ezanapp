@@ -23,6 +23,47 @@
 | Hesap | Zorunlu değil; bulut yedeklemede anonim oturum |
 | Gizlilik politikası | `https://yazilimceosu.github.io/ezanapp/privacy.html` |
 | Destek | `https://yazilimceosu.github.io/ezanapp/` · destek@ezanai.app |
+| Geliştirici türü | **Bireysel (gerçek kişi)** — şirket, ticari unvan, MERSİS/VKN **yok** |
+| Geliştirici hesabı | Play Console bireysel hesap → 12 test kullanıcısı / 14 gün kapalı test şartı |
+
+## 1.1 Ad, marka ve “copycat” riski
+
+Play Store’da **benzer adlı** uygulamalar bulunmaktadır (12.11.2026 kontrolü):
+
+| Mağaza kaydı | Geliştirici | Paket | Durum |
+|---|---|---|---|
+| Ezan Vakti Pro: Namaz Saatleri | EDR Software Corp. | `com.dogrusoftware.ezanvaktipro` | Yayında (Mart 2026’dan beri) |
+| Ezan Vakti Pro: Namaz Vakti | Ela İnternet Hizmetleri San. Tic. Ltd. Şti. | — | Yayında |
+| Ezan Vakti Pro | Ezan Saati | `ezan.vakti.pro` | **Kaldırıldı** (Eylül 2024) |
+
+**Bizim kaydımız:** “Ezan Vaktim Pro” · `com.yazilimceosu.ezanai` · geliştirici
+YazılımCeosu. Yukarıdaki uygulamalarla **hiçbir bağlantımız yoktur**; onların
+adı, ikonu, ekran görüntüsü veya kodu kullanılmamıştır.
+
+**Riskler:**
+
+1. **Google Play — Impersonation / Intellectual Property:** Başka bir
+   uygulamanın adını/ikonunu taklit etmek reddedilir. Tek harf farkı
+   (“Vakti” → “Vaktim”) ayırt ediciliği zayıflatır.
+2. **Apple App Store — 4.1 Copycats:** “Başka bir uygulamanın adında veya
+   arayüzünde küçük değişiklik yapıp kendi uygulaman gibi sunma” açıkça
+   yasaktır. Bu nedenle iOS yayınında ad riski daha yüksektir.
+3. **Marka hakkı:** “Ezan Vakti Pro” adı bir başka geliştirici adına tescilli
+   olabilir; tescil varsa kullanım ihlal sayılır.
+
+**Azaltma:**
+
+- [x] Kendi paket kimliği (`com.yazilimceosu.ezanai`), kendi ikonu, kendi
+      ekran görüntüleri ve özgün metinler.
+- [x] Mağaza başlığında ayırt edici alt başlık: “Ezan Vaktim Pro — Akıllı
+      İslam Asistanı”.
+- [ ] Yayın öncesi **Turkpatent** marka araştırması („Ezan Vakti”, „Ezan
+      Vaktim” sınıf 9/42).
+- [ ] Şikâyet/itiraz gelirse 5 iş günü içinde adı değiştirmeye hazır ol;
+      yedek ad önerileri: **“Vaktim”**, **“Ezan Vaktim”**, **“Mihrap”**.
+- [ ] Mağaza açıklamasında “Ezan Vakti Pro ile bağlantılı değildir” ifadesi
+      **kullanılmaz** (rakip adını öne çıkarır); bunun yerine kendi marka
+      farkı anlatılır.
 
 ## 2. Data safety — veri türleri
 

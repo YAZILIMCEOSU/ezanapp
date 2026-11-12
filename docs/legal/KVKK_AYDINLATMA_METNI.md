@@ -4,6 +4,8 @@
 **Son güncelleme:** 12 Kasım 2026
 **Yürürlük:** Yayımlandığı tarih
 **Veri sorumlusu:** YazılımCeosu (gerçek kişi geliştirici) — İstanbul, Türkiye
+**Not:** Şirket/ticari unvan bulunmamaktadır; MERSİS ve VKN yoktur. Veri
+sorumlusu gerçek kişidir ve KVKK m.6/2 ile VERBİS istisnası kapsamındadır.
 **Başvuru / iletişim:** destek@ezanai.app
 **Uygulama:** Ezan Vaktim Pro — Akıllı İslam Asistanı (`com.yazilimceosu.ezanai`)
 

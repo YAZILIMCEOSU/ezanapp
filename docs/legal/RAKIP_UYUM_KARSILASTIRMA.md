@@ -4,14 +4,17 @@
 **Amaç:** Pazardaki büyük ezan uygulamalarının **kamuya açık** uyum
 özelliklerini karşılaştırıp Ezan Vaktim Pro’nun farkını ve risklerini
 belirlemek. Bu belge hukuki iddia değildir; mağaza sayfaları ve kamuya açık
-kaynaklara dayanır.
+kaynaklara dayanır. Karşılaştırma yalnızca özellik/fiyat düzeyindedir;
+hiçbir rakip uygulamanın adı, ikonu, metni veya kodu kopyalanmamıştır.
+Ad benzerliği riski [`GOOGLE_PLAY_UYUM.md`](GOOGLE_PLAY_UYUM.md) §1.1’de
+ayrıca ele alınmıştır.
 
 ## 1. Pazar özeti
 
 | Uygulama | Ücretsiz sürüm | Premium (2026 civarı) | Öne çıkan uyum konusu |
 |---|---|---|---|
 | Muslim Pro | Reklamlı | ~$3,99/ay · ~$29,99/yıl | 2020’de konum verisinin üçüncü taraflara satıldığı iddiası; veri simsarcılığı yasağı ve şeffaflık beklentisi |
-| Ezan Vakti Pro | Reklamlı | ~€1,99/ay · ~€22,99/yıl | Türkiye pazarı; KVKK aydınlatma ve reklam rızası |
+| Ezan Vakti Pro (EDR Software Corp. / Ela İnternet) | Reklamlı | ~€1,99/ay · ~€22,99/yıl | Türkiye pazarı; KVKK aydınlatma ve reklam rızası; **bizimle bağlantısı yok** |
 | Athan Pro | Reklamlı | ~$4,99/yıl | Basit abonelik; veri minimizasyonu |
 | **Ezan Vaktim Pro** | Reklamlı | **₺79,99/ay · ₺599,99/yıl · ₺1.499,99 ömürlük** | **Hesapsız, cihazda konum, rızasız uzak AI/yedekleme yok, veri simsarcısı yok** |
 

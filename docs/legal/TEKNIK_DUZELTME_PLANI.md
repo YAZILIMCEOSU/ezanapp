@@ -44,6 +44,8 @@
 | 10 | MP3 ID3 lisans etiketleri | Ses dosyaları | **P2** | `mutagen` ile doğrulama |
 | 11 | Mağaza metinlerini güncelle | Play/App Store | **P0** | “Gerçek müezzin” yok |
 | 12 | Fiyat tek kaynak | Dokümanlar + Console | **P0** | ₺79,99 / ₺599,99 / ₺1.499,99 |
+| 13 | Marka/ad çakışması | Play + App Store | **P0** | Turkpatent araştırması; gerekirse ad değişikliği (bkz. `GOOGLE_PLAY_UYUM.md` §1.1) |
+| — | ~~Şirket künyesi (MERSİS/VKN)~~ | Mağaza/hukuk metinleri | **N/A** | **Şirket yok:** geliştirici gerçek kişi; MERSİS/VKN gerekmez, metinler güncellendi |
 
 ## 3. Fiyat tutarlılığı
 

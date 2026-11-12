@@ -2,7 +2,7 @@
 
 **Sürüm:** 1.0 · **Tarih:** 12 Kasım 2026
 **Satıcı (dijital mağaza):** Google Play / Apple App Store
-**Hizmet sağlayıcı:** YazılımCeosu — destek@ezanai.app
+**Hizmet sağlayıcı:** YazılımCeosu (gerçek kişi geliştirici) — destek@ezanai.app
 **İlgili:** [`KULLANIM_KOSULLARI.md`](KULLANIM_KOSULLARI.md)
 
 > Bu belge, 6502 sayılı Tüketicinin Korunması Hakkında Kanun ve Mesafeli
