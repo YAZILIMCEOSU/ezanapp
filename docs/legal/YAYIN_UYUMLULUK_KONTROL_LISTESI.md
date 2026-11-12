@@ -26,8 +26,10 @@ kanıt bağlantısı yazılır. İşaretlenmemiş **P0** maddesi varsa yayın ya
 - [ ] Target API **36** doğrulandı (`aapt2 dump badging`)
 - [ ] 16 KB sayfa boyutu uyumu doğrulandı
 - [ ] Data safety tablosu `GOOGLE_PLAY_UYUM.md` §2 ile birebir
-- [ ] “Konum sunucuya gönderilmez” ifadesi AlAdhan istisnasıyla tutarlı
-- [ ] AI-Generated Content: uygulama içi “Bu cevabı bildir” çalışıyor
+- [x] “Konum sunucuya gönderilmez” ifadesi AlAdhan istisnasıyla tutarlı
+  (2 ondalık ~1 km; Hakkında ekranı ve KVKK metni güncellendi)
+- [x] AI-Generated Content: uygulama içi “Bu cevabı bildir” çalışıyor
+  (`AiReportService`, cihazda saklanır)
 - [ ] `USE_EXACT_ALARM` beyanı hazır veya izin kaldırıldı (P1)
 - [x] Reklamlar: kişiselleştirme UMP ile yönetiliyor; varsayılan NPA
   (`AdsService.nonPersonalizedAds`, rıza `personalizedAdsConsentAt` ile)
