@@ -1,4 +1,4 @@
-# CI raporu (2026-11-12 11:57 UTC)
+# CI raporu (2026-11-12 12:15 UTC)
 
 | adım | sonuç |
 |---|---|
@@ -8,6 +8,7 @@
 | test | success |
 | test sayısı kapısı | success |
 | test (uzak AI sözleşmesi) | success |
+| RLS politika denetimi | success |
 | kıble doğrulaması (6 kontrol) | success |
 | imza doğrulaması (apksigner) | success |
 | build (debug apk) | success |
@@ -225,23 +226,18 @@ pubspec.yaml
 
 1 fix made in 1 file.
 == dart format ==
-Formatted 139 files (0 changed) in 1.56 seconds.
+Formatted 141 files (0 changed) in 1.52 seconds.
 ```
 
 ## analyze
 ```
 Analyzing ezanapp...                                            
-No issues found! (ran in 13.4s)
+No issues found! (ran in 12.7s)
 ```
 
 ## test
 ```
-00:00 +6: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: bildirim yönlendirmesi her bildirim hedefi geçerli bir yola gider
-00:00 +7: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: bildirim yönlendirmesi eski bildirim yükleri doğru ekrana yönlendirir
-00:00 +8: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: kaynak taraması app_router.dart içindeki her yol sabiti çözümlenir
-00:00 +9: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: bilinmeyen yol tanımsız yol hata ekranına düşer (çökme yok)
-00:00 +10: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: yol sabitleri tutarlı yol sabitleri Türkçe ve küçük harfli
-00:00 +11: /home/runner/work/ezanapp/ezanapp/test/router/navigation_test.dart: yol sabitleri tutarlı sure/ayet yolu sorgu parametresiyle kurulur
+00:00 +11: /home/runner/work/ezanapp/ezanapp/test/data/aladhan_privacy_test.dart: AlAdhan aralık isteğinde de koordinat yuvarlanır
 00:01 +12: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında soru yerel bilgi tabanından kaynaklı yanıtlanır
 00:01 +13: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırılmadığında bilinmeyen soruda dürüst "bilmiyorum" cevabı döner
 00:01 +14: /home/runner/work/ezanapp/ezanapp/test/data/ai_remote_test.dart: backend yapılandırıldığında kaynaklı uzak yanıt kabul edilir
@@ -277,10 +273,10 @@ No issues found! (ran in 13.4s)
 00:01 +30 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay bozuk veri sağlıksız kabul edilir
 00:01 +31 ~6: /home/runner/work/ezanapp/ezanapp/test/data/models_test.dart: PrayerTimesDay JSON gidiş-dönüşü vakitleri korur
 00:02 +32 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: (setUpAll)
-00:03 +32 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: V1+V6 — Diyanet ile dakika farkı yerel hesap Diyanet ile **yansız** (±0,5 dk ortalama) eşleşir
-00:03 +33 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: V1+V6 — Diyanet ile dakika farkı ikindi asla 1 dk'dan fazla geç olmaz (V11)
-00:03 +34 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: V1+V6 — Diyanet ile dakika farkı temkin: akşam/yatsı düzeltmeleri Diyanet ile aynı (V6)
-00:03 +35 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: V1+V6 — Diyanet ile dakika farkı AlAdhan yanıtına yöntemin temkin düzeltmesi uygulanır (V1)
+00:02 +32 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: V1+V6 — Diyanet ile dakika farkı yerel hesap Diyanet ile **yansız** (±0,5 dk ortalama) eşleşir
+00:02 +33 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: V1+V6 — Diyanet ile dakika farkı ikindi asla 1 dk'dan fazla geç olmaz (V11)
+00:02 +34 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: V1+V6 — Diyanet ile dakika farkı temkin: akşam/yatsı düzeltmeleri Diyanet ile aynı (V6)
+00:02 +35 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: V1+V6 — Diyanet ile dakika farkı AlAdhan yanıtına yöntemin temkin düzeltmesi uygulanır (V1)
 00:03 +36 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: V1+V6 — Diyanet ile dakika farkı temkinsiz yöntem (MWL) AlAdhan ham değerini korur
 00:03 +37 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: V2+V3 — resmî veri ve kullanıcı düzeltmeleri Hanefî ikindi seçilse de resmî Diyanet verisi kullanılır (V2)
 00:03 +38 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: V2+V3 — resmî veri ve kullanıcı düzeltmeleri önbellekten okunan resmî veriye de Hanefî kaydırma uygulanır (V8)
@@ -289,20 +285,21 @@ No issues found! (ran in 13.4s)
 00:03 +41 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: V4 — bugünkü ekran ile haftalık tablo/bildirim aynı dakika gün ve aralık aynı vakitleri döndürür
 00:03 +42 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: V5 — bayat aralık önbelleği yenilenir 7 saatlik önbellek yeniden çekilir
 00:03 +43 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: V9 — aralık eksiksiz (ay sınırı, bildirim boşluğu) ay sonunu aşan aralıkta tüm günler döner
-00:03 +44 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: V9 — aralık eksiksiz (ay sınırı, bildirim boşluğu) ay sonunu aşan aralıkta tüm günler döner
-00:03 +45 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı her kayıtta başlık, cevap, anahtar kelime ve kaynak var
-00:03 +46 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: V9 — aralık eksiksiz (ay sınırı, bildirim boşluğu) istediğin aralık dışındaki günler atılır
-00:03 +47 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: V9 — aralık eksiksiz (ay sınırı, bildirim boşluğu) istediğin aralık dışındaki günler atılır
-00:03 +48 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: V9 — aralık eksiksiz (ay sınırı, bildirim boşluğu) istediğin aralık dışındaki günler atılır
-00:03 +49 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: V9 — aralık eksiksiz (ay sınırı, bildirim boşluğu) istediğin aralık dışındaki günler atılır
-00:03 +50 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: V9 — aralık eksiksiz (ay sınırı, bildirim boşluğu) istediğin aralık dışındaki günler atılır
-00:03 +51 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: V9 — aralık eksiksiz (ay sınırı, bildirim boşluğu) istediğin aralık dışındaki günler atılır
-00:03 +52 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi namaz rekatı sorusu doğru kayda gider
-00:03 +53 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi namaz rekatı sorusu doğru kayda gider
-00:03 +54 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi namaz rekatı sorusu doğru kayda gider
-00:03 +55 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: Kaynak etiketi — "güncelleme" ifadesi netleşti kaynak ve tazelik ayrı ayrı okunur
-00:03 +56 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi abdest sorusu doğru kayda gider
-00:03 +57 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: Kaynak etiketi — "güncelleme" ifadesi netleşti cihaz hesabı ve yedek servis ayrı etiketlenir
+00:03 +44 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: V9 — aralık eksiksiz (ay sınırı, bildirim boşluğu) istediğin aralık dışındaki günler atılır
+00:03 +45 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: V7 — dünya şehri saat dilimi Kâbil çevrimdışı hesapta +4,5 saat dilimini kullanır
+00:03 +46 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı en az 20 kayıt ve benzersiz kimlikler
+00:03 +47 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı en az 20 kayıt ve benzersiz kimlikler
+00:03 +48 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: Kaynak etiketi — "güncelleme" ifadesi netleşti kaynak ve tazelik ayrı ayrı okunur
+00:03 +49 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı her kayıtta başlık, cevap, anahtar kelime ve kaynak var
+00:03 +50 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: Kaynak etiketi — "güncelleme" ifadesi netleşti cihaz hesabı ve yedek servis ayrı etiketlenir
+00:03 +51 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: Kaynak etiketi — "güncelleme" ifadesi netleşti cihaz hesabı ve yedek servis ayrı etiketlenir
+00:03 +52 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: Kaynak etiketi — "güncelleme" ifadesi netleşti cihaz hesabı ve yedek servis ayrı etiketlenir
+00:03 +53 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: Kaynak etiketi — "güncelleme" ifadesi netleşti cihaz hesabı ve yedek servis ayrı etiketlenir
+00:03 +54 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: Kaynak etiketi — "güncelleme" ifadesi netleşti cihaz hesabı ve yedek servis ayrı etiketlenir
+00:03 +55 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: KnowledgeBase yapısı kaynak künyeleri kaynak türüne ayrılabiliyor
+00:03 +56 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_time_fidelity_test.dart: (tearDownAll)
+00:03 +56 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi namaz rekatı sorusu doğru kayda gider
+00:03 +57 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi abdest sorusu doğru kayda gider
 00:03 +58 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi zekât sorusu doğru kayda gider
 00:03 +59 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi kıble sorusu doğru kayda gider
 00:03 +60 ~6: /home/runner/work/ezanapp/ezanapp/test/data/knowledge_base_test.dart: LocalKnowledgeSource eşleştirmesi Türkçe karakter ve büyük harf farkı eşleşmeyi bozmaz
@@ -360,13 +357,13 @@ No issues found! (ran in 13.4s)
 00:05 +110 ~6: /home/runner/work/ezanapp/ezanapp/test/data/pose_fusion_test.dart: 4. Ekran dönüşü (yatay tutuş) eksen eşlemesi Dört ekran yönü de tanımlı ve birbirinden farklı
 00:05 +111 ~6: /home/runner/work/ezanapp/ezanapp/test/data/pose_fusion_test.dart: 4. Ekran dönüşü (yatay tutuş) eksen eşlemesi Dikey ekran için AXIS_X / AXIS_Y
 00:05 +112 ~6: /home/runner/work/ezanapp/ezanapp/test/data/pose_fusion_test.dart: 4. Ekran dönüşü (yatay tutuş) eksen eşlemesi Yan çevrilmiş ekranda eksenler döner (AY, -AX)
-00:06 +113 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: (setUpAll)
-00:06 +113 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: AI kota, kaynak doğrulama ve fetva güvenliği günlük kota dolsa bile İslam'ın ve imanın şartları gibi onaylı cevaplar engellenmez
-00:06 +114 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: AI kota, kaynak doğrulama ve fetva güvenliği fetva soruları tespit edilir ve uydurma kaynaklar elenir
-00:06 +115 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Namaz vakitleri tekil anlık görüntü (PrayerScheduleSnapshot) gün içinde aktif vakit, sıradaki vakit ve geri sayım tutarlıdır
-00:06 +116 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Namaz vakitleri tekil anlık görüntü (PrayerScheduleSnapshot) yatsı sonrasında sıradaki vakit yarının imsakıdır
-00:06 +117 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Namaz vakitleri tekil anlık görüntü (PrayerScheduleSnapshot) gece yarısı geçildiğinde aktif gün otomatik olarak yarına devreder
-00:06 +118 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Namaz vakitleri tekil anlık görüntü (PrayerScheduleSnapshot) hesaplama yöntemi ve Hanefî ikindi değişimi vakitleri yeniler
+00:05 +113 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: (setUpAll)
+00:05 +113 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: AI kota, kaynak doğrulama ve fetva güvenliği günlük kota dolsa bile İslam'ın ve imanın şartları gibi onaylı cevaplar engellenmez
+00:05 +114 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: AI kota, kaynak doğrulama ve fetva güvenliği fetva soruları tespit edilir ve uydurma kaynaklar elenir
+00:05 +115 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Namaz vakitleri tekil anlık görüntü (PrayerScheduleSnapshot) gün içinde aktif vakit, sıradaki vakit ve geri sayım tutarlıdır
+00:05 +116 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Namaz vakitleri tekil anlık görüntü (PrayerScheduleSnapshot) yatsı sonrasında sıradaki vakit yarının imsakıdır
+00:05 +117 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Namaz vakitleri tekil anlık görüntü (PrayerScheduleSnapshot) gece yarısı geçildiğinde aktif gün otomatik olarak yarına devreder
+00:05 +118 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Namaz vakitleri tekil anlık görüntü (PrayerScheduleSnapshot) hesaplama yöntemi ve Hanefî ikindi değişimi vakitleri yeniler
 00:06 +119 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Namaz vakitleri tekil anlık görüntü (PrayerScheduleSnapshot) hesaplama yöntemi ve Hanefî ikindi değişimi vakitleri yeniler
 00:06 +120 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Namaz vakitleri tekil anlık görüntü (PrayerScheduleSnapshot) hesaplama yöntemi ve Hanefî ikindi değişimi vakitleri yeniler
 00:06 +121 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Namaz vakitleri tekil anlık görüntü (PrayerScheduleSnapshot) hesaplama yöntemi ve Hanefî ikindi değişimi vakitleri yeniler
@@ -394,101 +391,102 @@ No issues found! (ran in 13.4s)
 00:06 +143 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Namaz vakitleri tekil anlık görüntü (PrayerScheduleSnapshot) hesaplama yöntemi ve Hanefî ikindi değişimi vakitleri yeniler
 00:06 +144 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Namaz vakitleri tekil anlık görüntü (PrayerScheduleSnapshot) hesaplama yöntemi ve Hanefî ikindi değişimi vakitleri yeniler
 00:06 +145 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Dijital tesbih tutarlılığı ve kalıcılığı oturum sayacı, günlük toplam, hedef değişimi, sıfırlama ve yeniden açılış tutarlıdır
-00:07 +146 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Kıble pusulası doğrulama, manyetik sapma ve kalibrasyon geçersiz sensör verisi reddedilir
-00:07 +147 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Kıble pusulası doğrulama, manyetik sapma ve kalibrasyon manyetik kuzey sapması gerçek kuzeye doğru eklenir
-00:07 +148 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Kıble pusulası doğrulama, manyetik sapma ve kalibrasyon manyetik parazit ve telefon eğimi ayrı uyarılarla bildirilir
-00:07 +149 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Gizlilik ve log temizliği AppLog.sanitize koordinat, e-posta ve anahtarları maskeler
-00:07 +150 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu varsayılan ezan sesi Hicaz makamıdır ve vakit bazlı ses özelleştirmesi korunur
-00:07 +151 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu ilahi ve dini sesler kataloğu telifsiz ve indirilebilir içeriklerle dolu gelir
-00:07 +152 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu bildirim seslerinde çan ifadesi yer almaz; telifsiz ilahi ve ezan makamları kullanılır
-00:07 +153 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu uygulama adı Ezan Vaktim Pro, dil desteği TR/EN/AR, meal seçimi, saat geri alma ve Esmaül Hüsna doğrulanır
-00:07 +154 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu Kur'an meal seçimleri (TR Diyanet, TR Vakıf, EN Saheeh, AR الميسر) sure içeriğini gerçekten değiştirir ve tüm ezan/ilahi ses varlıkları mevcuttur
+00:06 +146 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Kıble pusulası doğrulama, manyetik sapma ve kalibrasyon geçersiz sensör verisi reddedilir
+00:06 +147 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Kıble pusulası doğrulama, manyetik sapma ve kalibrasyon manyetik kuzey sapması gerçek kuzeye doğru eklenir
+00:06 +148 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Kıble pusulası doğrulama, manyetik sapma ve kalibrasyon manyetik parazit ve telefon eğimi ayrı uyarılarla bildirilir
+00:06 +149 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Gizlilik ve log temizliği AppLog.sanitize koordinat, e-posta ve anahtarları maskeler
+00:06 +150 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu varsayılan ezan sesi Hicaz makamıdır ve vakit bazlı ses özelleştirmesi korunur
+00:06 +151 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu ilahi ve dini sesler kataloğu telifsiz ve indirilebilir içeriklerle dolu gelir
+00:06 +152 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu bildirim seslerinde çan ifadesi yer almaz; telifsiz ilahi ve ezan makamları kullanılır
+00:06 +153 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu uygulama adı Ezan Vaktim Pro, dil desteği TR/EN/AR, meal seçimi, saat geri alma ve Esmaül Hüsna doğrulanır
+00:06 +154 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu Kur'an meal seçimleri (TR Diyanet, TR Vakıf, EN Saheeh, AR الميسر) sure içeriğini gerçekten değiştirir ve tüm ezan/ilahi ses varlıkları mevcuttur
 00:07 +155 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu Nafile namaz alarmları, vokal sentez ezanı, global Kur'an oturumu ve genişletilmiş İslami Asistan doğrulanır
-00:07 +156 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli JSON ayrıştırma tüm alanları okur
-00:07 +157 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu Bağcılar dahil tüm büyükşehir merkez ilçeleri GPS koordinatıyla doğru tespit edilir
-00:07 +158 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu Bağcılar dahil tüm büyükşehir merkez ilçeleri GPS koordinatıyla doğru tespit edilir
-00:07 +159 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu Bağcılar dahil tüm büyükşehir merkez ilçeleri GPS koordinatıyla doğru tespit edilir
-00:07 +160 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu Bağcılar dahil tüm büyükşehir merkez ilçeleri GPS koordinatıyla doğru tespit edilir
-00:07 +161 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu Bağcılar dahil tüm büyükşehir merkez ilçeleri GPS koordinatıyla doğru tespit edilir
-00:07 +162 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu Bağcılar dahil tüm büyükşehir merkez ilçeleri GPS koordinatıyla doğru tespit edilir
-00:07 +163 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu Bağcılar dahil tüm büyükşehir merkez ilçeleri GPS koordinatıyla doğru tespit edilir
-00:07 +164 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu Bağcılar dahil tüm büyükşehir merkez ilçeleri GPS koordinatıyla doğru tespit edilir
-00:07 +165 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu Bağcılar dahil tüm büyükşehir merkez ilçeleri GPS koordinatıyla doğru tespit edilir
-00:08 +166 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu Bağcılar dahil tüm büyükşehir merkez ilçeleri GPS koordinatıyla doğru tespit edilir
-00:08 +167 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu Bağcılar dahil tüm büyükşehir merkez ilçeleri GPS koordinatıyla doğru tespit edilir
-00:08 +168 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: DuaCatalog boş katalog güvenli
-00:08 +169 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: (tearDownAll)
-00:08 +169 ~6: loading /home/runner/work/ezanapp/ezanapp/test/data/ads_test.dart
+00:07 +156 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: Ezan makamları, vakit bazlı ses ve telifsiz ilahi kataloğu Bağcılar dahil tüm büyükşehir merkez ilçeleri GPS koordinatıyla doğru tespit edilir
+00:07 +157 ~6: /home/runner/work/ezanapp/ezanapp/test/data/audit_verification_test.dart: (tearDownAll)
+00:07 +157 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli JSON ayrıştırma tüm alanları okur
+00:07 +158 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli eksik alanlar çökmez, kategori varsayılana düşer
+00:07 +159 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli kaynak künyesi paylaşım metninde yer alır
+00:07 +160 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli paylaşım metni Arapça, okunuş ve meali içerir
+00:07 +161 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli Arapçası olmayan dua bile okunabilir paylaşılır
+00:07 +162 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli arama diakritik ve büyük harf duyarsız
+00:07 +163 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: Dua modeli künye metni de aranabilir
+00:07 +164 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: DuaCatalog kategoriye göre süzer
+00:07 +165 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: DuaCatalog boş sorgu tüm listeyi döner
+00:07 +166 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: DuaCatalog sorguya göre süzer
+00:07 +167 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: DuaCatalog kimliğe göre bulur
+00:07 +168 ~6: /home/runner/work/ezanapp/ezanapp/test/data/dua_models_test.dart: DuaCatalog boş katalog güvenli
 00:08 +169 ~6: /home/runner/work/ezanapp/ezanapp/test/data/ads_test.dart: Reklam altyapısı — ücretsiz paket test modunda Google resmî test birim kimlikleri kullanılır
 00:08 +170 ~6: /home/runner/work/ezanapp/ezanapp/test/data/ads_test.dart: Reklam altyapısı — ücretsiz paket altyapı başlatılmadan reklam istenmez (boş alan/hata yok)
 00:08 +171 ~6: /home/runner/work/ezanapp/ezanapp/test/data/ads_test.dart: Reklam altyapısı — ücretsiz paket premium kullanıcıda reklam tamamen kapanır
 00:08 +172 ~6: /home/runner/work/ezanapp/ezanapp/test/data/ads_test.dart: Reklam altyapısı — ücretsiz paket geçiş reklamı bekleme süresi kullanıcı dostu (3 dakika)
 00:08 +173 ~6: /home/runner/work/ezanapp/ezanapp/test/data/ads_test.dart: Reklam altyapısı — ücretsiz paket kişiselleştirilmiş reklam rızası varsayılan kapalıdır (KVKK)
 00:08 +174 ~6: /home/runner/work/ezanapp/ezanapp/test/data/ads_test.dart: Reklam altyapısı — ücretsiz paket reklam anahtarı varsayılan olarak açık, test modu kapalı
-00:09 +175 ~6: /home/runner/work/ezanapp/ezanapp/test/data/guvenlik_test.dart: 1) Bütünlük raporu sözleşmesi Play kurulumu + eşleşen imza → resmî paket
-00:09 +176 ~6: /home/runner/work/ezanapp/ezanapp/test/data/guvenlik_test.dart: 1) Bütünlük raporu sözleşmesi yeniden imzalanmış (farklı imza) paket resmî değil
-00:09 +177 ~6: /home/runner/work/ezanapp/ezanapp/test/data/guvenlik_test.dart: 1) Bütünlük raporu sözleşmesi patch aracı / klon / debugger resmî paketi düşürür
-00:09 +178 ~6: /home/runner/work/ezanapp/ezanapp/test/data/guvenlik_test.dart: 1) Bütünlük raporu sözleşmesi imza sabitleme kapalıyken (test/CI) kontrol atlanır
-00:09 +179 ~6: /home/runner/work/ezanapp/ezanapp/test/data/guvenlik_test.dart: 1) Bütünlük raporu sözleşmesi tüm alanlar JSON ile taşınabilir
-00:09 +180 ~6: /home/runner/work/ezanapp/ezanapp/test/data/guvenlik_test.dart: 2) Ücretsiz paket sözleşmesi (reklamlar) test modunda Google resmî test birim kimlikleri kullanılır
-00:09 +181 ~6: /home/runner/work/ezanapp/ezanapp/test/data/guvenlik_test.dart: 2) Ücretsiz paket sözleşmesi (reklamlar) altyapı başlatılmadan reklam istenmez (boş alan/hata yok)
-00:09 +182 ~6: /home/runner/work/ezanapp/ezanapp/test/data/guvenlik_test.dart: 2) Ücretsiz paket sözleşmesi (reklamlar) premium kullanıcıda reklam tamamen kapanır
-00:09 +183 ~6: /home/runner/work/ezanapp/ezanapp/test/data/guvenlik_test.dart: 2) Ücretsiz paket sözleşmesi (reklamlar) geçiş reklamı bekleme süresi 3 dakika
-00:09 +184 ~6: /home/runner/work/ezanapp/ezanapp/test/data/guvenlik_test.dart: 2) Ücretsiz paket sözleşmesi (reklamlar) reklam anahtarı varsayılan olarak açık, test modu kapalı
-00:10 +185 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_listing_test.dart: Türkçe arama normalizasyonu Büyük/küçük harf ve noktalı İ eşleşir
-00:10 +186 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_listing_test.dart: Türkçe arama normalizasyonu Türkçe karakter yazılmasa da eşleşir
-00:10 +187 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_listing_test.dart: Türkçe arama normalizasyonu Fazla boşluklar kırpılır
-00:10 +188 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_listing_test.dart: Türkçe arama normalizasyonu Boş metin güvenli
-00:10 +189 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_listing_test.dart: Mükerrer cami temizliği Aynı ad + 120 m içindeki kayıtlar tekilleşir
-00:10 +190 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_listing_test.dart: Mükerrer cami temizliği Aynı ad ama uzak camiler korunur
-00:10 +191 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_listing_test.dart: Mükerrer cami temizliği Farklı adlar korunur
-00:10 +192 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_listing_test.dart: Mükerrer cami temizliği Uzun adlarda kısaltma da mükerrer sayılır
-00:10 +193 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_listing_test.dart: Mükerrer cami temizliği Boş girdi güvenli
-00:10 +194 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_listing_test.dart: Mesafe ve yön etiketleri Aynı noktada 0 m
-00:10 +195 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_listing_test.dart: Mesafe ve yön etiketleri 1 km altı metre cinsinden
-00:10 +196 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_listing_test.dart: Mesafe ve yön etiketleri Uzak mesafe km cinsinden
-00:10 +197 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_listing_test.dart: Mesafe ve yön etiketleri Yön etiketi 8 yönden biri
-00:10 +198 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_listing_test.dart: Uydurma tesis etiketi yok Varsayılan kayıtta tesis listesi boş
-00:10 +199 ~6: /home/runner/work/ezanapp/ezanapp/test/data/location_speed_test.dart: tazelik: GPS beklenmeden kullanılabilir mi? 2 dakikalık konum tazedir
-00:10 +200 ~6: /home/runner/work/ezanapp/ezanapp/test/data/location_speed_test.dart: tazelik: GPS beklenmeden kullanılabilir mi? 9 dakikalık konum tazedir (sınır altı)
-00:10 +201 ~6: /home/runner/work/ezanapp/ezanapp/test/data/location_speed_test.dart: tazelik: GPS beklenmeden kullanılabilir mi? 15 dakikalık konum taze değildir
-00:10 +202 ~6: /home/runner/work/ezanapp/ezanapp/test/data/location_speed_test.dart: tazelik: GPS beklenmeden kullanılabilir mi? tarih bilgisi yoksa taze sayılmaz
-00:10 +203 ~6: /home/runner/work/ezanapp/ezanapp/test/data/location_speed_test.dart: tazelik: GPS beklenmeden kullanılabilir mi? gelecekteki zaman damgası negatif yaş üretmez
-00:10 +204 ~6: /home/runner/work/ezanapp/ezanapp/test/data/location_speed_test.dart: ilçe eşleştirme hassasiyeti 500 m doğruluk ilçe için yeterli
-00:10 +205 ~6: /home/runner/work/ezanapp/ezanapp/test/data/location_speed_test.dart: ilçe eşleştirme hassasiyeti 2 km doğruluk sınırda yeterli
-00:10 +206 ~6: /home/runner/work/ezanapp/ezanapp/test/data/location_speed_test.dart: ilçe eşleştirme hassasiyeti 3 km doğruluk ilçe için yetersiz (arka planda iyileştirilir)
-00:10 +207 ~6: /home/runner/work/ezanapp/ezanapp/test/data/location_speed_test.dart: ilçe eşleştirme hassasiyeti hassasiyet bilinmiyorsa yetersiz kabul edilir
-00:10 +208 ~6: /home/runner/work/ezanapp/ezanapp/test/data/location_speed_test.dart: bütçe sabitleri tazelik penceresi ve GPS bütçesi makul
-00:11 +209 ~6: /home/runner/work/ezanapp/ezanapp/test/data/robustness_test.dart: ayarlar bozuk veriye dayanıklı yanlış türdeki alanlar varsayılana düşer
-00:11 +210 ~6: /home/runner/work/ezanapp/ezanapp/test/data/robustness_test.dart: ayarlar bozuk veriye dayanıklı bozuk bildirim ayarları açılışı düşürmez
-00:11 +211 ~6: /home/runner/work/ezanapp/ezanapp/test/data/robustness_test.dart: ayarlar bozuk veriye dayanıklı yarım kalmış JSON varsayılanlara döner
-00:11 +212 ~6: /home/runner/work/ezanapp/ezanapp/test/data/robustness_test.dart: ayarlar bozuk veriye dayanıklı geçerli kısmi yedek okunur
-00:11 +213 ~6: /home/runner/work/ezanapp/ezanapp/test/data/robustness_test.dart: ayarlar bozuk veriye dayanıklı alakasız JSON yedek sayılmaz (ayarlar silinmez)
-00:11 +214 ~6: /home/runner/work/ezanapp/ezanapp/test/data/robustness_test.dart: vakit önbelleği bozuk satıra dayanıklı (setUpAll)
-00:11 +214 ~6: /home/runner/work/ezanapp/ezanapp/test/data/robustness_test.dart: vakit önbelleği bozuk satıra dayanıklı geçerli satır okunur
-00:11 +215 ~6: /home/runner/work/ezanapp/ezanapp/test/data/robustness_test.dart: vakit önbelleği bozuk satıra dayanıklı bozuk satır atlanır, sağlam satır korunur
-00:11 +216 ~6: /home/runner/work/ezanapp/ezanapp/test/data/robustness_test.dart: vakit önbelleği bozuk satıra dayanıklı tek satır okuması bozuk kayıtta null döner
-00:11 +217 ~6: /home/runner/work/ezanapp/ezanapp/test/data/robustness_test.dart: vakit önbelleği bozuk satıra dayanıklı (tearDownAll)
-00:11 +217 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: (setUpAll)
-00:11 +217 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: zincir sırası Diyanet resmî verisi ilk sırada kullanılır ve önbelleğe yazılır
-00:11 +218 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: zincir sırası Diyanet başarısızsa AlAdhan devreye girer
-00:11 +219 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: zincir sırası her iki servis de çökerse yerel hesap devreye girer
-00:11 +220 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: zincir sırası tutarsız (bozuk) servis verisi reddedilir ve zincir devam eder
-00:12 +221 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış çevrimdışıyken son başarılı veri önbellekten okunur
-00:12 +222 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış süresi geçmiş (6 saatten eski) önbellek kullanılmaz
-00:12 +223 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış çevrimdışı ve önbellek boşsa yerel hesap sonuç üretir
-00:12 +224 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış ilçe seçilmemişse (GPS) Diyanet atlanır, koordinatla yedek servis denenir
-00:12 +225 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış bellek önbelleği aynı gün için tekrar sorguda ağa çıkmaz
-00:12 +226 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış zorla yenileme önbelleği atlar
-00:12 +227 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: aralık (haftalık/aylık tablo) önbellek aralığı kapsıyorsa ağa çıkılmaz
-00:12 +228 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: aralık (haftalık/aylık tablo) önbellek yoksa çevrimdışı aralık yerel hesapla doldurulur
-00:12 +229 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) resmî yanıt çözümlenir (zarf + hicri tarih)
-00:12 +230 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) 5xx yanıtı geçici hata olarak bildirilir
-00:12 +231 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) 5xx yanıtı geçici hata olarak bildirilir
-00:12 +232 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) 5xx yanıtı geçici hata olarak bildirilir
-00:12 +233 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) 5xx yanıtı geçici hata olarak bildirilir
-00:12 +234 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) 5xx yanıtı geçici hata olarak bildirilir
-00:12 +235 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) 5xx yanıtı geçici hata olarak bildirilir
+00:08 +175 ~6: /home/runner/work/ezanapp/ezanapp/test/data/guvenlik_test.dart: 1) Bütünlük raporu sözleşmesi Play kurulumu + eşleşen imza → resmî paket
+00:08 +176 ~6: /home/runner/work/ezanapp/ezanapp/test/data/guvenlik_test.dart: 1) Bütünlük raporu sözleşmesi yeniden imzalanmış (farklı imza) paket resmî değil
+00:08 +177 ~6: /home/runner/work/ezanapp/ezanapp/test/data/guvenlik_test.dart: 1) Bütünlük raporu sözleşmesi patch aracı / klon / debugger resmî paketi düşürür
+00:08 +178 ~6: /home/runner/work/ezanapp/ezanapp/test/data/guvenlik_test.dart: 1) Bütünlük raporu sözleşmesi imza sabitleme kapalıyken (test/CI) kontrol atlanır
+00:08 +179 ~6: /home/runner/work/ezanapp/ezanapp/test/data/guvenlik_test.dart: 1) Bütünlük raporu sözleşmesi tüm alanlar JSON ile taşınabilir
+00:08 +180 ~6: /home/runner/work/ezanapp/ezanapp/test/data/guvenlik_test.dart: 2) Ücretsiz paket sözleşmesi (reklamlar) test modunda Google resmî test birim kimlikleri kullanılır
+00:08 +181 ~6: /home/runner/work/ezanapp/ezanapp/test/data/guvenlik_test.dart: 2) Ücretsiz paket sözleşmesi (reklamlar) altyapı başlatılmadan reklam istenmez (boş alan/hata yok)
+00:08 +182 ~6: /home/runner/work/ezanapp/ezanapp/test/data/guvenlik_test.dart: 2) Ücretsiz paket sözleşmesi (reklamlar) premium kullanıcıda reklam tamamen kapanır
+00:08 +183 ~6: /home/runner/work/ezanapp/ezanapp/test/data/guvenlik_test.dart: 2) Ücretsiz paket sözleşmesi (reklamlar) geçiş reklamı bekleme süresi 3 dakika
+00:08 +184 ~6: /home/runner/work/ezanapp/ezanapp/test/data/guvenlik_test.dart: 2) Ücretsiz paket sözleşmesi (reklamlar) reklam anahtarı varsayılan olarak açık, test modu kapalı
+00:09 +185 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_listing_test.dart: Türkçe arama normalizasyonu Büyük/küçük harf ve noktalı İ eşleşir
+00:09 +186 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_listing_test.dart: Türkçe arama normalizasyonu Türkçe karakter yazılmasa da eşleşir
+00:09 +187 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_listing_test.dart: Türkçe arama normalizasyonu Fazla boşluklar kırpılır
+00:09 +188 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_listing_test.dart: Türkçe arama normalizasyonu Boş metin güvenli
+00:09 +189 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_listing_test.dart: Mükerrer cami temizliği Aynı ad + 120 m içindeki kayıtlar tekilleşir
+00:09 +190 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_listing_test.dart: Mükerrer cami temizliği Aynı ad ama uzak camiler korunur
+00:09 +191 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_listing_test.dart: Mükerrer cami temizliği Farklı adlar korunur
+00:09 +192 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_listing_test.dart: Mükerrer cami temizliği Uzun adlarda kısaltma da mükerrer sayılır
+00:09 +193 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_listing_test.dart: Mükerrer cami temizliği Boş girdi güvenli
+00:09 +194 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_listing_test.dart: Mesafe ve yön etiketleri Aynı noktada 0 m
+00:09 +195 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_listing_test.dart: Mesafe ve yön etiketleri 1 km altı metre cinsinden
+00:09 +196 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_listing_test.dart: Mesafe ve yön etiketleri Uzak mesafe km cinsinden
+00:09 +197 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_listing_test.dart: Mesafe ve yön etiketleri Yön etiketi 8 yönden biri
+00:09 +198 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_listing_test.dart: Uydurma tesis etiketi yok Varsayılan kayıtta tesis listesi boş
+00:09 +199 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_privacy_test.dart: Overpass sorgusu koordinatı 3 ondalığa (~110 m) yuvarlar
+00:09 +200 ~6: /home/runner/work/ezanapp/ezanapp/test/data/mosque_privacy_test.dart: negatif koordinatlar da güvenli biçimde yuvarlanır
+00:10 +201 ~6: /home/runner/work/ezanapp/ezanapp/test/data/location_speed_test.dart: tazelik: GPS beklenmeden kullanılabilir mi? 2 dakikalık konum tazedir
+00:10 +202 ~6: /home/runner/work/ezanapp/ezanapp/test/data/location_speed_test.dart: tazelik: GPS beklenmeden kullanılabilir mi? 9 dakikalık konum tazedir (sınır altı)
+00:10 +203 ~6: /home/runner/work/ezanapp/ezanapp/test/data/location_speed_test.dart: tazelik: GPS beklenmeden kullanılabilir mi? 15 dakikalık konum taze değildir
+00:10 +204 ~6: /home/runner/work/ezanapp/ezanapp/test/data/location_speed_test.dart: tazelik: GPS beklenmeden kullanılabilir mi? tarih bilgisi yoksa taze sayılmaz
+00:10 +205 ~6: /home/runner/work/ezanapp/ezanapp/test/data/location_speed_test.dart: tazelik: GPS beklenmeden kullanılabilir mi? gelecekteki zaman damgası negatif yaş üretmez
+00:10 +206 ~6: /home/runner/work/ezanapp/ezanapp/test/data/location_speed_test.dart: ilçe eşleştirme hassasiyeti 500 m doğruluk ilçe için yeterli
+00:10 +207 ~6: /home/runner/work/ezanapp/ezanapp/test/data/location_speed_test.dart: ilçe eşleştirme hassasiyeti 2 km doğruluk sınırda yeterli
+00:10 +208 ~6: /home/runner/work/ezanapp/ezanapp/test/data/location_speed_test.dart: ilçe eşleştirme hassasiyeti 3 km doğruluk ilçe için yetersiz (arka planda iyileştirilir)
+00:10 +209 ~6: /home/runner/work/ezanapp/ezanapp/test/data/location_speed_test.dart: ilçe eşleştirme hassasiyeti hassasiyet bilinmiyorsa yetersiz kabul edilir
+00:10 +210 ~6: /home/runner/work/ezanapp/ezanapp/test/data/location_speed_test.dart: bütçe sabitleri tazelik penceresi ve GPS bütçesi makul
+00:10 +211 ~6: /home/runner/work/ezanapp/ezanapp/test/data/robustness_test.dart: ayarlar bozuk veriye dayanıklı yanlış türdeki alanlar varsayılana düşer
+00:10 +212 ~6: /home/runner/work/ezanapp/ezanapp/test/data/robustness_test.dart: ayarlar bozuk veriye dayanıklı bozuk bildirim ayarları açılışı düşürmez
+00:10 +213 ~6: /home/runner/work/ezanapp/ezanapp/test/data/robustness_test.dart: ayarlar bozuk veriye dayanıklı yarım kalmış JSON varsayılanlara döner
+00:10 +214 ~6: /home/runner/work/ezanapp/ezanapp/test/data/robustness_test.dart: ayarlar bozuk veriye dayanıklı geçerli kısmi yedek okunur
+00:10 +215 ~6: /home/runner/work/ezanapp/ezanapp/test/data/robustness_test.dart: ayarlar bozuk veriye dayanıklı alakasız JSON yedek sayılmaz (ayarlar silinmez)
+00:10 +216 ~6: /home/runner/work/ezanapp/ezanapp/test/data/robustness_test.dart: vakit önbelleği bozuk satıra dayanıklı (setUpAll)
+00:10 +216 ~6: /home/runner/work/ezanapp/ezanapp/test/data/robustness_test.dart: vakit önbelleği bozuk satıra dayanıklı geçerli satır okunur
+00:10 +217 ~6: /home/runner/work/ezanapp/ezanapp/test/data/robustness_test.dart: vakit önbelleği bozuk satıra dayanıklı bozuk satır atlanır, sağlam satır korunur
+00:10 +218 ~6: /home/runner/work/ezanapp/ezanapp/test/data/robustness_test.dart: vakit önbelleği bozuk satıra dayanıklı tek satır okuması bozuk kayıtta null döner
+00:11 +219 ~6: /home/runner/work/ezanapp/ezanapp/test/data/robustness_test.dart: vakit önbelleği bozuk satıra dayanıklı (tearDownAll)
+00:11 +219 ~6: /home/runner/work/ezanapp/ezanapp/test/data/sync_consent_test.dart: (setUpAll)
+00:11 +219 ~6: /home/runner/work/ezanapp/ezanapp/test/data/sync_consent_test.dart: Bulut yedekleme rıza kapısı rıza yokken yükleme engellenir ve sunucuya gidilmez
+00:11 +220 ~6: /home/runner/work/ezanapp/ezanapp/test/data/sync_consent_test.dart: Bulut yedekleme rıza kapısı rıza yokken indirme engellenir ve sunucuya gidilmez
+00:11 +221 ~6: /home/runner/work/ezanapp/ezanapp/test/data/sync_consent_test.dart: Bulut yedekleme rıza kapısı rıza varsa yapılandırma yokluğu yerel hataya döner
+00:11 +222 ~6: /home/runner/work/ezanapp/ezanapp/test/data/sync_consent_test.dart: Bulut yedekleme rıza kapısı rıza geri çekilince yükleme yeniden engellenir
+00:11 +223 ~6: /home/runner/work/ezanapp/ezanapp/test/data/sync_consent_test.dart: (tearDownAll)
+00:12 +223 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: (setUpAll)
+00:12 +223 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: zincir sırası Diyanet resmî verisi ilk sırada kullanılır ve önbelleğe yazılır
+00:12 +224 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: zincir sırası Diyanet başarısızsa AlAdhan devreye girer
+00:12 +225 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: zincir sırası her iki servis de çökerse yerel hesap devreye girer
+00:12 +226 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: zincir sırası tutarsız (bozuk) servis verisi reddedilir ve zincir devam eder
+00:12 +227 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış çevrimdışıyken son başarılı veri önbellekten okunur
+00:12 +228 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış süresi geçmiş (6 saatten eski) önbellek kullanılmaz
+00:12 +229 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış çevrimdışı ve önbellek boşsa yerel hesap sonuç üretir
+00:12 +230 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış ilçe seçilmemişse (GPS) Diyanet atlanır, koordinatla yedek servis denenir
+00:12 +231 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış bellek önbelleği aynı gün için tekrar sorguda ağa çıkmaz
+00:12 +232 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: önbellek ve çevrimdışı davranış zorla yenileme önbelleği atlar
+00:12 +233 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: aralık (haftalık/aylık tablo) önbellek aralığı kapsıyorsa ağa çıkılmaz
+00:12 +234 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: aralık (haftalık/aylık tablo) önbellek yoksa çevrimdışı aralık yerel hesapla doldurulur
+00:12 +235 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) resmî yanıt çözümlenir (zarf + hicri tarih)
 00:12 +236 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) 5xx yanıtı geçici hata olarak bildirilir
 00:12 +237 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) 5xx yanıtı geçici hata olarak bildirilir
 00:12 +238 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) 5xx yanıtı geçici hata olarak bildirilir
@@ -505,137 +503,140 @@ No issues found! (ran in 13.4s)
 00:12 +249 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) 5xx yanıtı geçici hata olarak bildirilir
 00:12 +250 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) 5xx yanıtı geçici hata olarak bildirilir
 00:12 +251 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) 5xx yanıtı geçici hata olarak bildirilir
-00:12 +252 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) bozuk JSON çökme yerine kaynak hatası üretir
-00:12 +253 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) ilçe kimliği yoksa servis çağrılmadan hata verir
-00:12 +254 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) AlAdhan yanıtı çözümlenir ve hicri etiket üretilir
-00:13 +255 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) AlAdhan boş vakit verisinde hata üretir
-00:13 +256 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: kaynak bilgisi (kullanıcı mesajları) resmî veri varken kaynak ve son kontrol bilgisi gösterilir
-00:13 +257 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: kaynak bilgisi (kullanıcı mesajları) konum seçilmemişse hesap bilgisi gösterilir
-00:13 +258 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: resmî servis dayanıklılığı (Kasım 2026) üretilmiş ilçe kimliği il kimliğine indirgenir
-00:13 +259 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: resmî servis dayanıklılığı (Kasım 2026) gün, tek istekle daily uç noktasından alınır
-00:13 +260 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: resmî servis dayanıklılığı (Kasım 2026) aralık isteği range uç noktasını kullanır
-00:13 +261 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: resmî servis dayanıklılığı (Kasım 2026) birincil sunucu boş dönerse yedek resmî sunucu kullanılır
-00:13 +262 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: resmî servis dayanıklılığı (Kasım 2026) konum ilçeyle eşleşmese de yedek servis kullanılır
-00:13 +263 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: resmî servis dayanıklılığı (Kasım 2026) yurt dışı şehirde Diyanet atlanır (kimlik çakışması)
-00:13 +264 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: yerel hesap kalibrasyonu Diyanet yöntemiyle İstanbul için tutarlı vakitler üretir
-00:13 +265 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: (tearDownAll)
-00:13 +265 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: (setUpAll)
-00:13 +265 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
-00:14 +266 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
-00:14 +267 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
-00:14 +268 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
-00:15 +269 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
-00:15 +270 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
-00:15 +271 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
-00:15 +272 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
-00:16 +273 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
-00:16 +274 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakitler — tablet 1024×1366
-00:16 +275 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları Daha Fazla ekranı yalnızca açık modülleri listeler
-00:16 +276 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Kur'an — küçük telefon 320×568
-00:16 +277 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Kur'an — telefon 411×914
-00:16 +278 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Kur'an — tablet 1024×1366
-00:16 +279 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — küçük telefon 320×568
-00:17 +280 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — telefon 411×914
-00:17 +281 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — tablet 1024×1366
-00:17 +282 ~6: /home/runner/work/ezanapp/ezanapp/test/prayer_calculation_test.dart: (setUpAll)
-00:17 +282 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — küçük telefon 320×568
-00:17 +283 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — küçük telefon 320×568
-00:17 +284 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — küçük telefon 320×568
-00:17 +285 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — küçük telefon 320×568
-00:17 +286 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — küçük telefon 320×568
-00:17 +287 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — küçük telefon 320×568
-00:17 +288 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — telefon 411×914
-00:17 +289 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — tablet 1024×1366
-00:17 +290 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — küçük telefon 320×568
-00:18 +291 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — telefon 411×914
-00:18 +292 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — tablet 1024×1366
-00:18 +293 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — küçük telefon 320×568
-00:18 +294 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — telefon 411×914
-00:18 +295 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — tablet 1024×1366
-00:18 +296 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — küçük telefon 320×568
-00:18 +297 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — küçük telefon 320×568
-00:18 +298 ~6: /home/runner/work/ezanapp/ezanapp/test/core/text_normalizer_test.dart: TextNormalizer kelimelere ayırır ve kısa kelimeleri atar
-00:18 +299 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — telefon 411×914
-00:18 +300 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — telefon 411×914
-00:18 +301 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — telefon 411×914
-00:18 +302 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — telefon 411×914
-00:18 +303 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — telefon 411×914
-00:18 +304 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — telefon 411×914
-00:18 +305 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — telefon 411×914
-00:18 +306 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — telefon 411×914
-00:18 +307 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — tablet 1024×1366
-00:19 +308 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — küçük telefon 320×568
-00:19 +309 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — telefon 411×914
-00:19 +310 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — tablet 1024×1366
-00:19 +311 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — küçük telefon 320×568
-00:19 +312 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — telefon 411×914
-00:19 +313 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — tablet 1024×1366
-00:20 +314 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — küçük telefon 320×568
-00:20 +315 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — telefon 411×914
-00:20 +316 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: (setUpAll)
-00:20 +316 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — tablet 1024×1366
-00:20 +317 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ezan tam vaktinde (1 dakika gecikme) kurulan alarm duvar saatini kaydırmaz
-00:20 +318 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakit doğrulama — küçük telefon 320×568
-00:20 +319 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakit doğrulama — küçük telefon 320×568
-00:20 +320 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakit doğrulama — küçük telefon 320×568
-00:20 +321 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakit doğrulama — küçük telefon 320×568
-00:20 +322 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakit doğrulama — küçük telefon 320×568
-00:20 +323 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakit doğrulama — küçük telefon 320×568
-00:20 +324 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakit doğrulama — küçük telefon 320×568
-00:20 +325 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakit doğrulama — küçük telefon 320×568
-00:20 +326 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakit doğrulama — küçük telefon 320×568
-00:20 +327 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakit doğrulama — küçük telefon 320×568
-00:20 +328 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakit doğrulama — küçük telefon 320×568
-00:20 +329 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakit doğrulama — küçük telefon 320×568
-00:20 +330 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakit doğrulama — küçük telefon 320×568
-00:20 +331 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakit doğrulama — küçük telefon 320×568
-00:20 +332 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakit doğrulama — küçük telefon 320×568
-00:20 +333 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakit doğrulama — küçük telefon 320×568
-00:20 +334 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakit doğrulama — küçük telefon 320×568
-00:20 +335 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakit doğrulama — küçük telefon 320×568
-00:20 +336 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakit doğrulama — küçük telefon 320×568
-00:20 +337 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakit doğrulama — telefon 411×914
-00:20 +338 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakit doğrulama — tablet 1024×1366
-00:20 +339 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Vakit doğrulama: konum, yöntem ve gösterilen vakitler çizilir
-00:20 +340 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Dualar: künye özeti ve kategori çipleri görünür
-00:20 +341 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Hadis: başlık ve konu çipleri görünür
+00:12 +252 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) 5xx yanıtı geçici hata olarak bildirilir
+00:12 +253 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) 5xx yanıtı geçici hata olarak bildirilir
+00:12 +254 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) 5xx yanıtı geçici hata olarak bildirilir
+00:12 +255 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) 5xx yanıtı geçici hata olarak bildirilir
+00:12 +256 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) 5xx yanıtı geçici hata olarak bildirilir
+00:12 +257 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) 5xx yanıtı geçici hata olarak bildirilir
+00:13 +258 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) bozuk JSON çökme yerine kaynak hatası üretir
+00:13 +259 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) ilçe kimliği yoksa servis çağrılmadan hata verir
+00:13 +260 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) AlAdhan yanıtı çözümlenir ve hicri etiket üretilir
+00:13 +261 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: Diyanet HTTP katmanı (sahte istemci) AlAdhan boş vakit verisinde hata üretir
+00:13 +262 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: kaynak bilgisi (kullanıcı mesajları) resmî veri varken kaynak ve son kontrol bilgisi gösterilir
+00:13 +263 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: kaynak bilgisi (kullanıcı mesajları) konum seçilmemişse hesap bilgisi gösterilir
+00:13 +264 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: resmî servis dayanıklılığı (Kasım 2026) üretilmiş ilçe kimliği il kimliğine indirgenir
+00:13 +265 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: resmî servis dayanıklılığı (Kasım 2026) gün, tek istekle daily uç noktasından alınır
+00:13 +266 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: resmî servis dayanıklılığı (Kasım 2026) aralık isteği range uç noktasını kullanır
+00:13 +267 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: resmî servis dayanıklılığı (Kasım 2026) birincil sunucu boş dönerse yedek resmî sunucu kullanılır
+00:13 +268 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: resmî servis dayanıklılığı (Kasım 2026) konum ilçeyle eşleşmese de yedek servis kullanılır
+00:13 +269 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: resmî servis dayanıklılığı (Kasım 2026) yurt dışı şehirde Diyanet atlanır (kimlik çakışması)
+00:13 +270 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: yerel hesap kalibrasyonu Diyanet yöntemiyle İstanbul için tutarlı vakitler üretir
+00:13 +271 ~6: /home/runner/work/ezanapp/ezanapp/test/data/prayer_chain_test.dart: (tearDownAll)
+00:13 +271 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: (setUpAll)
+00:13 +271 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
+00:14 +272 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
+00:14 +273 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
+00:14 +274 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ana sayfa — küçük telefon 320×568
+00:15 +275 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
+00:15 +276 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
+00:15 +277 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
+00:15 +278 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları ana ekran yalnızca MVP kartlarını gösterir
+00:15 +279 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakitler — telefon 411×914
+00:16 +280 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/mvp_mode_test.dart: MVP ekranları Daha Fazla ekranı yalnızca açık modülleri listeler
+00:16 +281 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakitler — tablet 1024×1366
+00:16 +282 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Kur'an — küçük telefon 320×568
+00:16 +283 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Kur'an — telefon 411×914
+00:16 +284 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Kur'an — tablet 1024×1366
+00:17 +285 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — küçük telefon 320×568
+00:17 +286 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — telefon 411×914
+00:17 +287 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — tablet 1024×1366
+00:17 +288 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — tablet 1024×1366
+00:17 +289 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — tablet 1024×1366
+00:17 +290 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — tablet 1024×1366
+00:17 +291 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — tablet 1024×1366
+00:17 +292 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Dualar — tablet 1024×1366
+00:17 +293 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — küçük telefon 320×568
+00:18 +294 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — telefon 411×914
+00:18 +295 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hadis — tablet 1024×1366
+00:18 +296 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — küçük telefon 320×568
+00:18 +297 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — telefon 411×914
+00:18 +298 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Zikir — tablet 1024×1366
+00:18 +299 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — küçük telefon 320×568
+00:18 +300 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — telefon 411×914
+00:18 +301 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hicri takvim — tablet 1024×1366
+00:18 +302 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — küçük telefon 320×568
+00:18 +303 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — küçük telefon 320×568
+00:18 +304 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — küçük telefon 320×568
+00:18 +305 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — küçük telefon 320×568
+00:18 +306 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — küçük telefon 320×568
+00:18 +307 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — küçük telefon 320×568
+00:18 +308 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — küçük telefon 320×568
+00:18 +309 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — küçük telefon 320×568
+00:18 +310 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — küçük telefon 320×568
+00:18 +311 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — küçük telefon 320×568
+00:18 +312 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — telefon 411×914
+00:19 +313 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Daha Fazla — tablet 1024×1366
+00:19 +314 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — küçük telefon 320×568
+00:19 +315 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — telefon 411×914
+00:19 +316 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Ayarlar — tablet 1024×1366
+00:19 +317 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — küçük telefon 320×568
+00:19 +318 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — telefon 411×914
+00:19 +319 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Bildirim ayarları — tablet 1024×1366
+00:19 +320 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: ezan tam vaktinde (1 dakika gecikme) kurulan alarm duvar saatini kaydırmaz
+00:19 +321 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — küçük telefon 320×568
+00:19 +322 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — küçük telefon 320×568
+00:19 +323 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — küçük telefon 320×568
+00:19 +324 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — küçük telefon 320×568
+00:19 +325 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — küçük telefon 320×568
+00:19 +326 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — küçük telefon 320×568
+00:19 +327 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — küçük telefon 320×568
+00:19 +328 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — küçük telefon 320×568
+00:19 +329 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — küçük telefon 320×568
+00:19 +330 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — küçük telefon 320×568
+00:19 +331 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — küçük telefon 320×568
+00:19 +332 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — küçük telefon 320×568
+00:19 +333 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — küçük telefon 320×568
+00:19 +334 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — küçük telefon 320×568
+00:19 +335 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_plan_test.dart: sessiz saat ve uyku modu uyku modu 22:00–07:00 arasını kapsar
+00:19 +336 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — telefon 411×914
+00:19 +337 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — telefon 411×914
+00:19 +338 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — telefon 411×914
+00:19 +339 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — telefon 411×914
+00:19 +340 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — telefon 411×914
+00:19 +341 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Hakkında — tablet 1024×1366
+00:19 +342 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakit doğrulama — küçük telefon 320×568
+00:20 +343 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakit doğrulama — telefon 411×914
+00:20 +344 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: taşma ve çizim hatası yok Vakit doğrulama — tablet 1024×1366
+00:20 +345 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Vakit doğrulama: konum, yöntem ve gösterilen vakitler çizilir
+00:20 +346 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Dualar: künye özeti ve kategori çipleri görünür
+00:20 +347 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Hadis: başlık ve konu çipleri görünür
 [hadis tanısı] çipler: false · yükleniyor: true · metinler: Hadis metni veya konu ara | Hadisler yükleniyor… | Hadis | Sahih kaynaklardan seçkiler
-00:20 +342 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Zikir: tesbih ekranı sayaç ile çizilir
-00:21 +343 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Vakitler: liste başlığı ve ayar ipucu birlikte görünür
-00:21 +344 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Kur'an: sure listesi yüklenir
-00:21 +345 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Daha Fazla: tüm bölüm girişleri listelenir
-00:21 +346 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Daha Fazla: tüm bölüm girişleri listelenir
-00:21 +347 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Daha Fazla: tüm bölüm girişleri listelenir
-00:21 +348 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Daha Fazla: tüm bölüm girişleri listelenir
-00:21 +349 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Daha Fazla: tüm bölüm girişleri listelenir
-00:21 +350 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Daha Fazla: tüm bölüm girişleri listelenir
-00:21 +351 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir hata görünümü anlaşılır mesaj ve "Tekrar dene" sunar
-00:21 +352 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir izni olmayan hatalarda "Tekrar dene" gösterilmez
-00:21 +353 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir vakitler cihazda hesaplandıysa uyarı şeridi görünür
-00:21 +354 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir konum ilçeyle eşleşmediyse "Şehir seç" düğmesi çıkar
-00:21 +355 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir kesin alarm izni yoksa ana ekranda uyarı ve "İzin ver" çıkar
-00:22 +356 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir servis hatasında "Yenile" düğmesi çıkar
-00:22 +357 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: (tearDownAll)
-00:22 +357 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_health_test.dart: bildirim sağlığı kanal kapatılmışsa engellenmiş sayılır
-00:22 +358 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_health_test.dart: bildirim sağlığı kanal açık ve izin varsa engel yok
-00:22 +359 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_health_test.dart: bildirim sağlığı bildirim izni yoksa engellenmiş sayılır
-00:22 +360 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_health_test.dart: bildirim sağlığı servis başlatılamadıysa engellenmiş sayılır
-00:22 +361 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_health_test.dart: bildirim sağlığı Android dışı ortamda uyarı gösterilmez
-00:22 +362 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_health_test.dart: zamanlama raporu hata yoksa başarılı
-00:22 +363 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_health_test.dart: zamanlama raporu tek hata bile raporu başarısız yapar
-00:22 +364 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_health_test.dart: kanal kimlikleri sessiz ses namaz kanalını kullanır
-00:22 +365 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_health_test.dart: kanal kimlikleri sistem sesi ayrı (v5) kanal kullanır
-00:22 +366 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_health_test.dart: kanal kimlikleri her ezan sesi için kanal kimliği benzersiz
-00:22 +367 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_health_test.dart: iptal ufku planlama ufkunu kapsar 15 günlük planın tüm kimlikleri iptal aralığında
-00:23 +368 ~6: /home/runner/work/ezanapp/ezanapp/test/core/timezone_resolution_test.dart: (setUpAll)
-00:23 +368 ~6: /home/runner/work/ezanapp/ezanapp/test/core/timezone_resolution_test.dart: saat dilimi çözümü cihazın IANA bölgesi kaydırmayla uyuyorsa aynen kullanılır
-00:23 +369 ~6: /home/runner/work/ezanapp/ezanapp/test/core/timezone_resolution_test.dart: saat dilimi çözümü bilinmeyen bölge adı çökertmez, kaydırmaya düşer
-00:23 +370 ~6: /home/runner/work/ezanapp/ezanapp/test/core/timezone_resolution_test.dart: saat dilimi çözümü kaydırmayla uyuşmayan IANA adı reddedilir
-00:23 +371 ~6: /home/runner/work/ezanapp/ezanapp/test/core/timezone_resolution_test.dart: saat dilimi çözümü yarım saatlik dilimler 30 dakika kaymaz
-00:23 +372 ~6: /home/runner/work/ezanapp/ezanapp/test/core/timezone_resolution_test.dart: saat dilimi çözümü veritabanında karşılığı olmayan kaydırma çökertmez
-00:23 +373 ~6: /home/runner/work/ezanapp/ezanapp/test/core/timezone_resolution_test.dart: (tearDownAll)
-00:23 +373 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_init_retry_test.dart: başlatma hatası oturumu kalıcı susturmaz, üç kez yeniden denenir
-00:23 +374 ~6: All tests passed!
+00:20 +348 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Zikir: tesbih ekranı sayaç ile çizilir
+00:20 +349 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Vakitler: liste başlığı ve ayar ipucu birlikte görünür
+00:20 +350 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Kur'an: sure listesi yüklenir
+00:21 +351 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Kur'an: sure listesi yüklenir
+00:21 +352 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Kur'an: sure listesi yüklenir
+00:21 +353 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Kur'an: sure listesi yüklenir
+00:21 +354 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Kur'an: sure listesi yüklenir
+00:21 +355 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Kur'an: sure listesi yüklenir
+00:21 +356 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: içerik gerçekten çiziliyor Daha Fazla: tüm bölüm girişleri listelenir
+00:21 +357 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir hata görünümü anlaşılır mesaj ve "Tekrar dene" sunar
+00:21 +358 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir izni olmayan hatalarda "Tekrar dene" gösterilmez
+00:21 +359 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir vakitler cihazda hesaplandıysa uyarı şeridi görünür
+00:21 +360 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir konum ilçeyle eşleşmediyse "Şehir seç" düğmesi çıkar
+00:21 +361 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir kesin alarm izni yoksa ana ekranda uyarı ve "İzin ver" çıkar
+00:21 +362 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir servis hatasında "Yenile" düğmesi çıkar
+00:21 +363 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir servis hatasında "Yenile" düğmesi çıkar
+00:21 +364 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir servis hatasında "Yenile" düğmesi çıkar
+00:21 +365 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir servis hatasında "Yenile" düğmesi çıkar
+00:21 +366 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir servis hatasında "Yenile" düğmesi çıkar
+00:21 +367 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir servis hatasında "Yenile" düğmesi çıkar
+00:21 +368 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir servis hatasında "Yenile" düğmesi çıkar
+00:21 +369 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir servis hatasında "Yenile" düğmesi çıkar
+00:21 +370 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir servis hatasında "Yenile" düğmesi çıkar
+00:21 +371 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir servis hatasında "Yenile" düğmesi çıkar
+00:21 +372 ~6: /home/runner/work/ezanapp/ezanapp/test/widget/responsive_test.dart: hata ve uyarı durumları kullanıcıya bildirilir servis hatasında "Yenile" düğmesi çıkar
+00:21 +373 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_health_test.dart: iptal ufku planlama ufkunu kapsar 15 günlük planın tüm kimlikleri iptal aralığında
+00:22 +374 ~6: /home/runner/work/ezanapp/ezanapp/test/core/timezone_resolution_test.dart: (setUpAll)
+00:22 +374 ~6: /home/runner/work/ezanapp/ezanapp/test/core/timezone_resolution_test.dart: saat dilimi çözümü cihazın IANA bölgesi kaydırmayla uyuyorsa aynen kullanılır
+00:23 +375 ~6: /home/runner/work/ezanapp/ezanapp/test/core/timezone_resolution_test.dart: saat dilimi çözümü bilinmeyen bölge adı çökertmez, kaydırmaya düşer
+00:23 +376 ~6: /home/runner/work/ezanapp/ezanapp/test/core/timezone_resolution_test.dart: saat dilimi çözümü kaydırmayla uyuşmayan IANA adı reddedilir
+00:23 +377 ~6: /home/runner/work/ezanapp/ezanapp/test/core/timezone_resolution_test.dart: saat dilimi çözümü yarım saatlik dilimler 30 dakika kaymaz
+00:23 +378 ~6: /home/runner/work/ezanapp/ezanapp/test/core/timezone_resolution_test.dart: saat dilimi çözümü veritabanında karşılığı olmayan kaydırma çökertmez
+00:23 +379 ~6: /home/runner/work/ezanapp/ezanapp/test/core/timezone_resolution_test.dart: (tearDownAll)
+00:23 +379 ~6: /home/runner/work/ezanapp/ezanapp/test/core/notification_init_retry_test.dart: başlatma hatası oturumu kalıcı susturmaz, üç kez yeniden denenir
+00:23 +380 ~6: All tests passed!
 ```
 
 ## ai
@@ -652,6 +653,28 @@ No issues found! (ran in 13.4s)
 00:00 +4 ~2: backend yapılandırıldığında bilinmeyen soruda uzaktan kaynaksız yanıt gelirse dürüst cevap
 00:00 +5 ~2: backend yapılandırıldığında uzak yanıtlara da öneri soruları eklenir
 00:00 +6 ~2: All tests passed!
+```
+
+## rls
+```
+[OK  ] user_data tablosu tanımlı
+[OK  ] RLS etkin
+[OK  ] RLS zorunlu (force)
+[OK  ] auth.users'a cascade silme
+[OK  ] payload boyut sınırı (10 MB)
+[OK  ] SELECT politikası var
+[OK  ] SELECT politikası sahiplik kontrolü içeriyor
+[OK  ] INSERT politikası var
+[OK  ] INSERT politikası sahiplik kontrolü içeriyor
+[OK  ] INSERT with check içeriyor
+[OK  ] UPDATE politikası var
+[OK  ] UPDATE politikası sahiplik kontrolü içeriyor
+[OK  ] UPDATE using + with check içeriyor
+[OK  ] DELETE politikası var
+[OK  ] DELETE politikası sahiplik kontrolü içeriyor
+[OK  ] Herkese açık (true) politika yok
+
+16/16 kontrol geçti.
 ```
 
 ## kible
@@ -776,9 +799,9 @@ No issues found! (ran in 13.4s)
 ## sign
 ```
 V2 Signer: certificate DN: CN=EzanAI CI, OU=QA, O=Yazilimceosu, L=Istanbul, C=TR
-V2 Signer: certificate SHA-256 digest: d45b5ee244e88cd499c8de06dc757d6e15a6121b4dcd2d6fb3832a5961af5311
-V2 Signer: certificate SHA-1 digest: eb3cfe6b1f5a6f09d78878dd2dc36a6b751c8122
-V2 Signer: certificate MD5 digest: 1d22f76d2598091ae5db0736f5261ca4
+V2 Signer: certificate SHA-256 digest: d656c381b01da598bb4ef0fb3c15cf16d15ef6afa66b0f0c6d82dee50a22eba6
+V2 Signer: certificate SHA-1 digest: 6621448651f280955a3c3ca88235b91ac4851468
+V2 Signer: certificate MD5 digest: 1d6a08cd375fb5cef00d14176176fe56
 ```
 
 ## build
@@ -841,7 +864,7 @@ Warning: The generated ELF library contains unobfuscated DWARF debugging informa
 Warning: The generated ELF library contains unobfuscated DWARF debugging information.
          To avoid this, use --strip to remove it.
 Caught exception: Already watching path: /home/runner/work/ezanapp/ezanapp/android
-Running Gradle task 'assembleRelease'...                          600.2s
+Running Gradle task 'assembleRelease'...                          564.7s
 ✓ Built build/app/outputs/flutter-apk/app-release.apk (82.6MB)
 ```
 
@@ -887,6 +910,6 @@ Warning: The generated ELF library contains unobfuscated DWARF debugging informa
          To avoid this, use --strip to remove it.
 Warning: The generated ELF library contains unobfuscated DWARF debugging information.
          To avoid this, use --strip to remove it.
-Running Gradle task 'bundleRelease'...                             99.2s
+Running Gradle task 'bundleRelease'...                             96.0s
 ✓ Built build/app/outputs/bundle/release/app-release.aab (83.5MB)
 ```
