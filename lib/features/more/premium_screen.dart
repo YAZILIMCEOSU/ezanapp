@@ -376,8 +376,7 @@ class _PremiumScreenState extends ConsumerState<PremiumScreen> {
                 child: const Text('Aboneliği Play Store\'da yönet'),
               ),
               TextButton(
-                onPressed: () =>
-                    _openLegal(AppConfig.subscriptionTermsUrl),
+                onPressed: () => _openLegal(AppConfig.subscriptionTermsUrl),
                 child: const Text('Abonelik koşulları ve iade'),
               ),
               TextButton(
