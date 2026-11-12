@@ -212,8 +212,8 @@ hicri takvim, dini asistan, sahur, iftar, hatim, kıble pusulası`
 ## 11. Yasal beyan adresleri (Play Console zorunlu alanları)
 
 Yayın öncesinde bu adreslerin **hepsi HTTP 200** dönmelidir. Sayfalar
-`tools/build_legal_pages.py` ile üretilir ve `main` dalına birleştirmede
-`.github/workflows/pages.yml` tarafından yayımlanır.
+`tools/build_legal_pages.py` ile üretilir; GitHub Pages **main / docs**
+kaynağından yayımlanır.
 
 | Alan | Adres |
 |---|---|

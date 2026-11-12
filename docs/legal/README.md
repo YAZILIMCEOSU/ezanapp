@@ -47,10 +47,9 @@ Siber Güvenlik Kanunu’na uyumunu belgeleyen **tek kaynak**tır.
 Sayfalar `tools/build_legal_pages.py` ile Markdown’dan üretilir. **Elle
 düzenlemeyin**; Markdown kaynağını güncelleyip betiği çalıştırın.
 
-`main` dalına birleştirildiğinde `.github/workflows/pages.yml` sayfaları
-otomatik yayımlar ve Pages kapalıysa etkinleştirmeyi dener. Otomatik
-etkinleştirme başarısız olursa: GitHub → Settings → Pages → Source:
-**Deploy from a branch** → Branch: `main`, Folder: `/docs` → Save.
+Yayın için **bir kez** GitHub → Settings → Pages → Source:
+**Deploy from a branch** → Branch: `main`, Folder: `/docs` → Save yapılır.
+Sonraki güncellemeler `main` dalına push edildiğinde otomatik yayımlanır.
 
 ## 3. Yayın öncesi tek sayfa özet
 

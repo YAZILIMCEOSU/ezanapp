@@ -31,6 +31,26 @@ jobs:
           channel: stable
           cache: true
 
+      # Yasal sayfalar (docs/*.html) birbirine bağlanır; kırık bağlantı Play/
+      # App Store incelemesinde ret sebebidir. Derleme gerektirmeyen hızlı kapı.
+      - name: Yasal sayfa bağlantıları
+        run: |
+          python3 - <<'PY'
+          import os, re, sys
+          missing = []
+          for name in os.listdir('docs'):
+              if not name.endswith('.html'):
+                  continue
+              page = open(os.path.join('docs', name), encoding='utf-8').read()
+              for href in re.findall(r'href="([^"#:]+\.html)"', page):
+                  if not os.path.exists(os.path.join('docs', href)):
+                      missing.append((name, href))
+          if missing:
+              print('Kırık bağlantılar:', missing)
+              sys.exit(1)
+          print('Yasal sayfa bağlantıları geçerli.')
+          PY
+
       - name: flutter pub get
         id: pubget
         continue-on-error: true

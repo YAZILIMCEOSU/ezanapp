@@ -91,13 +91,9 @@ Bu adres bizim hazırladığımız sayfadan gelecek. Sırasıyla:
 
 ### 3.2 — İnternet sayfasını aç (GitHub Pages)
 
-Depoda `.github/workflows/pages.yml` hazır. **main** dalına birleştirme
-yapıldığında yasal sayfalar otomatik yayımlanır ve Pages kapalıysa
-etkinleştirmeyi dener. Yani §3.1'deki birleştirmeden sonra genellikle
-başka bir şey yapman gerekmez; 2–5 dakika bekle ve §3.3'teki adresi aç.
-
-Otomatik yayın başarısız olursa (Actions sekmesinde `pages` işi kırmızıysa)
-elle aç:
+Sayfalar `docs/` klasöründeki hazır HTML dosyalarıdır. GitHub Pages'i bir
+kez açman yeterli; sonraki güncellemeler `main` dalına yapılan her push'ta
+otomatik yayımlanır.
 
 1. Depo sayfasında üstteki **Settings** sekmesine tıkla.
 2. Sol menüde aşağı kaydırıp **Pages** yazısına tıkla.
@@ -357,7 +353,7 @@ Bu noktada ürün **Play'de yayında** demektir (yalnızca senin görebildiğin 
 
 - [ ] **1.** APK'yı telefona kur, uygulamayı gez (~15 dk)
 - [ ] **2.** 6 ekran görüntüsü çek (~20 dk)
-- [ ] **3.** PR'ı birleştir + `pages` işinin yeşil olduğunu doğrula + 7 beyan adresini aç (~15 dk)
+- [ ] **3.** PR'ı birleştir + Settings → Pages (main /docs) + 7 beyan adresini aç (~15 dk)
 - [ ] **4.** Play Console hesabı aç, 25 $ öde (~30 dk, onay 1–2 gün)
 - [ ] **5.** 12–14 test kullanıcısının Gmail adreslerini topla (bugün başla!)
 - [ ] **6.** İmzalama anahtarını üret ve yedekle (~20 dk)
