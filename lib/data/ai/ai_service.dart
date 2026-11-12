@@ -493,10 +493,13 @@ class AiService {
   /// [allowRemote] **false** ise uzak servise hiçbir metin gönderilmez;
   /// yalnızca çevrimdışı, doğrulanmış bilgi tabanı kullanılır. Üretim
   /// akışında bu değer KVKK açık rızasından gelir.
+  /// [allowRemote] **varsayılan olarak false**: KVKK açık rızası olmadan
+  /// dinî içerikli soru hiçbir sunucuya gönderilmez. Uzak yolu kullanacak
+  /// çağıran katman rızayı kendisi kontrol edip `true` geçmelidir.
   Future<AiAnswer> ask(
     String question, {
     List<AiMessage> history = const <AiMessage>[],
-    bool allowRemote = true,
+    bool allowRemote = false,
   }) async {
     final String trimmed = question.trim();
     if (trimmed.isEmpty) {

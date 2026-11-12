@@ -240,7 +240,8 @@ class AiRepository {
   Future<AiAnswer> ask(
     String question, {
     List<AiMessage> history = const <AiMessage>[],
-  }) => _service.ask(question, history: history);
+    bool allowRemote = false,
+  }) => _service.ask(question, history: history, allowRemote: allowRemote);
 
   void dispose() => _service.dispose();
 }

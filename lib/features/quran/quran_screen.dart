@@ -322,8 +322,10 @@ class QuranScreen extends ConsumerWidget {
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: AppSpacing.xl),
             child: Text(
-              'Tilavetler açık lisanslı EveryAyah arşivinden akıtılır; indirilen '
-              'sureler çevrimdışı dinlenebilir.',
+              'Tilavetler EveryAyah arşivinden (everyayah.com) akıtılır ve '
+              'okuyucuların adıyla anılır. İndirilen sureler çevrimdışı '
+              'dinlenebilir. Ticari kullanım izni süreci devam etmektedir; '
+              'izne kadar yalnızca mağaza dışı deneme sürümünde sunulur.',
             ),
           ),
           const SizedBox(height: AppSpacing.md),

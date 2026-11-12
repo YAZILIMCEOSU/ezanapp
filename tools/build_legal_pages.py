@@ -70,6 +70,9 @@ PAGES = [
     ('YAYIN_UYUMLULUK_KONTROL_LISTESI.md', 'yayin-kontrol.html',
      'Yayın Uyumluluk Kontrol Listesi — Ezan Vaktim Pro',
      'Yayın öncesi P0/P1 uyum kontrol listesi.'),
+    ('TEDARIKCI_BEYANLARI.md', 'tedarikci-beyanlari.html',
+     'Tedarikçi Beyanları — Ezan Vaktim Pro',
+     'Kur’an tilaveti lisansı, AI sıfır saklama ve Android alarm beyanları.'),
 ]
 
 NAV = [

@@ -86,6 +86,7 @@ void main() {
       // AiService haklı olarak çevrimdışı yanıt döndürür ve uzak yol denenmez.
       final AiAnswer answer = await service.ask(
         'Tarık suresinin fazileti nedir?',
+        allowRemote: true,
       );
       expect(answer.mode, AiAnswerMode.remote);
       expect(answer.text, contains('kaynaklarda'));
@@ -112,7 +113,7 @@ void main() {
         }),
       );
 
-      final AiAnswer answer = await service.ask('Abdest nasıl alınır?');
+      final AiAnswer answer = await service.ask('Abdest nasıl alınır?', allowRemote: true);
       expect(
         answer.mode,
         AiAnswerMode.offline,
@@ -128,7 +129,7 @@ void main() {
         ),
       );
 
-      final AiAnswer answer = await service.ask('Cuma namazı farz mı?');
+      final AiAnswer answer = await service.ask('Cuma namazı farz mı?', allowRemote: true);
       expect(answer.mode, AiAnswerMode.offline);
       expect(answer.hasSources, isTrue);
     });
@@ -140,7 +141,7 @@ void main() {
         ),
       );
 
-      final AiAnswer answer = await service.ask('Cuma namazı farz mı?');
+      final AiAnswer answer = await service.ask('Cuma namazı farz mı?', allowRemote: true);
       expect(answer.mode, AiAnswerMode.offline);
     });
 
@@ -157,7 +158,7 @@ void main() {
           ),
         );
 
-        final AiAnswer answer = await service.ask('zzz qqq xxx');
+        final AiAnswer answer = await service.ask('zzz qqq xxx', allowRemote: true);
         expect(answer.mode, AiAnswerMode.offline);
         expect(answer.text, contains('eşleştiremedim'));
       },
@@ -179,6 +180,7 @@ void main() {
 
       final AiAnswer answer = await service.ask(
         'Şeytan taşlama kaç taşla yapılır?',
+        allowRemote: true,
       );
       expect(answer.mode, AiAnswerMode.remote);
       expect(answer.relatedQuestions, isNotEmpty);

@@ -33,7 +33,7 @@
 | # | İş | Dosya/Alan | Öncelik | Kabul ölçütü |
 |---|---|---|---|---|
 | 1 | ~~`ezan_saba.mp3` kaynağını belgele veya değiştir~~ **Yapıldı:** lisans kanıtı olmadığı için kaldırıldı | `assets/audio/adhan/` | **P0** | Dosya ve enum kaldırıldı; testler güncellendi |
-| 2 | EveryAyah ticari kullanım teyidi | `docs/DATA_SOURCES.md`, tilavet | **P1** | Yazılı izin veya alternatif kaynak |
+| 2 | **EveryAyah tilavet lisansı** — sitede yayımlı lisans yok, ticari kullanım belirsiz | `lib/data/models/ilahi_models.dart`, `quran_screen.dart` | **P0** | Quran Foundation Content API'ye geçiş **veya** yazılı izin; atıf görünür. Metin: `TEDARIKCI_BEYANLARI.md` §1 |
 | 3 | GitHub Pages’i aç | GitHub Settings → Pages | **P0** | Tüm yasal URL’ler 200 |
 | 4 | `USE_EXACT_ALARM` kararı | `AndroidManifest.xml`, Play beyanı | **P1** | Beyan onayı veya izin kaldırma |
 | 5 | `ios/` projesi + PrivacyInfo | `ios/` | **P1** | App Store ön koşulu |
