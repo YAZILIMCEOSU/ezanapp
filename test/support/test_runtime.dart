@@ -137,7 +137,7 @@ Future<AppRuntime> createTestRuntime({
     location: LocationService(),
     notifications: NotificationService(),
     audio: AppAudioService(),
-    ads: AdsService(),
+    ads: AdsService(preferences: prefs),
     billing: BillingService(),
     hijri: hijri,
     prayerTimes: prayerTimes,

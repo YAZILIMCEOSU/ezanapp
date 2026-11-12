@@ -489,9 +489,14 @@ class AiService {
   }
 
   /// Soruyu yanıtlar. [history] önceki mesajlardır (en yeniden geriye).
+  ///
+  /// [allowRemote] **false** ise uzak servise hiçbir metin gönderilmez;
+  /// yalnızca çevrimdışı, doğrulanmış bilgi tabanı kullanılır. Üretim
+  /// akışında bu değer KVKK açık rızasından gelir.
   Future<AiAnswer> ask(
     String question, {
     List<AiMessage> history = const <AiMessage>[],
+    bool allowRemote = true,
   }) async {
     final String trimmed = question.trim();
     if (trimmed.isEmpty) {
@@ -515,8 +520,8 @@ class AiService {
       minScore: 1.15,
     );
 
-    // 3. Backend yapılandırılmışsa RAG bağlamıyla uzak servise sor.
-    if (AppConfig.hasBackend) {
+    // 3. Backend yapılandırılmış **ve** açık rıza varsa uzak servise sor.
+    if (AppConfig.hasBackend && allowRemote) {
       try {
         final RemoteAiResult remote = await _askRemote(
           trimmed,

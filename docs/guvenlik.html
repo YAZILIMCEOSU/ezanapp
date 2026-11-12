@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Güvenlik açığı bildirimi, olay müdahale ve KVKK 72 saat süreci.">
+<meta name="robots" content="index,follow">
+<title>Siber Güvenlik — Ezan Vaktim Pro</title>
+<style>
+:root {
+  --bg: #f6f8f7;
+  --card: #ffffff;
+  --ink: #14211d;
+  --muted: #5b6b65;
+  --brand: #0f766e;
+  --brand-soft: #e6f4f1;
+  --line: #dbe5e1;
+  --warn: #92400e;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.65;
+  font-size: 16px;
+}
+a { color: var(--brand); text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+header {
+  background: linear-gradient(135deg, #0f766e, #115e59);
+  color: #fff;
+  padding: 22px 20px 18px;
+}
+header .wrap {
+  max-width: 980px; margin: 0 auto;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+  justify-content: space-between;
+}
+.brand { font-weight: 800; letter-spacing: .2px; font-size: 18px; }
+.brand small { display: block; font-weight: 500; opacity: .85; font-size: 12px; }
+nav { display: flex; flex-wrap: wrap; gap: 6px; }
+nav a {
+  color: #fff; text-decoration: none; font-size: 13px;
+  padding: 5px 9px; border-radius: 999px; background: rgba(255,255,255,.12);
+}
+nav a:hover { background: rgba(255,255,255,.24); }
+main {
+  max-width: 980px; margin: 26px auto 60px; padding: 0 18px;
+}
+.card {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 16px; padding: 28px 30px;
+  box-shadow: 0 8px 24px rgba(15, 118, 110, .06);
+}
+h1 { font-size: 30px; line-height: 1.2; margin: 0 0 8px; }
+h2 { font-size: 22px; margin: 34px 0 10px; padding-top: 8px; }
+h3 { font-size: 17px; margin: 24px 0 8px; }
+p, li { color: #24332e; }
+ul, ol { padding-left: 22px; }
+li { margin: 4px 0; }
+blockquote {
+  margin: 18px 0; padding: 12px 16px;
+  background: var(--brand-soft); border-left: 4px solid var(--brand);
+  border-radius: 8px; color: #164e47;
+}
+code {
+  background: #eef3f1; padding: 1px 5px; border-radius: 5px;
+  font-size: 13px;
+}
+pre {
+  background: #0f172a; color: #e2e8f0; padding: 16px;
+  border-radius: 10px; overflow-x: auto; font-size: 13px;
+}
+pre code { background: transparent; color: inherit; padding: 0; }
+table {
+  width: 100%; border-collapse: collapse; margin: 16px 0;
+  font-size: 14px; display: block; overflow-x: auto;
+}
+th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+th { background: #f0f6f4; font-weight: 700; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 30px 0; }
+.meta {
+  color: var(--muted); font-size: 13px; margin-bottom: 18px;
+}
+.notice {
+  background: #fff7ed; border: 1px solid #fed7aa; color: var(--warn);
+  padding: 12px 16px; border-radius: 10px; font-size: 13.5px;
+  margin: 18px 0;
+}
+footer {
+  max-width: 980px; margin: 0 auto 40px; padding: 0 18px;
+  color: var(--muted); font-size: 13px;
+}
+footer .links { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; }
+@media (max-width: 640px) {
+  .card { padding: 20px 16px; }
+  h1 { font-size: 24px; }
+  h2 { font-size: 19px; }
+}
+@media print {
+  header, nav, footer { display: none; }
+  body { background: #fff; }
+  .card { border: 0; box-shadow: none; padding: 0; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="brand">Ezan Vaktim Pro<small>Yasal ve uyum belgeleri</small></div>
+    <nav><a href="privacy.html">Gizlilik</a><a href="kvkk.html">KVKK</a><a href="acik-riza.html">Açık Rıza</a><a href="terms.html">Koşullar</a><a href="abonelik.html">Abonelik</a><a href="veri-silme.html">Veri Silme</a><a href="guvenlik.html">Güvenlik</a></nav>
+  </div>
+</header>
+<main>
+  <article class="card">
+    <div class="meta">YazılımCeosu · İstanbul, Türkiye · destek@ezanai.app</div>
+    <h1 id="ezan-vaktim-pro-siber-guvenlik-ve-olay-mudahale-protokolu">Ezan Vaktim Pro — Siber Güvenlik ve Olay Müdahale Protokolü</h1>
+<p><strong>Sürüm:</strong> 1.0 · <strong>Tarih:</strong> 12 Kasım 2026
+<strong>Kapsam:</strong> Uygulama, backend, Supabase, CI/CD, mağaza hesapları, geliştirici
+makineleri ve destek e-postası.
+<strong>Sahip:</strong> YazılımCeosu — destek@ezanai.app
+<strong>Gizlilik:</strong> Bu belgenin kamuya açık sürümünde saldırı yüzeyi ayrıntıları
+sınırlandırılır; tam sürüm özel saklanır.</p>
+<blockquote>
+<p>Dayanak: KVKK m.12 ve Kişisel Veri Güvenliği Rehberi; 7545 sayılı Siber
+Güvenlik Kanunu; TCK m.243–245; ISO/IEC 27001 (hedef); OWASP MASVS/ASVS.
+Hukuki görüş değildir.</p>
+</blockquote>
+<h2 id="1-amac-ve-ilkeler">1. Amaç ve ilkeler</h2>
+<ol>
+<li>Kişisel verilerin gizliliği, bütünlüğü ve erişilebilirliğini korumak.</li>
+<li>Olayları <strong>gecikmeksizin</strong> tespit etmek, sınırlamak, bildirmek ve öğrenmek.</li>
+<li>Yasal bildirim sürelerine uymak: <strong>KVKK 72 saat</strong>, <strong>7545 gecikmeksizin</strong>.</li>
+<li>Varsayılan güvenli, en az yetki, derinlemesine savunma, kayıt tutma.</li>
+</ol>
+<h2 id="2-varlk-envanteri-ve-kritiklik">2. Varlık envanteri ve kritiklik</h2>
+<table>
+<thead>
+<tr>
+<th>Varlık</th>
+<th>Kritiklik</th>
+<th>Sahip</th>
+<th>Not</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Kullanıcı cihaz verisi (SQLite)</td>
+<td>Yüksek</td>
+<td>Kullanıcı</td>
+<td>Uygulama alanı; <code>allowBackup=false</code></td>
+</tr>
+<tr>
+<td>Supabase projesi (yedekler)</td>
+<td>Yüksek</td>
+<td>Geliştirici</td>
+<td>RLS zorunlu; servis anahtarı istemcide yok</td>
+</tr>
+<tr>
+<td>AI backend / API anahtarları</td>
+<td>Yüksek</td>
+<td>Geliştirici</td>
+<td>Sunucu tarafı; istemciye gömülmez</td>
+</tr>
+<tr>
+<td>Play Console / App Store Connect</td>
+<td>Kritik</td>
+<td>Geliştirici</td>
+<td>2FA zorunlu</td>
+</tr>
+<tr>
+<td>GitHub deposu + Actions</td>
+<td>Yüksek</td>
+<td>Geliştirici</td>
+<td>Ana dal koruması, secret taraması</td>
+</tr>
+<tr>
+<td>Release keystore</td>
+<td>Kritik</td>
+<td>Geliştirici</td>
+<td>Çevrimdışı yedek, parola kasası</td>
+</tr>
+<tr>
+<td>AdMob hesabı</td>
+<td>Orta</td>
+<td>Geliştirici</td>
+<td>2FA</td>
+</tr>
+<tr>
+<td>Destek e-postası</td>
+<td>Orta</td>
+<td>Geliştirici</td>
+<td>2FA, bağımsız parola</td>
+</tr>
+<tr>
+<td>Geliştirici makinesi</td>
+<td>Yüksek</td>
+<td>Geliştirici</td>
+<td>Disk şifreleme, ekran kilidi</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-tehdit-modeli-stride-ozeti">3. Tehdit modeli (STRIDE özeti)</h2>
+<table>
+<thead>
+<tr>
+<th>Tehdit</th>
+<th>Örnek</th>
+<th>Önlem</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Spoofing</td>
+<td>Sahte AI backend, MITM</td>
+<td>TLS pinning/sertifika doğrulama, sabit alan adı</td>
+</tr>
+<tr>
+<td>Tampering</td>
+<td>Değiştirilmiş APK, RLS atlatma</td>
+<td>İmza, Play App Signing, RLS, sunucu doğrulama</td>
+</tr>
+<tr>
+<td>Repudiation</td>
+<td>Rıza inkârı</td>
+<td>Zaman damgalı rıza kaydı, sunucu logu</td>
+</tr>
+<tr>
+<td>Information disclosure</td>
+<td>Yedek sızıntısı, log’da konum</td>
+<td>RLS, şifreleme, log maskeleme, minimal veri</td>
+</tr>
+<tr>
+<td>Denial of service</td>
+<td>AI kota taşması</td>
+<td>Hız sınırı, kota, 429, devre kesici</td>
+</tr>
+<tr>
+<td>Elevation of privilege</td>
+<td>Servis anahtarı ile RLS atlama</td>
+<td>Anahtar istemcide yok, least privilege, rotasyon</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Saldırı yüzeyi:</strong> ağ (vakit/AI/Supabase/AdMob), yerel depolama, IPC
+(bildirim/medya), izinler, bağımlılıklar, CI secret’ları, mağaza hesapları.</p>
+<h2 id="4-erisim-kontrolu">4. Erişim kontrolü</h2>
+<ul>
+<li><strong>2FA</strong> tüm yönetici hesaplarında zorunlu (GitHub, Google, Supabase, Apple).</li>
+<li>Parola yöneticisi; her hizmet için benzersiz parola; en az 16 karakter.</li>
+<li>Supabase: <code>service_role</code> anahtarı <strong>yalnızca</strong> sunucuda/CI secret’ında;
+  istemci <code>anon</code> anahtarı + RLS kullanır.</li>
+<li>GitHub: <code>main</code> korumalı; zorunlu review, imzalı commit hedefi, secret
+  scanning + Dependabot açık.</li>
+<li>Ayrıcalıklı işlemler (yayın, anahtar rotasyonu) kayıt altına alınır.</li>
+<li>Erişim üç ayda bir gözden geçirilir; ayrılan erişim derhâl kaldırılır.</li>
+</ul>
+<h2 id="5-uygulama-guvenligi-masvs">5. Uygulama güvenliği (MASVS)</h2>
+<h3 id="51-ag">5.1. Ağ</h3>
+<ul>
+<li>TLS 1.2+; <code>usesCleartextTraffic=false</code>; network security config.</li>
+<li>Sertifika doğrulama kapatılmaz; zayıf TLS yapılandırması yok.</li>
+<li>API anahtarı istemciye gömülmez; anahtar yalnızca backend’de.</li>
+<li>Hata yanıtları kullanıcıya teknik ayrıntı sızdırmaz; sunucu logunda iz
+  numarası döner.</li>
+<li>Zaman aşımı ve üstel geri çekilme; 429/5xx devre kesici.</li>
+</ul>
+<h3 id="52-depolama">5.2. Depolama</h3>
+<ul>
+<li><code>allowBackup=false</code>, <code>fullBackupContent</code> yok; hassas veri harici depolamaya
+  yazılmaz.</li>
+<li>Anonim oturum jetonu platform güvenli depolamasında (Keystore/Keychain).</li>
+<li>Bulut yedekleri TLS ile taşınır; RLS ile yalnız sahibi erişir.</li>
+<li>Cihazda düz metin parola/anahtar yok.</li>
+</ul>
+<h3 id="53-kimlik-dogrulama-ve-oturum">5.3. Kimlik doğrulama ve oturum</h3>
+<ul>
+<li>Uygulama hesabı yok; Supabase anonim oturumu yalnızca yedekleme için.</li>
+<li>Anonim oturum cihazla sınırlı; oturum kapatma jetonu geçersiz kılar.</li>
+<li>Yeniden kimlik doğrulama gerektiren işlem: yedeği silme.</li>
+</ul>
+<h3 id="54-platform-etkilesimi">5.4. Platform etkileşimi</h3>
+<ul>
+<li>Dışa açık activity/receiver yalnızca gerekli; <code>exported=false</code> varsayılan.</li>
+<li>Deep link doğrulaması; beyaz liste; parametre doğrulama.</li>
+<li>WebView kullanılmaz; kullanılırsa JS ve dosya erişimi kapalı.</li>
+<li>İzinler çalışma zamanında ve bağlam içinde istenir.</li>
+</ul>
+<h3 id="55-kod-kalitesi">5.5. Kod kalitesi</h3>
+<ul>
+<li><code>flutter analyze</code> sıfır uyarı; test kapısı (≥300 test); bağımlılık taraması.</li>
+<li>R8/obfuscation; debug sembolleri ayrı saklanır.</li>
+<li>Gizli bilgi taraması (gitleaks) her PR’da.</li>
+<li>Üçüncü taraf paketler yalnızca pub.dev; sürüm kilitli (<code>pubspec.lock</code>).</li>
+</ul>
+<h3 id="56-gizlilik">5.6. Gizlilik</h3>
+<ul>
+<li>Loglarda konum, soru metni, e-posta yok; maskelenir.</li>
+<li>Analytics/crash SDK yok; eklenirse rıza + Data safety güncellemesi.</li>
+<li>Üretim verisiyle test yapılmaz; anonim test verisi.</li>
+</ul>
+<h2 id="6-backend-ve-bulut-guvenligi">6. Backend ve bulut güvenliği</h2>
+<ul>
+<li>Supabase RLS tüm tablolarda açık; politika: <code>auth.uid() = user_id</code>.</li>
+<li>Depolama kovası özel; imzalı URL, kısa süreli.</li>
+<li>Yönetici işlemleri yalnızca sunucu tarafı; istemciye <code>service_role</code> yok.</li>
+<li>Yedeklerde şifreleme; erişim logları; anormal indirme alarmı.</li>
+<li>AI backend: kimlik doğrulama, hız sınırı, girdi uzunluğu sınırı, çıktı
+  filtresi, sağlayıcıda saklama yasağı (zero-retention).</li>
+<li>Sırlar ortam değişkeni/secret manager; depoda sır yok.</li>
+</ul>
+<h2 id="7-cicd-ve-tedarik-zinciri">7. CI/CD ve tedarik zinciri</h2>
+<ul>
+<li>GitHub Actions: sabitlenmiş action sürümleri (SHA), en az yetkili
+  <code>GITHUB_TOKEN</code>.</li>
+<li>Secret’lar GitHub Secrets; log’a yazdırılmaz (<code>::add-mask::</code>).</li>
+<li>Yayın imzası CI’da; keystore base64 secret + parola secret.</li>
+<li>AAB/APK imza doğrulaması ve sürüm numarası kontrolü.</li>
+<li>Dependabot + <code>pub outdated</code>; kritik yamalar 7 gün içinde.</li>
+<li>Üçüncü taraf action’lar için tedarikçi güveni ve sürüm kilidi.</li>
+</ul>
+<h2 id="8-olay-mudahale-plan">8. Olay müdahale planı</h2>
+<h3 id="81-onem-dereceleri">8.1. Önem dereceleri</h3>
+<table>
+<thead>
+<tr>
+<th>Seviye</th>
+<th>Tanım</th>
+<th>Örnek</th>
+<th>İlk yanıt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P1</td>
+<td>Kişisel veri ihlali / yaygın kesinti</td>
+<td>Yedek tablosu ifşası, anahtar sızması</td>
+<td>1 saat</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>Sınırlı ihlal / kritik zafiyet</td>
+<td>Tek kullanıcı verisi, RCE</td>
+<td>4 saat</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>Orta</td>
+<td>Kota aşımı, spam</td>
+<td>1 iş günü</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>Düşük</td>
+<td>UI hatası, yanlış log</td>
+<td>5 iş günü</td>
+</tr>
+</tbody>
+</table>
+<h3 id="82-asamalar">8.2. Aşamalar</h3>
+<ol>
+<li><strong>Tespit:</strong> izleme, kullanıcı bildirimi, mağaza uyarısı, güvenlik taraması.</li>
+<li><strong>Sınıflandırma:</strong> seviye, veri türü, etkilenen kişi sayısı.</li>
+<li><strong>Sınırlama:</strong> anahtar rotasyonu, oturum iptali, erişim kapatma, yama,
+   gerekirse özellik kapatma (<code>feature flag</code>).</li>
+<li><strong>Yok etme:</strong> zafiyet giderimi, kök neden analizi.</li>
+<li><strong>Bildirim:</strong> §9.</li>
+<li><strong>İyileştirme:</strong> ders çıkarımı, test ve süreç güncellemesi, 30 gün içinde
+   rapor.</li>
+</ol>
+<h3 id="83-kant-ve-kayt">8.3. Kanıt ve kayıt</h3>
+<ul>
+<li>Olay numarası, zaman çizelgesi, etkilenen varlıklar, alınan aksiyonlar,
+  bildirimler.</li>
+<li>Loglar değiştirilemez biçimde saklanır (WORM/append-only hedefi).</li>
+<li>Kişisel veri içeren kanıtlar şifreli saklanır; erişim sınırlıdır.</li>
+</ul>
+<h2 id="9-yasal-bildirimler">9. Yasal bildirimler</h2>
+<h3 id="91-kvkk-72-saat">9.1. KVKK — 72 saat</h3>
+<ul>
+<li>Veri ihlali öğrenildiğinde <strong>en kısa sürede ve en geç 72 saat içinde</strong>
+  Kişisel Verileri Koruma Kurumu’na bildirilir (Kurul 2019/10).</li>
+<li>Bildirim: olayın niteliği, etkilenen veri kategorileri ve kişi sayısı,
+  olası sonuçlar, alınan önlemler, iletişim.</li>
+<li>Veri sahibine makul olan en kısa sürede bildirim; yüksek risk varsa açık
+  ve anlaşılır dilde.</li>
+<li>72 saat içinde tamamlanamazsa <strong>gerekçeli ara bildirim</strong> yapılır.</li>
+<li>Kayıt: <code>docs/legal/olaylar/</code> altında (özel, depoya commit edilmez).</li>
+</ul>
+<h3 id="92-7545-siber-guvenlik-kanunu">9.2. 7545 Siber Güvenlik Kanunu</h3>
+<ul>
+<li>Siber güvenlik olayı ve tespit edilen zafiyet, <strong>gecikmeksizin</strong> Siber
+  Güvenlik Başkanlığı’na bildirilir.</li>
+<li>KVKK bildirimi 7545 bildiriminin yerine geçmez; ikisi ayrı yürütülür.</li>
+<li>Kapsam ve usul, Başkanlıkça yayımlanan usul ve esaslara göre uygulanır.</li>
+</ul>
+<h3 id="93-diger">9.3. Diğer</h3>
+<ul>
+<li>Mağaza (Play/Apple) güvenlik bildirimi.</li>
+<li>Etkilenen tedarikçilere (Supabase, Google) bildirim.</li>
+<li>Gerekirse Cumhuriyet Başsavcılığı’na suç duyurusu (TCK 243–245).</li>
+<li>Kullanıcıya bildirim; 72 saatlik süreçte şeffaflık.</li>
+</ul>
+<h3 id="94-bildirim-sablonu">9.4. Bildirim şablonu</h3>
+<pre><code>OLAY NO: EZANAI-YYYY-NNN
+TESPİT: &lt;tarih saat, kaynak&gt;
+SEVİYE: P1/P2
+ÖZET: &lt;ne oldu&gt;
+ETKİLENEN VERİ: &lt;kategori, yaklaşık kişi sayısı&gt;
+KÖK NEDEN: &lt;biliniyorsa&gt;
+SINIRLAMA: &lt;yapılanlar, saat&gt;
+BİLDİRİMLER: KVKK &lt;tarih/saat&gt;, SGİB &lt;tarih/saat&gt;, kullanıcı &lt;tarih&gt;
+İYİLEŞTİRME: &lt;plan, sorumlu, tarih&gt;
+</code></pre>
+<h2 id="10-izleme-ve-test">10. İzleme ve test</h2>
+<ul>
+<li>Yayın sonrası çökme/ANR oranı; mağaza vitals.</li>
+<li>Supabase anormal erişim/indirme alarmı.</li>
+<li>Aylık bağımlılık ve secret taraması.</li>
+<li>Yılda en az bir kez sızma testi (harici veya OWASP MASVS tabanlı).</li>
+<li>Geri yükleme tatbikatı: 6 ayda bir yedekten geri dönme testi.</li>
+<li>Olay müdahale tatbikatı: yılda bir masa başı.</li>
+</ul>
+<h2 id="11-yedekleme-ve-sureklilik">11. Yedekleme ve süreklilik</h2>
+<ul>
+<li>Kaynak kod: GitHub + yerel şifreli yedek.</li>
+<li>Keystore: çevrimdışı, iki kopya, ayrı fiziksel konum.</li>
+<li>Supabase: günlük otomatik yedek + haftalık dışa aktarım.</li>
+<li>RTO hedefi 24 saat; RPO hedefi 24 saat.</li>
+<li>Kurtarma adımları yazılı ve test edilmiş.</li>
+</ul>
+<h2 id="12-egitim-ve-sorumluluk">12. Eğitim ve sorumluluk</h2>
+<ul>
+<li>Geliştirici: güvenlik farkındalığı, oltalama, güvenli kod.</li>
+<li>Destek: kişisel veri talebi ve olay bildirimini tanıma.</li>
+<li>Yeni özellik öncesi gizlilik ve güvenlik kontrolü (PR şablonu).</li>
+<li>İhlal: disiplin ve hukuki süreç; gönüllü bildirim teşvik edilir.</li>
+</ul>
+<h2 id="13-surum-ve-gozden-gecirme">13. Sürüm ve gözden geçirme</h2>
+<ul>
+<li>Son güncelleme: 12 Kasım 2026</li>
+<li>Sonraki gözden geçirme: 12 Mayıs 2027 (veya büyük mimari değişiklikte)</li>
+<li>Onay: YazılımCeosu</li>
+</ul>
+<h2 id="14-baglantl-belgeler">14. Bağlantılı belgeler</h2>
+<ul>
+<li><a href="kvkk.html"><code>KVKK_AYDINLATMA_METNI.md</code></a></li>
+<li><a href="ropa.html"><code>VERI_ENVANTERI_ROPA.md</code></a></li>
+<li><a href="veri-silme.html"><code>VERI_SILME_VE_BASVURU.md</code></a></li>
+<li><a href="ucuncu-taraflar.html"><code>UCUNCU_TARAF_SDK_VE_AKTARIMLAR.md</code></a></li>
+<li><a href="lisanslar.html"><code>SES_VE_ICERIK_LISANSLARI.md</code></a></li>
+<li><a href="yayin-kontrol.html"><code>YAYIN_UYUMLULUK_KONTROL_LISTESI.md</code></a></li>
+</ul>
+    <div class="notice">
+      Bu sayfa bilgilendirme amaçlıdır ve hukuki görüş yerine geçmez.
+      Yürürlükteki sürüm bu sayfadır; önemli değişiklikler uygulama içinde
+      duyurulur.
+    </div>
+  </article>
+</main>
+<footer>
+  <div class="links"><a href="privacy.html">Gizlilik</a><a href="kvkk.html">KVKK</a><a href="acik-riza.html">Açık Rıza</a><a href="terms.html">Koşullar</a><a href="abonelik.html">Abonelik</a><a href="veri-silme.html">Veri Silme</a><a href="guvenlik.html">Güvenlik</a></div>
+  <div>© 2026 YazılımCeosu · Ezan Vaktim Pro · <code>com.yazilimceosu.ezanai</code></div>
+</footer>
+</body>
+</html>

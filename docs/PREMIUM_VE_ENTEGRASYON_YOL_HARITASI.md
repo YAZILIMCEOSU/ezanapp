@@ -15,7 +15,7 @@ Aşağıdaki özellikler uygulama içinde **tamamen hazırdır**, herhangi bir s
 | **3B Eğim Dengelemeli Kıble Pusulası ve Harita** | Hazır | Telefon masada düz dururken de elde eğik tutulurken de burulma (sapma) yapmayan 3B sensör motoru + Kâbe yönü harita işaretlemesi + Kıble ekranından tek dokunuşla Cami Bul geçişi. |
 | **Cami Bulucu, Cami Pusulası ve Canlı Navigasyon** | Hazır | Bağcılar ve tüm çevre ilçelerin gerçek koordinatlı camileri + OpenStreetMap/Nominatim canlı arama + Camiye Canlı Pusula + Google Haritalar adım adım yürüyüş ve araç navigasyonu (`google.navigation:`). |
 | **Kur'an-ı Kerim Sesli Tilavet + Oklu/İşaretli Takip** | Hazır | 114 sure, 6 hafız, renkli tecvidli hat, kelimenin altında yeşil ibre (`▲`) ve sarı vurgu (`#FFF176`) ile ses dalgasına kilitli gerçek zamanlı kelime takibi + alt sabit MediaPlayer. |
-| **Gerçek Ezan Sesleri & Nafile Namaz Alarmları** | Hazır | Kâbe İmamı (Mekke), Medine ve Türk makamlarında gerçek müezzin ezanları + İşrak, Kuşluk (Duha), Evvabîn, Teheccüd, Cuma, Bayram ve Teravih alarmları. |
+| **Ezan Sesleri & Nafile Namaz Alarmları** | Hazır | Hicaz, Segâh ve Tekbir makamlarında proje içi vokal sentez ezanlar + İşrak, Kuşluk (Duha), Evvabîn, Teheccüd, Cuma, Bayram ve Teravih alarmları. |
 | **İlahi & Dini Sesler Kataloğu** | Hazır | Uygulama içi ve açık arşiv telifsiz vokal ilahiler, çevrimdışı indirme ve telefondan ses seçme. |
 | **Yerel İslami Bilgi Bankası (70+ Konu, 4 Mezhep)** | Hazır | İnternet veya yapay zekâ kotası olmasa bile Hanefî, Şâfiî, Mâlikî ve Hanbelî mezheplerine göre kaynaklı cevap üretir. |
 
@@ -49,13 +49,13 @@ Kullanıcıların uygulama içinden **"Aylık Premium"** veya **"Yıllık Premiu
 3. **"Abonelik Oluştur" (Create subscription)** butonuna basın ve **birebir şu Ürün Kimliklerini (Product ID)** girin *(uygulama kodu bu 3 kimliği de otomatik tanır)*:
    - **1. Aylık Abonelik Kimliği:** `ezanai_premium_monthly`
      - Adı: `Ezan Vaktim Pro — Aylık Premium`
-     - **Önerilen 2026 Fiyatı:** **149,99 TL / Ay** *(Avrupa/ABD için: **4,99 $ / 4,99 €**)*
+     - **Önerilen 2026 Fiyatı:** **79,99 TL / Ay** *(Avrupa/ABD için: **3,99 $ / 3,99 €**)*
    - **2. Yıllık Abonelik Kimliği (En Çok Satan):** `ezanai_premium_yearly`
-     - Adı: `Ezan Vaktim Pro — Yıllık Premium (%45 Avantajlı)`
-     - **Önerilen 2026 Fiyatı:** **999,99 TL / Yıl** *(Aylığa böldüğünüzde ~83 TL/ay'a gelir; Avrupa/ABD için: **29,99 $ / 29,99 €** — 7 gün ücretsiz deneme açmanız dönüşümü 3 kat artırır)*
+     - Adı: `Ezan Vaktim Pro — Yıllık Premium (%37 Avantajlı)`
+     - **Önerilen 2026 Fiyatı:** **599,99 TL / Yıl** *(Aylığa böldüğünüzde ~50 TL/ay'a gelir; Avrupa/ABD için: **29,99 $ / 29,99 €** — 7 gün ücretsiz deneme açmanız dönüşümü artırır)*
    - **3. Ömür Boyu VIP Paket Kimliği (Uygulama İçi Ürünler / In-app products menüsünden açılır):** `ezanai_premium_lifetime`
      - Adı: `Ezan Vaktim Pro — Ömür Boyu VIP (Tek Seferlik)`
-     - **Önerilen 2026 Fiyatı:** **2.499,99 TL** *(Lansman kampanyası: **1.999,99 TL**; Avrupa/ABD için: **69,99 $ / 69,99 €**)*
+     - **Önerilen 2026 Fiyatı:** **1.499,99 TL** *(Avrupa/ABD için: **59,99 $ / 59,99 €**)*
 4. Ürünleri **"Etkinleştir" (Activate)** butonuna basarak aktif edin.
 5. `docs/PLAY_STORE_YAYIN_REHBERI.md` dosyasındaki adımlarla GitHub'dan imzalı `.aab` dosyasını indirip Play Console'a yükleyin. **Ekstra hiçbir kod değişikliği yapmanıza gerek kalmadan** uygulama içindeki Premium satın alma butonları gerçek Google Play ödeme penceresini açacaktır.
 
@@ -64,9 +64,9 @@ Google Play üzerinden yapılan satışlarda **%20 KDV** ve Google'ın **%15 hiz
 
 | Paket | Ürün Kimliği (Kodda Hazır) | Mağaza Satış Fiyatı (TR / Global) | Vergi ve Google (%15) Sonrası **Size Kalan Net** | Ortalama AI Maliyeti | **Kişi Başı Net Kârınız** |
 |---|---|---|---|---|---|
-| **Aylık Premium** | `ezanai_premium_monthly` | **149,99 TL** (`$4.99`) | ~106 TL / ay | ~4–6 TL / ay | **~100 TL / ay** |
-| **Yıllık Premium** | `ezanai_premium_yearly` | **999,99 TL** (`$29.99`) | ~708 TL / yıl | ~45–60 TL / yıl | **~650 TL / yıl** |
-| **Ömür Boyu VIP** | `ezanai_premium_lifetime` | **2.499,99 TL** (`$69.99`) | ~1.770 TL (peşin) | ~120 TL | **~1.650 TL (peşin)** |
+| **Aylık Premium** | `ezanai_premium_monthly` | **79,99 TL** (`$3.99`) | ~56 TL / ay | ~4–6 TL / ay | **~51 TL / ay** |
+| **Yıllık Premium** | `ezanai_premium_yearly` | **599,99 TL** (`$29.99`) | ~425 TL / yıl | ~45–60 TL / yıl | **~370 TL / yıl** |
+| **Ömür Boyu VIP** | `ezanai_premium_lifetime` | **1.499,99 TL** (`$59.99`) | ~1.062 TL (peşin) | ~120 TL | **~940 TL (peşin)** |
 
 ---
 

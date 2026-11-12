@@ -219,6 +219,54 @@ class SettingsController extends Notifier<AppSettings> {
     rescheduleNotifications: false,
   );
 
+  /// KVKK açık rıza kayıtları.
+  ///
+  /// Rıza, cihazda ISO-8601 zaman damgasıyla saklanır; geri çekildiğinde
+  /// kayıt silinir. Sunucuya rıza kaydı gönderilmez.
+  String? get aiConsentAt =>
+      ref.read(runtimeProvider).preferences.getString(PrefKeys.aiConsentAt);
+
+  String? get backupConsentAt => ref
+      .read(runtimeProvider)
+      .preferences
+      .getString(PrefKeys.backupConsentAt);
+
+  Future<void> grantAiConsent() => ref
+      .read(runtimeProvider)
+      .preferences
+      .setString(PrefKeys.aiConsentAt, DateTime.now().toIso8601String());
+
+  Future<void> withdrawAiConsent() =>
+      ref.read(runtimeProvider).preferences.remove(PrefKeys.aiConsentAt);
+
+  Future<void> grantBackupConsent() => ref
+      .read(runtimeProvider)
+      .preferences
+      .setString(PrefKeys.backupConsentAt, DateTime.now().toIso8601String());
+
+  Future<void> withdrawBackupConsent() =>
+      ref.read(runtimeProvider).preferences.remove(PrefKeys.backupConsentAt);
+
+  /// Kişiselleştirilmiş reklam rızası. **Varsayılan kapalıdır**; rıza yoksa
+  /// AdMob'a `npa=1` (kişiselleştirilmemiş reklam) sinyali gönderilir.
+  String? get personalizedAdsConsentAt => ref
+      .read(runtimeProvider)
+      .preferences
+      .getString(PrefKeys.personalizedAdsConsentAt);
+
+  Future<void> grantPersonalizedAdsConsent() => ref
+      .read(runtimeProvider)
+      .preferences
+      .setString(
+        PrefKeys.personalizedAdsConsentAt,
+        DateTime.now().toIso8601String(),
+      );
+
+  Future<void> withdrawPersonalizedAdsConsent() => ref
+      .read(runtimeProvider)
+      .preferences
+      .remove(PrefKeys.personalizedAdsConsentAt);
+
   Future<void> setCrashReporting(bool enabled) => update(
     state.copyWith(crashReportingEnabled: enabled),
     rescheduleNotifications: false,

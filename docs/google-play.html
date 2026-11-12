@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Data safety, izinler ve Google Play politika uyumu.">
+<meta name="robots" content="index,follow">
+<title>Google Play Uyum — Ezan Vaktim Pro</title>
+<style>
+:root {
+  --bg: #f6f8f7;
+  --card: #ffffff;
+  --ink: #14211d;
+  --muted: #5b6b65;
+  --brand: #0f766e;
+  --brand-soft: #e6f4f1;
+  --line: #dbe5e1;
+  --warn: #92400e;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.65;
+  font-size: 16px;
+}
+a { color: var(--brand); text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+header {
+  background: linear-gradient(135deg, #0f766e, #115e59);
+  color: #fff;
+  padding: 22px 20px 18px;
+}
+header .wrap {
+  max-width: 980px; margin: 0 auto;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+  justify-content: space-between;
+}
+.brand { font-weight: 800; letter-spacing: .2px; font-size: 18px; }
+.brand small { display: block; font-weight: 500; opacity: .85; font-size: 12px; }
+nav { display: flex; flex-wrap: wrap; gap: 6px; }
+nav a {
+  color: #fff; text-decoration: none; font-size: 13px;
+  padding: 5px 9px; border-radius: 999px; background: rgba(255,255,255,.12);
+}
+nav a:hover { background: rgba(255,255,255,.24); }
+main {
+  max-width: 980px; margin: 26px auto 60px; padding: 0 18px;
+}
+.card {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 16px; padding: 28px 30px;
+  box-shadow: 0 8px 24px rgba(15, 118, 110, .06);
+}
+h1 { font-size: 30px; line-height: 1.2; margin: 0 0 8px; }
+h2 { font-size: 22px; margin: 34px 0 10px; padding-top: 8px; }
+h3 { font-size: 17px; margin: 24px 0 8px; }
+p, li { color: #24332e; }
+ul, ol { padding-left: 22px; }
+li { margin: 4px 0; }
+blockquote {
+  margin: 18px 0; padding: 12px 16px;
+  background: var(--brand-soft); border-left: 4px solid var(--brand);
+  border-radius: 8px; color: #164e47;
+}
+code {
+  background: #eef3f1; padding: 1px 5px; border-radius: 5px;
+  font-size: 13px;
+}
+pre {
+  background: #0f172a; color: #e2e8f0; padding: 16px;
+  border-radius: 10px; overflow-x: auto; font-size: 13px;
+}
+pre code { background: transparent; color: inherit; padding: 0; }
+table {
+  width: 100%; border-collapse: collapse; margin: 16px 0;
+  font-size: 14px; display: block; overflow-x: auto;
+}
+th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+th { background: #f0f6f4; font-weight: 700; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 30px 0; }
+.meta {
+  color: var(--muted); font-size: 13px; margin-bottom: 18px;
+}
+.notice {
+  background: #fff7ed; border: 1px solid #fed7aa; color: var(--warn);
+  padding: 12px 16px; border-radius: 10px; font-size: 13.5px;
+  margin: 18px 0;
+}
+footer {
+  max-width: 980px; margin: 0 auto 40px; padding: 0 18px;
+  color: var(--muted); font-size: 13px;
+}
+footer .links { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; }
+@media (max-width: 640px) {
+  .card { padding: 20px 16px; }
+  h1 { font-size: 24px; }
+  h2 { font-size: 19px; }
+}
+@media print {
+  header, nav, footer { display: none; }
+  body { background: #fff; }
+  .card { border: 0; box-shadow: none; padding: 0; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="brand">Ezan Vaktim Pro<small>Yasal ve uyum belgeleri</small></div>
+    <nav><a href="privacy.html">Gizlilik</a><a href="kvkk.html">KVKK</a><a href="acik-riza.html">Açık Rıza</a><a href="terms.html">Koşullar</a><a href="abonelik.html">Abonelik</a><a href="veri-silme.html">Veri Silme</a><a href="guvenlik.html">Güvenlik</a></nav>
+  </div>
+</header>
+<main>
+  <article class="card">
+    <div class="meta">YazılımCeosu · İstanbul, Türkiye · destek@ezanai.app</div>
+    <h1 id="google-play-uyum-dosyas-ezan-vaktim-pro">Google Play Uyum Dosyası — Ezan Vaktim Pro</h1>
+<p><strong>Sürüm:</strong> 1.0 · <strong>Tarih:</strong> 12 Kasım 2026
+<strong>Hedef:</strong> Google Play Console beyanları ile uygulamanın gerçek davranışını
+<strong>birebir</strong> uyumlu hâle getirmek ve yayın reddini önlemek.</p>
+<blockquote>
+<p>Kaynaklar: Google Play Developer Program Policy, Data safety, Target API
+level, Permissions &amp; APIs, Payments, AI-Generated Content, Families, Ads.
+Bağlantılar §12’de. Bu dosya hukuki görüş değildir.</p>
+</blockquote>
+<h2 id="1-yayn-kunyesi">1. Yayın künyesi</h2>
+<table>
+<thead>
+<tr>
+<th>Alan</th>
+<th>Değer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Uygulama adı</td>
+<td>Ezan Vaktim Pro — Akıllı İslam Asistanı</td>
+</tr>
+<tr>
+<td>Paket</td>
+<td><code>com.yazilimceosu.ezanai</code></td>
+</tr>
+<tr>
+<td>Sürüm</td>
+<td><code>1.0.0+1</code> (yayın öncesi artırılacak)</td>
+</tr>
+<tr>
+<td>Kategori</td>
+<td>Yaşam Tarzı / Referans</td>
+</tr>
+<tr>
+<td>İçerik derecesi</td>
+<td>IARC anketi sonrası; dinî içerik, şiddet/cinsellik yok → hedef 3+/7+</td>
+</tr>
+<tr>
+<td>Hedef kitle</td>
+<td>13 yaş ve üzeri</td>
+</tr>
+<tr>
+<td>Reklam</td>
+<td>Ücretsiz sürümde var; Premium’da yok</td>
+</tr>
+<tr>
+<td>Uygulama içi satın alma</td>
+<td>Var (aylık/yıllık/ömürlük)</td>
+</tr>
+<tr>
+<td>Hesap</td>
+<td>Zorunlu değil; bulut yedeklemede anonim oturum</td>
+</tr>
+<tr>
+<td>Gizlilik politikası</td>
+<td><code>https://yazilimceosu.github.io/ezanapp/privacy.html</code></td>
+</tr>
+<tr>
+<td>Destek</td>
+<td><code>https://yazilimceosu.github.io/ezanapp/</code> · destek@ezanai.app</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-data-safety-veri-turleri">2. Data safety — veri türleri</h2>
+<p>Aşağıdaki tablo, <strong>reklam kimlikleri yapılandırılmış</strong> yayın derlemesi için
+doldurulacak beyandır. <code>ADS_ENABLED=false</code> veya reklam kimliği yoksa reklam
+satırları “toplanmıyor” olarak işaretlenir; diğer satırlar değişmez.</p>
+<table>
+<thead>
+<tr>
+<th>Veri türü</th>
+<th>Toplanıyor mu?</th>
+<th>Paylaşılıyor mu?</th>
+<th>Amaç</th>
+<th>İsteğe bağlı?</th>
+<th>Silinebilir?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Yaklaşık konum</td>
+<td>Evet (AdMob, IP’den)</td>
+<td>Evet (Google)</td>
+<td>Reklam/analitik</td>
+<td>Reklam kapatılırsa hayır</td>
+<td>Cihaz/Google ayarları</td>
+</tr>
+<tr>
+<td>Hassas konum (tam koordinat)</td>
+<td><strong>Hayır</strong> (cihazda kalır; sunucuya gönderilmez)</td>
+<td>Hayır</td>
+<td>—</td>
+<td>—</td>
+<td>Uygulama içi</td>
+</tr>
+<tr>
+<td>Yaklaşık konum (yedek vakit)</td>
+<td>Evet — 2 ondalık, ~1 km</td>
+<td>Evet (AlAdhan)</td>
+<td>Uygulama işlevi</td>
+<td>Diyanet servisi yoksa</td>
+<td>AlAdhan politikası</td>
+</tr>
+<tr>
+<td>Ad / e-posta / telefon</td>
+<td><strong>Hayır</strong></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Kullanıcı kimlikleri (anonim UUID)</td>
+<td>Evet (yalnızca yedekleme açıksa)</td>
+<td>Hayır (Supabase işleyen)</td>
+<td>Uygulama işlevi</td>
+<td>Evet (rıza)</td>
+<td>Uygulama içi + e-posta</td>
+</tr>
+<tr>
+<td>Dinî inançlar</td>
+<td>Evet (AI/backup isteğe bağlı)</td>
+<td>Hayır (işleyenlerle sınırlı)</td>
+<td>Uygulama işlevi</td>
+<td><strong>Evet (ayrı rıza)</strong></td>
+<td>Uygulama içi + e-posta</td>
+</tr>
+<tr>
+<td>Diğer kullanıcı içeriği (AI soruları)</td>
+<td>Evet (yalnızca uzak AI rızası)</td>
+<td>Hayır (işleyen)</td>
+<td>Uygulama işlevi</td>
+<td>Evet</td>
+<td>Sohbet silme</td>
+</tr>
+<tr>
+<td>Uygulama etkinliği (reklam etkileşimi)</td>
+<td>Evet (AdMob)</td>
+<td>Evet (Google)</td>
+<td>Reklam/ölçüm</td>
+<td>Reklam kapatılırsa hayır</td>
+<td>Google ayarları</td>
+</tr>
+<tr>
+<td>Cihaz veya diğer kimlikler (AD_ID, FCM jetonu)</td>
+<td>Evet (reklam/push)</td>
+<td>Evet (Google)</td>
+<td>Reklam, bildirim</td>
+<td>Reklam/push kapatılabilir</td>
+<td>Google/cihaz ayarları</td>
+</tr>
+<tr>
+<td>Uygulama bilgisi ve performansı</td>
+<td>Evet (AdMob teknik veri)</td>
+<td>Evet (Google)</td>
+<td>Reklam</td>
+<td>—</td>
+<td>Google</td>
+</tr>
+<tr>
+<td>Satın alma geçmişi</td>
+<td>Evet (abonelik durumu)</td>
+<td>Hayır</td>
+<td>Uygulama işlevi</td>
+<td>Hayır (Premium ise)</td>
+<td>Mağaza</td>
+</tr>
+<tr>
+<td>Kişiler, fotoğraf, mikrofon, sağlık</td>
+<td><strong>Hayır</strong></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Güvenlik cevapları:</strong></p>
+<ul>
+<li>Veriler aktarımda şifreleniyor mu? <strong>Evet</strong> (TLS).</li>
+<li>Kullanıcı silme talep edebiliyor mu? <strong>Evet</strong> (uygulama içi + e-posta).</li>
+<li>Veri işleme bağımsız denetimden geçti mi? <strong>Hayır</strong> (henüz).</li>
+<li>Aile/çocuk politikası: uygulama 13+; çocuklara yönelik değil.</li>
+</ul>
+<p><strong>Tutarlılık kuralı:</strong> Play Data safety, gizlilik politikası ve mağaza metni
+<strong>aynı</strong> ifadeleri kullanmalıdır. “Tam koordinat sunucuya gönderilmez”
+denirken; AdMob’un IP’den yaklaşık konum alması ve Diyanet servisi
+kullanılamadığında AlAdhan’a <strong>2 ondalık (~1 km) koordinat</strong> gönderilmesi
+ayrıca beyan edilir.</p>
+<h2 id="3-izin-beyanlar">3. İzin beyanları</h2>
+<table>
+<thead>
+<tr>
+<th>İzin</th>
+<th>Neden</th>
+<th>Play beyanı</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>POST_NOTIFICATIONS</code></td>
+<td>Vakit/ezan bildirimi</td>
+<td>Çalışma zamanı izni; bağlam içinde istenir</td>
+</tr>
+<tr>
+<td><code>SCHEDULE_EXACT_ALARM</code></td>
+<td>Ezanın tam vaktinde çalması</td>
+<td>Kullanıcı “Alarmlar ve hatırlatıcılar” ekranından verir; reddedilirse yaklaşık alarm</td>
+</tr>
+<tr>
+<td><code>USE_EXACT_ALARM</code></td>
+<td>Çekirdek işlev: vakit alarmı</td>
+<td><strong>“Alarmlar ve hatırlatıcılar” beyanı.</strong> Play yalnızca çekirdeği alarm/saat-takvim olan uygulamalara izin verir; ezan vakti alarmı çekirdek işlevdir. Red riski varsa bu izin kaldırılır, <code>SCHEDULE_EXACT_ALARM</code> yeterli olur</td>
+</tr>
+<tr>
+<td><code>USE_FULL_SCREEN_INTENT</code></td>
+<td>Kilit ekranında ezan</td>
+<td>Alarm kategorisi; Android 14+ kullanıcı onayı</td>
+</tr>
+<tr>
+<td><code>REQUEST_IGNORE_BATTERY_OPTIMIZATIONS</code></td>
+<td>Arka planda ezan</td>
+<td>Çekirdek işlev; alternatif olarak pil ayarları ekranı gösterilir</td>
+</tr>
+<tr>
+<td><code>FOREGROUND_SERVICE_MEDIA_PLAYBACK</code></td>
+<td>Ekran kapalıyken Kur’an/ilahi</td>
+<td><code>mediaPlayback</code> türü manifestte</td>
+</tr>
+<tr>
+<td><code>ACCESS_FINE/COARSE_LOCATION</code></td>
+<td>Vakit/kıble</td>
+<td>Yalnızca ön planda; konum cihazda işlenir; izin reddedilirse şehir seçimi</td>
+</tr>
+<tr>
+<td><code>AD_ID</code></td>
+<td>Reklam</td>
+<td>Data safety’de beyan; kişiselleştirme varsayılan kapalı</td>
+</tr>
+<tr>
+<td><code>RECEIVE_BOOT_COMPLETED</code></td>
+<td>Yeniden başlatmada alarmları geri kurma</td>
+<td>Zamanlanmış bildirimler</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Beyan metni (kopyala-yapıştır):</strong></p>
+<blockquote>
+<p>Ezan Vaktim Pro, namaz vakti ve ezan alarmlarının tam zamanında çalması için
+kesin alarm API’sini kullanır. Bu, uygulamanın çekirdek işlevidir. Kullanıcı
+izin vermezse alarm yaklaşık moda düşer ve uygulama bunu kullanıcıya bildirir.
+Konum yalnızca ön planda, vakit ve kıble hesabı için cihazda kullanılır;
+tam koordinat sunucuya gönderilmez; Diyanet servisi kullanılamazsa
+yaklaşık koordinat (2 ondalık, ~1 km) AlAdhan servisine gönderilir. Reklam
+kimliği yalnızca ücretsiz sürümde,
+kişiselleştirme varsayılan kapalı olarak kullanılır.</p>
+</blockquote>
+<h2 id="4-ai-generated-content-politikas">4. AI-Generated Content politikası</h2>
+<table>
+<thead>
+<tr>
+<th>Gereklilik</th>
+<th>Durum</th>
+<th>Kanıt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Uygunsuz içeriği önleme</td>
+<td>Kısmi</td>
+<td>Kaynak zorunluluğu, <code>require_verified_sources=true</code>, yerel filtre; backend moderasyonu sözleşmede</td>
+</tr>
+<tr>
+<td>Uygulama içi bildir/flag</td>
+<td><strong>Var</strong></td>
+<td>AI yanıt kartı → “Bu cevabı bildir” → neden seçimi</td>
+</tr>
+<tr>
+<td>Bildirimlerin incelenmesi</td>
+<td>Var (yerel kayıt + destek)</td>
+<td><code>AiReportService</code></td>
+</tr>
+<tr>
+<td>Dış form/mailto yeterli değil</td>
+<td>Uygun</td>
+<td>Uygulama içi diyalog</td>
+</tr>
+<tr>
+<td>AI olduğunun açıklanması</td>
+<td>Var</td>
+<td>“Yapay zekâ yardımıyla” uyarısı</td>
+</tr>
+<tr>
+<td>Dinî hüküm vermeme</td>
+<td>Var</td>
+<td>Disclaimer + kaynak gösterimi</td>
+</tr>
+<tr>
+<td>Mağaza görsellerinde AI beyanı</td>
+<td>Yayın öncesi kontrol</td>
+<td>Görseller AI ile üretildiyse işaretle</td>
+</tr>
+</tbody>
+</table>
+<h2 id="5-abonelik-ve-odeme">5. Abonelik ve ödeme</h2>
+<ul>
+<li>Play Billing kullanılır; harici ödeme bağlantısı yoktur (Türkiye).</li>
+<li>Ürünler: <code>ezanai_premium_monthly</code>, <code>ezanai_premium_yearly</code>,
+  <code>ezanai_premium_lifetime</code>.</li>
+<li>Satın alma ekranında fiyat, dönem, otomatik yenileme ve iptal yolu gösterilir.</li>
+<li>“Aboneliği yönet” Play abonelik sayfasını açar.</li>
+<li>İade/iptal Play kurallarına tabidir; uygulama kullanıcıyı mağaza dışına
+  yönlendirmez.</li>
+<li>Ücretsiz deneme varsa süre ve dönüşüm koşulu açıkça yazılır.</li>
+</ul>
+<h2 id="6-hesap-ve-veri-silme">6. Hesap ve veri silme</h2>
+<ul>
+<li>Uygulama <strong>hesap oluşturmaz</strong>; bu nedenle Play’in “hesap silme” zorunluluğu
+  kapsamında değildir.</li>
+<li>Yine de kullanıcı:</li>
+<li><strong>Ayarlar → Verilerimi sil</strong> ile cihaz verilerini,</li>
+<li><strong>Ayarlar → Bulut yedekleme → Sunucudaki yedeği sil</strong> ile sunucu verisini,</li>
+<li>destek@ezanai.app ile tüm talepleri
+  silebilir.</li>
+<li>Silme talep sayfası: <code>.../veri-silme.html</code>.</li>
+<li>Abonelik silme değildir; abonelik mağazadan iptal edilir (kullanıcıya uyarı
+  gösterilir).</li>
+</ul>
+<h2 id="7-reklam-politikas">7. Reklam politikası</h2>
+<ul>
+<li>Ücretsiz sürümde AdMob; Premium’da hiç reklam yok.</li>
+<li><strong>Kişiselleştirme varsayılan kapalı</strong>; kullanıcı açık rıza verirse açılır.</li>
+<li>Dinî inanç, siyasi görüş, sağlık, cinsel yönelim temelli hedefleme yok.</li>
+<li>Reklam içeriği filtreleri: yetişkin/dating/kumar/alkol kategorileri
+  engellenir (AdMob blocking controls).</li>
+<li>Çocuklara yönelik değil; <code>tagForChildDirectedTreatment</code> false,
+  <code>tagForUnderAgeOfConsent</code> false.</li>
+<li>Reklamlar içerik üzerine kapatıcı biçimde yerleştirilmez; yanıltıcı tıklama
+  yok.</li>
+</ul>
+<h2 id="8-magaza-metni-ve-gorseller">8. Mağaza metni ve görseller</h2>
+<ul>
+<li>“Resmî Diyanet uygulaması” ifadesi kullanılmaz; “Diyanet yöntemi” denir.</li>
+<li>Lisans kanıtı yoksa “gerçek müezzin/Kâbe imamı” adı kullanılmaz.</li>
+<li>Ekran görüntüleri uygulamanın gerçek ekranı olmalı; sahte özellik yok.</li>
+<li>AI özelliği mağaza metninde “kaynak gösterir, fetva vermez” olarak anlatılır.</li>
+<li>Kısa açıklama 80, tam açıklama 4000 karakter; anahtar kelime doldurma yok.</li>
+</ul>
+<h2 id="9-teknik-uyum">9. Teknik uyum</h2>
+<table>
+<thead>
+<tr>
+<th>Gereklilik</th>
+<th>Durum</th>
+<th>Eylem</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Target API 36 (Android 16)</td>
+<td><strong>Doğrulanacak</strong></td>
+<td>CI’da <code>aapt2 dump badging</code> kapısı; &lt;36 ise yayın durur</td>
+</tr>
+<tr>
+<td>16 KB sayfa boyutu (Android 15+)</td>
+<td>Flutter 3.47/AGP 8.12 ile uyumlu</td>
+<td>Yayın öncesi <code>zipalign -c -P 16</code> doğrulaması</td>
+</tr>
+<tr>
+<td>Edge-to-edge (API 35+)</td>
+<td>Flutter varsayılanı</td>
+<td>Cihaz testi</td>
+</tr>
+<tr>
+<td>Predictive back</td>
+<td><code>enableOnBackInvokedCallback=true</code></td>
+<td>Test</td>
+</tr>
+<tr>
+<td>FGS türü</td>
+<td><code>mediaPlayback</code></td>
+<td>Manifestte</td>
+</tr>
+<tr>
+<td>Cleartext kapalı</td>
+<td><code>usesCleartextTraffic=false</code></td>
+<td>Mevcut</td>
+</tr>
+<tr>
+<td>Yedekleme kapalı</td>
+<td><code>allowBackup=false</code></td>
+<td>Mevcut</td>
+</tr>
+<tr>
+<td>İmza</td>
+<td>Release keystore + Play App Signing</td>
+<td>CI imza kontrolü</td>
+</tr>
+<tr>
+<td>64-bit</td>
+<td>Flutter AAB</td>
+<td>Mevcut</td>
+</tr>
+</tbody>
+</table>
+<h2 id="10-test-ve-yayn-aks">10. Test ve yayın akışı</h2>
+<ol>
+<li>Kapalı test: yeni kişisel geliştirici hesabı için <strong>en az 12 test
+   kullanıcısı / 14 gün</strong> (Play kuralı).</li>
+<li>Üretim öncesi: Data safety, içerik derecesi, hedef kitle, reklam beyanı,
+   gizlilik URL’si, mağaza görselleri.</li>
+<li>Aşamalı yayın: %10 → %50 → %100; çökme oranı ve ANR izlenir.</li>
+<li>Sürüm notları Türkçe; kullanıcıya görünen değişiklikler yazılır.</li>
+</ol>
+<h2 id="11-yayn-oncesi-kontrol-listesi">11. Yayın öncesi kontrol listesi</h2>
+<ul>
+<li>[ ] Gizlilik URL’si canlı ve uygulama içi bağlantıyla aynı</li>
+<li>[ ] KVKK aydınlatma + açık rıza metinleri yayında</li>
+<li>[ ] Data safety tablosu §2 ile birebir</li>
+<li>[ ] AI bildir düğmesi çalışıyor</li>
+<li>[ ] Kişiselleştirilmiş reklam varsayılan kapalı</li>
+<li>[ ] Abonelik ekranında otomatik yenileme bilgisi</li>
+<li>[ ] Target API 36 doğrulandı</li>
+<li>[ ] 16 KB uyumu doğrulandı</li>
+<li>[ ] İmza/parmak izi kaydedildi</li>
+<li>[ ] Ses lisansları belgelendi (§ <code>SES_VE_ICERIK_LISANSLARI.md</code>)</li>
+<li>[ ] “Resmî Diyanet” iddiası yok</li>
+<li>[ ] Kapalı test 12/14 tamam</li>
+<li>[ ] Destek e-postası çalışıyor</li>
+</ul>
+<h2 id="12-resmi-kaynaklar">12. Resmî kaynaklar</h2>
+<ul>
+<li>Target API: <a href="https://support.google.com/googleplay/android-developer/answer/11926878">https://support.google.com/googleplay/android-developer/answer/11926878</a></li>
+<li>Data safety: <a href="https://support.google.com/googleplay/android-developer/answer/10787469">https://support.google.com/googleplay/android-developer/answer/10787469</a></li>
+<li>AI-Generated Content: <a href="https://support.google.com/googleplay/android-developer/answer/16479678">https://support.google.com/googleplay/android-developer/answer/16479678</a></li>
+<li>Permissions &amp; APIs: <a href="https://support.google.com/googleplay/android-developer/answer/9888170">https://support.google.com/googleplay/android-developer/answer/9888170</a></li>
+<li>Payments: <a href="https://support.google.com/googleplay/android-developer/answer/10281818">https://support.google.com/googleplay/android-developer/answer/10281818</a></li>
+<li>Ads policy: <a href="https://support.google.com/googleplay/android-developer/answer/9857753">https://support.google.com/googleplay/android-developer/answer/9857753</a></li>
+<li>Families: <a href="https://support.google.com/googleplay/android-developer/answer/9893335">https://support.google.com/googleplay/android-developer/answer/9893335</a></li>
+<li>Developer verification: <a href="https://support.google.com/googleplay/android-developer/answer/14151465">https://support.google.com/googleplay/android-developer/answer/14151465</a></li>
+</ul>
+    <div class="notice">
+      Bu sayfa bilgilendirme amaçlıdır ve hukuki görüş yerine geçmez.
+      Yürürlükteki sürüm bu sayfadır; önemli değişiklikler uygulama içinde
+      duyurulur.
+    </div>
+  </article>
+</main>
+<footer>
+  <div class="links"><a href="privacy.html">Gizlilik</a><a href="kvkk.html">KVKK</a><a href="acik-riza.html">Açık Rıza</a><a href="terms.html">Koşullar</a><a href="abonelik.html">Abonelik</a><a href="veri-silme.html">Veri Silme</a><a href="guvenlik.html">Güvenlik</a></div>
+  <div>© 2026 YazılımCeosu · Ezan Vaktim Pro · <code>com.yazilimceosu.ezanai</code></div>
+</footer>
+</body>
+</html>

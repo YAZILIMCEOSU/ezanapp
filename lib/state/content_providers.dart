@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../core/constants/app_constants.dart';
 import '../core/services/location_service.dart';
 import '../core/utils/logger.dart';
 import '../data/models/ai_models.dart';
@@ -418,6 +419,9 @@ class ChatController extends AsyncNotifier<AiConversation?> {
     );
 
     final bool premium = ref.read(isPremiumProvider);
+    final String? aiConsent = runtime.preferences.getString(
+      PrefKeys.aiConsentAt,
+    );
 
     try {
       final List<AiMessage> history = conversation.messages.reversed
@@ -427,6 +431,7 @@ class ChatController extends AsyncNotifier<AiConversation?> {
         text,
         premium: premium,
         history: history,
+        allowRemote: aiConsent != null && aiConsent.isNotEmpty,
       );
 
       final AiMessage reply = AiMessage(

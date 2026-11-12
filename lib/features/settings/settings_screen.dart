@@ -233,7 +233,7 @@ class SettingsScreen extends ConsumerWidget {
             secondary: const Icon(Icons.analytics_outlined),
             title: const Text('Kullanım istatistikleri'),
             subtitle: const Text(
-              'Anonim kullanım verisi; kişisel veri toplanmaz',
+              'Bu sürümde analitik SDK’sı yok; tercih yalnızca saklanır',
             ),
             value: settings.analyticsEnabled,
             onChanged: controller.setAnalytics,
@@ -241,9 +241,21 @@ class SettingsScreen extends ConsumerWidget {
           SwitchListTile(
             secondary: const Icon(Icons.bug_report_outlined),
             title: const Text('Çökme raporları'),
-            subtitle: const Text('Hataları düzeltmemize yardımcı olur'),
+            subtitle: const Text(
+              'Bu sürümde çökme SDK’sı yok; tercih yalnızca saklanır',
+            ),
             value: settings.crashReportingEnabled,
             onChanged: controller.setCrashReporting,
+          ),
+          ListTile(
+            leading: const Icon(Icons.fact_check_outlined),
+            title: const Text('Açık rızalarım (KVKK)'),
+            subtitle: const Text(
+              'Yapay zekâ, bulut yedekleme ve reklam rızalarını görüntüle, '
+              'geri çek',
+            ),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () => _showConsents(context, ref),
           ),
           SwitchListTile(
             secondary: const Icon(Icons.wifi_rounded),
@@ -480,6 +492,101 @@ class SettingsScreen extends ConsumerWidget {
               ),
           ],
         ),
+      ),
+    );
+  }
+
+  /// KVKK açık rıza durumunu gösterir; geri çekme aynı ekrandan yapılır.
+  Future<void> _showConsents(BuildContext context, WidgetRef ref) async {
+    final SettingsController controller = ref.read(
+      settingsControllerProvider.notifier,
+    );
+    await showDialog<void>(
+      context: context,
+      builder: (BuildContext dialogContext) => StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+          final String? ai = controller.aiConsentAt;
+          final String? backup = controller.backupConsentAt;
+          final String? ads = controller.personalizedAdsConsentAt;
+          return AlertDialog(
+            title: const Text('Açık rızalarım'),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: const Text('Yapay zekâ uzak erişimi'),
+                    subtitle: Text(
+                      ai == null
+                          ? 'Kapalı — yalnızca çevrimdışı yanıt'
+                          : 'Açık — sorular yurt dışı AI sunucusuna gönderilir',
+                    ),
+                    value: ai != null,
+                    onChanged: (bool value) async {
+                      if (value) {
+                        await controller.grantAiConsent();
+                      } else {
+                        await controller.withdrawAiConsent();
+                      }
+                      setState(() {});
+                    },
+                  ),
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: const Text('Bulut yedekleme'),
+                    subtitle: Text(
+                      backup == null
+                          ? 'Kapalı — veriler yalnızca cihazda'
+                          : 'Açık — anonim kimlikle sunucuya yedeklenir',
+                    ),
+                    value: backup != null,
+                    onChanged: (bool value) async {
+                      if (value) {
+                        await controller.grantBackupConsent();
+                      } else {
+                        await controller.withdrawBackupConsent();
+                      }
+                      setState(() {});
+                    },
+                  ),
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: const Text('Kişiselleştirilmiş reklamlar'),
+                    subtitle: Text(
+                      ads == null
+                          ? 'Kapalı — reklamlar kişiselleştirilmeden gösterilir'
+                          : 'Açık — reklam kimliği ve ilgi alanları kullanılır',
+                    ),
+                    value: ads != null,
+                    onChanged: (bool value) async {
+                      if (value) {
+                        await controller.grantPersonalizedAdsConsent();
+                      } else {
+                        await controller.withdrawPersonalizedAdsConsent();
+                      }
+                      setState(() {});
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Rızalar cihazda tarih damgasıyla saklanır. Geri '
+                    'çektiğinizde yeni veri gönderilmez; daha önce '
+                    'gönderilen yedek için Ayarlar → Bulut yedekleme → '
+                    'Sunucudaki yedeği sil.',
+                    style: TextStyle(fontSize: 12, height: 1.4),
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(),
+                child: const Text('Kapat'),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

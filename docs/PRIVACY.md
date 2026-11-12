@@ -1,107 +1,69 @@
-# Ezan Vaktim Pro — Gizlilik Politikası
+# Ezan Vaktim Pro — Gizlilik Politikası (özet)
 
-**Son güncelleme:** 5 Ekim 2026
-**Yürürlük tarihi:** Yayın tarihi itibarıyla
-**Veri sorumlusu:** Ezan Vaktim Pro (YazılımCeosu) — destek@ezanai.app
+**Son güncelleme:** 12 Kasım 2026
+**Veri sorumlusu:** YazılımCeosu — destek@ezanai.app
+**Kanonik metin:** [`legal/KVKK_AYDINLATMA_METNI.md`](legal/KVKK_AYDINLATMA_METNI.md)
+**Yayın sayfası:** `https://yazilimceosu.github.io/ezanapp/privacy.html`
 
-Bu politika, **Ezan Vaktim Pro — Akıllı İslam Asistanı** mobil uygulamasında (paket adı
-`com.yazilimceosu.ezanai`) hangi verilerin işlendiğini, neden işlendiğini, nerede
-saklandığını ve haklarınızı nasıl kullanabileceğinizi açıklar.
+> Bu dosya yalnızca hızlı özettir. Mağaza ve hukuki metin olarak **kanonik
+> belge** yukarıdaki KVKK aydınlatma metnidir. İki metin çelişirse kanonik
+> belge geçerlidir; çelişki ivedilikle giderilir.
 
-Kısa özet: **Uygulamanın temel özellikleri için hesap açmanız gerekmez.** Konum
-bilgisi namaz vakti ve kıble hesabı için cihazınızda kullanılır, sunucuya
-gönderilmez. Favoriler, okuma geçmişi, zikir kayıtları ve AI sohbetleri cihazınızdaki
-veritabanında saklanır. Bulut yedekleme yalnızca siz açtığınızda ve yalnızca anonim
-bir kimlikle çalışır.
+## Kısa özet
 
----
+- **Hesap gerekmez.** Temel özellikler hesap açmadan çalışır.
+- **Konum cihazda işlenir.** Namaz vakti ve kıble hesabı cihazda yapılır.
+  Koordinat vakit servisine gönderilmez; yalnızca seçilen ilçe kimliği
+  gönderilir. Diyanet servisine ulaşılamazsa **yaklaşık koordinat (2 ondalık,
+  ~1 km)** AlAdhan servisine iletilir.
+- **Yerel veriler** (favoriler, okuma ilerlemesi, zikir, hatim/kaza, Ramazan,
+  AI sohbetleri) cihazdaki SQLite’ta saklanır.
+- **Uzak AI isteğe bağlıdır** ve **ayrı açık rıza** gerektirir. Rıza yoksa
+  hiçbir soru metni sunucuya gitmez; çevrimdışı bilgi tabanı kullanılır.
+- **Bulut yedekleme isteğe bağlıdır** ve **ayrı açık rıza** gerektirir.
+  Anonim Supabase kimliği, TLS ve satır düzeyi güvenlik (RLS) kullanılır.
+  Uçtan uca şifreleme (E2EE) **değildir**; sunucu veriyi işleyebilir.
+- **Reklamlar** yalnızca ücretsiz sürümde, Google AdMob ile; kişiselleştirme
+  UMP onayına bağlıdır ve varsayılan olarak kişiselleştirilmemiştir.
+  Premium’da reklam yoktur.
+- **Analitik/çökme SDK’sı yoktur.** Ayarlardaki anahtarlar varsayılan
+  **kapalıdır**; ileride SDK eklenirse rıza ve mağaza beyanı güncellenir.
+- **Ödeme kartı bilgisi bize ulaşmaz**; ödeme Google Play/App Store’dadır.
+- **Silme:** Ayarlar → Verilerimi sil; Ayarlar → Bulut yedekleme →
+  Sunucudaki yedeği sil; destek@ezanai.app (30 gün).
 
-## 1. İşlenen veriler
+## İşlenen veriler (özet)
 
-| Veri | Amaç | Konum | Paylaşım |
+| Veri | Amaç | Yer | Rıza |
 |---|---|---|---|
-| **Konum (yaklaşık/hassas)** | Namaz vakti hesabı, kıble yönü, imsakiye | Cihazda (ayarlarda saklanan son konum) | Gönderilmez. Yalnızca vakit sorgusu yaparken seçtiğiniz şehir/ilçe kimliği vakit servisine iletilir. |
-| **Şehir/ilçe seçimi** | Vakit ve imsakiye verisi | Cihazda | Vakit servisine şehir kimliği olarak |
-| **Favoriler, okuma ilerlemesi, zikir kayıtları, hatim/kaza orucu, Ramazan günlüğü** | Uygulama işlevleri | Cihazdaki SQLite veritabanı | Yalnızca bulut yedeklemeyi açtıysanız şifreli bağlantıyla yedeğe dahil edilir |
-| **AI sohbet metinleri** | Sorunuza cevap üretmek | Cihazda saklanır; cevap üretimi için backend'e iletilir | Yalnızca cevap üretimi amacıyla, kimliğinizle ilişkilendirilmeden |
-| **Abonelik durumu** | Premium özelliklerin açılması | Google Play üzerinden | Ödeme bilgileriniz bize hiçbir zaman ulaşmaz; satın alma doğrulaması Google Play Billing ile yapılır |
-| **Reklam kimliği** | Ücretsiz sürümde reklam gösterimi | Google AdMob | AdMob gizlilik politikasına tabidir; Premium'da reklam gösterilmez |
-| **Çökme ve kullanım verileri (isteğe bağlı)** | Kararlılık ve hata giderme | Firebase Crashlytics / Analytics | Ayarlar > Gizlilik bölümünden **kapatılabilir**; kapalıyken veri gönderilmez |
-| **Anonim yedekleme kimliği** | Bulut yedeğini yalnızca sizin cihazlarınızla eşleştirmek | Supabase | E-posta, ad, telefon istenmez; anonim oturum kimliği kullanılır |
+| Konum / ilçe | Vakit, kıble | Cihaz; ilçe kimliği vakit servisi | İzin |
+| Yerel içerik | Uygulama işlevi | Cihaz | — |
+| AI soru + son 6 mesaj | Cevap üretimi | Cihaz + (rıza varsa) AI backend | **Açık rıza** |
+| Yedek paketi + UUID | Geri yükleme | Supabase | **Açık rıza** |
+| AD_ID / IP / reklam etkileşimi | Reklam | Google AdMob | UMP; kişiselleştirme rıza |
+| Abonelik durumu | Premium | Google/Apple | Sözleşme |
+| Destek e-postası | Destek | E-posta sağlayıcı | Meşru menfaat |
 
-**İşlemediğimiz veriler:** ad-soyad, e-posta, telefon numarası, kişi listesi, fotoğraf,
-takvim, mikrofon, kamera, sağlık verisi, ödeme kartı bilgisi, hassas kimlik verisi.
+## Haklar ve başvuru
 
-## 2. İzinler ve gerekçeleri
+KVKK m.11 hakları için destek@ezanai.app — konu “KVKK”. Talepler en geç
+**30 gün** içinde ücretsiz yanıtlanır. Ayrıntı, saklama süreleri, yurt dışı
+aktarım ve VERBİS değerlendirmesi:
 
-| Android izni | Neden |
-|---|---|
-| `ACCESS_FINE_LOCATION` / `ACCESS_COARSE_LOCATION` | Bulunduğunuz yere göre vakit ve kıble hesabı. İzin vermezseniz şehri elle seçebilirsiniz; uygulama çalışmaya devam eder. |
-| `POST_NOTIFICATIONS` | Ezan, vakit, sahur/iftar ve hatırlatma bildirimleri. |
-| `SCHEDULE_EXACT_ALARM` / `USE_EXACT_ALARM`, `RECEIVE_BOOT_COMPLETED` | Vakit bildirimlerinin tam zamanında ve cihaz yeniden başladıktan sonra da çalışması. |
-| `FOREGROUND_SERVICE_MEDIA_PLAYBACK` | Ekran kapalıyken Kur'an/ilahi/ezan çalmaya devam etmesi. |
-| `INTERNET`, `ACCESS_NETWORK_STATE` | Vakit servisi, AI, katalog, reklam ve yedekleme. |
-| `VIBRATE` | Tesbih/zikir dokunsal geri bildirimi (kapatılabilir). |
-| `com.android.vending.BILLING` | Premium abonelik. |
-
-İzinler yalnızca ilgili özellik ilk kullanıldığında istenir; reddedilmesi durumunda
-uygulama kullanıcı dostu bir açıklama gösterir ve alternatif yol sunar.
-
-## 3. Verilerin saklanması ve silinmesi
-
-- Cihazdaki veriler siz silene kadar saklanır: **Ayarlar > Verilerimi sil**.
-- Bulut yedeği kullanıyorsanız **Ayarlar > Bulut yedekleme > Oturumu kapat** ile
-  erişim sonlandırılabilir; silme talebi için destek@ezanai.app adresine yazabilirsiniz.
-  Talebiniz en geç 30 gün içinde işlenir.
-- AI sohbet geçmişini uygulama içinden tek tek veya toplu olarak silebilirsiniz.
-- Yedekler aktarım sırasında TLS ile, sunucuda satır düzeyi güvenlik (RLS) ile
-  korunur; yalnızca kendi anonim kimliğiniz kendi satırınıza erişebilir.
-
-## 4. Üçüncü taraf hizmetler
-
-| Hizmet | Amaç | Politika |
-|---|---|---|
-| Google AdMob | Ücretsiz sürümde reklam | <https://policies.google.com/technologies/ads> |
-| Firebase (Analytics, Crashlytics, FCM) | Kararlılık, isteğe bağlı istatistik, duyuru bildirimleri | <https://firebase.google.com/support/privacy> |
-| Supabase | Bulut yedekleme (isteğe bağlı) | <https://supabase.com/privacy> |
-| Aladhan API | Vakit karşılaştırma/alternatif kaynak | <https://aladhan.com/privacy> |
-| Google Play Billing | Abonelik işlemleri | <https://policies.google.com/privacy> |
-
-## 5. Çocukların gizliliği
-
-Uygulama genel kitleye yöneliktir ve 13 yaş altı çocuklardan bilerek veri toplamaz.
-Kişisel veri toplamadığı için çocukların kullanımında ek risk oluşmaz; reklamlar
-Google politikalarına uygun şekilde, hassas kategoriler hariç tutularak gösterilir.
-
-## 6. Haklarınız (KVKK / GDPR)
-
-- Verilerinize erişme, düzeltme, silme ve işlemeye itiraz etme hakkınız vardır.
-- Konum iznini sistem ayarlarından, analitik/çökme raporlarını uygulama
-  ayarlarından, reklam kişiselleştirmesini cihaz ayarlarından kapatabilirsiniz.
-- Talepleriniz için: **destek@ezanai.app**
-
-## 7. Dinî içerik ve AI sınırları
-
-AI asistanı **kesin dinî hüküm vermez**; cevapları Kur'an, sahih hadis ve güvenilir
-fıkıh kaynaklarına dayandırır, mezhep farklarını ayrıca belirtir ve tereddüt hâlinde
-ehil bir âlime veya resmî fetva kurumuna danışmanızı önerir. AI'ya yazdığınız metinler
-yalnızca cevap üretmek amacıyla işlenir.
-
-## 8. Politika değişiklikleri
-
-Bu politika güncellendiğinde "Son güncelleme" tarihi değişir; önemli değişiklikler
-uygulama içinde duyurulur. Güncel sürüm her zaman bu sayfada yayımlanır.
-
----
+- [`legal/KVKK_AYDINLATMA_METNI.md`](legal/KVKK_AYDINLATMA_METNI.md)
+- [`legal/ACIK_RIZA_METINLERI.md`](legal/ACIK_RIZA_METINLERI.md)
+- [`legal/VERI_ENVANTERI_ROPA.md`](legal/VERI_ENVANTERI_ROPA.md)
+- [`legal/VERI_SILME_VE_BASVURU.md`](legal/VERI_SILME_VE_BASVURU.md)
+- [`legal/UCUNCU_TARAF_SDK_VE_AKTARIMLAR.md`](legal/UCUNCU_TARAF_SDK_VE_AKTARIMLAR.md)
 
 ## English summary
 
-Ezan Vaktim Pro does not require an account. Location is used **on-device** for prayer times
-and qibla; it is not uploaded. Favorites, reading progress, dhikr logs and AI chats
-are stored locally in SQLite and are only included in an end-to-end encrypted backup
-if you explicitly enable cloud backup, which uses an **anonymous** identity (no email,
-no name). Crash/usage analytics are **opt-in** and can be disabled in Settings. Ads
-are served by Google AdMob in the free tier only; Premium is ad-free. Payments are
-handled by Google Play Billing — we never receive your payment details. The AI
-assistant never issues definitive religious rulings, cites sources, and notes
-differences of opinion between schools of jurisprudence. Contact: destek@ezanai.app
+No account is required. Location is processed on-device for prayer times and
+qibla; only the selected district ID is sent to the prayer-times service, and
+if that service is unavailable an **approximate coordinate (2 decimals, ~1 km)**
+is sent to AlAdhan. Remote AI and cloud backup are **opt-in with separate
+explicit consent**; without consent the app stays offline/local. Cloud backup
+uses TLS and row-level security, and is **not** end-to-end encrypted. Ads are
+served only in the free tier via Google AdMob, non-personalized by default.
+There is no analytics/crash SDK. Payments are handled by Google Play/App Store.
+Delete data in-app or email destek@ezanai.app (response within 30 days).

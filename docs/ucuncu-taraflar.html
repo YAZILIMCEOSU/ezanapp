@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="SDK envanteri, yurt dışı aktarım ve tedarikçi listesi.">
+<meta name="robots" content="index,follow">
+<title>Üçüncü Taraf SDK ve Aktarımlar — Ezan Vaktim Pro</title>
+<style>
+:root {
+  --bg: #f6f8f7;
+  --card: #ffffff;
+  --ink: #14211d;
+  --muted: #5b6b65;
+  --brand: #0f766e;
+  --brand-soft: #e6f4f1;
+  --line: #dbe5e1;
+  --warn: #92400e;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.65;
+  font-size: 16px;
+}
+a { color: var(--brand); text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+header {
+  background: linear-gradient(135deg, #0f766e, #115e59);
+  color: #fff;
+  padding: 22px 20px 18px;
+}
+header .wrap {
+  max-width: 980px; margin: 0 auto;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+  justify-content: space-between;
+}
+.brand { font-weight: 800; letter-spacing: .2px; font-size: 18px; }
+.brand small { display: block; font-weight: 500; opacity: .85; font-size: 12px; }
+nav { display: flex; flex-wrap: wrap; gap: 6px; }
+nav a {
+  color: #fff; text-decoration: none; font-size: 13px;
+  padding: 5px 9px; border-radius: 999px; background: rgba(255,255,255,.12);
+}
+nav a:hover { background: rgba(255,255,255,.24); }
+main {
+  max-width: 980px; margin: 26px auto 60px; padding: 0 18px;
+}
+.card {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 16px; padding: 28px 30px;
+  box-shadow: 0 8px 24px rgba(15, 118, 110, .06);
+}
+h1 { font-size: 30px; line-height: 1.2; margin: 0 0 8px; }
+h2 { font-size: 22px; margin: 34px 0 10px; padding-top: 8px; }
+h3 { font-size: 17px; margin: 24px 0 8px; }
+p, li { color: #24332e; }
+ul, ol { padding-left: 22px; }
+li { margin: 4px 0; }
+blockquote {
+  margin: 18px 0; padding: 12px 16px;
+  background: var(--brand-soft); border-left: 4px solid var(--brand);
+  border-radius: 8px; color: #164e47;
+}
+code {
+  background: #eef3f1; padding: 1px 5px; border-radius: 5px;
+  font-size: 13px;
+}
+pre {
+  background: #0f172a; color: #e2e8f0; padding: 16px;
+  border-radius: 10px; overflow-x: auto; font-size: 13px;
+}
+pre code { background: transparent; color: inherit; padding: 0; }
+table {
+  width: 100%; border-collapse: collapse; margin: 16px 0;
+  font-size: 14px; display: block; overflow-x: auto;
+}
+th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+th { background: #f0f6f4; font-weight: 700; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 30px 0; }
+.meta {
+  color: var(--muted); font-size: 13px; margin-bottom: 18px;
+}
+.notice {
+  background: #fff7ed; border: 1px solid #fed7aa; color: var(--warn);
+  padding: 12px 16px; border-radius: 10px; font-size: 13.5px;
+  margin: 18px 0;
+}
+footer {
+  max-width: 980px; margin: 0 auto 40px; padding: 0 18px;
+  color: var(--muted); font-size: 13px;
+}
+footer .links { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; }
+@media (max-width: 640px) {
+  .card { padding: 20px 16px; }
+  h1 { font-size: 24px; }
+  h2 { font-size: 19px; }
+}
+@media print {
+  header, nav, footer { display: none; }
+  body { background: #fff; }
+  .card { border: 0; box-shadow: none; padding: 0; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="brand">Ezan Vaktim Pro<small>Yasal ve uyum belgeleri</small></div>
+    <nav><a href="privacy.html">Gizlilik</a><a href="kvkk.html">KVKK</a><a href="acik-riza.html">Açık Rıza</a><a href="terms.html">Koşullar</a><a href="abonelik.html">Abonelik</a><a href="veri-silme.html">Veri Silme</a><a href="guvenlik.html">Güvenlik</a></nav>
+  </div>
+</header>
+<main>
+  <article class="card">
+    <div class="meta">YazılımCeosu · İstanbul, Türkiye · destek@ezanai.app</div>
+    <h1 id="ezan-vaktim-pro-ucuncu-taraf-sdk-servis-ve-aktarm-envanteri">Ezan Vaktim Pro — Üçüncü Taraf SDK, Servis ve Aktarım Envanteri</h1>
+<p><strong>Sürüm:</strong> 1.0 · <strong>Tarih:</strong> 12 Kasım 2026
+<strong>Amaç:</strong> Mağaza beyanları (Data safety / App Privacy), KVKK m.9 aktarım
+kayıtları ve tedarikçi denetimi için tek kaynak.</p>
+<blockquote>
+<p>Her satırda <strong>gerçek kod davranışı</strong> esas alınmıştır. Yeni SDK eklenirse bu
+dosya, <code>KVKK_AYDINLATMA_METNI.md</code> ve mağaza beyanları <strong>aynı PR’da</strong>
+güncellenmelidir.</p>
+</blockquote>
+<h2 id="1-ozet-tablo">1. Özet tablo</h2>
+<table>
+<thead>
+<tr>
+<th>Servis/SDK</th>
+<th>Sağlayıcı</th>
+<th>Amaç</th>
+<th>Gönderilen veri</th>
+<th>Kimlik?</th>
+<th>Aktarım</th>
+<th>Rıza</th>
+<th>Kodda durum</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Google Mobile Ads (AdMob) + UMP</td>
+<td>Google LLC</td>
+<td>Reklam, onay yönetimi</td>
+<td>AD_ID, IP→yaklaşık konum, cihaz/uygulama bilgisi, reklam etkileşimi</td>
+<td>Hayır (reklam kimliği)</td>
+<td>ABD/AB</td>
+<td>Kişiselleştirme: açık rıza; NPA varsayılan</td>
+<td><strong>Var</strong> (<code>ads_service.dart</code>)</td>
+</tr>
+<tr>
+<td>Supabase (PostgREST/Auth)</td>
+<td>Supabase Inc.</td>
+<td>Bulut yedekleme</td>
+<td>15 tablo içeriği, anonim UUID</td>
+<td>Anonim oturum</td>
+<td>AB (Frankfurt) veya ABD</td>
+<td>Açık rıza</td>
+<td><strong>Var</strong> (<code>sync_service.dart</code>)</td>
+</tr>
+<tr>
+<td>AI backend (<code>/ai/ask</code>)</td>
+<td>Proje backend’i</td>
+<td>Kaynaklı cevap</td>
+<td>Soru, son 6 mesaj, mezhep, kaynak bağlamı</td>
+<td>Hayır</td>
+<td>Yapılandırmaya göre</td>
+<td>Açık rıza</td>
+<td><strong>Var</strong> (<code>ai_service.dart</code>)</td>
+</tr>
+<tr>
+<td>Firebase Cloud Messaging</td>
+<td>Google LLC</td>
+<td>Push bildirim</td>
+<td>FCM jetonu, cihaz bilgisi</td>
+<td>Jeton</td>
+<td>ABD</td>
+<td>Bildirim izni</td>
+<td><strong>Koşullu</strong> (<code>push_service.dart</code>)</td>
+</tr>
+<tr>
+<td>Diyanet vakit servisi (İmsakiyem)</td>
+<td>Üçüncü taraf</td>
+<td>Resmî vakit</td>
+<td>İlçe kimliği, tarih</td>
+<td>Hayır</td>
+<td>TR</td>
+<td>Sözleşme ifası</td>
+<td><strong>Var</strong> (<code>diyanet_api_source.dart</code>)</td>
+</tr>
+<tr>
+<td>AlAdhan API</td>
+<td>AlAdhan</td>
+<td>Yedek vakit</td>
+<td><strong>Yaklaşık enlem/boylam (2 ondalık, ~1 km)</strong></td>
+<td>Hayır</td>
+<td>AB/İngiltere</td>
+<td>Sözleşme ifası</td>
+<td><strong>Var</strong> (<code>aladhan_api_source.dart</code>) — yuvarlama uygulandı</td>
+</tr>
+<tr>
+<td>EveryAyah CDN</td>
+<td>EveryAyah</td>
+<td>Kur’an tilaveti</td>
+<td>IP, ayet yolu</td>
+<td>Hayır</td>
+<td>ABD/AB</td>
+<td>Hizmet</td>
+<td><strong>Var</strong> — lisans teyidi gerekli</td>
+</tr>
+<tr>
+<td>QuranEnc / Tanzil</td>
+<td>—</td>
+<td>Meal/metin</td>
+<td>Yok (paket içi)</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td><strong>Var</strong></td>
+</tr>
+<tr>
+<td>alquran.cloud</td>
+<td>AlQuran Cloud</td>
+<td>Meal/tefsir çevrimiçi</td>
+<td>Sure/edition</td>
+<td>Hayır</td>
+<td>AB</td>
+<td>Hizmet</td>
+<td><strong>Var</strong> (<code>quran_repository.dart</code>)</td>
+</tr>
+<tr>
+<td>OpenStreetMap tile / Overpass</td>
+<td>OSM Vakfı / topluluk</td>
+<td>Harita, cami arama</td>
+<td>Görüntü alanı koordinatları / arama kutucuğu, IP</td>
+<td>Hayır</td>
+<td>AB</td>
+<td>Hizmet</td>
+<td><strong>Var</strong> (<code>mosque_finder_screen.dart</code>, harita)</td>
+</tr>
+<tr>
+<td>Esri ArcGIS tiles</td>
+<td>Esri</td>
+<td>Uydu harita</td>
+<td>Görüntü alanı koordinatları, IP</td>
+<td>Hayır</td>
+<td>ABD</td>
+<td>Hizmet</td>
+<td><strong>Var</strong> (<code>qibla_screen.dart</code>)</td>
+</tr>
+<tr>
+<td>cdn.jsdelivr.net (GitHub)</td>
+<td>jsDelivr</td>
+<td>Uzak ilahi/ezan akışı</td>
+<td>IP, dosya yolu</td>
+<td>Hayır</td>
+<td>ABD</td>
+<td>—</td>
+<td><strong>Var</strong> — lisanssız, kaldırılmalı</td>
+</tr>
+<tr>
+<td>Google Maps (dış link)</td>
+<td>Google</td>
+<td>Yol tarifi</td>
+<td>Yalnızca kullanıcı tıklarsa</td>
+<td>—</td>
+<td>ABD</td>
+<td>Kullanıcı eylemi</td>
+<td><strong>Var</strong></td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-veri-akslar">2. Veri akışları</h2>
+<pre><code>Cihaz
+ ├─ Konum ──► yerel vakit/kıble hesabı        (koordinat sunucuya gitmez)
+ ├─ İlçe kimliği ──► Diyanet servisi          (koordinat yok)
+ ├─ Konum (yedek) ──► AlAdhan                 (koordinat — 2 ondalığa yuvarlanmalı)
+ ├─ Harita ekranı ──► OSM/Esri tile            (görüntü alanı)
+ ├─ Cami ara ──► Overpass                     (arama kutucuğu)
+ ├─ AI sorusu ──► AI backend                  (yalnızca rıza ile)
+ ├─ Yedek ──► Supabase                        (yalnızca rıza ile)
+ └─ Reklam ──► AdMob                          (kişiselleştirme varsayılan kapalı)
+</code></pre>
+<h2 id="3-sdk-envanteri-paket-bazl">3. SDK envanteri (paket bazlı)</h2>
+<table>
+<thead>
+<tr>
+<th>Paket</th>
+<th>Sürüm kaynağı</th>
+<th>Veri erişimi</th>
+<th>Not</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>google_mobile_ads</code></td>
+<td>pubspec</td>
+<td>Reklam kimliği, ağ</td>
+<td>UMP onayı öncesi yükleme yok</td>
+</tr>
+<tr>
+<td><code>supabase_flutter</code></td>
+<td>pubspec</td>
+<td>Ağ, güvenli depolama</td>
+<td>Anonim oturum</td>
+</tr>
+<tr>
+<td><code>firebase_core</code>, <code>firebase_messaging</code></td>
+<td>pubspec</td>
+<td>Push jetonu</td>
+<td>Yapılandırılmazsa kapalı</td>
+</tr>
+<tr>
+<td><code>geolocator</code></td>
+<td>pubspec</td>
+<td>Konum</td>
+<td>Yalnızca ön planda</td>
+</tr>
+<tr>
+<td><code>flutter_local_notifications</code></td>
+<td>pubspec</td>
+<td>Bildirim</td>
+<td>Yerel</td>
+</tr>
+<tr>
+<td><code>just_audio</code>, <code>audio_service</code></td>
+<td>pubspec</td>
+<td>Medya</td>
+<td>Yerel/uzak ses</td>
+</tr>
+<tr>
+<td><code>url_launcher</code></td>
+<td>pubspec</td>
+<td>Dış link</td>
+<td>Kullanıcı eylemi</td>
+</tr>
+<tr>
+<td><code>flutter_map</code> (leaflet benzeri)</td>
+<td>pubspec</td>
+<td>Harita tile</td>
+<td>Ağ</td>
+</tr>
+<tr>
+<td><code>http</code>, <code>dio</code></td>
+<td>pubspec</td>
+<td>Ağ</td>
+<td>TLS</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Tam liste <code>pubspec.lock</code> ve <code>flutter pub deps</code> çıktısından üretilir; CI
+adımı <code>flutter pub deps --style=compact</code> çıktısını arşivler.</p>
+</blockquote>
+<h2 id="4-aktarm-hukuki-dayanag-ve-mekanizma">4. Aktarım hukuki dayanağı ve mekanizma</h2>
+<table>
+<thead>
+<tr>
+<th>Aktarım</th>
+<th>Ülke</th>
+<th>Yeterlilik kararı</th>
+<th>Mekanizma</th>
+<th>Bildirim</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AdMob</td>
+<td>ABD</td>
+<td>Yok</td>
+<td>Standart sözleşme + DPA</td>
+<td>5 iş günü</td>
+</tr>
+<tr>
+<td>Supabase</td>
+<td>AB/ABD</td>
+<td>AB için GDPR yeterliliği; TR Kurul kararı yok</td>
+<td>Standart sözleşme + DPA</td>
+<td>5 iş günü</td>
+</tr>
+<tr>
+<td>AI backend</td>
+<td>Değişken</td>
+<td>Yok</td>
+<td>Standart sözleşme + saklama yasağı</td>
+<td>5 iş günü</td>
+</tr>
+<tr>
+<td>Firebase</td>
+<td>ABD</td>
+<td>Yok</td>
+<td>Standart sözleşme + DPA</td>
+<td>5 iş günü</td>
+</tr>
+<tr>
+<td>jsDelivr</td>
+<td>ABD</td>
+<td>Yok</td>
+<td><strong>Kaldırılacak</strong> (lisans yok)</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Standart sözleşme:</strong> Kurul’un 2024/… model sözleşmesi kullanılır; imzadan
+sonra 5 iş günü içinde Kurum’a bildirilir. Sözleşme kopyaları özel arşivde
+saklanır (depoya commit edilmez).</p>
+<h2 id="5-tedarikci-denetim-sorular">5. Tedarikçi denetim soruları</h2>
+<p>Her yeni tedarikçi için:</p>
+<ol>
+<li>Veri işleyen sıfatı ve DPA var mı?</li>
+<li>Alt işleyenler kimler, hangi ülkelerde?</li>
+<li>Veri saklama süresi ve silme API’si var mı?</li>
+<li>İhlal bildirimi süresi (bize kaç saat içinde bildirir)?</li>
+<li>Şifreleme (aktarım/dinlenme) ve erişim kontrolü?</li>
+<li>Denetim raporu (SOC 2/ISO 27001) var mı?</li>
+<li>Çocuk verisi ve reklam kullanımı politikası?</li>
+<li>Model eğitimi için veri kullanımı (AI için <strong>hayır</strong> olmalı)?</li>
+</ol>
+<h2 id="6-kaldrlacak-duzeltilecekler-oncelik">6. Kaldırılacak / düzeltilecekler (öncelik)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Konu</th>
+<th>Risk</th>
+<th>Aksiyon</th>
+<th>Öncelik</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>cdn.jsdelivr.net</code> üzerinden ilahi/ezan akışı</td>
+<td>Telif + kaynak belirsizliği</td>
+<td>Yerel lisanslı varlıkla değiştir veya kaldır</td>
+<td><strong>P0</strong></td>
+</tr>
+<tr>
+<td>2</td>
+<td>AlAdhan’a tam koordinat</td>
+<td>Gizlilik beyanıyla çelişki</td>
+<td><strong>Yapıldı:</strong> 2 ondalığa yuvarlandı + politikada belirtildi</td>
+<td><strong>P0</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td>EveryAyah ticari kullanım teyidi</td>
+<td>Lisans uyumsuzluğu</td>
+<td>Yazılı izin/alternatif kaynak</td>
+<td><strong>P1</strong></td>
+</tr>
+<tr>
+<td>4</td>
+<td>AdMob kişiselleştirme varsayılanı</td>
+<td>UMP/consent uyumu</td>
+<td><strong>Yapıldı:</strong> varsayılan NPA (<code>nonPersonalizedAds: true</code>); rıza ile açılır</td>
+<td><strong>P0 ✓</strong></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Supabase RLS doğrulaması</td>
+<td>Veri sızıntısı</td>
+<td>Politikaları test et</td>
+<td><strong>P0</strong></td>
+</tr>
+<tr>
+<td>6</td>
+<td>AI sağlayıcısında saklama</td>
+<td>KVKK m.9</td>
+<td>Zero-retention sözleşmesi</td>
+<td><strong>P1</strong></td>
+</tr>
+<tr>
+<td>7</td>
+<td>Firebase jetonu</td>
+<td>Veri minimizasyonu</td>
+<td>Yapılandırma yoksa paketleri devre dışı bırak</td>
+<td><strong>P2</strong></td>
+</tr>
+<tr>
+<td>8</td>
+<td>OSM/Esri tile kullanımı</td>
+<td>Kullanım koşulları</td>
+<td>Atıf + kullanım limiti</td>
+<td><strong>P2</strong></td>
+</tr>
+</tbody>
+</table>
+<h2 id="7-magaza-beyanyla-eslestirme">7. Mağaza beyanıyla eşleştirme</h2>
+<ul>
+<li>Play <strong>Data safety</strong> → <code>GOOGLE_PLAY_UYUM.md</code> §2</li>
+<li>Apple <strong>App Privacy</strong> → <code>APPLE_APP_STORE_UYUM.md</code> §2.3</li>
+<li>Gizlilik politikası → <code>KVKK_AYDINLATMA_METNI.md</code></li>
+</ul>
+<p>Üç belge aynı veri türlerini, aynı amaçları ve aynı “isteğe bağlı” bayraklarını
+kullanmalıdır. CI’da metin karşılaştırma testi hedeflenir.</p>
+<h2 id="8-surum-gecmisi">8. Sürüm geçmişi</h2>
+<table>
+<thead>
+<tr>
+<th>Tarih</th>
+<th>Değişiklik</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>12 Kasım 2026</td>
+<td>İlk sürüm; AdMob, Supabase, AI, FCM, harita, AlAdhan envanteri</td>
+</tr>
+</tbody>
+</table>
+    <div class="notice">
+      Bu sayfa bilgilendirme amaçlıdır ve hukuki görüş yerine geçmez.
+      Yürürlükteki sürüm bu sayfadır; önemli değişiklikler uygulama içinde
+      duyurulur.
+    </div>
+  </article>
+</main>
+<footer>
+  <div class="links"><a href="privacy.html">Gizlilik</a><a href="kvkk.html">KVKK</a><a href="acik-riza.html">Açık Rıza</a><a href="terms.html">Koşullar</a><a href="abonelik.html">Abonelik</a><a href="veri-silme.html">Veri Silme</a><a href="guvenlik.html">Güvenlik</a></div>
+  <div>© 2026 YazılımCeosu · Ezan Vaktim Pro · <code>com.yazilimceosu.ezanai</code></div>
+</footer>
+</body>
+</html>

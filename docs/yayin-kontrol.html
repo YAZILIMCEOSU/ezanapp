@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Yayın öncesi P0/P1 uyum kontrol listesi.">
+<meta name="robots" content="index,follow">
+<title>Yayın Uyumluluk Kontrol Listesi — Ezan Vaktim Pro</title>
+<style>
+:root {
+  --bg: #f6f8f7;
+  --card: #ffffff;
+  --ink: #14211d;
+  --muted: #5b6b65;
+  --brand: #0f766e;
+  --brand-soft: #e6f4f1;
+  --line: #dbe5e1;
+  --warn: #92400e;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.65;
+  font-size: 16px;
+}
+a { color: var(--brand); text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+header {
+  background: linear-gradient(135deg, #0f766e, #115e59);
+  color: #fff;
+  padding: 22px 20px 18px;
+}
+header .wrap {
+  max-width: 980px; margin: 0 auto;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+  justify-content: space-between;
+}
+.brand { font-weight: 800; letter-spacing: .2px; font-size: 18px; }
+.brand small { display: block; font-weight: 500; opacity: .85; font-size: 12px; }
+nav { display: flex; flex-wrap: wrap; gap: 6px; }
+nav a {
+  color: #fff; text-decoration: none; font-size: 13px;
+  padding: 5px 9px; border-radius: 999px; background: rgba(255,255,255,.12);
+}
+nav a:hover { background: rgba(255,255,255,.24); }
+main {
+  max-width: 980px; margin: 26px auto 60px; padding: 0 18px;
+}
+.card {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 16px; padding: 28px 30px;
+  box-shadow: 0 8px 24px rgba(15, 118, 110, .06);
+}
+h1 { font-size: 30px; line-height: 1.2; margin: 0 0 8px; }
+h2 { font-size: 22px; margin: 34px 0 10px; padding-top: 8px; }
+h3 { font-size: 17px; margin: 24px 0 8px; }
+p, li { color: #24332e; }
+ul, ol { padding-left: 22px; }
+li { margin: 4px 0; }
+blockquote {
+  margin: 18px 0; padding: 12px 16px;
+  background: var(--brand-soft); border-left: 4px solid var(--brand);
+  border-radius: 8px; color: #164e47;
+}
+code {
+  background: #eef3f1; padding: 1px 5px; border-radius: 5px;
+  font-size: 13px;
+}
+pre {
+  background: #0f172a; color: #e2e8f0; padding: 16px;
+  border-radius: 10px; overflow-x: auto; font-size: 13px;
+}
+pre code { background: transparent; color: inherit; padding: 0; }
+table {
+  width: 100%; border-collapse: collapse; margin: 16px 0;
+  font-size: 14px; display: block; overflow-x: auto;
+}
+th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+th { background: #f0f6f4; font-weight: 700; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 30px 0; }
+.meta {
+  color: var(--muted); font-size: 13px; margin-bottom: 18px;
+}
+.notice {
+  background: #fff7ed; border: 1px solid #fed7aa; color: var(--warn);
+  padding: 12px 16px; border-radius: 10px; font-size: 13.5px;
+  margin: 18px 0;
+}
+footer {
+  max-width: 980px; margin: 0 auto 40px; padding: 0 18px;
+  color: var(--muted); font-size: 13px;
+}
+footer .links { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; }
+@media (max-width: 640px) {
+  .card { padding: 20px 16px; }
+  h1 { font-size: 24px; }
+  h2 { font-size: 19px; }
+}
+@media print {
+  header, nav, footer { display: none; }
+  body { background: #fff; }
+  .card { border: 0; box-shadow: none; padding: 0; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="brand">Ezan Vaktim Pro<small>Yasal ve uyum belgeleri</small></div>
+    <nav><a href="privacy.html">Gizlilik</a><a href="kvkk.html">KVKK</a><a href="acik-riza.html">Açık Rıza</a><a href="terms.html">Koşullar</a><a href="abonelik.html">Abonelik</a><a href="veri-silme.html">Veri Silme</a><a href="guvenlik.html">Güvenlik</a></nav>
+  </div>
+</header>
+<main>
+  <article class="card">
+    <div class="meta">YazılımCeosu · İstanbul, Türkiye · destek@ezanai.app</div>
+    <h1 id="ezan-vaktim-pro-yayn-uyumluluk-kontrol-listesi">Ezan Vaktim Pro — Yayın Uyumluluk Kontrol Listesi</h1>
+<p><strong>Sürüm:</strong> 1.0 · <strong>Tarih:</strong> 12 Kasım 2026
+<strong>Kullanım:</strong> Her yayın öncesi kopyalanır, maddeler işaretlenir, tarih ve
+kanıt bağlantısı yazılır. İşaretlenmemiş <strong>P0</strong> maddesi varsa yayın yapılmaz.</p>
+<h2 id="a-yasal-metinler-ve-baglantlar-p0">A. Yasal metinler ve bağlantılar (P0)</h2>
+<ul>
+<li>[ ] Gizlilik politikası canlı ve <strong>200</strong> dönüyor
+      (<code>.../privacy.html</code>)</li>
+<li>[ ] KVKK aydınlatma metni canlı (<code>.../kvkk.html</code>)</li>
+<li>[ ] Açık rıza metinleri canlı (<code>.../acik-riza.html</code>)</li>
+<li>[ ] Kullanım koşulları/EULA canlı (<code>.../terms.html</code>)</li>
+<li>[ ] Abonelik ve iade bilgilendirmesi canlı (<code>.../abonelik.html</code>)</li>
+<li>[ ] Veri silme sayfası canlı (<code>.../veri-silme.html</code>)</li>
+<li>[ ] Güvenlik/olay bildirimi sayfası canlı (<code>.../guvenlik.html</code>)</li>
+<li>[ ] Uygulama içi <strong>Hakkında → Yasal</strong> bağlantıları aynı adresleri açıyor</li>
+<li>[ ] Play Console gizlilik URL’si = uygulama içi URL</li>
+<li>[ ] App Store Connect gizlilik URL’si = uygulama içi URL</li>
+<li>[ ] Koşullar ve abonelik linkleri satın alma ekranında görünür</li>
+</ul>
+<p><strong>Kanıt:</strong> URL + erişim tarihi + ekran görüntüsü.</p>
+<h2 id="b-google-play-p0p1">B. Google Play (P0/P1)</h2>
+<ul>
+<li>[ ] Target API <strong>36</strong> doğrulandı (<code>aapt2 dump badging</code>)</li>
+<li>[ ] 16 KB sayfa boyutu uyumu doğrulandı</li>
+<li>[ ] Data safety tablosu <code>GOOGLE_PLAY_UYUM.md</code> §2 ile birebir</li>
+<li>[ ] “Konum sunucuya gönderilmez” ifadesi AlAdhan istisnasıyla tutarlı</li>
+<li>[ ] AI-Generated Content: uygulama içi “Bu cevabı bildir” çalışıyor</li>
+<li>[ ] <code>USE_EXACT_ALARM</code> beyanı hazır veya izin kaldırıldı (P1)</li>
+<li>[x] Reklamlar: kişiselleştirme UMP ile yönetiliyor; varsayılan NPA
+  (<code>AdsService.nonPersonalizedAds</code>, rıza <code>personalizedAdsConsentAt</code> ile)</li>
+<li>[ ] Premium: Play Billing, otomatik yenileme bilgisi, “Aboneliği yönet”</li>
+<li>[ ] Hesap/veri silme: uygulama içi + web sayfası</li>
+<li>[ ] İçerik derecesi anketi tamamlandı (dinî içerik, 3+/7+)</li>
+<li>[ ] Hedef kitle 13+, çocuk politikası beyanı</li>
+<li>[ ] Mağaza metninde “resmî Diyanet uygulaması” yok</li>
+<li>[ ] Mağaza metninde doğrulanmamış sanatçı/müezzin adı yok</li>
+<li>[ ] Kapalı test: <strong>12 test kullanıcısı / 14 gün</strong> tamamlandı</li>
+<li>[ ] Aşamalı yayın planı (%10 → %50 → %100) hazır</li>
+<li>[ ] Destek e-postası ve geliştirici iletişimi doğrulandı</li>
+</ul>
+<h2 id="c-apple-app-store-ios-hazrlanrken">C. Apple App Store (iOS hazırlanırken)</h2>
+<ul>
+<li>[ ] <code>ios/</code> projesi oluşturuldu, bundle ID tanımlı</li>
+<li>[ ] <code>PrivacyInfo.xcprivacy</code> eklendi (ITMS-91053 önlemi)</li>
+<li>[ ] ATT metni + IDFA yapılandırması (izin yoksa tracking=false)</li>
+<li>[ ] App Privacy beyanı = <code>APPLE_APP_STORE_UYUM.md</code> §2.3</li>
+<li>[ ] StoreKit ürünleri + “Restore Purchases” test edildi</li>
+<li>[ ] Abonelik ekranında fiyat/dönem/yenileme/iptal/linkler</li>
+<li>[ ] Hesap silme + veri silme sayfası</li>
+<li>[ ] Gizlilik/koşullar/destek URL’leri 200</li>
+<li>[ ] Ekran görüntüleri 6.9"/6.5"/5.5", 1024 ikon (alfa yok)</li>
+<li>[ ] App Review Notes hazır (demo hesap gerekmiyor)</li>
+<li>[ ] TestFlight iç testi tamamlandı</li>
+</ul>
+<h2 id="d-kvkk-ve-veri-koruma-p0">D. KVKK ve veri koruma (P0)</h2>
+<ul>
+<li>[ ] ROPA güncel (<code>VERI_ENVANTERI_ROPA.md</code>)</li>
+<li>[ ] Rıza kayıtları cihazda zaman damgalı (AI + backup)</li>
+<li>[ ] Uzak AI rıza yoksa <strong>hiçbir metin gönderilmiyor</strong></li>
+<li>[ ] Bulut yedekleme rıza yoksa çalışmıyor</li>
+<li>[ ] Sunucudaki yedeği sil akışı test edildi</li>
+<li>[ ] “Verilerimi sil” tüm yerel tabloları siliyor (test)</li>
+<li>[ ] Yurt dışı aktarım: standart sözleşme imzalı + 5 iş günü bildirim</li>
+<li>[ ] VERBİS istisna değerlendirmesi yazılı (avukat onayı)</li>
+<li>[ ] İhlal müdahale planı ve 72 saat şablonu hazır</li>
+<li>[ ] Destek e-postası KVKK başvurusu alabiliyor</li>
+<li>[ ] Aydınlatma metni ile Data safety aynı veri türlerini sayıyor</li>
+</ul>
+<h2 id="e-ses-ve-icerik-lisanslar-p0">E. Ses ve içerik lisansları (P0)</h2>
+<ul>
+<li>[x] <code>ezan_saba.mp3</code> lisans kanıtı olmadığı için kaldırıldı</li>
+<li>[ ] <code>cdn.jsdelivr.net</code> bağımlılığı kaldırıldı (kodda yok)</li>
+<li>[ ] Tüm “gerçek müezzin/sanatçı” etiketleri kaldırıldı (kodda yok)</li>
+<li>[ ] EveryAyah ticari kullanım izni alındı <strong>veya</strong> kaynak değişti</li>
+<li>[ ] MP3 ID3 lisans/üretici etiketleri eklendi (P2)</li>
+<li>[ ] Tanzil/QuranEnc atıfları görünür</li>
+<li>[ ] OSM/Esri atıfları haritada görünür</li>
+<li>[ ] Mağaza görsellerinde “gerçek kayıt” iddiası yok</li>
+<li>[ ] Lisans kanıtları özel arşivde</li>
+</ul>
+<h2 id="f-siber-guvenlik-p0p1">F. Siber güvenlik (P0/P1)</h2>
+<ul>
+<li>[ ] Tüm yönetici hesaplarında 2FA</li>
+<li>[ ] Supabase RLS testleri geçti (başka kullanıcı verisi okunamıyor)</li>
+<li>[ ] <code>service_role</code> anahtarı istemcide/repoda yok (gitleaks temiz)</li>
+<li>[ ] TLS zorunlu, cleartext kapalı</li>
+<li>[ ] Release keystore yedeği + parola kasası</li>
+<li>[ ] Bağımlılık taraması ve Dependabot temiz</li>
+<li>[ ] Olay müdahale tatbikatı (masa başı) yapıldı</li>
+<li>[ ] Yedekten geri yükleme tatbikatı yapıldı</li>
+<li>[ ] 7545 bildirim kanalı ve şablonu hazır</li>
+<li>[ ] Güvenlik açığı bildirim adresi yayında</li>
+</ul>
+<h2 id="g-teknik-kalite-p0">G. Teknik kalite (P0)</h2>
+<ul>
+<li>[ ] <code>flutter analyze</code> sıfır uyarı</li>
+<li>[ ] Test kapısı ≥300 test yeşil</li>
+<li>[ ] Kıble doğrulama 6/6</li>
+<li>[ ] Vakit doğrulama (Diyanet karşılaştırma) ±0 dk</li>
+<li>[ ] Bildirim: kilitli ekran, pil optimizasyonu, yeniden başlatma testi</li>
+<li>[ ] Ezan yarıda kesilmiyor; her ekrandan durdurulabiliyor</li>
+<li>[ ] Çevrimdışı açılış ve boş durumlar</li>
+<li>[ ] Android 13/14/15/16 cihaz testi</li>
+<li>[ ] Düşük RAM ve büyük yazı tipi testi</li>
+<li>[ ] Çökme/ANR oranı yayın öncesi &lt;%1</li>
+</ul>
+<h2 id="h-yayn-sonras">H. Yayın sonrası</h2>
+<ul>
+<li>[ ] Mağaza yorumları ve AI bildirimleri izleniyor</li>
+<li>[ ] 72 saat olay nöbeti (ilk hafta)</li>
+<li>[ ] Haftalık yedek doğrulama</li>
+<li>[ ] Aylık lisans/SDK gözden geçirme</li>
+<li>[ ] 6 aylık ROPA ve gizlilik gözden geçirme</li>
+<li>[ ] Yıllık sızma testi</li>
+</ul>
+<h2 id="imza">İmza</h2>
+<table>
+<thead>
+<tr>
+<th>Rol</th>
+<th>Ad</th>
+<th>Tarih</th>
+<th>İmza</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Geliştirici</td>
+<td>YazılımCeosu</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Hukuk danışmanı (varsa)</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Kural:</strong> P0 maddelerinden biri açıksa yayın <strong>durdurulur</strong>. P1 maddeleri
+için risk kabulü yazılı olarak kaydedilir.</p>
+</blockquote>
+    <div class="notice">
+      Bu sayfa bilgilendirme amaçlıdır ve hukuki görüş yerine geçmez.
+      Yürürlükteki sürüm bu sayfadır; önemli değişiklikler uygulama içinde
+      duyurulur.
+    </div>
+  </article>
+</main>
+<footer>
+  <div class="links"><a href="privacy.html">Gizlilik</a><a href="kvkk.html">KVKK</a><a href="acik-riza.html">Açık Rıza</a><a href="terms.html">Koşullar</a><a href="abonelik.html">Abonelik</a><a href="veri-silme.html">Veri Silme</a><a href="guvenlik.html">Güvenlik</a></div>
+  <div>© 2026 YazılımCeosu · Ezan Vaktim Pro · <code>com.yazilimceosu.ezanai</code></div>
+</footer>
+</body>
+</html>

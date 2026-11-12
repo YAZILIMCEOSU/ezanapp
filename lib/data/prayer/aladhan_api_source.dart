@@ -14,6 +14,10 @@ import 'prayer_times_source.dart';
 ///
 /// Diyanet verisi alınamadığında (yurt dışı, servis kesintisi) kullanılan
 /// ikinci kaynak. Method parametresi uygulamanın seçili yöntemine eşlenir.
+///
+/// **Gizlilik:** Koordinat, tam hassasiyette gönderilmez; 2 ondalık
+/// (yaklaşık 1 km) değere yuvarlanır. Vakit hesabı için bu hassasiyet
+/// fazlasıyla yeterlidir ve kullanıcının açık konumu sunucuya taşınmaz.
 class AladhanApiSource implements PrayerTimesSource {
   AladhanApiSource({
     http.Client? client,
@@ -24,6 +28,9 @@ class AladhanApiSource implements PrayerTimesSource {
   final String baseUrl;
 
   static const Duration _timeout = Duration(seconds: 4);
+
+  /// Koordinatı ~1 km hassasiyete yuvarlar (KVKK veri minimizasyonu).
+  static String _approx(double value) => value.toStringAsFixed(2);
 
   @override
   String get id => 'aladhan';
@@ -47,7 +54,7 @@ class AladhanApiSource implements PrayerTimesSource {
   }) async {
     final Uri uri = Uri.parse(
       '$baseUrl/timings/${_formatDate(date)}'
-      '?latitude=${location.latitude}&longitude=${location.longitude}'
+      '?latitude=${_approx(location.latitude)}&longitude=${_approx(location.longitude)}'
       '&method=${_methodParameter(method)}&school=${method.asrFactor >= 2 ? 1 : 0}',
     );
     try {
@@ -171,7 +178,7 @@ class AladhanApiSource implements PrayerTimesSource {
     // AlAdhan aralık uç noktası gün bazlı liste döner (en fazla 1 yıl).
     final Uri uri = Uri.parse(
       '$baseUrl/calendar/${startDate.year}/${startDate.month}'
-      '?latitude=${location.latitude}&longitude=${location.longitude}'
+      '?latitude=${_approx(location.latitude)}&longitude=${_approx(location.longitude)}'
       '&method=${_methodParameter(method)}&school=${method.asrFactor >= 2 ? 1 : 0}',
     );
     try {

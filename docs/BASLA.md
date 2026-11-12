@@ -91,24 +91,43 @@ Bu adres bizim hazırladığımız sayfadan gelecek. Sırasıyla:
 
 ### 3.2 — İnternet sayfasını aç (GitHub Pages)
 
+Depoda `.github/workflows/pages.yml` hazır. **main** dalına birleştirme
+yapıldığında yasal sayfalar otomatik yayımlanır ve Pages kapalıysa
+etkinleştirmeyi dener. Yani §3.1'deki birleştirmeden sonra genellikle
+başka bir şey yapman gerekmez; 2–5 dakika bekle ve §3.3'teki adresi aç.
+
+Otomatik yayın başarısız olursa (Actions sekmesinde `pages` işi kırmızıysa)
+elle aç:
+
 1. Depo sayfasında üstteki **Settings** sekmesine tıkla.
 2. Sol menüde aşağı kaydırıp **Pages** yazısına tıkla.
 3. "Build and deployment" altındaki **Source** kutusunda **Deploy from a branch** seç.
 4. Hemen altında **Branch** kutusu: **main** seç; yanındaki klasör kutusu: **/docs** seç → **Save**.
-5. 1–2 dakika bekle, sayfayı yenile. Üstte şuna benzer bir adres görünecek:
-   `https://KULLANICI.github.io/ezanapp/`
-   (`KULLANICI` yerine GitHub kullanıcı adın yazılı olacak.)
+5. 1–2 dakika bekle, sayfayı yenile. Üstte şu adres görünecek:
+   `https://yazilimceosu.github.io/ezanapp/`
 
 ### 3.3 — Adresi not al
 
 Tarayıcıda şu adresi aç:
 
 ```
-https://KULLANICI.github.io/ezanapp/privacy.html
+https://yazilimceosu.github.io/ezanapp/privacy.html
 ```
 
 **Doğru yaptığının kanıtı:** Sayfa açılır ve "Ezan Vaktim Pro — Gizlilik Politikası" başlığını görürsün.
-**Bu adresi bir yere kopyala** (Notlar uygulaması, e-posta taslağı) — §5'te Play'e yazacaksın.
+Aynı klasördeki diğer beyanlar da açılmalı:
+
+| Sayfa | Adres |
+|---|---|
+| Gizlilik | `https://yazilimceosu.github.io/ezanapp/privacy.html` |
+| KVKK aydınlatma | `https://yazilimceosu.github.io/ezanapp/kvkk.html` |
+| Açık rıza | `https://yazilimceosu.github.io/ezanapp/acik-riza.html` |
+| Kullanım koşulları | `https://yazilimceosu.github.io/ezanapp/terms.html` |
+| Abonelik ve iade | `https://yazilimceosu.github.io/ezanapp/abonelik.html` |
+| Veri silme | `https://yazilimceosu.github.io/ezanapp/veri-silme.html` |
+| Güvenlik | `https://yazilimceosu.github.io/ezanapp/guvenlik.html` |
+
+**Bu adresleri bir yere kopyala** — §5'te Play Console'a yazacaksın.
 
 > Not: Adres ilk 1–2 dakikada açılmazsa panik yapma; GitHub bazen gecikir. 5 dakika sonra tekrar dene.
 
@@ -338,7 +357,7 @@ Bu noktada ürün **Play'de yayında** demektir (yalnızca senin görebildiğin 
 
 - [ ] **1.** APK'yı telefona kur, uygulamayı gez (~15 dk)
 - [ ] **2.** 6 ekran görüntüsü çek (~20 dk)
-- [ ] **3.** PR'ı birleştir + Pages'i aç + gizlilik adresini not al (~15 dk)
+- [ ] **3.** PR'ı birleştir + `pages` işinin yeşil olduğunu doğrula + 7 beyan adresini aç (~15 dk)
 - [ ] **4.** Play Console hesabı aç, 25 $ öde (~30 dk, onay 1–2 gün)
 - [ ] **5.** 12–14 test kullanıcısının Gmail adreslerini topla (bugün başla!)
 - [ ] **6.** İmzalama anahtarını üret ve yedekle (~20 dk)

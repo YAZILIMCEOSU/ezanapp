@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../config/app_config.dart';
+import '../constants/app_constants.dart';
 import '../db/app_database.dart';
 import '../utils/logger.dart';
 import 'preferences_service.dart';
@@ -127,7 +128,17 @@ class SyncService {
   }
 
   /// Yedeği sunucuya yükler.
+  /// KVKK açık rızası olmadan hiçbir veri yüklenmez.
+  bool get _hasBackupConsent {
+    final String? consent = _preferences.getString(PrefKeys.backupConsentAt);
+    return consent != null && consent.isNotEmpty;
+  }
+
   Future<bool> uploadBackup() async {
+    if (!_hasBackupConsent) {
+      _lastError = 'Bulut yedekleme için KVKK açık rızası gerekli.';
+      return false;
+    }
     final String? userId = await ensureSession();
     if (userId == null) return false;
     try {
@@ -151,6 +162,10 @@ class SyncService {
 
   /// Sunucudaki yedeği indirir (uygulamaz).
   Future<Map<String, Object?>?> downloadBackup() async {
+    if (!_hasBackupConsent) {
+      _lastError = 'Geri yükleme için KVKK açık rızası gerekli.';
+      return null;
+    }
     final String? userId = await ensureSession();
     if (userId == null) return null;
     try {

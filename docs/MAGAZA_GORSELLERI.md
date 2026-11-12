@@ -153,7 +153,9 @@ Sonraki sürümlerde modül açıldıkça tek cümlelik madde ekleyin, ör.:
 
 - [ ] Ekran görüntüleri MVP derlemesinden alındı (kapalı sekmeler görünmüyor)
 - [ ] Kısa/tam açıklama yalnızca MVP özelliklerini anlatıyor
-- [ ] Gizlilik politikası adresi canlı: `https://<kullanıcı>.github.io/ezanapp/privacy.html`
+- [ ] Gizlilik politikası adresi canlı: `https://yazilimceosu.github.io/ezanapp/privacy.html`
       ve uygulama içi bağlantı aynı adrese ayarlı (`--dart-define=PRIVACY_URL=...`)
+- [ ] Diğer beyanlar canlı: `kvkk.html`, `acik-riza.html`, `terms.html`,
+      `abonelik.html`, `veri-silme.html`, `guvenlik.html` (hepsi HTTP 200)
 - [ ] Veri güvenliği formu `docs/PRIVACY.md` ile tutarlı
 - [ ] Sürüm notu yazıldı, `pubspec.yaml` sürümü artırıldı (`1.0.0+1`)

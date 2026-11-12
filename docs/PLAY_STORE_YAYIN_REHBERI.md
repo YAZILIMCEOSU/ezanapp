@@ -56,7 +56,7 @@ Google Play Console'da **Büyüme > Mağaza varlığı > Ana mağaza girişi** e
 
   ÖNE ÇIKAN ÖZELLİKLER:
   • Diyanet Uyumlu Namaz Vakitleri: GPS ile konum değiştikçe otomatik güncellenen il/ilçe vakitleri, sonraki vakte canlı geri sayım, hicri takvim ve kerahat/nafile vakit uyarıları.
-  • Gerçek Müezzin Ezan Bildirimleri & Nafile Alarmları: Kâbe İmamı (Mekke), Medine, İstanbul makamları ve cihazınızdan ses seçme imkânı. İşrak, Kuşluk (Duha), Evvabîn, Teheccüd, Cuma, Teravih ve Bayram namazları için özel alarm kurma.
+  • Vakit Ezanı ve Nafile Alarmları: Hicaz, Segâh ve Tekbir makamlarında vokal sentez ezanlar ve cihazınızdan ses seçme imkânı. İşrak, Kuşluk (Duha), Evvabîn, Teheccüd, Cuma, Teravih ve Bayram namazları için özel alarm kurma.
   • 3B Eğim Dengeli Hassas Kıble Pusulası & Cami Bulucu: Jiroskop destekli sensör füzyonu ile telefon eğik tutulsa bile şaşmayan Kıble açısı, harita üzerinde Kâbe yönü ve yakın cami arama.
   • Kur'an-ı Kerim (Renkli Tecvid & Oklu Kelime Takibi): 114 sure Arapça Mushaf ve liste görünümü, çok dilli meal seçimi (Türkçe, İngilizce, Arapça), Diyanet TV mukabele tarzı yeşil ibreli (▲) ve sarı vurgulu kelime takibi, arka planda kesintisiz tilavet.
   • Vokal İlahi Arşivi & Kur'an Radyo: Enstrümansız (acapella/def) vokal ilahiler, çevrimdışı indirme ve cihazdan ses ekleme.

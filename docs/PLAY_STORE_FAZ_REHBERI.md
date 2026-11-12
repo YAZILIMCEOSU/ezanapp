@@ -10,7 +10,7 @@ Bu rehber **hiçbir kod, terminal, Java veya bilgisayar kurulumu gerektirmeden**
 1. Telefonunuzdan şu bağlantıya dokunun ve yeni paketi indirin:
    - https://github.com/YAZILIMCEOSU/ezanapp/releases/download/dene-apk/ezanai-kurulum.apk
 2. Kontrol noktaları:
-   - **Daha Fazla → Ezan ve Bildirim Sesi:** **Türkiye Makamı (3 dk 08 sn)**, **Mekke-i Mükerreme (3 dk 22 sn)**, **Abdülbâsıt (3 dk 21 sn)** ve **Muhammed Rıfat (3 dk 24 sn)** ezanlarını dinleyin; 30–40 saniye sonra kesilmeden sonuna (*"Lâ ilâhe illallâh"*) kadar okunduğunu doğrulayın.
+   - **Daha Fazla → Ezan ve Bildirim Sesi:** **Hicaz (3 dk 22 sn)**, **Segâh (3 dk 20 sn)** ve **Tekbir (3 dk 23 sn)** vokal sentez ezanlarını dinleyin; 30–40 saniye sonra kesilmeden sonuna (*"Lâ ilâhe illallâh"*) kadar okunduğunu doğrulayın.
    - **Kur'an → Herhangi bir Sure (ör. Yâsîn veya Fâtiha):** Ekranın en altında **yatay Kur'an MediaPlayer çubuğunun** çıktığını, **➤ Ok Takibi Açık** ve **Yaşlı Modu (A+)** düğmeleriyle okunan ayetin ve kelimenin **`⬅` ok işaretiyle** adım adım takip edildiğini doğrulayın.
 
 ### Adım 1.2 — GitHub Deposunu Klonlanmaya Karşı "Private" (Gizli) Yapın

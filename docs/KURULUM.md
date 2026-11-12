@@ -137,9 +137,9 @@ premium kapalı; vakitler, bildirimler, kıble, tesbih, hicri takvim ve ayarlar 
   "FEATURE_AI": false,
   "FEATURE_PREMIUM": false,
   "FEATURE_SYNC": false,
-  "PRIVACY_URL": "https://KULLANICI.github.io/ezanapp/privacy.html",
-  "TERMS_URL": "https://KULLANICI.github.io/ezanapp/terms.html",
-  "WEBSITE_URL": "https://KULLANICI.github.io/ezanapp/"
+  "PRIVACY_URL": "https://yazilimceosu.github.io/ezanapp/privacy.html",
+  "TERMS_URL": "https://yazilimceosu.github.io/ezanapp/terms.html",
+  "WEBSITE_URL": "https://yazilimceosu.github.io/ezanapp/"
 }
 ```
 
@@ -167,7 +167,7 @@ duruyor: `docs/privacy.html` (+ `docs/terms.html`, `docs/index.html`).
 3. 1–2 dakika sonra adres canlı olur:
 
    ```
-   https://KULLANICI.github.io/ezanapp/privacy.html
+   https://yazilimceosu.github.io/ezanapp/privacy.html
    ```
 
    (`KULLANICI` = GitHub kullanıcı adınız, ör. `yazilimceosu`.)

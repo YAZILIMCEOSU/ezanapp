@@ -58,7 +58,7 @@ Vakitlerde tereddüt hâlinde bulunduğunuz yerin resmî ilanlarını esas alın
 ## 4. Gizlilik politikası adresi (Play → Uygulama içeriği)
 
 ```
-https://KULLANICI.github.io/ezanapp/privacy.html
+https://yazilimceosu.github.io/ezanapp/privacy.html
 ```
 
 (Kendi adresini 3. adımda gördüğün gibi yaz: `KULLANICI` yerine GitHub kullanıcı adın.)

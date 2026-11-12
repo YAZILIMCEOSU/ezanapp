@@ -208,3 +208,23 @@ hicri takvim, dini asistan, sahur, iftar, hatim, kıble pusulası`
 - **Kısa açıklama:** `Prayer times, adhan, qibla, Qur'an, tasbih, hadith & AI assistant`
 - **Tam açıklama:** yukarıdaki metnin birebir çevirisi; dini içerikte ifade
   sadakati korunmalı, mezhep farklılıkları vurgusu çeviride de yer almalıdır.
+
+## 11. Yasal beyan adresleri (Play Console zorunlu alanları)
+
+Yayın öncesinde bu adreslerin **hepsi HTTP 200** dönmelidir. Sayfalar
+`tools/build_legal_pages.py` ile üretilir ve `main` dalına birleştirmede
+`.github/workflows/pages.yml` tarafından yayımlanır.
+
+| Alan | Adres |
+|---|---|
+| Gizlilik politikası | https://yazilimceosu.github.io/ezanapp/privacy.html |
+| KVKK aydınlatma | https://yazilimceosu.github.io/ezanapp/kvkk.html |
+| Açık rıza metinleri | https://yazilimceosu.github.io/ezanapp/acik-riza.html |
+| Kullanım koşulları | https://yazilimceosu.github.io/ezanapp/terms.html |
+| Abonelik ve iade | https://yazilimceosu.github.io/ezanapp/abonelik.html |
+| Veri silme | https://yazilimceosu.github.io/ezanapp/veri-silme.html |
+| Güvenlik | https://yazilimceosu.github.io/ezanapp/guvenlik.html |
+
+Ayrıntılı uyum seti: [`legal/GOOGLE_PLAY_UYUM.md`](legal/GOOGLE_PLAY_UYUM.md),
+[`legal/APPLE_APP_STORE_UYUM.md`](legal/APPLE_APP_STORE_UYUM.md),
+[`legal/YAYIN_UYUMLULUK_KONTROL_LISTESI.md`](legal/YAYIN_UYUMLULUK_KONTROL_LISTESI.md).

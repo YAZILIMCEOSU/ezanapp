@@ -80,6 +80,11 @@ abstract final class AppConfig {
   static const String websiteUrl = AppConstants.websiteUrl;
   static const String privacyPolicyUrl = AppConstants.privacyUrl;
   static const String termsUrl = AppConstants.termsUrl;
+  static const String kvkkUrl = AppConstants.kvkkUrl;
+  static const String consentUrl = AppConstants.consentUrl;
+  static const String dataDeletionUrl = AppConstants.dataDeletionUrl;
+  static const String subscriptionTermsUrl = AppConstants.subscriptionTermsUrl;
+  static const String securityUrl = AppConstants.securityUrl;
   static const String supportEmail = AppConstants.supportEmail;
 
   /// Abonelik ürün kimlikleri (Google Play Console ile eşleşmeli).

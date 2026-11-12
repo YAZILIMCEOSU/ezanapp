@@ -386,27 +386,26 @@ void main() {
       const NotificationSettings defaults = NotificationSettings();
       expect(defaults.adhanSound, AdhanSound.ezanMelodi);
       expect(BundledSounds.assetFor(AdhanSound.ezanMelodi), isNotNull);
-      expect(BundledSounds.assetFor(AdhanSound.sabaMelodi), isNotNull);
       expect(BundledSounds.assetFor(AdhanSound.segahMelodi), isNotNull);
       expect(BundledSounds.assetFor(AdhanSound.tekbirMelodi), isNotNull);
 
       final NotificationSettings customized = defaults.copyWith(
         perPrayerSound: <Prayer, AdhanSound>{
-          Prayer.imsak: AdhanSound.sabaMelodi,
+          Prayer.imsak: AdhanSound.segahMelodi,
           Prayer.ogle: AdhanSound.tone3,
           Prayer.yatsi: AdhanSound.ezanMelodi,
         },
         customAdhanPath: '/tmp/ozel_ezan.mp3',
         customAdhanTitle: 'Özel Ezan',
       );
-      expect(customized.soundFor(Prayer.imsak), AdhanSound.sabaMelodi);
+      expect(customized.soundFor(Prayer.imsak), AdhanSound.segahMelodi);
       expect(customized.soundFor(Prayer.ogle), AdhanSound.tone3);
       expect(customized.soundFor(Prayer.aksam), AdhanSound.ezanMelodi);
 
       final NotificationSettings restored = NotificationSettings.fromJson(
         customized.toJson(),
       );
-      expect(restored.soundFor(Prayer.imsak), AdhanSound.sabaMelodi);
+      expect(restored.soundFor(Prayer.imsak), AdhanSound.segahMelodi);
       expect(restored.soundFor(Prayer.ogle), AdhanSound.tone3);
       expect(restored.customAdhanPath, '/tmp/ozel_ezan.mp3');
       expect(restored.customAdhanTitle, 'Özel Ezan');
@@ -611,8 +610,8 @@ void main() {
       expect(billing.verifyReceiptIntegrity(fakePurchase), isFalse);
     });
 
-    test('Nafile namaz alarmları, Kâbe İmamı ezanı, global Kur\'an oturumu ve genişletilmiş İslami Asistan doğrulanır', () async {
-      expect(AdhanSound.ezanMelodi.label, contains('Kâbe İmamı'));
+    test('Nafile namaz alarmları, vokal sentez ezanı, global Kur\'an oturumu ve genişletilmiş İslami Asistan doğrulanır', () async {
+      expect(AdhanSound.ezanMelodi.label, contains('Vokal Sentez'));
 
       const NotificationSettings baseNotif = NotificationSettings();
       final NotificationSettings withNafile = baseNotif.copyWith(

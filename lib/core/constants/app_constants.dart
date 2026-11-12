@@ -18,17 +18,44 @@ abstract final class AppConstants {
     'SUPPORT_EMAIL',
     defaultValue: 'destek@ezanai.app',
   );
+  /// Yasal sayfalar GitHub Pages üzerinde yayımlanır (`/docs` klasörü).
+  /// Mağaza kaydındaki adresle **aynı** olmalıdır. Alan adı değişirse
+  /// `--dart-define` ile güncellenir.
+  static const String legalBaseUrl = String.fromEnvironment(
+    'LEGAL_BASE_URL',
+    defaultValue: 'https://yazilimceosu.github.io/ezanapp',
+  );
   static const String privacyUrl = String.fromEnvironment(
     'PRIVACY_URL',
-    defaultValue: 'https://ezanai.app/gizlilik',
+    defaultValue: '$legalBaseUrl/privacy.html',
   );
   static const String termsUrl = String.fromEnvironment(
     'TERMS_URL',
-    defaultValue: 'https://ezanai.app/kullanim-kosullari',
+    defaultValue: '$legalBaseUrl/terms.html',
+  );
+  static const String kvkkUrl = String.fromEnvironment(
+    'KVKK_URL',
+    defaultValue: '$legalBaseUrl/kvkk.html',
+  );
+  static const String consentUrl = String.fromEnvironment(
+    'CONSENT_URL',
+    defaultValue: '$legalBaseUrl/acik-riza.html',
+  );
+  static const String dataDeletionUrl = String.fromEnvironment(
+    'DATA_DELETION_URL',
+    defaultValue: '$legalBaseUrl/veri-silme.html',
+  );
+  static const String subscriptionTermsUrl = String.fromEnvironment(
+    'SUBSCRIPTION_TERMS_URL',
+    defaultValue: '$legalBaseUrl/abonelik.html',
+  );
+  static const String securityUrl = String.fromEnvironment(
+    'SECURITY_URL',
+    defaultValue: '$legalBaseUrl/guvenlik.html',
   );
   static const String websiteUrl = String.fromEnvironment(
     'WEBSITE_URL',
-    defaultValue: 'https://ezanai.app',
+    defaultValue: legalBaseUrl,
   );
 
   /// Mekke — Kâbe koordinatları.
@@ -119,4 +146,10 @@ abstract final class PrefKeys {
   static const String premiumCache = 'premium_cache';
   static const String aiDailyUsage = 'ai_daily_usage';
   static const String akikaReminder = 'akika_reminder';
+
+  /// KVKK açık rıza kayıtları (ISO-8601 zaman damgası).
+  static const String aiConsentAt = 'kvkk_ai_consent_at';
+  static const String backupConsentAt = 'kvkk_backup_consent_at';
+  static const String personalizedAdsConsentAt =
+      'kvkk_personalized_ads_consent_at';
 }

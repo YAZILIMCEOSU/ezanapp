@@ -12,7 +12,7 @@ Bu rehber, **Ezan Vaktim Pro** uygulamasının Türkiye ve küresel pazardaki en
 | **2. Diyanet Namaz Vakti & e-Kıble** | Resmi kurum güveni, reklamsız, doğru Diyanet vakitleri ve Kıble açısı (`157.7°` İstanbul pusula açısı) | Kişiselleştirme az, nafile namaz alarmları (Teheccüd, Duha, Evvabîn, İşrak) yok, arka planda her sekmede yüzen Kur'an/İlahi mini çalar yok | Diyanet ile birebir aynı Kıble pusula açısı (`157.7°`) + **Pusula / Harita** sekmesi + 9 ayrı Nafile/Sünnet alarmı + tüm ekranlarda yüzen ses kontrol çubuğu |
 | **3. Muslim Pro** *(Küresel Lider — Android/iOS)* | 100M+ indirme, çok dilli, zengin Kur'an okuyucuları, Apple Watch / Widget desteği | Çok yüksek abonelik ücretleri, ağır reklam yükü, geçmişte veri gizliliği tartışmaları, Türkiye Diyanet temkin saatleriyle zaman zaman 1–2 dk uyumsuzluk | Sıfır kişisel veri sızıntısı (log maskeleme), %100 Diyanet temkin uyumu, uygun fiyatlı kademeli Premium yapısı |
 | **4. Tarteel AI** *(iOS & Android Kur'an Odaklı)* | Kelime kelime Kur'an takibi ve hıfz modu | Sadece Kur'an odaklı (ezan vakitleri, nafile alarmları, ilahi, tesbih, cami bulucu zayıf), çoğu özellik pahalı abonelik duvarı arkasında | Kur'an'da **Renkli Tecvid + Sarı Vurgu Kutusu + 3B Yeşil Üçgen (`▲`) Mukabele Takibi** ücretsiz ve tüm ibadet modülleriyle tek uygulamada |
-| **5. Pillars / Athan (IslamicFinder)** | Sade modern iOS/Android arayüzü, kaza takibi | Türkçe ilmihal derinliği yok, telifsiz gerçek müezzin ezanları ve vokal ilahi arşivi kısıtlı | 52+ konulu 4 mezhep karşılaştırmalı Türkçe İlmihal & AI Asistan + gerçek insan sesi Kâbe/Mekke, Medine, İstanbul ezanları |
+| **5. Pillars / Athan (IslamicFinder)** | Sade modern iOS/Android arayüzü, kaza takibi | Türkçe ilmihal derinliği yok, lisanslı ezan kaydı arşivi kısıtlı | 52+ konulu 4 mezhep karşılaştırmalı Türkçe İlmihal & AI Asistan + proje içi vokal sentez ezan makamları |
 
 ---
 
@@ -25,7 +25,7 @@ Bu rehber, **Ezan Vaktim Pro** uygulamasının Türkiye ve küresel pazardaki en
    - Arapça kelimelerin fonetik/med/şedde ağırlığını ve ayet sonu *Medd-i Arız* süresini hesaplayan akıllı senkron motoru (`+280 ms` ön telafi + tek dokunuşla `Senkron` ince ayarı).
    - **Renkli Tecvid**, aktif kelimede **Mushaf Sarı Vurgu Kutusu (`#FFF176`)** ve kelimenin tam altında **3B Zümrüt Yeşili Üçgen İbre (`▲`)**.
 3. **Uygulama Kapalıyken Tam Ezan & 9 Nafile/Sünnet Alarmı:**
-   - Gerçek insan sesi **Kâbe İmamı (Mekke Harem-i Şerîf)**, Medine, İstanbul, Mısır ve Sabah (*es-Salâtü hayrun mine'n-nevm*) ezanları; İşrak, Duha (Kuşluk), Evvabîn, Teheccüd, Cuma, Bayram ve Teravih alarmları.
+   - Proje içi vokal sentez **Hicaz, Segâh ve Tekbir** makamı ezanları; İşrak, Duha (Kuşluk), Evvabîn, Teheccüd, Cuma, Bayram ve Teravih alarmları.
 4. **Kaynaklı AI İslam Asistanı & Cami Bulucu:**
    - Kur'an, Kütüb-i Sitte ve 4 mezhep delilleriyle kaynak gösteren İslami Asistan; yakın camileri listeleyen ve çevrimiçi cami araması yapan Cami Bulucu.
 

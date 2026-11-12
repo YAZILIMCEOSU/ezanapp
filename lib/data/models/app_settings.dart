@@ -11,38 +11,33 @@ import '../prayer/prayer_calculator.dart';
 /// Ezan bildirim sesi seçenekleri.
 enum AdhanSound {
   ezanMelodi(
-    'Kâbe İmamı (Mekke Harem-i Şerîf) Tam Ezanı',
-    'Kâbe-i Muazzama Hicaz makamı gerçek müezzin tam ezan tilaveti (3 dk 22 sn, telifsiz)',
+    'Hicaz Makamı Tam Ezan (Vokal Sentez)',
+    'Hicaz makamında proje içinde üretilmiş tam vokal ezan sentezi (3 dk 22 sn).',
     'ezan_melodi',
   ),
-  sabaMelodi(
-    'Türkiye Makamı Tam Ezan (Diyanet Usulü)',
-    'Geleneksel Türkiye usulü tam müezzin ezan tilaveti (3 dk 08 sn, telifsiz)',
-    'ezan_saba',
-  ),
   segahMelodi(
-    'Mısır / Segâh Makamı Tam Ezan (Abdülbâsıt)',
-    'Abdülbâsıt Abdüssamed gerçek tam ezan tilaveti (3 dk 20 sn, telifsiz)',
+    'Segâh Makamı Tam Ezan (Vokal Sentez)',
+    'Segâh makamında proje içinde üretilmiş tam vokal ezan sentezi (3 dk 20 sn).',
     'ezan_segah',
   ),
   tekbirMelodi(
-    'Klasik Makam Tam Ezanı (Muhammed Rıfat)',
-    'Muhammed Rıfat klasik makam gerçek tam ezan tilaveti (3 dk 23 sn, telifsiz)',
+    'Tekbir Makamı Tam Ezan (Vokal Sentez)',
+    'Tekbir makamında proje içinde üretilmiş tam vokal ezan sentezi (3 dk 23 sn).',
     'ezan_tekbir',
   ),
   tone1(
     'Ya Rabbî Vokal İlahi Bildirimi (Kısa)',
-    'Enstrümansız gerçek vokal ilahi vakit bildirimi (~20 sn, telifsiz)',
+    'Enstrümansız, proje içinde üretilmiş vokal ilahi bildirimi (~20 sn).',
     'ezan_ton_1',
   ),
   tone2(
     'Huzur Vokal İlahi Bildirimi (Kısa)',
-    'Enstrümansız gerçek vokal neşid/ilahi bildirimi (~20 sn, telifsiz)',
+    'Enstrümansız, proje içinde üretilmiş vokal neşid/ilahi bildirimi (~20 sn).',
     'ezan_ton_2',
   ),
   tone3(
     'Kısa Ezan Tekbiri (Allâhu Ekber)',
-    'Mişârî el-Afâsî gerçek ezan tekbiri vakit bildirimi (~20 sn, telifsiz)',
+    'Proje içinde üretilmiş kısa ezan tekbiri vakit bildirimi (~20 sn).',
     'ezan_ton_3',
   ),
   systemDefault('Sistem varsayılanı', 'Telefonun bildirim sesi', 'system'),
@@ -426,8 +421,8 @@ class AppSettings {
     this.notifications = const NotificationSettings(),
     this.lastHatimTarget = 1,
     this.hatimAutoAdvance = true,
-    this.analyticsEnabled = true,
-    this.crashReportingEnabled = true,
+    this.analyticsEnabled = false,
+    this.crashReportingEnabled = false,
     this.streamingOnlyOnWifi = false,
     this.adhanPlaybackDucking = true,
   });
@@ -535,8 +530,8 @@ class AppSettings {
       notifications: NotificationSettings.fromJson(notif),
       lastHatimTarget: intOr('lastHatimTarget', 1),
       hatimAutoAdvance: boolOr('hatimAutoAdvance', true),
-      analyticsEnabled: boolOr('analyticsEnabled', true),
-      crashReportingEnabled: boolOr('crashReportingEnabled', true),
+      analyticsEnabled: boolOr('analyticsEnabled', false),
+      crashReportingEnabled: boolOr('crashReportingEnabled', false),
       streamingOnlyOnWifi: boolOr('streamingOnlyOnWifi', false),
       adhanPlaybackDucking: boolOr('adhanPlaybackDucking', true),
     );

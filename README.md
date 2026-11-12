@@ -13,11 +13,33 @@ destekli İslami soru-cevap özelliklerini tek uygulamada birleştiren, çevrimd
 
 ## 0. Güvenlik ve dağıtım (özet)
 
-* Depo **gizlidir**; kaynak kod herkese açık değildir.
+* Depo **yayın öncesi private yapılacaktır**; mevcut görünürlük GitHub → Settings → Danger Zone’dan kontrol edilir.
 * Sürüm paketleri `--obfuscate` + R8 küçültme ile üretilir.
 * **İmza sabitleme** (`EXPECTED_SIGNING_SHA256`) ve **paket bütünlüğü**
   (klon/patch/debugger tespiti) satın alma doğrulamasına bağlıdır.
 * Ayrıntılı rehber: [`docs/GUVENLIK_KOPYA_KORUMASI.md`](docs/GUVENLIK_KOPYA_KORUMASI.md).
+
+---
+
+## 0.1. Yasal ve uyum paketi
+
+KVKK, Google Play, Apple App Store, tüketici mevzuatı ve siber güvenlik
+belgeleri [`docs/legal/`](docs/legal/README.md) altında tek kaynakta toplanmıştır.
+Yayın (web) sayfaları `docs/*.html` olarak üretilir
+(`python3 tools/build_legal_pages.py`).
+
+Öne çıkanlar:
+
+- [KVKK aydınlatma ve gizlilik](docs/legal/KVKK_AYDINLATMA_METNI.md)
+- [Açık rıza metinleri](docs/legal/ACIK_RIZA_METINLERI.md)
+- [Kullanım koşulları (EULA)](docs/legal/KULLANIM_KOSULLARI.md)
+- [Google Play uyum](docs/legal/GOOGLE_PLAY_UYUM.md)
+- [Apple App Store uyum](docs/legal/APPLE_APP_STORE_UYUM.md)
+- [Siber güvenlik protokolü](docs/legal/SIBER_GUVENLIK_PROTOKOLU.md)
+- [Yayın kontrol listesi](docs/legal/YAYIN_UYUMLULUK_KONTROL_LISTESI.md)
+
+> Yasal metinlerdeki bir ifade kodla çelişiyorsa ikisi birlikte düzeltilir;
+> çelişki kapatılmadan yayın yapılmaz.
 
 ---
 

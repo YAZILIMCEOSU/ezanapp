@@ -105,7 +105,7 @@ class AppRuntime {
     );
     final NotificationService notifications = NotificationService();
     final AppAudioService audio = AppAudioService();
-    final AdsService ads = AdsService();
+    final AdsService ads = AdsService(preferences: preferences);
     final BillingService billing = BillingService();
 
     final PrayerTimesRepository prayerTimes = PrayerTimesRepository(

@@ -297,8 +297,9 @@ class _AdhanSoundScreenState extends ConsumerState<AdhanSoundScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             child: Text(
-              'İsterseniz sabah/imsak için Türkiye veya Mısır makamı, iş saatlerindeki vakitler için '
-              'kısa vokal ilahi bildirimi veya sessiz, akşam ve yatsı için Mekke Harem-i Şerîf ezanı seçebilirsiniz.',
+              'İsterseniz sabah/imsak için Segâh makamı, iş saatlerindeki '
+              'vakitler için kısa vokal ilahi bildirimi veya sessiz, akşam ve yatsı '
+              'için Hicaz makamı tam ezan seçebilirsiniz.',
               style: theme.textTheme.labelSmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
                 height: 1.4,
@@ -331,17 +332,18 @@ class _AdhanSoundScreenState extends ConsumerState<AdhanSoundScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    'Gerçek müezzin ezan kayıtları ve özel ses desteği',
+                    'Ezan sesleri ve özel ses desteği',
                     style: theme.textTheme.labelLarge?.copyWith(
                       fontWeight: FontWeight.w800,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
-                    'Uygulama içindeki Mekke Harem-i Şerîf, Türkiye Makamı, Abdülbâsıt Abdüssamed ve '
-                    'Muhammed Rıfat ezan kayıtları ile enstrümansız vokal ilahi bildirimleri gerçek '
-                    'insan sesi kayıtlarıdır; yüksek öncelikli alarm kanalında ekran kilitliyken de '
-                    'duyulur. Dilerseniz kendi MP3/WAV/M4A dosyanızı da yukarıdan seçip kullanabilirsiniz.',
+                    'Uygulamadaki ezan ve ilahi sesleri, proje içinde vokal sentez '
+                    'yöntemiyle üretilmiş özgün kayıtlardır; üçüncü kişilerin '
+                    'telifli kayıtları kullanılmaz. Sesler yüksek öncelikli alarm '
+                    'kanalında ekran kilitliyken de duyulur. Dilerseniz kendi '
+                    'MP3/WAV/M4A dosyanızı yukarıdan seçip kullanabilirsiniz.',
                     style: theme.textTheme.bodySmall?.copyWith(height: 1.5),
                   ),
                 ],

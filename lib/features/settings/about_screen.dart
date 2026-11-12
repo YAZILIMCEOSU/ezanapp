@@ -265,14 +265,16 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: AppSpacing.xl),
             child: Text(
-              '• Konum yalnızca namaz vakti ve kıble hesabı için cihazda kullanılır; '
-              'sunucuya gönderilmez.\n'
+              '• Konum, namaz vakti ve kıble hesabı için cihazda işlenir; '
+              'koordinatınız vakit servisine gönderilmez. Vakit servisi yalnızca '
+              'seçtiğiniz ilçe kimliğini alır. Diyanet servisine ulaşılamazsa '
+              'yaklaşık koordinat (2 ondalık, ~1 km) AlAdhan servisine gönderilir.\n'
               '• Favoriler, okuma geçmişi, zikir kayıtları ve AI sohbetleri cihazdaki '
               'SQLite veritabanında saklanır.\n'
               '• API anahtarları uygulamaya gömülmez; AI ve katalog istekleri kendi '
               'backend\'imiz üzerinden yapılır.\n'
-              '• Kullanım istatistikleri ve çökme raporları varsayılan olarak kapalıdır ve '
-              'ayarlardan yönetilebilir.\n'
+              '• Uygulamada analitik/çökme SDK’sı yoktur; kullanım istatistikleri '
+              've çökme raporları varsayılan olarak kapalıdır.\n'
               '• Verilerinizi Ayarlar > Verilerimi sil ile tek dokunuşla silebilirsiniz.',
               style: TextStyle(height: 1.7, fontSize: 12.5),
             ),
@@ -291,6 +293,41 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
             subtitle: const Text('Uygulamanın kullanım şartları'),
             trailing: const Icon(Icons.open_in_new_rounded, size: 18),
             onTap: () => _openUrl(AppConfig.termsUrl),
+          ),
+          ListTile(
+            leading: const Icon(Icons.policy_outlined),
+            title: const Text('KVKK aydınlatma metni'),
+            subtitle: const Text('Hangi veri, hangi amaçla, ne kadar süre?'),
+            trailing: const Icon(Icons.open_in_new_rounded, size: 18),
+            onTap: () => _openUrl(AppConfig.kvkkUrl),
+          ),
+          ListTile(
+            leading: const Icon(Icons.fact_check_outlined),
+            title: const Text('Açık rıza metinleri'),
+            subtitle: const Text('Yapay zekâ, bulut yedekleme, reklam rızası'),
+            trailing: const Icon(Icons.open_in_new_rounded, size: 18),
+            onTap: () => _openUrl(AppConfig.consentUrl),
+          ),
+          ListTile(
+            leading: const Icon(Icons.receipt_long_outlined),
+            title: const Text('Abonelik ve iade koşulları'),
+            subtitle: const Text('Otomatik yenileme, iptal ve cayma hakkı'),
+            trailing: const Icon(Icons.open_in_new_rounded, size: 18),
+            onTap: () => _openUrl(AppConfig.subscriptionTermsUrl),
+          ),
+          ListTile(
+            leading: const Icon(Icons.delete_sweep_outlined),
+            title: const Text('Veri silme ve başvuru'),
+            subtitle: const Text('Cihaz ve sunucu verilerini silme yolları'),
+            trailing: const Icon(Icons.open_in_new_rounded, size: 18),
+            onTap: () => _openUrl(AppConfig.dataDeletionUrl),
+          ),
+          ListTile(
+            leading: const Icon(Icons.security_outlined),
+            title: const Text('Siber güvenlik ve olay bildirimi'),
+            subtitle: const Text('Güvenlik açığı bildirimi ve KVKK 72 saat'),
+            trailing: const Icon(Icons.open_in_new_rounded, size: 18),
+            onTap: () => _openUrl(AppConfig.securityUrl),
           ),
           ListTile(
             leading: const Icon(Icons.gavel_outlined),

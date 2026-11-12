@@ -213,6 +213,7 @@ class AiRepository {
     String question, {
     required bool premium,
     List<AiMessage> history = const <AiMessage>[],
+    bool allowRemote = false,
   }) async {
     final AiAnswer? verified = _service.answerVerifiedLocal(question);
     if (verified != null) {
@@ -224,7 +225,11 @@ class AiRepository {
       return AiService.quotaExceededAnswer(question: question);
     }
 
-    final AiAnswer answer = await _service.ask(question, history: history);
+    final AiAnswer answer = await _service.ask(
+      question,
+      history: history,
+      allowRemote: allowRemote,
+    );
     if (answer.failureKind != AiFailureKind.quotaExceeded) {
       await incrementUsage();
     }

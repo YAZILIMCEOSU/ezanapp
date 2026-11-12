@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Kişisel veri işleme envanteri ve saklama takvimi.">
+<meta name="robots" content="index,follow">
+<title>Veri İşleme Envanteri (ROPA) — Ezan Vaktim Pro</title>
+<style>
+:root {
+  --bg: #f6f8f7;
+  --card: #ffffff;
+  --ink: #14211d;
+  --muted: #5b6b65;
+  --brand: #0f766e;
+  --brand-soft: #e6f4f1;
+  --line: #dbe5e1;
+  --warn: #92400e;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.65;
+  font-size: 16px;
+}
+a { color: var(--brand); text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+header {
+  background: linear-gradient(135deg, #0f766e, #115e59);
+  color: #fff;
+  padding: 22px 20px 18px;
+}
+header .wrap {
+  max-width: 980px; margin: 0 auto;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+  justify-content: space-between;
+}
+.brand { font-weight: 800; letter-spacing: .2px; font-size: 18px; }
+.brand small { display: block; font-weight: 500; opacity: .85; font-size: 12px; }
+nav { display: flex; flex-wrap: wrap; gap: 6px; }
+nav a {
+  color: #fff; text-decoration: none; font-size: 13px;
+  padding: 5px 9px; border-radius: 999px; background: rgba(255,255,255,.12);
+}
+nav a:hover { background: rgba(255,255,255,.24); }
+main {
+  max-width: 980px; margin: 26px auto 60px; padding: 0 18px;
+}
+.card {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 16px; padding: 28px 30px;
+  box-shadow: 0 8px 24px rgba(15, 118, 110, .06);
+}
+h1 { font-size: 30px; line-height: 1.2; margin: 0 0 8px; }
+h2 { font-size: 22px; margin: 34px 0 10px; padding-top: 8px; }
+h3 { font-size: 17px; margin: 24px 0 8px; }
+p, li { color: #24332e; }
+ul, ol { padding-left: 22px; }
+li { margin: 4px 0; }
+blockquote {
+  margin: 18px 0; padding: 12px 16px;
+  background: var(--brand-soft); border-left: 4px solid var(--brand);
+  border-radius: 8px; color: #164e47;
+}
+code {
+  background: #eef3f1; padding: 1px 5px; border-radius: 5px;
+  font-size: 13px;
+}
+pre {
+  background: #0f172a; color: #e2e8f0; padding: 16px;
+  border-radius: 10px; overflow-x: auto; font-size: 13px;
+}
+pre code { background: transparent; color: inherit; padding: 0; }
+table {
+  width: 100%; border-collapse: collapse; margin: 16px 0;
+  font-size: 14px; display: block; overflow-x: auto;
+}
+th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+th { background: #f0f6f4; font-weight: 700; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 30px 0; }
+.meta {
+  color: var(--muted); font-size: 13px; margin-bottom: 18px;
+}
+.notice {
+  background: #fff7ed; border: 1px solid #fed7aa; color: var(--warn);
+  padding: 12px 16px; border-radius: 10px; font-size: 13.5px;
+  margin: 18px 0;
+}
+footer {
+  max-width: 980px; margin: 0 auto 40px; padding: 0 18px;
+  color: var(--muted); font-size: 13px;
+}
+footer .links { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; }
+@media (max-width: 640px) {
+  .card { padding: 20px 16px; }
+  h1 { font-size: 24px; }
+  h2 { font-size: 19px; }
+}
+@media print {
+  header, nav, footer { display: none; }
+  body { background: #fff; }
+  .card { border: 0; box-shadow: none; padding: 0; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="brand">Ezan Vaktim Pro<small>Yasal ve uyum belgeleri</small></div>
+    <nav><a href="privacy.html">Gizlilik</a><a href="kvkk.html">KVKK</a><a href="acik-riza.html">Açık Rıza</a><a href="terms.html">Koşullar</a><a href="abonelik.html">Abonelik</a><a href="veri-silme.html">Veri Silme</a><a href="guvenlik.html">Güvenlik</a></nav>
+  </div>
+</header>
+<main>
+  <article class="card">
+    <div class="meta">YazılımCeosu · İstanbul, Türkiye · destek@ezanai.app</div>
+    <h1 id="ezan-vaktim-pro-kisisel-veri-isleme-envanteri-ropa">Ezan Vaktim Pro — Kişisel Veri İşleme Envanteri (ROPA)</h1>
+<p><strong>Sürüm:</strong> 1.0 · <strong>Tarih:</strong> 12 Kasım 2026
+<strong>Veri sorumlusu:</strong> YazılımCeosu — destek@ezanai.app
+<strong>Amaç:</strong> KVKK m.16 ve GDPR m.30 ile uyumlu kayıt tutma; VERBİS başvurusuna
+temel oluşturma.</p>
+<blockquote>
+<p>Bu envanter uygulamanın <strong>gerçek veri akışına</strong> göre hazırlanmıştır. Yeni
+SDK, özellik veya sunucu eklenmeden önce güncellenmelidir. Hukuki görüş
+değildir.</p>
+</blockquote>
+<h2 id="1-isleme-faaliyetleri">1. İşleme faaliyetleri</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Faaliyet</th>
+<th>Veri sahibi</th>
+<th>Veri kategorisi</th>
+<th>Amaç</th>
+<th>Hukuki sebep</th>
+<th>Alıcı</th>
+<th>Aktarım</th>
+<th>Saklama</th>
+<th>Silme</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R-01</td>
+<td>Namaz vakti ve kıble hesabı</td>
+<td>Kullanıcı</td>
+<td>Konum (cihaz), şehir kimliği</td>
+<td>Vakit/kıble</td>
+<td>m.5/2-c, m.5/2-f</td>
+<td>Vakit servisi (yalnızca ilçe kimliği)</td>
+<td>Sınırlı</td>
+<td>Cihazda son konum</td>
+<td>Uygulama içi silme</td>
+</tr>
+<tr>
+<td>R-02</td>
+<td>Kur’an/ilahi/tesbih kullanımı</td>
+<td>Kullanıcı</td>
+<td>Kullanım içeriği (favori, ilerleme, zikir)</td>
+<td>Özellik</td>
+<td>m.5/2-c</td>
+<td>Yok</td>
+<td>Yok</td>
+<td>Cihazda</td>
+<td>Ayarlar → Verilerimi sil</td>
+</tr>
+<tr>
+<td>R-03</td>
+<td>AI asistanı</td>
+<td>Kullanıcı</td>
+<td>Soru, son 6 mesaj, mezhep tercihi (özel nitelikli olabilir)</td>
+<td>Cevap üretimi</td>
+<td>m.6/2 açık rıza</td>
+<td>AI backend</td>
+<td>Yurt dışı — SCC</td>
+<td>Cihazda; sunucuda kalıcı değil</td>
+<td>Sohbet silme + rıza geri çekme</td>
+</tr>
+<tr>
+<td>R-04</td>
+<td>Bulut yedekleme</td>
+<td>Kullanıcı</td>
+<td>Tüm yerel içerik + anonim UUID</td>
+<td>Yedekleme</td>
+<td>m.6/2 açık rıza</td>
+<td>Supabase</td>
+<td>Yurt dışı — SCC</td>
+<td>Silinene kadar; hedef 24 ay</td>
+<td>Sunucudaki yedeği sil</td>
+</tr>
+<tr>
+<td>R-05</td>
+<td>Reklam</td>
+<td>Kullanıcı</td>
+<td>AD_ID, IP, yaklaşık konum, etkileşim</td>
+<td>Reklam/ölçüm</td>
+<td>Kişiselleştirme: açık rıza; NPA: m.5/2-f</td>
+<td>Google AdMob</td>
+<td>Yurt dışı — SCC</td>
+<td>Google politikası</td>
+<td>Cihaz/Google ayarları</td>
+</tr>
+<tr>
+<td>R-06</td>
+<td>Abonelik</td>
+<td>Kullanıcı</td>
+<td>Ürün kimliği, abonelik durumu</td>
+<td>Premium</td>
+<td>m.5/2-c</td>
+<td>Google/Apple</td>
+<td>Mağaza</td>
+<td>Mağaza + vergi mevzuatı</td>
+<td>Mağaza</td>
+</tr>
+<tr>
+<td>R-07</td>
+<td>Destek</td>
+<td>Kullanıcı</td>
+<td>E-posta, mesaj</td>
+<td>Destek</td>
+<td>m.5/2-c, m.5/2-f</td>
+<td>E-posta sağlayıcı</td>
+<td>Yurt dışı olabilir</td>
+<td>2 yıl</td>
+<td>Süre sonu</td>
+</tr>
+<tr>
+<td>R-08</td>
+<td>Push (opsiyonel)</td>
+<td>Kullanıcı</td>
+<td>FCM jetonu</td>
+<td>Bildirim</td>
+<td>m.5/2-c</td>
+<td>Firebase</td>
+<td>Yurt dışı — SCC</td>
+<td>Jeton geçerliliği</td>
+<td>Jeton silme/izin kapatma</td>
+</tr>
+<tr>
+<td>R-09</td>
+<td>Güvenlik günlükleri</td>
+<td>Kullanıcı/cihaz</td>
+<td>IP, hata kaydı (konum ve soru metni maskeli)</td>
+<td>Güvenlik</td>
+<td>m.5/2-f</td>
+<td>Barındırma</td>
+<td>Yurt dışı olabilir</td>
+<td>6 ay</td>
+<td>Otomatik silme</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Özel nitelikli veri notu:</strong> R-03 ve R-04’te dinî inanç/ibadet verisi
+işlenebilir. Bu faaliyetler yalnızca açık rıza ile ve ek güvenlik tedbirleriyle
+yürütülür (KVKK m.6/2).</p>
+<h2 id="2-veri-sahibi-gruplar">2. Veri sahibi grupları</h2>
+<ul>
+<li>Uygulama kullanıcıları (13 yaş üstü hedef kitle),</li>
+<li>Destek e-postası gönderenler,</li>
+<li>Premium aboneler.</li>
+</ul>
+<p>Çalışan/aday/müşteri verisi işlenmez (tek kişilik geliştirici).</p>
+<h2 id="3-alclar-ve-veri-isleyenler">3. Alıcılar ve veri işleyenler</h2>
+<table>
+<thead>
+<tr>
+<th>Tedarikçi</th>
+<th>Rol</th>
+<th>Hizmet</th>
+<th>Bölge</th>
+<th>Sözleşme</th>
+<th>Durum</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Google LLC (AdMob)</td>
+<td>Veri işleyen/bağımsız</td>
+<td>Reklam</td>
+<td>ABD/AB</td>
+<td>Google Ads DPA + SCC</td>
+<td>Mevcut</td>
+</tr>
+<tr>
+<td>Google LLC (Firebase)</td>
+<td>Veri işleyen</td>
+<td>Push</td>
+<td>ABD</td>
+<td>Google DPA + SCC</td>
+<td>Opsiyonel</td>
+</tr>
+<tr>
+<td>Supabase Inc.</td>
+<td>Veri işleyen</td>
+<td>Bulut yedek</td>
+<td>AB (Frankfurt) / ABD</td>
+<td>DPA + SCC</td>
+<td>Opsiyonel</td>
+</tr>
+<tr>
+<td>AI backend sağlayıcısı</td>
+<td>Veri işleyen</td>
+<td>Model çıkarımı</td>
+<td>Yapılandırmaya göre</td>
+<td>DPA + SCC + saklama yasağı</td>
+<td>Yapılandırılacak</td>
+</tr>
+<tr>
+<td>E-posta sağlayıcısı</td>
+<td>Veri işleyen</td>
+<td>Destek</td>
+<td>AB/ABD</td>
+<td>DPA</td>
+<td>Mevcut</td>
+</tr>
+<tr>
+<td>GitHub (barındırma)</td>
+<td>Veri işleyen</td>
+<td>Kaynak/Pages</td>
+<td>ABD</td>
+<td>GitHub DPA</td>
+<td>Mevcut</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Not:</strong> Google Play/App Store, ödeme ve dağıtımda <strong>bağımsız veri
+sorumlusu</strong> olarak kendi politikalarına tabidir.</p>
+<h2 id="4-yurt-ds-aktarm-kayd">4. Yurt dışı aktarım kaydı</h2>
+<table>
+<thead>
+<tr>
+<th>Aktarım</th>
+<th>Ülke</th>
+<th>Mekanizma</th>
+<th>Kurum bildirimi</th>
+<th>Durum</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AdMob</td>
+<td>ABD</td>
+<td>Standart sözleşme</td>
+<td>5 iş günü içinde</td>
+<td>Yapılacak</td>
+</tr>
+<tr>
+<td>Supabase</td>
+<td>AB/ABD</td>
+<td>Standart sözleşme</td>
+<td>5 iş günü içinde</td>
+<td>Yapılacak</td>
+</tr>
+<tr>
+<td>AI backend</td>
+<td>Değişken</td>
+<td>Standart sözleşme</td>
+<td>5 iş günü içinde</td>
+<td>Yapılacak</td>
+</tr>
+<tr>
+<td>Firebase</td>
+<td>ABD</td>
+<td>Standart sözleşme</td>
+<td>5 iş günü içinde</td>
+<td>Opsiyonel</td>
+</tr>
+</tbody>
+</table>
+<p>Aktarım öncesi <strong>aktarım etki değerlendirmesi</strong> ve alıcı ülkede hak arama
+imkânı kontrolü yapılır. Yeterlilik kararı bulunmayan ülkelerde yalnızca
+standart sözleşme/uygun güvence ile aktarım yapılır.</p>
+<h2 id="5-saklama-ve-imha-takvimi">5. Saklama ve imha takvimi</h2>
+<table>
+<thead>
+<tr>
+<th>Veri</th>
+<th>Süre</th>
+<th>Dayanak</th>
+<th>İmha yöntemi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cihaz içeriği</td>
+<td>Kullanıcı silene kadar</td>
+<td>Hizmet</td>
+<td>Uygulama içi silme / kaldırma</td>
+</tr>
+<tr>
+<td>Bulut yedeği</td>
+<td>Silinene kadar; hedef 24 ay</td>
+<td>Rıza</td>
+<td>Sunucu silme + yedek rotasyonu</td>
+</tr>
+<tr>
+<td>AI sohbeti (yerel)</td>
+<td>Kullanıcı silene kadar</td>
+<td>Hizmet</td>
+<td>Sohbet silme</td>
+</tr>
+<tr>
+<td>Destek e-postası</td>
+<td>2 yıl</td>
+<td>Meşru menfaat</td>
+<td>Silme</td>
+</tr>
+<tr>
+<td>Güvenlik logu</td>
+<td>6 ay</td>
+<td>Güvenlik</td>
+<td>Otomatik rotasyon</td>
+</tr>
+<tr>
+<td>Abonelik kaydı</td>
+<td>10 yıl (mağaza/vergi)</td>
+<td>Yasal</td>
+<td>Mağaza</td>
+</tr>
+</tbody>
+</table>
+<p>İmha, KVKK’nın Kişisel Verilerin Silinmesi, Yok Edilmesi veya Anonim Hale
+Getirilmesi Hakkında Yönetmelik’e uygun yapılır; silme talebi 30 gün içinde
+yanıtlanır.</p>
+<h2 id="6-veri-guvenligi-tedbirleri-ozet">6. Veri güvenliği tedbirleri (özet)</h2>
+<ul>
+<li>Erişim: en az yetki, ayrı yönetici hesapları, 2FA.</li>
+<li>Şifreleme: TLS 1.2+, RLS, cihazda uygulama alanı; yedekte şifreli taşıma.</li>
+<li>Gizlilik: log maskeleme, konum/İçerik loglanmaması, analitik SDK yok.</li>
+<li>Dayanıklılık: yedekleme, geri yükleme testi, sürüm geri alma.</li>
+<li>Yazılım: R8/obfuscation, imza sabitleme, bütünlük kontrolü, bağımlılık
+  taraması.</li>
+<li>Olay: 72 saat KVKK bildirimi, 7545 kapsamında gecikmeksizin SGİB bildirimi.</li>
+<li>Denetim: yıllık gözden geçirme, sızma testi (hedef).</li>
+</ul>
+<p>Ayrıntı: <a href="guvenlik.html"><code>SIBER_GUVENLIK_PROTOKOLU.md</code></a>.</p>
+<h2 id="7-verbis-degerlendirmesi">7. VERBİS değerlendirmesi</h2>
+<p>Kurul’un 2018/87 ve 2023/1154 sayılı kararlarına göre:</p>
+<ul>
+<li>Yıllık çalışan sayısı <strong>50’den az</strong> ve yıllık mali bilanço <strong>100 milyon
+  TL’den az</strong> olup <strong>ana faaliyet konusu özel nitelikli veri işleme olmayan</strong>
+  veri sorumluları VERBİS’ten istisnadır.</li>
+<li>Ana faaliyeti özel nitelikli veri işleme olanlar için eşik <strong>10 çalışan /
+  10 milyon TL</strong>’dir.</li>
+</ul>
+<p><strong>Değerlendirme:</strong> Uygulamanın ana faaliyeti dinî içerik ve vakit hizmetidir;
+özel nitelikli veri (AI/backup) isteğe bağlı ve ikincildir. Bu nedenle mevcut
+ölçekte <strong>istisna</strong> değerlendirmesi yapılmıştır. Ancak:</p>
+<ul>
+<li>Özel nitelikli veri işleme ana faaliyet hâline gelirse,</li>
+<li>Çalışan/bilanço eşiği aşılırsa,</li>
+<li>Yurt dışında yerleşik veri sorumlusu söz konusu olursa</li>
+</ul>
+<p>VERBİS kaydı zorunlu olur. Nihai karar avukat tarafından verilmelidir; karar
+tarihi ve gerekçesi bu dosyada saklanır.</p>
+<h2 id="8-etki-degerlendirmesi-dpia-ozeti">8. Etki değerlendirmesi (DPIA) özeti</h2>
+<table>
+<thead>
+<tr>
+<th>Risk</th>
+<th>Olasılık</th>
+<th>Etki</th>
+<th>Önlem</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dinî verinin ifşası</td>
+<td>Düşük</td>
+<td>Yüksek</td>
+<td>Ayrı rıza, TLS, RLS, minimal veri, log yasağı</td>
+</tr>
+<tr>
+<td>Konumun izinsiz kullanımı</td>
+<td>Düşük</td>
+<td>Yüksek</td>
+<td>Cihazda işleme, koordinat gönderilmez</td>
+</tr>
+<tr>
+<td>Reklam kimliğiyle profilleme</td>
+<td>Orta</td>
+<td>Orta</td>
+<td>Varsayılan NPA, rıza, dinî hedefleme yasağı</td>
+</tr>
+<tr>
+<td>Tedarikçi ihlali</td>
+<td>Orta</td>
+<td>Yüksek</td>
+<td>DPA/SCC, bildirim yükümlülüğü, olay planı</td>
+</tr>
+<tr>
+<td>Çocuk verisi</td>
+<td>Düşük</td>
+<td>Yüksek</td>
+<td>13+ hedef, çocuk reklam hedeflemesi yok</td>
+</tr>
+<tr>
+<td>Yetkisiz erişim</td>
+<td>Orta</td>
+<td>Yüksek</td>
+<td>2FA, en az yetki, log izleme</td>
+</tr>
+</tbody>
+</table>
+<h2 id="9-sorumluluk-ve-gozden-gecirme">9. Sorumluluk ve gözden geçirme</h2>
+<ul>
+<li><strong>Veri sorumlusu:</strong> YazılımCeosu</li>
+<li><strong>İletişim:</strong> destek@ezanai.app</li>
+<li><strong>Gözden geçirme:</strong> 6 ayda bir veya yeni özellik/SDK öncesi</li>
+<li><strong>Son gözden geçirme:</strong> 12 Kasım 2026</li>
+<li><strong>Sonraki:</strong> 12 Mayıs 2027</li>
+</ul>
+    <div class="notice">
+      Bu sayfa bilgilendirme amaçlıdır ve hukuki görüş yerine geçmez.
+      Yürürlükteki sürüm bu sayfadır; önemli değişiklikler uygulama içinde
+      duyurulur.
+    </div>
+  </article>
+</main>
+<footer>
+  <div class="links"><a href="privacy.html">Gizlilik</a><a href="kvkk.html">KVKK</a><a href="acik-riza.html">Açık Rıza</a><a href="terms.html">Koşullar</a><a href="abonelik.html">Abonelik</a><a href="veri-silme.html">Veri Silme</a><a href="guvenlik.html">Güvenlik</a></div>
+  <div>© 2026 YazılımCeosu · Ezan Vaktim Pro · <code>com.yazilimceosu.ezanai</code></div>
+</footer>
+</body>
+</html>

@@ -26,12 +26,14 @@
 | Ne | Nerede |
 |---|---|
 | **Telefonda denemek için APK** | `https://github.com/YAZILIMCEOSU/ezanapp/releases/download/dene-apk/ezanai-kurulum.apk` |
-| Boyut / imza | **91,8 MB** · CI'nın geçici anahtarıyla imzalı (deneme sürümü) |
-| Hangi derlemeden? | `d8ea6e7` — CI 8/8 **yeşil**, 230 test geçti |
+| Boyut / imza | **92,7 MB** · CI'nın geçici anahtarıyla imzalı (deneme sürümü) |
+| Hangi derlemeden? | `dene-apk` etiketi — CI **yeşil** |
 | Play'e yüklenecek dosya (AAB) | CI → *Actions* → son çalışma → **Artifacts → ezanai-derlemeleri** → `app-release.aab` |
 
-> **Önemli (depo gizli olduğu için):** Bu bağlantı artık **GitHub hesabınızla giriş
-> yapıldığında** çalışır. Başkalarına APK dağıtmak için:
+> **Güncel durum:** Depo şu an **herkese açıktır**; bağlantı giriş
+> gerektirmeden indirilebilir. Yayın öncesinde depo private yapılacaksa bu
+> bağlantı yalnızca GitHub hesabıyla çalışır — o durumda başkalarına APK
+> dağıtmak için:
 > 1. **En doğru yol:** Play Console → *Test ve yayın → Kapalı test* → testçi
 >    e-postalarını ekleyin; Google onlara indirme bağlantısı verir.
 > 2. **Hızlı yol:** APK'yı bilgisayarınıza indirip Google Drive'a yükleyin,

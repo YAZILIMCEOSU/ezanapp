@@ -82,10 +82,15 @@ Diyanet'in yayımladığı hicri tarihlerle aynı aralıktadır.
 
 | İçerik | Kaynak | Lisans |
 |---|---|---|
-| Ezan tonları (`ezan_ton_1..3`), melodi | `tools/design/make_sounds.py` ile proje içinde üretildi | Özgün eser — projeye ait |
-| Bildirim sesleri | Aynı betik | Özgün eser |
-| Kur'an tilaveti | EveryAyah açık arşivi (akış) | Arşiv koşulları |
-| İlahi kataloğu | Uzak katalog (`ILAHI_CATALOG_URL`) | **Her parça için lisans/izin alanı zorunlu**; boşsa listelenmez |
+| Ezan makamları ve ilahiler (`assets/audio/adhan/*`) | `tools/design/make_sounds.py` — **formant/vokal sentez** | Proje içi özgün üretim; üçüncü kişi kaydı değildir |
+| Bildirim sesleri | Aynı betik | Proje içi özgün üretim |
+| `ezan_saba.mp3` | **Lisans kanıtı yok** (192 kbps/44,1 kHz; diğerlerinden farklı) | **Kaldırıldı** (12 Kasım 2026). Lisanslı kayıt sağlanınca yeniden eklenebilir |
+| Kur'an tilaveti | EveryAyah açık arşivi (akış) | Arşiv koşulları; **ticari kullanım izni teyit edilecek** |
+| İlahi kataloğu | Yerel sentez + (`ILAHI_CATALOG_URL` varsa) uzak katalog | Uzak katalogda **her parça için lisans zorunlu**; `cdn.jsdelivr.net` kayıtları kaldırıldı |
+
+> **Önemli:** Uygulama etiketlerinde gerçek müezzin/sanatçı adı kullanılmaz;
+> tüm yerel kayıtlar “Vokal Sentez” olarak işaretlenir. Ayrıntı ve lisans
+> kanıtı süreci: [`legal/SES_VE_ICERIK_LISANSLARI.md`](legal/SES_VE_ICERIK_LISANSLARI.md).
 
 ## 8. Yazı tipleri, simgeler ve görseller
 

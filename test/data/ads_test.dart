@@ -1,7 +1,10 @@
 import 'package:ezanai/core/ads/ad_unit_ids.dart';
 import 'package:ezanai/core/config/app_config.dart';
+import 'package:ezanai/core/constants/app_constants.dart';
 import 'package:ezanai/core/services/ads_service.dart';
+import 'package:ezanai/core/services/preferences_service.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Ücretsiz (reklamlı) paket sözleşmesi.
 ///
@@ -38,6 +41,25 @@ void main() {
 
     test('geçiş reklamı bekleme süresi kullanıcı dostu (3 dakika)', () {
       expect(AdsService.interstitialCooldown, const Duration(minutes: 3));
+    });
+
+    test('kişiselleştirilmiş reklam rızası varsayılan kapalıdır (KVKK)', () async {
+      SharedPreferences.setMockInitialValues(<String, Object>{});
+      final PreferencesService prefs = await PreferencesService.create();
+      final AdsService ads = AdsService(preferences: prefs);
+
+      // Rıza yoksa AdMob'a npa=1 (kişiselleştirilmemiş) sinyali gider.
+      expect(ads.personalizedAdsConsent, isFalse);
+
+      await prefs.setString(
+        PrefKeys.personalizedAdsConsentAt,
+        DateTime.now().toIso8601String(),
+      );
+      expect(ads.personalizedAdsConsent, isTrue);
+
+      // Geri çekme kaydı siler; reklamlar yeniden NPA'ya döner.
+      await prefs.remove(PrefKeys.personalizedAdsConsentAt);
+      expect(ads.personalizedAdsConsent, isFalse);
     });
 
     test('reklam anahtarı varsayılan olarak açık, test modu kapalı', () {

@@ -6,7 +6,9 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../ads/ad_unit_ids.dart';
 import '../ads/ads_consent.dart';
 import '../config/app_config.dart';
+import '../constants/app_constants.dart';
 import '../utils/logger.dart';
+import 'preferences_service.dart';
 
 /// Reklam yerleşimleri (ücretsiz / reklamlı paket).
 ///
@@ -21,9 +23,24 @@ import '../utils/logger.dart';
 /// * Geçiş (interstitial) reklamları **en fazla 3 dakikada bir** ve yalnızca
 ///   doğal duraklamalarda (ör. tesbih hedefi tamamlandığında) gösterilir.
 class AdsService {
-  AdsService({AdsConsent? consent}) : _consent = consent ?? AdsConsent();
+  AdsService({AdsConsent? consent, PreferencesService? preferences})
+    : _consent = consent ?? AdsConsent(),
+      _preferences = preferences;
 
   final AdsConsent _consent;
+  final PreferencesService? _preferences;
+
+  /// KVKK: kişiselleştirilmiş reklam rızası **varsayılan olarak kapalıdır**.
+  /// Rıza yoksa Google'a kişiselleştirilmemiş reklam (`npa=1`) sinyali gider.
+  bool get personalizedAdsConsent {
+    final String? value = _preferences?.getString(
+      PrefKeys.personalizedAdsConsentAt,
+    );
+    return value != null && value.isNotEmpty;
+  }
+
+  AdRequest get _adRequest =>
+      AdRequest(nonPersonalizedAds: !personalizedAdsConsent);
 
   bool _initialized = false;
   bool _enabled = false;
@@ -139,7 +156,7 @@ class AdsService {
     return BannerAd(
       size: size,
       adUnitId: unitId,
-      request: const AdRequest(),
+      request: _adRequest,
       listener: BannerAdListener(
         onAdLoaded: (Ad ad) {
           AppLog.debug('Banner yüklendi.');
@@ -164,7 +181,7 @@ class AdsService {
     if (_interstitial != null) return;
     await InterstitialAd.load(
       adUnitId: unitId,
-      request: const AdRequest(),
+      request: _adRequest,
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (InterstitialAd ad) => _interstitial = ad,
         onAdFailedToLoad: (LoadAdError error) {
@@ -220,7 +237,7 @@ class AdsService {
     if (_rewarded != null) return;
     await RewardedAd.load(
       adUnitId: unitId,
-      request: const AdRequest(),
+      request: _adRequest,
       rewardedAdLoadCallback: RewardedAdLoadCallback(
         onAdLoaded: (RewardedAd ad) => _rewarded = ad,
         onAdFailedToLoad: (LoadAdError error) {

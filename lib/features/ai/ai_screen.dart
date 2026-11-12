@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../core/config/app_config.dart';
+import '../../core/constants/app_constants.dart';
 import '../../core/services/ai_report_service.dart';
 import '../../data/ai/knowledge_base.dart';
 import '../../data/models/ai_models.dart';
@@ -36,6 +38,48 @@ class _AiScreenState extends ConsumerState<AiScreen> {
   Future<void> _send([String? preset]) async {
     final String question = (preset ?? _input.text).trim();
     if (question.isEmpty) return;
+
+    // KVKK: uzak AI yalnızca açık rıza ile çalışır. Rıza yoksa kullanıcıya
+    // neyin gönderileceği açıkça söylenir; kabul etmezse çevrimdışı yanıt
+    // üretilir ve hiçbir metin sunucuya gitmez.
+    final String? consent = ref
+        .read(runtimeProvider)
+        .preferences
+        .getString(PrefKeys.aiConsentAt);
+    if (AppConfig.hasBackend && (consent == null || consent.isEmpty)) {
+      final bool? granted = await showDialog<bool>(
+        context: context,
+        builder: (BuildContext dialogContext) => AlertDialog(
+          title: const Text('Yapay zekâ için açık rıza'),
+          content: const SingleChildScrollView(
+            child: Text(
+              'Sorunuz, son 6 mesajlık sohbet bağlamı ve mezhep tercihiniz '
+              '(Hanefî) cevap üretmek için yurt dışındaki yapay zekâ '
+              'sunucusuna gönderilecek. Sorular dinî inanç bilgisi '
+              'içerebilir. Kimliğinizle ilişkilendirilmez ve kalıcı '
+              'saklanmaz.\n\n'
+              'Rıza vermezseniz yalnızca çevrimdışı, doğrulanmış bilgi '
+              'tabanı kullanılır. Rızayı dilediğiniz zaman Ayarlar → '
+              'Gizlilik bölümünden geri çekebilirsiniz.',
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Rıza vermeden devam et'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: const Text('Rıza ver ve devam et'),
+            ),
+          ],
+        ),
+      );
+      if (granted == true) {
+        await ref.read(settingsControllerProvider.notifier).grantAiConsent();
+      }
+    }
+
     _input.clear();
     await ref.read(chatControllerProvider.notifier).send(question);
     if (!mounted) return;

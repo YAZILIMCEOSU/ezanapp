@@ -446,7 +446,7 @@ class AppAudioService {
     return assetPath;
   }
 
-  /// Varlık (asset) dosyası çalar — dahili gerçek ezan ve ilahi sesleri.
+  /// Varlık (asset) dosyası çalar — dahili ezan ve ilahi sesleri.
   ///
   /// Tüm Android sürümlerinde sorunsuz çalışması için önce varlığı geçici
   /// yerel dosyaya çıkarıp ExoPlayer üzerinden yerel dosya olarak çalar.
@@ -801,10 +801,10 @@ class AppAudioService {
   }
 }
 
-/// Dahili gerçek müezzin ezan makamları, bildirim sesleri ve vokal ilahilerin varlık yolları.
+/// Dahili vokal sentez ezan makamları, bildirim sesleri ve ilahilerin
+/// varlık yolları. Kayıtlar proje içinde üretilmiştir; üçüncü kişi sesi yoktur.
 abstract final class BundledSounds {
   static const String ezanMelodi = 'assets/audio/adhan/ezan_melodi.mp3';
-  static const String sabaMelodi = 'assets/audio/adhan/ezan_saba.mp3';
   static const String segahMelodi = 'assets/audio/adhan/ezan_segah.mp3';
   static const String tekbirMelodi = 'assets/audio/adhan/ezan_tekbir.mp3';
   static const String tone1 = 'assets/audio/adhan/ezan_ton_1.mp3';
@@ -817,7 +817,6 @@ abstract final class BundledSounds {
 
   static String? assetFor(AdhanSound sound) => switch (sound) {
     AdhanSound.ezanMelodi => ezanMelodi,
-    AdhanSound.sabaMelodi => sabaMelodi,
     AdhanSound.segahMelodi => segahMelodi,
     AdhanSound.tekbirMelodi => tekbirMelodi,
     AdhanSound.tone1 => tone1,

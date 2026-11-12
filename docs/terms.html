@@ -1,86 +1,298 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ezan Vaktim Pro — Kullanım Koşulları</title>
+<meta name="description" content="Ezan Vaktim Pro kullanım koşulları (EULA).">
+<meta name="robots" content="index,follow">
+<title>Kullanım Koşulları — Ezan Vaktim Pro</title>
 <style>
-  :root { color-scheme: light dark; }
-  body { margin: 0 auto; padding: 32px 20px 64px; max-width: 820px;
-    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-    color: #1a1a1a; background: #fff; }
-  @media (prefers-color-scheme: dark) { body { color: #e8eaed; background: #0b0f0e; } a { color: #6ee7b7; } }
-  h1 { font-size: 26px; margin: 0 0 6px; }
-  h2 { font-size: 19px; margin: 30px 0 8px; }
-  .meta { color: #6b7280; font-size: 14px; }
-  @media (prefers-color-scheme: dark) { .meta { color: #9aa4a0; } }
-  ul { padding-left: 22px; }
-  a { color: #046a4e; }
+:root {
+  --bg: #f6f8f7;
+  --card: #ffffff;
+  --ink: #14211d;
+  --muted: #5b6b65;
+  --brand: #0f766e;
+  --brand-soft: #e6f4f1;
+  --line: #dbe5e1;
+  --warn: #92400e;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.65;
+  font-size: 16px;
+}
+a { color: var(--brand); text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+header {
+  background: linear-gradient(135deg, #0f766e, #115e59);
+  color: #fff;
+  padding: 22px 20px 18px;
+}
+header .wrap {
+  max-width: 980px; margin: 0 auto;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+  justify-content: space-between;
+}
+.brand { font-weight: 800; letter-spacing: .2px; font-size: 18px; }
+.brand small { display: block; font-weight: 500; opacity: .85; font-size: 12px; }
+nav { display: flex; flex-wrap: wrap; gap: 6px; }
+nav a {
+  color: #fff; text-decoration: none; font-size: 13px;
+  padding: 5px 9px; border-radius: 999px; background: rgba(255,255,255,.12);
+}
+nav a:hover { background: rgba(255,255,255,.24); }
+main {
+  max-width: 980px; margin: 26px auto 60px; padding: 0 18px;
+}
+.card {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 16px; padding: 28px 30px;
+  box-shadow: 0 8px 24px rgba(15, 118, 110, .06);
+}
+h1 { font-size: 30px; line-height: 1.2; margin: 0 0 8px; }
+h2 { font-size: 22px; margin: 34px 0 10px; padding-top: 8px; }
+h3 { font-size: 17px; margin: 24px 0 8px; }
+p, li { color: #24332e; }
+ul, ol { padding-left: 22px; }
+li { margin: 4px 0; }
+blockquote {
+  margin: 18px 0; padding: 12px 16px;
+  background: var(--brand-soft); border-left: 4px solid var(--brand);
+  border-radius: 8px; color: #164e47;
+}
+code {
+  background: #eef3f1; padding: 1px 5px; border-radius: 5px;
+  font-size: 13px;
+}
+pre {
+  background: #0f172a; color: #e2e8f0; padding: 16px;
+  border-radius: 10px; overflow-x: auto; font-size: 13px;
+}
+pre code { background: transparent; color: inherit; padding: 0; }
+table {
+  width: 100%; border-collapse: collapse; margin: 16px 0;
+  font-size: 14px; display: block; overflow-x: auto;
+}
+th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+th { background: #f0f6f4; font-weight: 700; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 30px 0; }
+.meta {
+  color: var(--muted); font-size: 13px; margin-bottom: 18px;
+}
+.notice {
+  background: #fff7ed; border: 1px solid #fed7aa; color: var(--warn);
+  padding: 12px 16px; border-radius: 10px; font-size: 13.5px;
+  margin: 18px 0;
+}
+footer {
+  max-width: 980px; margin: 0 auto 40px; padding: 0 18px;
+  color: var(--muted); font-size: 13px;
+}
+footer .links { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; }
+@media (max-width: 640px) {
+  .card { padding: 20px 16px; }
+  h1 { font-size: 24px; }
+  h2 { font-size: 19px; }
+}
+@media print {
+  header, nav, footer { display: none; }
+  body { background: #fff; }
+  .card { border: 0; box-shadow: none; padding: 0; }
+}
 </style>
 </head>
 <body>
-<h1>Ezan Vaktim Pro — Kullanım Koşulları</h1>
-<p class="meta"><strong>Son güncelleme:</strong> 7 Ekim 2026 ·
-İletişim: <a href="mailto:destek@ezanai.app">destek@ezanai.app</a></p>
-
-<p>Bu koşullar, Ezan Vaktim Pro mobil uygulamasını (paket adı
-<code>com.yazilimceosu.ezanai</code>) kullanırken geçerli olan kuralları açıklar.
-Uygulamayı indirip kullanarak bu koşulları kabul etmiş sayılırsınız.</p>
-
-<h2>1. Hizmetin kapsamı</h2>
+<header>
+  <div class="wrap">
+    <div class="brand">Ezan Vaktim Pro<small>Yasal ve uyum belgeleri</small></div>
+    <nav><a href="privacy.html">Gizlilik</a><a href="kvkk.html">KVKK</a><a href="acik-riza.html">Açık Rıza</a><a href="terms.html">Koşullar</a><a href="abonelik.html">Abonelik</a><a href="veri-silme.html">Veri Silme</a><a href="guvenlik.html">Güvenlik</a></nav>
+  </div>
+</header>
+<main>
+  <article class="card">
+    <div class="meta">YazılımCeosu · İstanbul, Türkiye · destek@ezanai.app</div>
+    <h1 id="ezan-vaktim-pro-kullanm-kosullar-eula">Ezan Vaktim Pro — Kullanım Koşulları (EULA)</h1>
+<p><strong>Sürüm:</strong> 1.0 · <strong>Son güncelleme:</strong> 12 Kasım 2026
+<strong>Uygulama:</strong> Ezan Vaktim Pro — Akıllı İslam Asistanı
+<strong>Paket:</strong> <code>com.yazilimceosu.ezanai</code>
+<strong>Hizmet sağlayıcı:</strong> YazılımCeosu (gerçek kişi geliştirici), İstanbul, Türkiye
+<strong>İletişim:</strong> destek@ezanai.app</p>
+<blockquote>
+<p>Bu koşullar, uygulamayı indirip kullanmaya başladığınızda sizinle hizmet
+sağlayıcı arasında bir sözleşme oluşturur. Koşulları kabul etmiyorsanız
+uygulamayı kullanmayın. Bu metin hukuki görüş değildir.</p>
+</blockquote>
+<h2 id="1-taraflar-ve-kabul">1. Taraflar ve kabul</h2>
+<p>1.1. “Hizmet sağlayıcı”, uygulamayı geliştiren ve sunan YazılımCeosu’dur.
+1.2. “Kullanıcı”, uygulamayı cihazına kuran ve kullanan gerçek kişidir.
+1.3. Uygulamayı mağazadan indirme ve kullanma; bu koşulları, KVKK aydınlatma
+metnini ve gizlilik politikasını okuduğunuz ve anladığınız anlamına gelir.
+1.4. 18 yaşından küçükseniz yasal temsilcinizin onayı gerekir.</p>
+<h2 id="2-hizmetin-kapsam">2. Hizmetin kapsamı</h2>
+<p>2.1. Uygulama; namaz vakitleri, ezan ve vakit bildirimleri, kıble yönü,
+Kur’an-ı Kerim ve meal, ilahi, tesbih/zikir, hadis, Ramazan araçları, cami
+bulma ve kaynak gösteren yapay zekâ asistanı sunar.
+2.2. Temel özellikler <strong>hesap açmadan</strong> kullanılabilir. Veriler kural olarak
+cihazda saklanır.
+2.3. Uygulama ücretsiz sürümde reklam içerir; Premium abonelik reklamları
+kaldırır ve ek özellikler sunar.
+2.4. Hizmet sağlayıcı, özellikleri geliştirme, değiştirme veya kaldırma
+hakkını saklı tutar. Ücretli bir özellik kaldırılırsa yürürlükteki abonelik
+dönemi için tüketici mevzuatından doğan haklar korunur.</p>
+<h2 id="3-kullanm-lisans">3. Kullanım lisansı</h2>
+<p>3.1. Hizmet sağlayıcı, size kişisel, devredilemez, münhasır olmayan, geri
+alınabilir ve yalnızca kendi cihazınızda kullanmak üzere sınırlı bir lisans
+verir.
+3.2. Uygulamanın kaynak kodunu, veri tabanını veya içeriğini çoğaltamaz,
+satamaz, kiralayamaz, değiştiremez, tersine mühendislik yapamaz, otomatik
+araçlarla veri çekemez veya üçüncü kişilere dağıtamazsınız. Yasal olarak izin
+verilen ölçüde yedekleme ve inceleme hakları saklıdır.
+3.3. Uygulama içeriği; telif, veri tabanı ve marka hukuku ile korunur.
+Kaynaklar ve lisanslar <a href="lisanslar.html"><code>SES_VE_ICERIK_LISANSLARI.md</code></a>
+ve uygulama içi <strong>Hakkında → Veri kaynakları / Açık kaynak lisansları</strong>
+bölümünde gösterilir.</p>
+<h2 id="4-yasak-kullanm">4. Yasak kullanım</h2>
 <ul>
-  <li>Uygulama; namaz vakitleri, ezan/vakit bildirimleri, kıble yönü, tesbih sayacı,
-      hicri takvim ve ilgili içerikleri sunar.</li>
-  <li>Namaz vakitleri astronomik hesap ve resmî verilerle üretilir; buna karşın
-      <strong>kesinlik garantisi verilmez</strong>. İbadetlerinizde tereddüt hâlinde
-      bulunduğunuz yerin resmî ilanlarına ve yetkili mercilere başvurun.</li>
-  <li>Kıble yönü cihaz sensörlerine dayanır; sensör kalibrasyonu ve metal/elektronik
-      ortam yönü etkileyebilir. Fiziksel işaretlere göre kontrol etmeniz önerilir.</li>
+<li>Hukuka aykırı, tehdit edici, nefret söylemi içeren veya başkalarının
+  haklarını ihlal eden kullanım,</li>
+<li>Uygulamayı otomatik araçlarla aşırı yükleme, tersine mühendislik, klonlama,
+  lisans/paket bütünlüğünü aşma,</li>
+<li>AI asistanını yasa dışı, zararlı veya üçüncü kişilerin kişisel verilerini
+  ifşa eden sorular sormak için kullanma,</li>
+<li>Bildirim seslerini veya içerikleri izinsiz yeniden dağıtma,</li>
+<li>Mağaza/puanlama sistemlerini manipüle etme.</li>
 </ul>
-
-<h2>2. Hesap ve veriler</h2>
+<p>İhlal hâlinde lisans sona erer; yasal yollara başvurma hakkı saklıdır.</p>
+<h2 id="5-dini-icerik-ve-fetva-snr">5. Dinî içerik ve fetva sınırı</h2>
+<p>5.1. Uygulamadaki vakitler Diyanet yöntemi ve resmî verilerle üretilir; ancak
+<strong>kesinlik garantisi verilmez</strong>. Tereddüt hâlinde bulunduğunuz yerin resmî
+ilanlarına ve yetkili mercilere başvurun.
+5.2. Kıble yönü cihaz sensörlerine dayanır; manyetik sapma, kalibrasyon ve
+metal/eletronik ortam sonucu etkileyebilir. Fiziksel işaretle doğrulayın.
+5.3. Uygulama <strong>fetva mercii değildir</strong>. AI yanıtları bilgilendirme amaçlıdır,
+kesin dinî hüküm vermez; kaynak gösterir ve mezhep farklarını belirtir.
+Özel durumlar, aile/boşanma/miras/ceza gibi konular için ehil bir âlime,
+müftülüğe veya resmî fetva kurumuna danışın.
+5.4. Kullanıcı, AI’ya yazdığı metinlerin doğruluğundan ve üçüncü kişilerin
+haklarını ihlal etmemesinden sorumludur.</p>
+<h2 id="6-yapay-zeka-ozellikleri">6. Yapay zekâ özellikleri</h2>
+<p>6.1. Uzak AI yalnızca <strong>ayrı açık rıza</strong> ile çalışır. Rıza yoksa çevrimdışı,
+önceden doğrulanmış bilgi tabanı kullanılır.
+6.2. AI çıktıları hata içerebilir; kaynaklar gösterilse bile doğrulanmalıdır.
+6.3. Uygunsuz/hatalı yanıtlar, yanıt kartındaki <strong>“Bu cevabı bildir”</strong>
+düğmesiyle bildirilebilir. Bildirimler incelenir ve filtreler iyileştirilir.
+6.4. AI; hukuki, tıbbi, finansal veya acil durum tavsiyesi yerine geçmez.</p>
+<h2 id="7-ucretli-ozellikler-ve-abonelik">7. Ücretli özellikler ve abonelik</h2>
+<p>7.1. Premium; Google Play Faturalandırma (Android) veya App Store (iOS)
+üzerinden satın alınır. Ödeme bilgileri hizmet sağlayıcıya ulaşmaz.
+7.2. Abonelikler, iptal edilmedikçe dönem sonunda otomatik yenilenir. Fiyat,
+dönem ve yenileme koşulları satın alma ekranında gösterilir.
+7.3. İptal ve iade, satın almanın yapıldığı mağazanın kurallarına tabidir.
+Ayrıntı: <a href="abonelik.html"><code>ABONELIK_VE_IADE.md</code></a>.
+7.4. Ömürlük ürün tek seferlik ödemedir; abonelik değildir.
+7.5. Tüketici mevzuatından doğan emredici haklar saklıdır.</p>
+<h2 id="8-fikri-mulkiyet-ve-ucuncu-taraf-icerik">8. Fikri mülkiyet ve üçüncü taraf içerik</h2>
+<p>8.1. Kur’an metni Tanzil (CC BY-ND), Türkçe meal QuranEnc, tilavet EveryAyah,
+hadis verisi açık lisanslı kaynaklardan gelir; atıflar korunur.
+8.2. Ezan/ilahi sesleri yalnızca lisansı belgelenmiş kaynaklardan sunulur.
+Lisansı doğrulanmamış kayıtlar yayın sürümünde yer almaz.
+8.3. Üçüncü taraf içeriklerin hakları ilgili sahiplerine aittir. Hak ihlali
+bildirimi için destek@ezanai.app adresine yazın; içerik incelemesi yapılır.</p>
+<h2 id="9-gizlilik-ve-veri">9. Gizlilik ve veri</h2>
+<p>9.1. Kişisel veriler KVKK aydınlatma metnine göre işlenir.
+9.2. Tam konum koordinatı sunucuya gönderilmez; vakit servisine yalnızca
+seçilen ilçe kimliği iletilir. Diyanet verisi alınamazsa yaklaşık koordinat
+(2 ondalık, ~1 km) AlAdhan’a gönderilir. Bulut yedekleme ve uzak AI isteğe
+bağlıdır ve ayrı rıza gerektirir.
+9.3. Verilerinizi uygulama içinden silebilirsiniz. Ayrıntı:
+<a href="veri-silme.html"><code>VERI_SILME_VE_BASVURU.md</code></a>.</p>
+<h2 id="10-ticari-iletisim">10. Ticari iletişim</h2>
+<p>Hizmet sağlayıcı pazarlama amaçlı ticari elektronik ileti göndermez. İleride
+gönderilirse 6563 sayılı Kanun kapsamında önceden onay alınır ve iletilerde
+ret hakkı sunulur. İşlevsel bildirimler (vakit/ezan) ticari ileti sayılmaz.</p>
+<h2 id="11-erisilebilirlik-ve-guncellemeler">11. Erişilebilirlik ve güncellemeler</h2>
+<p>10.1. Hizmet “olduğu gibi” ve “mevcut olduğu ölçüde” sunulur. Kesintisiz veya
+hatasız çalışma garantisi verilmez.
+10.2. Bildirimlerin zamanında gelmesi için cihazda bildirim, alarm/hatırlatıcı
+ve pil optimizasyonu ayarlarının uygun olması gerekir. Üretici yazılımı, güç
+tasarrufu veya sistem kısıtlamaları gecikmeye yol açabilir.
+10.3. Güvenlik ve uyumluluk için güncelleme yayımlanabilir; eski sürümler
+desteklenmeyebilir.</p>
+<h2 id="12-sorumlulugun-snr">12. Sorumluluğun sınırı</h2>
+<p>11.1. Hizmet sağlayıcı; dolaylı zararlar, kâr kaybı, veri kaybı veya üçüncü
+taraf hizmetlerinden (mağaza, reklam, AI sağlayıcısı, bulut) kaynaklanan
+zararlardan, yürürlükteki hukukun izin verdiği ölçüde sorumlu değildir.
+11.2. Bu sınırlama; kasıt, ağır ihmal, kişinin hayatı/beden bütünlüğü veya
+tüketici mevzuatından doğan emredici hakları ortadan kaldırmaz.
+11.3. Vakit/ezan gecikmesi nedeniyle ibadet kaçırılması gibi sonuçlarda
+kullanıcı, resmî vakit ilanlarını ve yedek alarmı dikkate almalıdır.</p>
+<h2 id="13-fesih">13. Fesih</h2>
+<p>12.1. Kullanıcı uygulamayı silerek sözleşmeyi sona erdirebilir.
+12.2. Hizmet sağlayıcı, koşulların ihlali hâlinde erişimi askıya alabilir.
+12.3. Fesih, ödenmiş abonelik dönemi için mağaza iade kuralları saklı kalmak
+kaydıyla, tüketici haklarını etkilemez.</p>
+<h2 id="14-uygulanacak-hukuk-ve-uyusmazlk">14. Uygulanacak hukuk ve uyuşmazlık</h2>
+<p>13.1. Bu koşullara Türkiye Cumhuriyeti hukuku uygulanır.
+13.2. Tüketici uyuşmazlıklarında, Ticaret Bakanlığı’nca ilan edilen parasal
+sınırlar dahilinde <strong>Tüketici Hakem Heyetleri</strong>, aşan hâllerde <strong>Tüketici
+Mahkemeleri</strong> yetkilidir. Yetkili yer, kullanıcının yerleşim yeridir.
+13.3. Ticari olmayan kullanıcılar için İstanbul mahkemeleri genel yetkilidir;
+emredici tüketici hükümleri saklıdır.</p>
+<h2 id="15-magaza-ek-sartlar">15. Mağaza ek şartları</h2>
+<h3 id="141-apple-app-store">14.1. Apple App Store</h3>
+<p>iOS sürümü App Store’dan edinildiyse:</p>
 <ul>
-  <li>Temel özellikler için hesap gerekmez. Veriler cihazınızda saklanır
-      (ayrıntılar: <a href="privacy.html">Gizlilik Politikası</a>).</li>
-  <li>Cihazınızdaki verileri uygulama içinden silebilirsiniz.</li>
+<li>Bu sözleşme yalnızca sizinle hizmet sağlayıcı arasındadır; Apple taraf
+  değildir.</li>
+<li>Apple, uygulamanın bakım ve desteğinden sorumlu değildir.</li>
+<li>Uygulama garantiye uymazsa Apple’a bildirimde bulunabilirsiniz; Apple,
+  satın alma bedelini iade edebilir. Yürürlükteki hukukun izin verdiği azami
+  ölçüde Apple’ın başka garanti yükümlülüğü yoktur.</li>
+<li>Ürün talepleri, tüketici/hukuk uyumluluğu ve fikri mülkiyet ihlali iddiaları
+  hizmet sağlayıcıya aittir.</li>
+<li>Apple ve iştirakleri bu sözleşmenin <strong>üçüncü taraf lehtarıdır</strong> ve
+  sözleşmeyi size karşı uygulama hakkına sahiptir.</li>
+<li>Kullanıcı, uygulamayı Apple Medya Hizmetleri Koşulları’na uygun kullanır.</li>
+<li>Apple’ın standart EULA’sı ile bu koşullar çelişirse, Apple’ın zorunlu
+  hükümleri uygulanır.</li>
 </ul>
-
-<h2>3. Ücretli özellikler</h2>
-<ul>
-  <li>Premium abonelik Google Play üzerinden satın alınır ve Play Store'un abonelik
-      kurallarına tabidir; iptal ve iade işlemleri Google Play üzerinden yürütülür.</li>
-  <li>Ücretsiz sürümde reklam gösterilir; Premium aboneliğinde reklamlar kaldırılır.</li>
-</ul>
-
-<h2>4. Kabul edilmeyen kullanım</h2>
-<ul>
-  <li>Uygulamayı tersine mühendislikle çoğaltmak, içerikleri izinsiz yeniden dağıtmak
-      veya hizmeti otomatik araçlarla kötüye kullanmak yasaktır.</li>
-  <li>Ses içerikleri yalnızca lisans/izin bulunan kaynaklardan sunulur; kullanıcı
-      tarafından cihaza eklenen dosyaların hukuka uygunluğu kullanıcıya aittir.</li>
-</ul>
-
-<h2>5. Dinî içerik ve AI sınırları</h2>
-<ul>
-  <li>Uygulamadaki içerikler bilgilendirme amaçlıdır; <strong>fetva niteliği taşımaz</strong>.</li>
-  <li>AI asistanı kesin hüküm vermez, kaynak gösterir ve farklı görüşlere işaret eder.
-      Verdiği bilgileri ehil bir âlimin veya resmî fetva kurumunun görüşüyle
-      doğrulamanız önerilir.</li>
-</ul>
-
-<h2>6. Sorumluluk</h2>
-<ul>
-  <li>Uygulama "olduğu gibi" sunulur. Vakit hesabı, sensör verisi veya bildirim
-      gecikmelerinden doğabilecek sonuçlardan geliştirici sorumlu tutulamaz.</li>
-  <li>Bildirimlerin tam zamanında iletilebilmesi için cihaz ayarlarında gerekli
-      izinlerin (bildirim, alarm/hatırlatıcı) açık olması gerekir.</li>
-</ul>
-
-<h2>7. Değişiklikler</h2>
-<p>Koşullar güncellendiğinde bu sayfadaki tarih değişir; önemli değişiklikler uygulama
-içinde duyurulur. Sorularınız için: <a href="mailto:destek@ezanai.app">destek@ezanai.app</a></p>
-
-<footer class="meta"><p>© 2026 Ezan Vaktim Pro · <a href="index.html">Ana sayfa</a> ·
-<a href="privacy.html">Gizlilik politikası</a></p></footer>
+<h3 id="142-google-play">14.2. Google Play</h3>
+<p>Android sürümü Google Play’den edinildiyse Google Play Hizmet Şartları ve
+Faturalandırma politikaları ayrıca uygulanır. Satın alma ve iade süreçlerinde
+satıcı Google’dır.</p>
+<h2 id="16-diger">16. Diğer</h2>
+<p>15.1. Koşulların bir hükmü geçersizse diğerleri geçerliliğini korur.
+15.2. Hizmet sağlayıcı koşulları güncelleyebilir; önemli değişiklikler
+uygulama içinde duyurulur. Değişiklikten sonra kullanmaya devam etmek, yeni
+koşulları kabul etmek anlamına gelir; tüketici hakları saklıdır.
+15.3. Bu metin Türkçe düzenlenmiştir; çeviriler bilgilendirme amaçlıdır.
+15.4. Sorular: destek@ezanai.app</p>
+<hr>
+<h3 id="english-summary">English summary</h3>
+<p>These Terms govern your use of Ezan Vaktim Pro. The app is informational; it
+does not issue fatwas, and prayer times/qibla are not guaranteed. AI features
+require separate explicit consent; otherwise offline answers are used. Premium
+is sold via Google Play/App Store and renews automatically unless cancelled.
+Religious content and audio are licensed/attributed; do not redistribute.
+Turkish law applies, with mandatory consumer rights preserved. Apple is a
+third-party beneficiary of these Terms for iOS distribution.</p>
+    <div class="notice">
+      Bu sayfa bilgilendirme amaçlıdır ve hukuki görüş yerine geçmez.
+      Yürürlükteki sürüm bu sayfadır; önemli değişiklikler uygulama içinde
+      duyurulur.
+    </div>
+  </article>
+</main>
+<footer>
+  <div class="links"><a href="privacy.html">Gizlilik</a><a href="kvkk.html">KVKK</a><a href="acik-riza.html">Açık Rıza</a><a href="terms.html">Koşullar</a><a href="abonelik.html">Abonelik</a><a href="veri-silme.html">Veri Silme</a><a href="guvenlik.html">Güvenlik</a></div>
+  <div>© 2026 YazılımCeosu · Ezan Vaktim Pro · <code>com.yazilimceosu.ezanai</code></div>
+</footer>
 </body>
 </html>

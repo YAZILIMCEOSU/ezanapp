@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/config/app_config.dart';
+import '../../core/constants/app_constants.dart';
 import '../../core/utils/app_time.dart';
 import '../../core/utils/logger.dart';
 import '../../design/app_colors.dart';
@@ -25,6 +26,59 @@ class BackupScreen extends ConsumerStatefulWidget {
 class _BackupScreenState extends ConsumerState<BackupScreen> {
   bool _busy = false;
   String? _status;
+
+  String? get _consentAt => ref
+      .read(runtimeProvider)
+      .preferences
+      .getString(PrefKeys.backupConsentAt);
+
+  static String _formatConsent(String iso) {
+    final DateTime? at = DateTime.tryParse(iso);
+    if (at == null) return iso;
+    String two(int v) => v.toString().padLeft(2, '0');
+    return '${two(at.day)}.${two(at.month)}.${at.year} ${two(at.hour)}:${two(at.minute)}';
+  }
+
+  /// Rıza yoksa açık rıza ister; kabul edilmezse hiçbir veri gönderilmez.
+  Future<bool> _ensureConsent() async {
+    final String? existing = _consentAt;
+    if (existing != null && existing.isNotEmpty) return true;
+    final bool? granted = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext dialogContext) => AlertDialog(
+        title: const Text('Bulut yedekleme açık rızası'),
+        content: const SingleChildScrollView(
+          child: Text(
+            'Favorileriniz, okuma ilerlemeniz, zikir/hatim/kaza orucu ve '
+            'Ramazan kayıtlarınız ile yapay zekâ sohbetleriniz, cihaz '
+            'değişiminde geri yükleyebilmeniz için anonim bir kimlikle yurt '
+            'dışındaki Supabase sunucularına yedeklenecek. Bu veriler dinî '
+            'inanç/ibadet bilgisi içerebilir.\n\n'
+            'Yedek TLS ile şifrelenir ve yalnızca sizin anonim kimliğiniz '
+            'erişebilir. Rızayı geri çekebilir, sunucudaki yedeği '
+            'silebilirsiniz. Rıza vermezseniz bulut yedekleme kapalı kalır; '
+            'yerel kullanım devam eder.',
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Vazgeç'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('Açık rıza veriyorum'),
+          ),
+        ],
+      ),
+    );
+    if (granted == true) {
+      await ref.read(settingsControllerProvider.notifier).grantBackupConsent();
+      if (mounted) setState(() {});
+      return true;
+    }
+    return false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,6 +151,30 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
             onTap: _busy || !configured
                 ? null
                 : () => _upload(requirePremium: !premium),
+          ),
+          SwitchListTile(
+            secondary: const Icon(Icons.verified_user_outlined),
+            title: const Text('Bulut yedekleme açık rızası'),
+            subtitle: Text(
+              _consentAt == null
+                  ? 'Kapalı — yedekleme ve geri yükleme için rıza gerekir'
+                  : 'Verildi: ${_formatConsent(_consentAt!)}',
+            ),
+            value: _consentAt != null,
+            onChanged: _busy
+                ? null
+                : (bool value) async {
+                    if (value) {
+                      await ref
+                          .read(settingsControllerProvider.notifier)
+                          .grantBackupConsent();
+                    } else {
+                      await ref
+                          .read(settingsControllerProvider.notifier)
+                          .withdrawBackupConsent();
+                    }
+                    if (mounted) setState(() {});
+                  },
           ),
           ListTile(
             leading: const Icon(Icons.cloud_download_outlined),
@@ -175,6 +253,15 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
       );
       return;
     }
+    if (!await _ensureConsent()) {
+      if (!mounted) return;
+      setState(() {
+        _status = 'Bulut yedekleme için açık rıza gerekir. '
+            'Verileriniz yalnızca cihazınızda kaldı.';
+      });
+      return;
+    }
+    if (!mounted) return;
     setState(() {
       _busy = true;
       _status = null;
@@ -200,6 +287,13 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
       setState(() => _status = 'Geri yükleme Premium aboneliğine dahildir.');
       return;
     }
+    if (!await _ensureConsent()) {
+      setState(() {
+        _status = 'Geri yükleme için açık rıza gerekir.';
+      });
+      return;
+    }
+    if (!mounted) return;
     final bool? confirmed = await showDialog<bool>(
       context: context,
       builder: (BuildContext dialogContext) => AlertDialog(
