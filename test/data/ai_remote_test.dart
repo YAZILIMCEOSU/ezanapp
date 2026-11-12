@@ -113,7 +113,10 @@ void main() {
         }),
       );
 
-      final AiAnswer answer = await service.ask('Abdest nasıl alınır?', allowRemote: true);
+      final AiAnswer answer = await service.ask(
+        'Abdest nasıl alınır?',
+        allowRemote: true,
+      );
       expect(
         answer.mode,
         AiAnswerMode.offline,
@@ -129,7 +132,10 @@ void main() {
         ),
       );
 
-      final AiAnswer answer = await service.ask('Cuma namazı farz mı?', allowRemote: true);
+      final AiAnswer answer = await service.ask(
+        'Cuma namazı farz mı?',
+        allowRemote: true,
+      );
       expect(answer.mode, AiAnswerMode.offline);
       expect(answer.hasSources, isTrue);
     });
@@ -141,7 +147,10 @@ void main() {
         ),
       );
 
-      final AiAnswer answer = await service.ask('Cuma namazı farz mı?', allowRemote: true);
+      final AiAnswer answer = await service.ask(
+        'Cuma namazı farz mı?',
+        allowRemote: true,
+      );
       expect(answer.mode, AiAnswerMode.offline);
     });
 
@@ -158,7 +167,10 @@ void main() {
           ),
         );
 
-        final AiAnswer answer = await service.ask('zzz qqq xxx', allowRemote: true);
+        final AiAnswer answer = await service.ask(
+          'zzz qqq xxx',
+          allowRemote: true,
+        );
         expect(answer.mode, AiAnswerMode.offline);
         expect(answer.text, contains('eşleştiremedim'));
       },
