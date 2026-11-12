@@ -198,8 +198,10 @@ yapay zekâ asistanı. Reklamsız Premium seçeneği.”
 **Açıklama (özet):** “Ezan Vaktim Pro, Diyanet yöntemiyle hesaplanan namaz
 vakitleri, tam vaktinde ezan bildirimi, kıble, Kur’an-ı Kerim ve meal, ilahi,
 tesbih, hadis ve kaynak gösteren AI asistanı sunar. Konumunuz cihazınızda
-işlenir; tam koordinat sunucuya gönderilmez. Diyanet servisi kullanılamazsa
-yaklaşık koordinat (2 ondalık, ~1 km) AlAdhan’a gönderilir. AI ve bulut
+işlenir; tam koordinat sunucuya gönderilmez. Harita ve cami aramasında en
+fazla 3 ondalık (~110 m) konum, harita servislerinin görüntü alanı ise
+OpenStreetMap/Esri’ye iletilir. Diyanet servisi kullanılamazsa yaklaşık
+koordinat (2 ondalık, ~1 km) AlAdhan’a gönderilir. AI ve bulut
 yedekleme isteğe bağlıdır ve ayrı rıza gerektirir.”
 
 **Anahtar kelimeler:** ezan, namaz vakti, kıble, kuran, ilahi, tesbih, ramazan,
