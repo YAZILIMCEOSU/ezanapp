@@ -193,11 +193,18 @@ jobs:
               echo "HATA: hedef API ${TARGET:-bilinmiyor} < 36 — Play yüklemesi reddedilir"
               exit 1
             fi
-            if "$BT/zipalign" -h 2>&1 | grep -q -- "-P"; then
-              "$BT/zipalign" -c -P 16 -v 4 "$APK" | tail -20
-              echo "16 KB hizalaması: geçti"
-            else
+            set +e
+            ZIPOUT="$("$BT/zipalign" -c -P 16 -v 4 "$APK" 2>&1)"
+            ZIPCODE=$?
+            set -e
+            echo "$ZIPOUT" | tail -20
+            if echo "$ZIPOUT" | grep -qiE "unknown option|unrecognized|invalid option|usage:"; then
               echo "UYARI: zipalign -P desteklenmiyor; 16 KB denetimi atlandı"
+            elif [ "$ZIPCODE" -ne 0 ]; then
+              echo "HATA: 16 KB sayfa hizalaması başarısız (zipalign çıkış $ZIPCODE)"
+              exit 1
+            else
+              echo "16 KB hizalaması: geçti"
             fi
           } 2>&1 | tee /tmp/playcompliance.log
 
