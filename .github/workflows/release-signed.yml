@@ -75,6 +75,22 @@ jobs:
           fi
           flutter build appbundle --release --no-pub $FLAGS 2>&1 | tail -40
 
+      # GÜVENLİK: depodaki herkese açık TEST anahtarıyla Play yüklemesi
+      # yapılmamalı. İmza parmak izi test anahtarına eşitse iş düşer.
+      - name: Test anahtarı kullanılmadığını doğrula
+        run: |
+          set -o pipefail
+          TESTFP="$(tr -d ' \n' < android/test-only/SHA256.txt)"
+          AAB=build/app/outputs/bundle/release/app-release.aab
+          CERT="$(keytool -printcert -jarfile "$AAB" 2>/dev/null \
+            | sed -n 's/.*SHA256: //p' | head -1 | tr -d ':' | tr 'A-F' 'a-f')"
+          echo "Play yükleme imzası: ${CERT:-okunamadı}"
+          if [ -n "$CERT" ] && [ "$CERT" = "$TESTFP" ]; then
+            echo "::error::Play yüklemesi herkese açık TEST anahtarıyla imzalanmış!"
+            exit 1
+          fi
+          echo "İmza test anahtarından farklı: güvenli."
+
       - name: Anahtarı temizle
         if: always()
         run: rm -f android/key.properties android/ezanai-upload.jks

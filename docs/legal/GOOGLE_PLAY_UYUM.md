@@ -14,7 +14,7 @@
 |---|---|
 | Uygulama adı | Ezan Asistanı Pro — Namaz Vakti, Kıble ve Kur’an |
 | Paket | `com.yazilimceosu.ezanai` |
-| Sürüm | `1.0.0+1` (yayın öncesi artırılacak) |
+| Sürüm | `1.0.1+2` (deneme; Play yüklemesinde artırılacak) |
 | Kategori | Yaşam Tarzı / Referans |
 | İçerik derecesi | IARC anketi sonrası; dinî içerik, şiddet/cinsellik yok → hedef 3+/7+ |
 | Hedef kitle | 13 yaş ve üzeri |

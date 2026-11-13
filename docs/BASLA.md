@@ -33,17 +33,19 @@ Her adımda şunu bulacaksın: **ne yapıyorsun → ekranda ne göreceksin → d
 
 Bu adım Play ile ilgili değil; uygulamanı gerçekten görüp beğenip beğenmediğini anlamak için.
 
-1. Bilgisayarda tarayıcıyı aç, şu adrese git:
-   **https://github.com/YAZILIMCEOSU/ezanapp/actions**
-2. En üstteki yeşil ✓ işaretli satırı aç (adı "analyze" ile başlar).
-3. Sayfayı en alta kaydır. **"Artifacts"** (çıktılar) bölümünü göreceksin.
-4. **`ezanai-derlemeleri`** yazan dosyaya tıkla → bilgisayarına **.zip dosyası** iner.
-5. İnen .zip dosyasına çift tıkla, içinden **`app-debug.apk`** dosyasını çıkar.
-6. Bu dosyayı telefona ulaştır. En kolay iki yol:
-   - **Kablo ile:** Telefonu USB ile bağla, açılan klasörde "İndirilenler" içine sürükle-bırak.
-   - **Google Drive ile:** drive.google.com'a yükle, sonra telefonda Drive uygulamasından indir.
-7. Telefonda **Dosyalar** (veya İndirilenler) uygulamasını aç, `app-debug.apk` dosyasına dokun.
-8. Telefon "Bilinmeyen kaynaklardan yüklemeye izin ver" derse → **İzin ver** → **Kur** → **Aç**.
+1. Telefonda tarayıcıyı aç, şu adrese git:
+   **https://github.com/YAZILIMCEOSU/ezanapp/releases/tag/dene-apk**
+2. Sayfada **`ezanai-kurulum.apk`** dosyasına dokun → indir.
+   - Alternatif: doğrudan bağlantı
+     `https://github.com/YAZILIMCEOSU/ezanapp/releases/download/dene-apk/ezanai-kurulum.apk`
+3. İndirme bitince bildirime dokun → **Kur**.
+4. Telefon "Bilinmeyen kaynaklardan yüklemeye izin ver" derse → **İzin ver** → **Kur** → **Aç**.
+
+> ⚠️ **"Uygulama yüklenmedi" derse:** telefonda eski sürüm kurulu ve imzası
+> farklı. Bir kez **eski uygulamayı kaldır** (simgeye basılı tut → Kaldır),
+> sonra APK'yı tekrar kur. Bu işlemden sonraki güncellemeler artık sorunsuz
+> kurulur; çünkü CI sabit bir test anahtarı kullanıyor
+> (`android/test-only/`).
 
 **Doğru yaptığının kanıtı:** Telefonda "Ezan Asistanı Pro" uygulaması açılır, vakitler ve geri sayım görünür.
 
@@ -338,6 +340,9 @@ Bu noktada ürün **Play'de yayında** demektir (yalnızca senin görebildiğin 
 | Sorun | Sebep | Çözüm |
 |---|---|---|
 | `app-debug.apk` telefon kurmuyor | "Bilinmeyen kaynak" kapalı | Telefon → Ayarlar → Uygulamalar → Dosyalar/Chrome → "Bilinmeyen uygulamaları yükle" iznini aç |
+| **"Uygulama yüklenmedi" / "App not installed"** | Kurulu sürümün imzası farklı (Android aynı pakete farklı imzayla güncelleme izin vermez) | **Eski uygulamayı kaldır** → yeni APK'yı kur. 1.0.1+2'den itibaren imza sabit, bir daha olmaz |
+| "Paket geçersiz" / "Parse error" | İndirme yarım kaldı | Dosyayı yeniden indir; boyut **~82,6 MB** olmalı |
+| Kurulum "yetersiz depolama" diyor | APK 82 MB | Telefonda en az 250 MB boş yer aç |
 | Pages adresi 404 veriyor | Yayın gecikmesi veya yanlış klasör | 5 dk bekle; Settings → Pages'te Branch = `main`, Folder = `/docs` olduğunu kontrol et |
 | "Run workflow" düğmesi görünmüyor | Workflow henüz `main`'de değil | Bölüm 3.1'deki birleştirmeyi yaptığından emin ol, sayfayı yenile |
 | "2) …" işi kırmızı bitiyor, "gizli değişken eksik" yazıyor | Secret adı yanlış | İsimlerin birebir `KEYSTORE_BASE64` ve `KEYSTORE_PASSWORD` olduğunu kontrol et |

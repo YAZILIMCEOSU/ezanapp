@@ -148,12 +148,13 @@ jobs:
         run: |
           set -o pipefail
           {
-            keytool -genkeypair -v -keystore "$RUNNER_TEMP/ci-release.jks" \
-              -storepass ezanai-ci -keypass ezanai-ci \
-              -alias ezanai-ci -keyalg RSA -keysize 2048 -validity 30 \
-              -dname "CN=EzanAI CI, OU=QA, O=Yazilimceosu, L=Istanbul, C=TR"
-            printf 'storePassword=ezanai-ci\nkeyPassword=ezanai-ci\nkeyAlias=ezanai-ci\nstoreFile=%s\n' \
-              "$RUNNER_TEMP/ci-release.jks" > android/key.properties
+            # SABİT test anahtarı. Her koşuda yeni anahtar üretilirse imza
+            # değişir ve Android kurulu uygulamanın üzerine güncelleme yapmaz
+            # ("Uygulama yüklenmedi"). Anahtar yalnızca dene-apk içindir;
+            # Play yüklemesi release-signed.yml + KEYSTORE_BASE64 ile yapılır.
+            cp android/test-only/ezanai-test.p12 "$RUNNER_TEMP/ci-release.p12"
+            printf 'storePassword=ezanai-test\nkeyPassword=ezanai-test\nkeyAlias=ezanai-test\nstoreFile=%s\nstoreType=PKCS12\n' \
+              "$RUNNER_TEMP/ci-release.p12" > android/key.properties
             flutter build apk --release --no-pub --obfuscate --split-debug-info=build/symbols \
               --dart-define=ADMOB_TEST_MODE=true
             cp build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/ezanai-kurulum.apk
@@ -207,6 +208,28 @@ jobs:
               echo "16 KB hizalaması: geçti"
             fi
           } 2>&1 | tee /tmp/playcompliance.log
+
+      # İmza sabitliği: dene-apk her derlemede AYNI sertifikayla imzalanmalı.
+      # Aksi hâlde kullanıcı yeni APK'yı eskisinin üzerine kuramaz.
+      - name: İmza sabitliği (test anahtarı değişmedi mi?)
+        id: sigpin
+        if: always() && steps.build.outcome == 'success'
+        run: |
+          set -o pipefail
+          SDK="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
+          BT="$(ls -d "$SDK"/build-tools/* 2>/dev/null | tail -1)"
+          APK=build/app/outputs/flutter-apk/app-release.apk
+          ACTUAL="$("$BT/apksigner" verify --print-certs "$APK" \
+            | grep -i "SHA-256 digest" | head -1 \
+            | sed 's/.*digest: //' | tr -d ' ' | tr 'A-F' 'a-f')"
+          EXPECTED="$(tr -d ' \n' < android/test-only/SHA256.txt)"
+          echo "beklenen=$EXPECTED"
+          echo "gerçek  =$ACTUAL"
+          if [ "$ACTUAL" != "$EXPECTED" ]; then
+            echo "HATA: deneme APK'sının imzası sabit anahtarla eşleşmiyor."
+            exit 1
+          fi
+          echo "İmza sabit: güncellemeler kurulu uygulamanın üzerine kurulabilir."
 
       - name: flutter build appbundle (release, deneme anahtarı)
         id: release
@@ -274,10 +297,11 @@ jobs:
             echo "| kıble doğrulaması (6 kontrol) | ${{ steps.kible.outcome }} |"
             echo "| imza doğrulaması (apksigner) | ${{ steps.sign.outcome }} |"
             echo "| Play uyumu (API 36 + 16 KB) | ${{ steps.playcompliance.outcome }} |"
+            echo "| imza sabitliği (test anahtarı) | ${{ steps.sigpin.outcome }} |"
             echo "| build (debug apk) | ${{ steps.build.outcome }} |"
             echo "| build (release appbundle) | ${{ steps.release.outcome }} |"
             echo "| dene-apk indirmeye açıldı | ${{ steps.apk_release.outcome }} |"
-            for f in pubget fmt analyze test ai rls kible sign playcompliance build release; do
+            for f in pubget fmt analyze test ai rls kible sign sigpin playcompliance build release; do
               if [ -f /tmp/$f.log ]; then
                 echo
                 echo "## $f"

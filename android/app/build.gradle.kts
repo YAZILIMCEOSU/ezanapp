@@ -71,6 +71,8 @@ android {
                 keyPassword = keystoreProperties["keyPassword"] as String?
                 storeFile = keystoreProperties["storeFile"]?.let { file(it) }
                 storePassword = keystoreProperties["storePassword"] as String?
+                // PKCS#12 (CI test anahtarı) veya JKS (yükleme anahtarı) olabilir.
+                storeType = (keystoreProperties["storeType"] as String?) ?: "jks"
             }
         }
     }
