@@ -89,9 +89,15 @@ bir kod turu ve QF anahtarı gerektirir.
 
 **Gönderim yolu:** Sitede açık e-posta adresi yok; iletişim formu Quran
 Foundation yardım merkezi üzerinden yürüyor. Bu nedenle talep
-`destek@ezanai.app` adresinden **hem** QF yardım merkezine **hem**
-`developers@quran.com` adresine gönderilir; yanıt gelmezse 30 gün sonra
-QF Content API yoluna geçilir.
+`developers@quran.com` adresine gönderilir ve EveryAyah bakım ekibine
+iletilmesi istenir; yanıt gelmezse 30 gün sonra QF Content API yoluna
+geçilir.
+
+**Durum:** Talep **Gmail taslağı** olarak hazırlandı
+(konu: *Licensing request: EveryAyah verse-by-verse recitations in
+"Ezan Asistanı Pro"*). Gönderim, sahibin onayına bırakıldı — taslak
+kişisel Gmail hesabından çıkacağı için önce gözden geçirilmelidir.
+Gönderildikten sonra bu satır tarih ve yanıt durumuyla güncellenir.
 
 ### 1.5 Kabul ölçütü
 
