@@ -37,8 +37,8 @@
 | 3 | GitHub Pages’i aç | GitHub Settings → Pages | **P0** | Tüm yasal URL’ler 200 |
 | 4 | `USE_EXACT_ALARM` kararı | `AndroidManifest.xml`, Play beyanı | **P1** | Beyan onayı veya izin kaldırma |
 | 5 | `ios/` projesi + PrivacyInfo | `ios/` | **P1** | App Store ön koşulu |
-| 6 | Target API 36 doğrulaması | `android/app/build.gradle.kts` | **P0** | `aapt2 dump badging` |
-| 7 | 16 KB sayfa boyutu | CI | **P1** | `zipalign -c -P 16` |
+| 6 | ~~Target API 36 doğrulaması~~ **Yapıldı:** CI adımı `Play uyum denetimi` → `targetSdkVersion:'36'` | `android/app/build.gradle.kts`, CI | **P0 ✓** | Her derlemede `aapt2 dump badging` ile doğrulanır |
+| 7 | ~~16 KB sayfa boyutu~~ **Yapıldı:** CI `zipalign -c -P 16 -v 4` → geçti | CI | **P1 ✓** | Her derlemede doğrulanır |
 | 8 | Supabase RLS testi | Supabase | **P0** | Çapraz kullanıcı erişimi reddedilir |
 | 9 | Yurt dışı aktarım sözleşmeleri | Hukuk | **P0** | İmzalı SCC + 5 iş günü bildirim |
 | 10 | MP3 ID3 lisans etiketleri | Ses dosyaları | **P2** | `mutagen` ile doğrulama |

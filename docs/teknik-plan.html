@@ -301,17 +301,17 @@ footer .links { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; }
 </tr>
 <tr>
 <td>6</td>
-<td>Target API 36 doğrulaması</td>
-<td><code>android/app/build.gradle.kts</code></td>
-<td><strong>P0</strong></td>
-<td><code>aapt2 dump badging</code></td>
+<td>~~Target API 36 doğrulaması~~ <strong>Yapıldı:</strong> CI adımı <code>Play uyum denetimi</code> → <code>targetSdkVersion:'36'</code></td>
+<td><code>android/app/build.gradle.kts</code>, CI</td>
+<td><strong>P0 ✓</strong></td>
+<td>Her derlemede <code>aapt2 dump badging</code> ile doğrulanır</td>
 </tr>
 <tr>
 <td>7</td>
-<td>16 KB sayfa boyutu</td>
+<td>~~16 KB sayfa boyutu~~ <strong>Yapıldı:</strong> CI <code>zipalign -c -P 16 -v 4</code> → geçti</td>
 <td>CI</td>
-<td><strong>P1</strong></td>
-<td><code>zipalign -c -P 16</code></td>
+<td><strong>P1 ✓</strong></td>
+<td>Her derlemede doğrulanır</td>
 </tr>
 <tr>
 <td>8</td>

@@ -23,8 +23,8 @@ kanıt bağlantısı yazılır. İşaretlenmemiş **P0** maddesi varsa yayın ya
 
 ## B. Google Play (P0/P1)
 
-- [ ] Target API **36** doğrulandı (`aapt2 dump badging`)
-- [ ] 16 KB sayfa boyutu uyumu doğrulandı
+- [x] Target API **36** doğrulandı — CI `Play uyum denetimi` (`targetSdkVersion:'36'`)
+- [x] 16 KB sayfa boyutu uyumu doğrulandı — CI `zipalign -c -P 16` geçti
 - [ ] Data safety tablosu `GOOGLE_PLAY_UYUM.md` §2 ile birebir
 - [x] “Konum sunucuya gönderilmez” ifadesi AlAdhan istisnasıyla tutarlı
   (2 ondalık ~1 km; Hakkında ekranı ve KVKK metni güncellendi)
