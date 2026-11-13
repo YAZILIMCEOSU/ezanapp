@@ -174,6 +174,33 @@ jobs:
           "$BT/apksigner" verify --print-certs \
             build/app/outputs/flutter-apk/app-release.apk 2>&1 | tee /tmp/sign.log | tail -30
 
+      # Google Play uyumu: hedef API 36 (31 Ağu 2026'dan itibaren zorunlu) ve
+      # 16 KB sayfa hizalaması (Android 15+). İkisi de yükleme kapısıdır.
+      - name: Play uyum denetimi (API 36 + 16 KB)
+        id: playcompliance
+        if: always() && steps.build.outcome == 'success'
+        run: |
+          set -o pipefail
+          {
+            SDK="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
+            BT="$(ls -d "$SDK"/build-tools/* 2>/dev/null | tail -1)"
+            APK=build/app/outputs/flutter-apk/app-release.apk
+            echo "build-tools: $BT"
+            "$BT/aapt2" dump badging "$APK" | grep -E "^(package|sdkVersion|targetSdkVersion)" || true
+            TARGET="$("$BT/aapt2" dump badging "$APK" | sed -n "s/^targetSdkVersion:'\([0-9]*\)'.*/\1/p")"
+            echo "targetSdkVersion=$TARGET"
+            if [ -z "$TARGET" ] || [ "$TARGET" -lt 36 ]; then
+              echo "HATA: hedef API ${TARGET:-bilinmiyor} < 36 — Play yüklemesi reddedilir"
+              exit 1
+            fi
+            if "$BT/zipalign" -h 2>&1 | grep -q -- "-P"; then
+              "$BT/zipalign" -c -P 16 -v 4 "$APK" | tail -20
+              echo "16 KB hizalaması: geçti"
+            else
+              echo "UYARI: zipalign -P desteklenmiyor; 16 KB denetimi atlandı"
+            fi
+          } 2>&1 | tee /tmp/playcompliance.log
+
       - name: flutter build appbundle (release, deneme anahtarı)
         id: release
         continue-on-error: true
@@ -239,10 +266,11 @@ jobs:
             echo "| RLS politika denetimi | ${{ steps.rls.outcome }} |"
             echo "| kıble doğrulaması (6 kontrol) | ${{ steps.kible.outcome }} |"
             echo "| imza doğrulaması (apksigner) | ${{ steps.sign.outcome }} |"
+            echo "| Play uyumu (API 36 + 16 KB) | ${{ steps.playcompliance.outcome }} |"
             echo "| build (debug apk) | ${{ steps.build.outcome }} |"
             echo "| build (release appbundle) | ${{ steps.release.outcome }} |"
             echo "| dene-apk indirmeye açıldı | ${{ steps.apk_release.outcome }} |"
-            for f in pubget fmt analyze test ai rls kible sign build release; do
+            for f in pubget fmt analyze test ai rls kible sign playcompliance build release; do
               if [ -f /tmp/$f.log ]; then
                 echo
                 echo "## $f"
