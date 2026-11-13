@@ -56,7 +56,7 @@ void main() {
     test('kaynak künyesi paylaşım metninde yer alır', () {
       final String text = dua(reference: 'Müslim, Zikir 75').shareText();
       expect(text, contains('Kaynak: Müslim, Zikir 75'));
-      expect(text, contains('EzanAI'));
+      expect(text, contains('Ezan Asistanı Pro'));
     });
 
     test('paylaşım metni Arapça, okunuş ve meali içerir', () {
