@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Uyum için yapılan ve kalan teknik düzeltmeler.">
+<meta name="robots" content="index,follow">
+<title>Teknik Düzeltme Planı — Ezan Asistanı Pro</title>
+<style>
+:root {
+  --bg: #f6f8f7;
+  --card: #ffffff;
+  --ink: #14211d;
+  --muted: #5b6b65;
+  --brand: #0f766e;
+  --brand-soft: #e6f4f1;
+  --line: #dbe5e1;
+  --warn: #92400e;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.65;
+  font-size: 16px;
+}
+a { color: var(--brand); text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+header {
+  background: linear-gradient(135deg, #0f766e, #115e59);
+  color: #fff;
+  padding: 22px 20px 18px;
+}
+header .wrap {
+  max-width: 980px; margin: 0 auto;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+  justify-content: space-between;
+}
+.brand { font-weight: 800; letter-spacing: .2px; font-size: 18px; }
+.brand small { display: block; font-weight: 500; opacity: .85; font-size: 12px; }
+nav { display: flex; flex-wrap: wrap; gap: 6px; }
+nav a {
+  color: #fff; text-decoration: none; font-size: 13px;
+  padding: 5px 9px; border-radius: 999px; background: rgba(255,255,255,.12);
+}
+nav a:hover { background: rgba(255,255,255,.24); }
+main {
+  max-width: 980px; margin: 26px auto 60px; padding: 0 18px;
+}
+.card {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 16px; padding: 28px 30px;
+  box-shadow: 0 8px 24px rgba(15, 118, 110, .06);
+}
+h1 { font-size: 30px; line-height: 1.2; margin: 0 0 8px; }
+h2 { font-size: 22px; margin: 34px 0 10px; padding-top: 8px; }
+h3 { font-size: 17px; margin: 24px 0 8px; }
+p, li { color: #24332e; }
+ul, ol { padding-left: 22px; }
+li { margin: 4px 0; }
+blockquote {
+  margin: 18px 0; padding: 12px 16px;
+  background: var(--brand-soft); border-left: 4px solid var(--brand);
+  border-radius: 8px; color: #164e47;
+}
+code {
+  background: #eef3f1; padding: 1px 5px; border-radius: 5px;
+  font-size: 13px;
+}
+pre {
+  background: #0f172a; color: #e2e8f0; padding: 16px;
+  border-radius: 10px; overflow-x: auto; font-size: 13px;
+}
+pre code { background: transparent; color: inherit; padding: 0; }
+table {
+  width: 100%; border-collapse: collapse; margin: 16px 0;
+  font-size: 14px; display: block; overflow-x: auto;
+}
+th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+th { background: #f0f6f4; font-weight: 700; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 30px 0; }
+.meta {
+  color: var(--muted); font-size: 13px; margin-bottom: 18px;
+}
+.notice {
+  background: #fff7ed; border: 1px solid #fed7aa; color: var(--warn);
+  padding: 12px 16px; border-radius: 10px; font-size: 13.5px;
+  margin: 18px 0;
+}
+footer {
+  max-width: 980px; margin: 0 auto 40px; padding: 0 18px;
+  color: var(--muted); font-size: 13px;
+}
+footer .links { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; }
+@media (max-width: 640px) {
+  .card { padding: 20px 16px; }
+  h1 { font-size: 24px; }
+  h2 { font-size: 19px; }
+}
+@media print {
+  header, nav, footer { display: none; }
+  body { background: #fff; }
+  .card { border: 0; box-shadow: none; padding: 0; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="brand">Ezan Asistanı Pro<small>Yasal ve uyum belgeleri</small></div>
+    <nav><a href="privacy.html">Gizlilik</a><a href="kvkk.html">KVKK</a><a href="acik-riza.html">Açık Rıza</a><a href="terms.html">Koşullar</a><a href="abonelik.html">Abonelik</a><a href="veri-silme.html">Veri Silme</a><a href="guvenlik.html">Güvenlik</a></nav>
+  </div>
+</header>
+<main>
+  <article class="card">
+    <div class="meta">YazılımCeosu · İstanbul, Türkiye · destek@ezanai.app</div>
+    <h1 id="ezan-asistan-pro-uyum-icin-teknik-duzeltme-plan">Ezan Asistanı Pro — Uyum İçin Teknik Düzeltme Planı</h1>
+<p><strong>Sürüm:</strong> 1.0 · <strong>Tarih:</strong> 12 Kasım 2026
+<strong>Amaç:</strong> Hukuki metinlerdeki beyanları kodla <strong>birebir</strong> uyumlu hâle getirmek.
+<strong>Durum:</strong> Bu turda uygulananlar ✅, kalanlar ⏳.</p>
+<h2 id="1-bu-turda-uygulanan-duzeltmeler">1. Bu turda uygulanan düzeltmeler</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Dosya</th>
+<th>Değişiklik</th>
+<th>Gerekçe</th>
+<th>Durum</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>lib/core/constants/app_constants.dart</code></td>
+<td>Yasal URL’ler GitHub Pages’e bağlandı; KVKK, rıza, silme, abonelik, güvenlik URL’leri eklendi</td>
+<td>Kırık <code>ezanai.app</code> linkleri (mağaza reddi 2.1)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>lib/core/config/app_config.dart</code></td>
+<td>Yeni URL getter’ları</td>
+<td>Uygulama içi erişim</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>lib/features/settings/about_screen.dart</code></td>
+<td>KVKK, açık rıza, abonelik, silme, güvenlik bağlantıları; konum/analitik metni düzeltildi</td>
+<td>Gizlilik metni-kod çelişkisi</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>lib/data/models/app_settings.dart</code></td>
+<td>Analitik/çökme varsayılanı <strong>false</strong></td>
+<td>PRIVACY “varsayılan kapalı” beyanı</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>lib/data/models/app_settings.dart</code></td>
+<td>Ezan sesi adları “Vokal Sentez”</td>
+<td>Gerçek müezzin adı/yanıltıcı beyan</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>lib/features/settings/adhan_sound_screen.dart</code></td>
+<td>“Gerçek kayıt” metni kaldırıldı</td>
+<td>Aynı</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>lib/data/repositories/ilahi_repository.dart</code></td>
+<td>Sahte sanatçı adları kaldırıldı; <code>cdn.jsdelivr.net</code> kayıtları çıkarıldı</td>
+<td>Telif + kişilik hakkı</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>lib/data/prayer/aladhan_api_source.dart</code></td>
+<td>Koordinat 2 ondalığa yuvarlandı</td>
+<td>KVKK veri minimizasyonu</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>9</td>
+<td><code>lib/data/ai/ai_service.dart</code>, <code>ai_repository.dart</code></td>
+<td><code>allowRemote</code> bayrağı; varsayılan <strong>false</strong> (repo)</td>
+<td>Rızasız uzak AI’yı engelleme</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>lib/state/content_providers.dart</code></td>
+<td>AI çağrısı rıza kaydına bağlandı</td>
+<td>KVKK m.6/2</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>11</td>
+<td><code>lib/features/ai/ai_screen.dart</code></td>
+<td>İlk uzak soruda açık rıza diyaloğu</td>
+<td>Aydınlatma + rıza</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>12</td>
+<td><code>lib/state/providers.dart</code></td>
+<td>Rıza verme/geri çekme + zaman damgası</td>
+<td>Kanıt ve geri çekme</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>13</td>
+<td><code>lib/features/settings/backup_screen.dart</code></td>
+<td>Yedekleme/geri yükleme rıza kapısı + rıza anahtarı</td>
+<td>KVKK m.9</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>13b</td>
+<td><code>lib/core/services/sync_service.dart</code></td>
+<td>Servis katmanında rıza kontrolü (UI atlansa bile veri gönderilmez)</td>
+<td>Savunma derinliği</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>14</td>
+<td><code>lib/features/settings/settings_screen.dart</code></td>
+<td>“Açık rızalarım” yönetim diyaloğu</td>
+<td>Geri çekme hakkı</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>15</td>
+<td><code>docs/legal/*</code> + <code>docs/*.html</code></td>
+<td>Belgeler ve yayın sayfaları</td>
+<td>Mağaza/mevzuat</td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Not:</strong> Flutter SDK bu ortamda yok; <code>flutter analyze</code>/<code>test</code> CI’da
+çalıştırılır. Bu değişiklikler push sonrası ilk CI turunda doğrulanmalıdır.</p>
+</blockquote>
+<h2 id="2-kalan-isler-yayn-oncesi-zorunlu">2. Kalan işler (yayın öncesi zorunlu)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>İş</th>
+<th>Dosya/Alan</th>
+<th>Öncelik</th>
+<th>Kabul ölçütü</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>~~<code>ezan_saba.mp3</code> kaynağını belgele veya değiştir~~ <strong>Yapıldı:</strong> lisans kanıtı olmadığı için kaldırıldı</td>
+<td><code>assets/audio/adhan/</code></td>
+<td><strong>P0</strong></td>
+<td>Dosya ve enum kaldırıldı; testler güncellendi</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>EveryAyah tilavet lisansı</strong> — sitede yayımlı lisans yok, ticari kullanım belirsiz</td>
+<td><code>lib/data/models/ilahi_models.dart</code>, <code>quran_screen.dart</code></td>
+<td><strong>P0</strong></td>
+<td>Quran Foundation Content API'ye geçiş <strong>veya</strong> yazılı izin; atıf görünür. Metin: <code>TEDARIKCI_BEYANLARI.md</code> §1</td>
+</tr>
+<tr>
+<td>3</td>
+<td>GitHub Pages’i aç</td>
+<td>GitHub Settings → Pages</td>
+<td><strong>P0</strong></td>
+<td>Tüm yasal URL’ler 200</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>USE_EXACT_ALARM</code> kararı</td>
+<td><code>AndroidManifest.xml</code>, Play beyanı</td>
+<td><strong>P1</strong></td>
+<td>Beyan onayı veya izin kaldırma</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>ios/</code> projesi + PrivacyInfo</td>
+<td><code>ios/</code></td>
+<td><strong>P1</strong></td>
+<td>App Store ön koşulu</td>
+</tr>
+<tr>
+<td>6</td>
+<td>~~Target API 36 doğrulaması~~ <strong>Yapıldı:</strong> CI adımı <code>Play uyum denetimi</code> → <code>targetSdkVersion:'36'</code></td>
+<td><code>android/app/build.gradle.kts</code>, CI</td>
+<td><strong>P0 ✓</strong></td>
+<td>Her derlemede <code>aapt2 dump badging</code> ile doğrulanır</td>
+</tr>
+<tr>
+<td>7</td>
+<td>~~16 KB sayfa boyutu~~ <strong>Yapıldı:</strong> CI <code>zipalign -c -P 16 -v 4</code> → geçti</td>
+<td>CI</td>
+<td><strong>P1 ✓</strong></td>
+<td>Her derlemede doğrulanır</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Supabase RLS testi</td>
+<td>Supabase</td>
+<td><strong>P0</strong></td>
+<td>Çapraz kullanıcı erişimi reddedilir</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Yurt dışı aktarım sözleşmeleri</td>
+<td>Hukuk</td>
+<td><strong>P0</strong></td>
+<td>İmzalı SCC + 5 iş günü bildirim</td>
+</tr>
+<tr>
+<td>10</td>
+<td>MP3 ID3 lisans etiketleri</td>
+<td>Ses dosyaları</td>
+<td><strong>P2</strong></td>
+<td><code>mutagen</code> ile doğrulama</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Mağaza metinlerini güncelle</td>
+<td>Play/App Store</td>
+<td><strong>P0</strong></td>
+<td>“Gerçek müezzin” yok</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Fiyat tek kaynak</td>
+<td>Dokümanlar + Console</td>
+<td><strong>P0</strong></td>
+<td>₺79,99 / ₺599,99 / ₺1.499,99</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Marka/ad çakışması</td>
+<td>Play + App Store</td>
+<td><strong>P0</strong></td>
+<td>Turkpatent araştırması; gerekirse ad değişikliği (bkz. <code>GOOGLE_PLAY_UYUM.md</code> §1.1)</td>
+</tr>
+<tr>
+<td>—</td>
+<td>~~Şirket künyesi (MERSİS/VKN)~~</td>
+<td>Mağaza/hukuk metinleri</td>
+<td><strong>N/A</strong></td>
+<td><strong>Şirket yok:</strong> geliştirici gerçek kişi; MERSİS/VKN gerekmez, metinler güncellendi</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-fiyat-tutarllg">3. Fiyat tutarlılığı</h2>
+<p><strong>Tek doğru kaynak:</strong> <code>FREE_REKLAMLI_PAKET_VE_PREMIUM_REHBERI.md</code></p>
+<table>
+<thead>
+<tr>
+<th>Ürün</th>
+<th>Kimlik</th>
+<th>Fiyat</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Aylık</td>
+<td><code>ezanai_premium_monthly</code></td>
+<td>₺79,99</td>
+</tr>
+<tr>
+<td>Yıllık</td>
+<td><code>ezanai_premium_yearly</code></td>
+<td>₺599,99</td>
+</tr>
+<tr>
+<td>Ömürlük</td>
+<td><code>ezanai_premium_lifetime</code></td>
+<td>₺1.499,99</td>
+</tr>
+</tbody>
+</table>
+<p><code>PREMIUM_VE_ENTEGRASYON_YOL_HARITASI.md</code> bu değerlere göre düzeltilmeli;
+Play Console/App Store Connect fiyatları da aynı olmalı. Yerel mağaza fiyatı
+satın alma ekranında gösterilir.</p>
+<h2 id="4-test-plan">4. Test planı</h2>
+<h3 id="41-birim-testleri-ci">4.1. Birim testleri (CI)</h3>
+<ul>
+<li>[ ] <code>AppSettings</code> varsayılanları: analitik/çökme <strong>false</strong></li>
+<li>[ ] <code>askWithQuota(allowRemote: false)</code> → <code>AiAnswerMode.offline</code></li>
+<li>[ ] <code>askWithQuota(allowRemote: true)</code> + backend yok → offline</li>
+<li>[ ] AlAdhan URI’sinde koordinat 2 ondalık</li>
+<li>[ ] Rıza anahtarları: ver/geri çek (prefs)</li>
+</ul>
+<h3 id="42-widget-testleri">4.2. Widget testleri</h3>
+<ul>
+<li>[ ] AI ilk soruda rıza diyaloğu gösterir</li>
+<li>[ ] “Rıza vermeden devam et” → offline yanıt</li>
+<li>[ ] Yedekleme rıza yokken buton uyarı verir</li>
+<li>[ ] “Açık rızalarım” diyaloğu durum değiştirir</li>
+</ul>
+<h3 id="43-elle-test-cihaz">4.3. Elle test (cihaz)</h3>
+<ol>
+<li>Temiz kurulum → Ayarlar → analitik/çökme <strong>kapalı</strong>.</li>
+<li>AI’da ilk soru → rıza diyaloğu → reddet → cevap çevrimdışı.</li>
+<li>Rıza ver → soru sunucuya gider; Ayarlar → rızalar → geri çek.</li>
+<li>Bulut yedekleme → rıza yok → uyarı; rıza ver → yüklenir.</li>
+<li>Sunucudaki yedeği sil → tekrar giriş → veri yok.</li>
+<li>Hakkında → tüm yasal bağlantılar açılır.</li>
+<li>Ezan sesi ekranı → “Vokal Sentez” etiketleri; “gerçek müezzin” yok.</li>
+<li>İlahi kataloğu → uzak jsDelivr parçası yok.</li>
+</ol>
+<h2 id="5-ci-kaplar">5. CI kapıları</h2>
+<pre><code class="language-bash">flutter analyze
+flutter test --reporter expanded
+python3 tools/verify_qibla.py
+bash tools/quality_gate.sh
+</code></pre>
+<p>Ek olarak önerilen:</p>
+<pre><code class="language-bash"># Yasal URL kontrolü (Pages açıldıktan sonra)
+for p in privacy terms kvkk acik-riza abonelik veri-silme guvenlik; do
+  curl -fsS -o /dev/null -w &quot;$p %{http_code}\n&quot; \
+    &quot;https://yazilimceosu.github.io/ezanapp/$p.html&quot;
+done
+</code></pre>
+<h2 id="6-geri-alma">6. Geri alma</h2>
+<ul>
+<li>URL değişikliği: <code>--dart-define=PRIVACY_URL=...</code> ile eski adres.</li>
+<li>AI rıza kapısı: <code>allowRemote</code> varsayılanı değiştirilmeden yalnızca UI
+  kapatılabilir; <strong>güvenlik nedeniyle varsayılan false kalmalıdır</strong>.</li>
+<li>Ses kataloğu: kaldırılan parçalar geri eklenmez; lisans kanıtı olmadan
+  yayınlanmaz.</li>
+</ul>
+<h2 id="7-sorumluluk">7. Sorumluluk</h2>
+<table>
+<thead>
+<tr>
+<th>Alan</th>
+<th>Sorumlu</th>
+<th>Tarih</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Kod</td>
+<td>Geliştirici</td>
+<td>12 Kasım 2026</td>
+</tr>
+<tr>
+<td>Hukuk</td>
+<td>Avukat (gözden geçirme)</td>
+<td>Yayın öncesi</td>
+</tr>
+<tr>
+<td>Mağaza</td>
+<td>Geliştirici</td>
+<td>Yayın öncesi</td>
+</tr>
+</tbody>
+</table>
+    <div class="notice">
+      Bu sayfa bilgilendirme amaçlıdır ve hukuki görüş yerine geçmez.
+      Yürürlükteki sürüm bu sayfadır; önemli değişiklikler uygulama içinde
+      duyurulur.
+    </div>
+  </article>
+</main>
+<footer>
+  <div class="links"><a href="privacy.html">Gizlilik</a><a href="kvkk.html">KVKK</a><a href="acik-riza.html">Açık Rıza</a><a href="terms.html">Koşullar</a><a href="abonelik.html">Abonelik</a><a href="veri-silme.html">Veri Silme</a><a href="guvenlik.html">Güvenlik</a></div>
+  <div>© 2026 YazılımCeosu · Ezan Asistanı Pro · <code>com.yazilimceosu.ezanai</code></div>
+</footer>
+</body>
+</html>

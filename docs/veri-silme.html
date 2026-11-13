@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Cihaz ve sunucu verilerini silme yolları, KVKK başvurusu.">
+<meta name="robots" content="index,follow">
+<title>Veri Silme ve Başvuru — Ezan Asistanı Pro</title>
+<style>
+:root {
+  --bg: #f6f8f7;
+  --card: #ffffff;
+  --ink: #14211d;
+  --muted: #5b6b65;
+  --brand: #0f766e;
+  --brand-soft: #e6f4f1;
+  --line: #dbe5e1;
+  --warn: #92400e;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.65;
+  font-size: 16px;
+}
+a { color: var(--brand); text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+header {
+  background: linear-gradient(135deg, #0f766e, #115e59);
+  color: #fff;
+  padding: 22px 20px 18px;
+}
+header .wrap {
+  max-width: 980px; margin: 0 auto;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+  justify-content: space-between;
+}
+.brand { font-weight: 800; letter-spacing: .2px; font-size: 18px; }
+.brand small { display: block; font-weight: 500; opacity: .85; font-size: 12px; }
+nav { display: flex; flex-wrap: wrap; gap: 6px; }
+nav a {
+  color: #fff; text-decoration: none; font-size: 13px;
+  padding: 5px 9px; border-radius: 999px; background: rgba(255,255,255,.12);
+}
+nav a:hover { background: rgba(255,255,255,.24); }
+main {
+  max-width: 980px; margin: 26px auto 60px; padding: 0 18px;
+}
+.card {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 16px; padding: 28px 30px;
+  box-shadow: 0 8px 24px rgba(15, 118, 110, .06);
+}
+h1 { font-size: 30px; line-height: 1.2; margin: 0 0 8px; }
+h2 { font-size: 22px; margin: 34px 0 10px; padding-top: 8px; }
+h3 { font-size: 17px; margin: 24px 0 8px; }
+p, li { color: #24332e; }
+ul, ol { padding-left: 22px; }
+li { margin: 4px 0; }
+blockquote {
+  margin: 18px 0; padding: 12px 16px;
+  background: var(--brand-soft); border-left: 4px solid var(--brand);
+  border-radius: 8px; color: #164e47;
+}
+code {
+  background: #eef3f1; padding: 1px 5px; border-radius: 5px;
+  font-size: 13px;
+}
+pre {
+  background: #0f172a; color: #e2e8f0; padding: 16px;
+  border-radius: 10px; overflow-x: auto; font-size: 13px;
+}
+pre code { background: transparent; color: inherit; padding: 0; }
+table {
+  width: 100%; border-collapse: collapse; margin: 16px 0;
+  font-size: 14px; display: block; overflow-x: auto;
+}
+th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+th { background: #f0f6f4; font-weight: 700; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 30px 0; }
+.meta {
+  color: var(--muted); font-size: 13px; margin-bottom: 18px;
+}
+.notice {
+  background: #fff7ed; border: 1px solid #fed7aa; color: var(--warn);
+  padding: 12px 16px; border-radius: 10px; font-size: 13.5px;
+  margin: 18px 0;
+}
+footer {
+  max-width: 980px; margin: 0 auto 40px; padding: 0 18px;
+  color: var(--muted); font-size: 13px;
+}
+footer .links { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; }
+@media (max-width: 640px) {
+  .card { padding: 20px 16px; }
+  h1 { font-size: 24px; }
+  h2 { font-size: 19px; }
+}
+@media print {
+  header, nav, footer { display: none; }
+  body { background: #fff; }
+  .card { border: 0; box-shadow: none; padding: 0; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="brand">Ezan Asistanı Pro<small>Yasal ve uyum belgeleri</small></div>
+    <nav><a href="privacy.html">Gizlilik</a><a href="kvkk.html">KVKK</a><a href="acik-riza.html">Açık Rıza</a><a href="terms.html">Koşullar</a><a href="abonelik.html">Abonelik</a><a href="veri-silme.html">Veri Silme</a><a href="guvenlik.html">Güvenlik</a></nav>
+  </div>
+</header>
+<main>
+  <article class="card">
+    <div class="meta">YazılımCeosu · İstanbul, Türkiye · destek@ezanai.app</div>
+    <h1 id="ezan-asistan-pro-veri-silme-erisim-ve-basvuru-proseduru">Ezan Asistanı Pro — Veri Silme, Erişim ve Başvuru Prosedürü</h1>
+<p><strong>Sürüm:</strong> 1.0 · <strong>Tarih:</strong> 12 Kasım 2026
+<strong>Veri sorumlusu:</strong> YazılımCeosu — destek@ezanai.app
+<strong>Yasal dayanak:</strong> KVKK m.7, m.11, m.13; Silme/Yok Etme/Anonimleştirme
+Yönetmeliği; GDPR m.17 (uygulanabildiği ölçüde).
+<strong>Hedef yanıt süresi:</strong> En geç <strong>30 gün</strong> (ücretsiz).</p>
+<h2 id="1-silme-kanallar">1. Silme kanalları</h2>
+<table>
+<thead>
+<tr>
+<th>Kanal</th>
+<th>Kapsam</th>
+<th>Süre</th>
+<th>Durum</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ayarlar → Verilerimi sil</td>
+<td>Cihazdaki tüm uygulama verisi</td>
+<td>Anında</td>
+<td>Uygulama içi</td>
+</tr>
+<tr>
+<td>Ayarlar → Bulut yedekleme → Sunucudaki yedeği sil</td>
+<td>Supabase yedeği + anonim oturum</td>
+<td>Anında</td>
+<td>Uygulama içi</td>
+</tr>
+<tr>
+<td>Sohbet → Sohbeti sil</td>
+<td>Tek AI sohbeti</td>
+<td>Anında</td>
+<td>Uygulama içi</td>
+</tr>
+<tr>
+<td>destek@ezanai.app</td>
+<td>Tüm veriler / özel talep</td>
+<td>30 gün</td>
+<td>E-posta</td>
+</tr>
+<tr>
+<td><code>.../veri-silme.html</code></td>
+<td>Talep formu (e-posta oluşturur)</td>
+<td>30 gün</td>
+<td>Web</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Not: Uygulama hesap oluşturmadığı için “hesabı sil” adımı yoktur. Anonim
+bulut kimliği, yedek silindiğinde oturum kapatılarak etkisizleştirilir.</p>
+</blockquote>
+<h2 id="2-uygulama-ici-silme-admlar-kullancya-birebir">2. Uygulama içi silme adımları (kullanıcıya birebir)</h2>
+<ol>
+<li><strong>Ayarlar → Gizlilik ve veriler → Verilerimi sil</strong>.</li>
+<li>Onay penceresinde “Sil” seçilir.</li>
+<li>Uygulama; yerel veritabanı tablolarını, ayarları, AI sohbetlerini,
+   favorileri ve indirilmiş özel sesleri siler.</li>
+<li>Ekranda “Verileriniz silindi” bildirimi görünür.</li>
+<li>Bulut yedeği ayrıca silinmek istenirse:
+   <strong>Ayarlar → Bulut yedekleme → Sunucudaki yedeği sil → Onayla</strong>.</li>
+<li>Uygulama kaldırılırsa cihaz verisi işletim sistemi tarafından silinir
+   (Android/iOS uygulama alanı).</li>
+</ol>
+<p><strong>Silinmeyenler:</strong> mağaza satın alma kayıtları (Google/Apple’da), yasal
+saklama yükümlülüğü olan destek kayıtları (2 yıl), yedeklerdeki anonim teknik
+loglar (en fazla 6 ay).</p>
+<h2 id="3-e-posta-ile-basvuru">3. E-posta ile başvuru</h2>
+<p><strong>Adres:</strong> destek@ezanai.app
+<strong>Konu:</strong> <code>KVKK Veri Silme Talebi</code></p>
+<p>Aşağıdaki bilgiler istenir (hesap olmadığı için kimlik doğrulama sınırlıdır):</p>
+<ul>
+<li>Talep türü: silme / düzeltme / erişim / itiraz,</li>
+<li>Uygulama sürümü ve platform (Android/iOS),</li>
+<li>Varsa anonim yedek kimliği (Ayarlar → Bulut yedekleme ekranında görünen
+  kısa kimlik) — yalnızca bulut yedeğini silmek için,</li>
+<li>Talebin kapsamı (tüm veriler / belirli kategori).</li>
+</ul>
+<p><strong>Kimlik doğrulama:</strong> E-posta adresiniz destek kaydıyla eşleşmiyorsa ek bilgi
+istenebilir. Yanlış kişinin verisini silmemek için gerekli asgari doğrulama
+yapılır; gereksiz kimlik belgesi istenmez.</p>
+<h2 id="4-islem-aks-ve-sla">4. İşlem akışı ve SLA</h2>
+<table>
+<thead>
+<tr>
+<th>Adım</th>
+<th>Süre</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Talebin alındı bildirimi</td>
+<td>2 iş günü</td>
+</tr>
+<tr>
+<td>Kimlik/kapsam doğrulama</td>
+<td>5 iş günü</td>
+</tr>
+<tr>
+<td>Silme/düzeltme uygulaması</td>
+<td>30 gün (en geç)</td>
+</tr>
+<tr>
+<td>Sonuç bildirimi</td>
+<td>İşlemle birlikte</td>
+</tr>
+<tr>
+<td>İtiraz</td>
+<td>Sonuç bildiriminden 15 gün içinde</td>
+</tr>
+</tbody>
+</table>
+<p>Reddedilen taleplerde gerekçe ve KVKK m.14 kapsamında Kurul’a başvuru yolu
+bildirilir.</p>
+<h2 id="5-yedeklerden-silme">5. Yedeklerden silme</h2>
+<ul>
+<li>Supabase günlük yedekleri 30 günlük döngüyle silinir; silme talebi bu
+  döngü sonunda tüm yedeklere yansır.</li>
+<li>Aktif yedek derhâl silinir; pasif kopyalar en geç 30 gün içinde temizlenir.</li>
+<li>Silme işlemi kaydı (kimlik bilgisi olmadan) 3 yıl saklanır.</li>
+</ul>
+<h2 id="6-ucuncu-taraflarda-silme">6. Üçüncü taraflarda silme</h2>
+<table>
+<thead>
+<tr>
+<th>Taraf</th>
+<th>Yöntem</th>
+<th>Not</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Google AdMob</td>
+<td>Cihaz ayarları → Reklam kimliğini sil/sıfırla; Google Hesabım</td>
+<td>Geçmiş reklam verisi Google politikalarına tabi</td>
+</tr>
+<tr>
+<td>Google Firebase</td>
+<td>Bildirim iznini kapat / uygulama verisini sil</td>
+<td>Jeton geçersizleşir</td>
+</tr>
+<tr>
+<td>Supabase</td>
+<td>Uygulama içi yedek silme</td>
+<td>Anonim kimlik etkisiz</td>
+</tr>
+<tr>
+<td>AI sağlayıcısı</td>
+<td>Kalıcı saklama yok; saklama varsa 30 gün içinde silinir</td>
+<td>Sözleşme gereği</td>
+</tr>
+</tbody>
+</table>
+<h2 id="7-erisim-ve-tasnabilirlik">7. Erişim ve taşınabilirlik</h2>
+<p>Kullanıcı, verilerinin bir kopyasını isteyebilir:</p>
+<ul>
+<li><strong>Ayarlar → Yedekleme → Dosyaya aktar</strong> ile JSON yedeği alınır.</li>
+<li>E-posta talebiyle 30 gün içinde makine okunabilir kopya (JSON) sağlanır.</li>
+<li>AI sohbetleri ve favoriler dahil edilir; üçüncü taraf verileri hariçtir.</li>
+</ul>
+<h2 id="8-duzeltme">8. Düzeltme</h2>
+<ul>
+<li>Kullanıcı içeriği (favori, not, zikir) uygulama içinden düzenlenebilir.</li>
+<li>Destek kaydındaki hatalı bilgi e-posta ile düzeltilir.</li>
+<li>Düzeltme, aktarıldığı üçüncü kişilere bildirilir (KVKK m.11).</li>
+</ul>
+<h2 id="9-ozel-durumlar">9. Özel durumlar</h2>
+<ul>
+<li><strong>Çocuk verisi:</strong> 13 yaş altı olduğu tespit edilirse veri derhâl silinir.</li>
+<li><strong>Yasal saklama:</strong> Vergi/ticaret mevzuatı gereği saklanması zorunlu kayıtlar
+  (varsa) silinmez; kullanıcıya gerekçesi bildirilir.</li>
+<li><strong>Abonelik:</strong> Veri silme, aboneliği iptal etmez. Abonelik mağazadan iptal
+  edilir; kullanıcıya bu uyarı gösterilir.</li>
+<li><strong>Silme sonrası:</strong> Uygulama ilk açılış durumuna döner; bazı özellikler
+  yeniden kurulum gerektirebilir.</li>
+</ul>
+<h2 id="10-kayt-ve-denetim">10. Kayıt ve denetim</h2>
+<p>Her talep için: tarih, kanal, kapsam, yapılan işlem, sonuç, sorumlu kişi.
+Kayıtlar kişisel veri içermeden 3 yıl saklanır; yıllık denetimde gözden
+geçirilir.</p>
+<h2 id="11-iletisim">11. İletişim</h2>
+<p><strong>destek@ezanai.app</strong> · Konu: <code>KVKK</code>
+<strong>Web:</strong> <code>.../veri-silme.html</code>
+<strong>Posta:</strong> İstanbul, Türkiye (tam adres talep üzerine)</p>
+<hr>
+<h3 id="english-summary">English summary</h3>
+<p>You can delete all local data via Settings → Delete my data, and delete the
+cloud backup via Settings → Cloud backup → Delete server backup. You may also
+email destek@ezanai.app; requests are answered within 30 days free of charge.
+Deleting data does not cancel a subscription. Store purchase records and
+legally required records are retained by the respective store/authority.</p>
+    <div class="notice">
+      Bu sayfa bilgilendirme amaçlıdır ve hukuki görüş yerine geçmez.
+      Yürürlükteki sürüm bu sayfadır; önemli değişiklikler uygulama içinde
+      duyurulur.
+    </div>
+  </article>
+</main>
+<footer>
+  <div class="links"><a href="privacy.html">Gizlilik</a><a href="kvkk.html">KVKK</a><a href="acik-riza.html">Açık Rıza</a><a href="terms.html">Koşullar</a><a href="abonelik.html">Abonelik</a><a href="veri-silme.html">Veri Silme</a><a href="guvenlik.html">Güvenlik</a></div>
+  <div>© 2026 YazılımCeosu · Ezan Asistanı Pro · <code>com.yazilimceosu.ezanai</code></div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="App Privacy, privacy manifest ve App Store gereksinimleri.">
+<meta name="robots" content="index,follow">
+<title>Apple App Store Uyum — Ezan Asistanı Pro</title>
+<style>
+:root {
+  --bg: #f6f8f7;
+  --card: #ffffff;
+  --ink: #14211d;
+  --muted: #5b6b65;
+  --brand: #0f766e;
+  --brand-soft: #e6f4f1;
+  --line: #dbe5e1;
+  --warn: #92400e;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.65;
+  font-size: 16px;
+}
+a { color: var(--brand); text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+header {
+  background: linear-gradient(135deg, #0f766e, #115e59);
+  color: #fff;
+  padding: 22px 20px 18px;
+}
+header .wrap {
+  max-width: 980px; margin: 0 auto;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+  justify-content: space-between;
+}
+.brand { font-weight: 800; letter-spacing: .2px; font-size: 18px; }
+.brand small { display: block; font-weight: 500; opacity: .85; font-size: 12px; }
+nav { display: flex; flex-wrap: wrap; gap: 6px; }
+nav a {
+  color: #fff; text-decoration: none; font-size: 13px;
+  padding: 5px 9px; border-radius: 999px; background: rgba(255,255,255,.12);
+}
+nav a:hover { background: rgba(255,255,255,.24); }
+main {
+  max-width: 980px; margin: 26px auto 60px; padding: 0 18px;
+}
+.card {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 16px; padding: 28px 30px;
+  box-shadow: 0 8px 24px rgba(15, 118, 110, .06);
+}
+h1 { font-size: 30px; line-height: 1.2; margin: 0 0 8px; }
+h2 { font-size: 22px; margin: 34px 0 10px; padding-top: 8px; }
+h3 { font-size: 17px; margin: 24px 0 8px; }
+p, li { color: #24332e; }
+ul, ol { padding-left: 22px; }
+li { margin: 4px 0; }
+blockquote {
+  margin: 18px 0; padding: 12px 16px;
+  background: var(--brand-soft); border-left: 4px solid var(--brand);
+  border-radius: 8px; color: #164e47;
+}
+code {
+  background: #eef3f1; padding: 1px 5px; border-radius: 5px;
+  font-size: 13px;
+}
+pre {
+  background: #0f172a; color: #e2e8f0; padding: 16px;
+  border-radius: 10px; overflow-x: auto; font-size: 13px;
+}
+pre code { background: transparent; color: inherit; padding: 0; }
+table {
+  width: 100%; border-collapse: collapse; margin: 16px 0;
+  font-size: 14px; display: block; overflow-x: auto;
+}
+th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+th { background: #f0f6f4; font-weight: 700; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 30px 0; }
+.meta {
+  color: var(--muted); font-size: 13px; margin-bottom: 18px;
+}
+.notice {
+  background: #fff7ed; border: 1px solid #fed7aa; color: var(--warn);
+  padding: 12px 16px; border-radius: 10px; font-size: 13.5px;
+  margin: 18px 0;
+}
+footer {
+  max-width: 980px; margin: 0 auto 40px; padding: 0 18px;
+  color: var(--muted); font-size: 13px;
+}
+footer .links { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; }
+@media (max-width: 640px) {
+  .card { padding: 20px 16px; }
+  h1 { font-size: 24px; }
+  h2 { font-size: 19px; }
+}
+@media print {
+  header, nav, footer { display: none; }
+  body { background: #fff; }
+  .card { border: 0; box-shadow: none; padding: 0; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="brand">Ezan Asistanı Pro<small>Yasal ve uyum belgeleri</small></div>
+    <nav><a href="privacy.html">Gizlilik</a><a href="kvkk.html">KVKK</a><a href="acik-riza.html">Açık Rıza</a><a href="terms.html">Koşullar</a><a href="abonelik.html">Abonelik</a><a href="veri-silme.html">Veri Silme</a><a href="guvenlik.html">Güvenlik</a></nav>
+  </div>
+</header>
+<main>
+  <article class="card">
+    <div class="meta">YazılımCeosu · İstanbul, Türkiye · destek@ezanai.app</div>
+    <h1 id="apple-app-store-uyum-dosyas-ezan-asistan-pro-ios">Apple App Store Uyum Dosyası — Ezan Asistanı Pro (iOS)</h1>
+<p><strong>Sürüm:</strong> 1.0 · <strong>Tarih:</strong> 12 Kasım 2026
+<strong>Durum:</strong> Depoda <strong>iOS projesi yok</strong> (<code>ios/</code> klasörü bulunmuyor). Bu dosya,
+iOS sürümü hazırlanırken uygulanacak zorunlu gereksinimleri ve App Store
+Connect beyanlarını tanımlar.</p>
+<blockquote>
+<p>Kaynaklar: App Store Review Guidelines, App Store Connect Help, Apple
+Privacy Manifest (PrivacyInfo.xcprivacy), Apple Developer Program License
+Agreement. Bağlantılar §10’da. Hukuki görüş değildir.</p>
+</blockquote>
+<h2 id="1-yayn-kimligi">1. Yayın kimliği</h2>
+<table>
+<thead>
+<tr>
+<th>Alan</th>
+<th>Değer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bundle ID</td>
+<td><code>com.yazilimceosu.ezanai</code> (Play ile aynı olabilir; ayrı Apple ID)</td>
+</tr>
+<tr>
+<td>SKU</td>
+<td><code>ezanai-ios-1</code></td>
+</tr>
+<tr>
+<td>Uygulama adı (30 karakter)</td>
+<td><code>Ezan Asistanı Pro: Ezan &amp; Kıble</code></td>
+</tr>
+<tr>
+<td>Alt başlık</td>
+<td><code>Namaz vakti, kıble, Kur'an</code></td>
+</tr>
+<tr>
+<td>Kategori</td>
+<td>Lifestyle (birincil), Reference (ikincil)</td>
+</tr>
+<tr>
+<td>Yaş derecesi</td>
+<td>4+ (dinî içerik; şiddet/uygunsuz içerik yok)</td>
+</tr>
+<tr>
+<td>Fiyat</td>
+<td>Ücretsiz + IAP</td>
+</tr>
+<tr>
+<td>Gizlilik URL’si</td>
+<td><code>.../privacy.html</code> (App Store Connect’te zorunlu)</td>
+</tr>
+<tr>
+<td>Kullanım koşulları</td>
+<td><code>.../terms.html</code> (EULA)</td>
+</tr>
+<tr>
+<td>Destek URL’si</td>
+<td><code>.../</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-zorunlu-app-store-gereksinimleri">2. Zorunlu App Store gereksinimleri</h2>
+<h3 id="21-gizlilik-politikas-511i">2.1. Gizlilik politikası (5.1.1(i))</h3>
+<ul>
+<li>Uygulama içinde <strong>ve</strong> App Store Connect’te erişilebilir olmalı.</li>
+<li>Veri türleri, amaç, saklama, paylaşım ve silme açıklanmalı.</li>
+<li>Metin, Play Data safety ve App Privacy beyanıyla aynı olmalı.</li>
+</ul>
+<h3 id="22-hesap-ve-veri-silme-511v">2.2. Hesap ve veri silme (5.1.1(v))</h3>
+<p>Uygulama hesap oluşturmuyor; ancak kullanıcı verisini uygulama içinden
+silebilmelidir. App Store Connect’te “veri silme” talebi için:</p>
+<ul>
+<li>Uygulama içi: Ayarlar → Verilerimi sil</li>
+<li>Web: <code>.../veri-silme.html</code></li>
+<li>E-posta: destek@ezanai.app</li>
+</ul>
+<h3 id="23-app-privacy-nutrition-label">2.3. App Privacy (nutrition label)</h3>
+<table>
+<thead>
+<tr>
+<th>Kategori</th>
+<th>Veri</th>
+<th>Bağlantılı mı?</th>
+<th>İzleme (tracking)?</th>
+<th>Amaç</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Location</td>
+<td>Coarse Location (cihazda)</td>
+<td>Hayır</td>
+<td>Hayır</td>
+<td>App Functionality</td>
+</tr>
+<tr>
+<td>Location</td>
+<td>Coarse Location (~1 km, AlAdhan yedek)</td>
+<td>Hayır</td>
+<td>Hayır</td>
+<td>App Functionality</td>
+</tr>
+<tr>
+<td>Location</td>
+<td>Coarse (AdMob IP)</td>
+<td>Hayır</td>
+<td><strong>Evet</strong> (rıza ile)</td>
+<td>Advertising</td>
+</tr>
+<tr>
+<td>Identifiers</td>
+<td>Device ID (IDFA)</td>
+<td>Hayır</td>
+<td><strong>Evet</strong> (ATT izni ile)</td>
+<td>Advertising</td>
+</tr>
+<tr>
+<td>Identifiers</td>
+<td>User ID (Supabase UUID)</td>
+<td>Evet (anonim)</td>
+<td>Hayır</td>
+<td>App Functionality</td>
+</tr>
+<tr>
+<td>User Content</td>
+<td>Other User Content (AI soruları)</td>
+<td>Hayır</td>
+<td>Hayır</td>
+<td>App Functionality</td>
+</tr>
+<tr>
+<td>Usage Data</td>
+<td>Advertising Data</td>
+<td>Hayır</td>
+<td><strong>Evet</strong></td>
+<td>Advertising</td>
+</tr>
+<tr>
+<td>Diagnostics</td>
+<td>Crash Data</td>
+<td><strong>Hayır</strong> (SDK yok)</td>
+<td>Hayır</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Purchases</td>
+<td>Purchase History</td>
+<td>Evet</td>
+<td>Hayır</td>
+<td>App Functionality</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Önemli:</strong> ATT izni (<code>NSUserTrackingUsageDescription</code>) verilmezse veya
+kullanıcı reddederse <strong>IDFA okunamaz</strong>; bu durumda “tracking: Hayır” beyanı
+verilir ve reklamlar kişiselleştirilmez.</p>
+<h3 id="24-privacy-manifest-privacyinfoxcprivacy">2.4. Privacy Manifest — <code>PrivacyInfo.xcprivacy</code></h3>
+<p>Her uygulama ve üçüncü taraf SDK için zorunludur (ITMS-91053 reddi).</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot;
+  &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;
+&lt;plist version=&quot;1.0&quot;&gt;
+&lt;dict&gt;
+  &lt;key&gt;NSPrivacyTracking&lt;/key&gt;
+  &lt;true/&gt; &lt;!-- ATT izni verilirse; SDK/config ile kapatılabilir --&gt;
+  &lt;key&gt;NSPrivacyTrackingDomains&lt;/key&gt;
+  &lt;array&gt;
+    &lt;string&gt;googleads.g.doubleclick.net&lt;/string&gt;
+    &lt;string&gt;googleadservices.com&lt;/string&gt;
+  &lt;/array&gt;
+  &lt;key&gt;NSPrivacyCollectedDataTypes&lt;/key&gt;
+  &lt;array&gt;
+    &lt;dict&gt;
+      &lt;key&gt;NSPrivacyCollectedDataType&lt;/key&gt;
+      &lt;string&gt;NSPrivacyCollectedDataTypeCoarseLocation&lt;/string&gt;
+      &lt;key&gt;NSPrivacyCollectedDataTypeLinked&lt;/key&gt;
+      &lt;false/&gt;
+      &lt;key&gt;NSPrivacyCollectedDataTypeTracking&lt;/key&gt;
+      &lt;true/&gt;
+      &lt;key&gt;NSPrivacyCollectedDataTypePurposes&lt;/key&gt;
+      &lt;array&gt;&lt;string&gt;NSPrivacyCollectedDataTypePurposeAdvertising&lt;/string&gt;&lt;/array&gt;
+    &lt;/dict&gt;
+    &lt;dict&gt;
+      &lt;key&gt;NSPrivacyCollectedDataType&lt;/key&gt;
+      &lt;string&gt;NSPrivacyCollectedDataTypeDeviceID&lt;/string&gt;
+      &lt;key&gt;NSPrivacyCollectedDataTypeLinked&lt;/key&gt;
+      &lt;false/&gt;
+      &lt;key&gt;NSPrivacyCollectedDataTypeTracking&lt;/key&gt;
+      &lt;true/&gt;
+      &lt;key&gt;NSPrivacyCollectedDataTypePurposes&lt;/key&gt;
+      &lt;array&gt;&lt;string&gt;NSPrivacyCollectedDataTypePurposeAdvertising&lt;/string&gt;&lt;/array&gt;
+    &lt;/dict&gt;
+    &lt;dict&gt;
+      &lt;key&gt;NSPrivacyCollectedDataType&lt;/key&gt;
+      &lt;string&gt;NSPrivacyCollectedDataTypeOtherUserContent&lt;/string&gt;
+      &lt;key&gt;NSPrivacyCollectedDataTypeLinked&lt;/key&gt;
+      &lt;false/&gt;
+      &lt;key&gt;NSPrivacyCollectedDataTypeTracking&lt;/key&gt;
+      &lt;false/&gt;
+      &lt;key&gt;NSPrivacyCollectedDataTypePurposes&lt;/key&gt;
+      &lt;array&gt;&lt;string&gt;NSPrivacyCollectedDataTypePurposeAppFunctionality&lt;/string&gt;&lt;/array&gt;
+    &lt;/dict&gt;
+  &lt;/array&gt;
+  &lt;key&gt;NSPrivacyAccessedAPITypes&lt;/key&gt;
+  &lt;array&gt;
+    &lt;dict&gt;
+      &lt;key&gt;NSPrivacyAccessedAPIType&lt;/key&gt;
+      &lt;string&gt;NSPrivacyAccessedAPICategoryUserDefaults&lt;/string&gt;
+      &lt;key&gt;NSPrivacyAccessedAPITypeReasons&lt;/key&gt;
+      &lt;array&gt;&lt;string&gt;CA92.1&lt;/string&gt;&lt;/array&gt;
+    &lt;/dict&gt;
+    &lt;dict&gt;
+      &lt;key&gt;NSPrivacyAccessedAPIType&lt;/key&gt;
+      &lt;string&gt;NSPrivacyAccessedAPICategoryFileTimestamp&lt;/string&gt;
+      &lt;key&gt;NSPrivacyAccessedAPITypeReasons&lt;/key&gt;
+      &lt;array&gt;&lt;string&gt;C617.1&lt;/string&gt;&lt;/array&gt;
+    &lt;/dict&gt;
+  &lt;/array&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;
+</code></pre>
+<blockquote>
+<p>Not: ATT izni verilmezse <code>NSPrivacyTracking=false</code> yapılmalı ve reklam SDK’sı
+IDFA okumayacak şekilde yapılandırılmalıdır.</p>
+</blockquote>
+<h3 id="25-uygulama-ici-satn-alma">2.5. Uygulama içi satın alma</h3>
+<ul>
+<li>Dijital özellikler yalnızca <strong>StoreKit IAP</strong> ile satılır (3.1.1).</li>
+<li>Harici ödeme yönlendirmesi yok (3.1.3 istisnaları Türkiye’de geçerli
+  değildir).</li>
+<li>Abonelik ekranında: ürün adı, süre, fiyat, otomatik yenileme, iptal yolu,
+  gizlilik ve kullanım koşulları bağlantıları (3.1.2). <strong>Premium ekranında
+  “Abonelik koşulları ve iade”, “Kullanım koşulları” ve “Gizlilik politikası”
+  bağlantıları eklendi.</strong></li>
+<li>“Restore Purchases” düğmesi zorunlu.</li>
+<li>Abonelik grubu: <code>ezanai_premium</code>; ürünler <code>monthly/yearly/lifetime</code>.</li>
+</ul>
+<h3 id="26-att-app-tracking-transparency">2.6. ATT (App Tracking Transparency)</h3>
+<ul>
+<li><code>NSUserTrackingUsageDescription</code>: “Reklamların ilgi alanlarınıza göre
+  gösterilmesi için izin istenir. İzin vermezseniz kişiselleştirilmemiş reklam
+  görürsünüz.”</li>
+<li>ATT istemi <strong>uygulama açılışında değil</strong>, reklam rızası bağlamında
+  gösterilir.</li>
+<li>Reddedilirse <code>npa=1</code> ve IDFA kullanılmaz.</li>
+</ul>
+<h3 id="27-bildirimler-ve-arka-plan">2.7. Bildirimler ve arka plan</h3>
+<ul>
+<li><code>UNUserNotificationCenter</code> izni; reddedilirse uygulama içi uyarı.</li>
+<li>Sesli ezan <code>AVAudioSession</code> <code>.playback</code> + <code>UIBackgroundModes: audio</code>.</li>
+<li>Ses, kullanıcı durdurmadıkça kesilmez; kilit ekranında kontroller.</li>
+<li>Kritik alarm (critical alerts) kullanılmaz; entitlement gerektirir ve dinî
+  uygulama için uygun değildir.</li>
+</ul>
+<h3 id="28-dini-icerik-ve-116-52">2.8. Dinî içerik ve 1.1.6 / 5.2</h3>
+<ul>
+<li>Yanıltıcı dinî iddia yok; “fetva” değil “bilgi”.</li>
+<li>Kaynak gösterimi görünür.</li>
+<li>Üçüncü taraf telifli ses/meal kullanılıyorsa lisans kanıtı saklanır.</li>
+<li>Kullanıcıya ait içerik bildirimi (AI yanıtı) uygulama içinde.</li>
+</ul>
+<h3 id="29-krk-link-ve-cokme-21">2.9. Kırık link ve çökme (2.1)</h3>
+<ul>
+<li>Gizlilik, koşullar, destek URL’leri yayın öncesi <strong>200</strong> dönmeli.</li>
+<li>Uygulama açılışta çökmemeli; boş durumlar ele alınmalı.</li>
+<li>Demo/inceleme hesabı gerekmiyorsa “Sign-in required” işaretlenmez.</li>
+</ul>
+<h2 id="3-ios-teknik-gereksinimleri">3. iOS teknik gereksinimleri</h2>
+<table>
+<thead>
+<tr>
+<th>Gereklilik</th>
+<th>Uygulama</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Minimum iOS</td>
+<td>15.0+ (Flutter 3.47 varsayılanı; cihaz dağılımına göre)</td>
+</tr>
+<tr>
+<td>Xcode</td>
+<td>16+ / iOS 18 SDK</td>
+</tr>
+<tr>
+<td>Mimari</td>
+<td>arm64</td>
+</tr>
+<tr>
+<td>Privacy manifest</td>
+<td>Eklenmeli</td>
+</tr>
+<tr>
+<td>ATT</td>
+<td>Eklenmeli</td>
+</tr>
+<tr>
+<td>StoreKit 2</td>
+<td>Tercih edilir</td>
+</tr>
+<tr>
+<td>App Groups</td>
+<td>Yedekleme/dosya paylaşımı gerekiyorsa</td>
+</tr>
+<tr>
+<td>Keychain</td>
+<td>Anonim oturum jetonu için</td>
+</tr>
+<tr>
+<td>Swift Package Manager / CocoaPods</td>
+<td>Kilitli sürümler</td>
+</tr>
+<tr>
+<td>App icon</td>
+<td>1024×1024, alfa yok</td>
+</tr>
+<tr>
+<td>Ekran görüntüleri</td>
+<td>6.9", 6.5", 5.5", iPad (gerekliyse)</td>
+</tr>
+<tr>
+<td>App preview</td>
+<td>Opsiyonel</td>
+</tr>
+</tbody>
+</table>
+<h2 id="4-app-store-connect-beyan-metinleri">4. App Store Connect beyan metinleri</h2>
+<p><strong>Promosyon metni:</strong> “Namaz vakitleri, ezan, kıble, Kur’an ve kaynak gösteren
+yapay zekâ asistanı. Reklamsız Premium seçeneği.”</p>
+<p><strong>Açıklama (özet):</strong> “Ezan Asistanı Pro, Diyanet yöntemiyle hesaplanan namaz
+vakitleri, tam vaktinde ezan bildirimi, kıble, Kur’an-ı Kerim ve meal, ilahi,
+tesbih, hadis ve kaynak gösteren AI asistanı sunar. Konumunuz cihazınızda
+işlenir; tam koordinat sunucuya gönderilmez. Harita ve cami aramasında en
+fazla 3 ondalık (~110 m) konum, harita servislerinin görüntü alanı ise
+OpenStreetMap/Esri’ye iletilir. Diyanet servisi kullanılamazsa yaklaşık
+koordinat (2 ondalık, ~1 km) AlAdhan’a gönderilir. AI ve bulut
+yedekleme isteğe bağlıdır ve ayrı rıza gerektirir.”</p>
+<p><strong>Anahtar kelimeler:</strong> ezan, namaz vakti, kıble, kuran, ilahi, tesbih, ramazan,
+imsakiye, hadis</p>
+<h2 id="5-inceleme-notu-app-review-notes">5. İnceleme notu (App Review Notes)</h2>
+<blockquote>
+<p>Uygulama hesap gerektirmez. Tüm temel özellikler giriş yapmadan çalışır.
+AI asistanı ilk açılışta çevrimdışı bilgi tabanıyla yanıt verir; uzak AI
+için Ayarlar → Gizlilik ve rızalar üzerinden açık rıza gerekir. Premium
+ürünleri StoreKit ile sunulur; “Restore Purchases” mevcuttur. Reklamlar
+yalnızca ücretsiz sürümde ve kişiselleştirme varsayılan kapalı olarak
+gösterilir. Gizlilik: .../privacy.html, Koşullar: .../terms.html.</p>
+</blockquote>
+<h2 id="6-red-riskleri-ve-onlemler">6. Red riskleri ve önlemler</h2>
+<table>
+<thead>
+<tr>
+<th>Risk</th>
+<th>Guideline</th>
+<th>Önlem</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Kırık gizlilik linki</td>
+<td>5.1.1(i), 2.1</td>
+<td>Yayın öncesi 200 kontrolü + CI link testi</td>
+</tr>
+<tr>
+<td>Eksik PrivacyInfo</td>
+<td>ITMS-91053</td>
+<td>Manifest + SDK manifestleri</td>
+</tr>
+<tr>
+<td>Hesap silme yok</td>
+<td>5.1.1(v)</td>
+<td>Uygulama içi silme + web sayfası</td>
+</tr>
+<tr>
+<td>Abonelik metni eksik</td>
+<td>3.1.2</td>
+<td>Fiyat/dönem/yenileme/iptal + linkler</td>
+</tr>
+<tr>
+<td>IDFA izinsiz</td>
+<td>5.1.2</td>
+<td>ATT + NPA varsayılan</td>
+</tr>
+<tr>
+<td>Dinî içerikte yanıltma</td>
+<td>1.1.6, 5.2</td>
+<td>“Fetva değildir” + kaynak</td>
+</tr>
+<tr>
+<td>Telifli ses</td>
+<td>5.2</td>
+<td>Lisans kanıtı; yoksa değiştir</td>
+</tr>
+<tr>
+<td>Yalnızca Android mantığı</td>
+<td>2.1</td>
+<td>iOS testi, çökme testi</td>
+</tr>
+</tbody>
+</table>
+<h2 id="7-ios-yayn-kontrol-listesi">7. iOS yayın kontrol listesi</h2>
+<ul>
+<li>[ ] <code>ios/</code> projesi oluşturuldu (<code>flutter create --platforms=ios .</code>)</li>
+<li>[ ] Bundle ID ve imza profili</li>
+<li>[ ] <code>PrivacyInfo.xcprivacy</code> eklendi</li>
+<li>[ ] ATT metni ve izni</li>
+<li>[ ] StoreKit ürünleri App Store Connect’te tanımlı</li>
+<li>[ ] Restore Purchases test edildi</li>
+<li>[ ] Gizlilik/koşullar/destek URL’leri 200</li>
+<li>[ ] Ekran görüntüleri (6.9"/6.5"/5.5")</li>
+<li>[ ] App Privacy beyanı §2.3 ile aynı</li>
+<li>[ ] TestFlight iç testi</li>
+<li>[ ] App Review Notes §5</li>
+<li>[ ] Yaş derecesi 4+</li>
+<li>[ ] Ses lisansları doğrulandı</li>
+<li>[ ] Türkçe + İngilizce yerelleştirme</li>
+</ul>
+<h2 id="8-ortak-metin-kaynaklar">8. Ortak metin kaynakları</h2>
+<ul>
+<li>Gizlilik: <a href="kvkk.html"><code>KVKK_AYDINLATMA_METNI.md</code></a></li>
+<li>Koşullar: <a href="terms.html"><code>KULLANIM_KOSULLARI.md</code></a></li>
+<li>Abonelik: <a href="abonelik.html"><code>ABONELIK_VE_IADE.md</code></a></li>
+<li>Silme: <a href="veri-silme.html"><code>VERI_SILME_VE_BASVURU.md</code></a></li>
+<li>SDK’lar: <a href="ucuncu-taraflar.html"><code>UCUNCU_TARAF_SDK_VE_AKTARIMLAR.md</code></a></li>
+</ul>
+<h2 id="9-uygulama-ici-baglantlar-ios">9. Uygulama içi bağlantılar (iOS)</h2>
+<ul>
+<li>Hakkında → Gizlilik / KVKK / Kullanım koşulları / Abonelik koşulları</li>
+<li>Ayarlar → Gizlilik ve rızalar</li>
+<li>Ayarlar → Verilerimi sil</li>
+<li>Premium → “Aboneliği geri yükle” + “Aboneliği yönet”</li>
+</ul>
+<h2 id="10-resmi-kaynaklar">10. Resmî kaynaklar</h2>
+<ul>
+<li>App Store Review Guidelines: <a href="https://developer.apple.com/app-store/review/guidelines/">https://developer.apple.com/app-store/review/guidelines/</a></li>
+<li>App Privacy Details: <a href="https://developer.apple.com/app-store/app-privacy-details/">https://developer.apple.com/app-store/app-privacy-details/</a></li>
+<li>Privacy manifest: <a href="https://developer.apple.com/documentation/bundleresources/privacy_manifest_files">https://developer.apple.com/documentation/bundleresources/privacy_manifest_files</a></li>
+<li>ATT: <a href="https://developer.apple.com/documentation/apptrackingtransparency">https://developer.apple.com/documentation/apptrackingtransparency</a></li>
+<li>Auto-renewable subscriptions: <a href="https://developer.apple.com/app-store/subscriptions/">https://developer.apple.com/app-store/subscriptions/</a></li>
+<li>StoreKit: <a href="https://developer.apple.com/storekit/">https://developer.apple.com/storekit/</a></li>
+</ul>
+    <div class="notice">
+      Bu sayfa bilgilendirme amaçlıdır ve hukuki görüş yerine geçmez.
+      Yürürlükteki sürüm bu sayfadır; önemli değişiklikler uygulama içinde
+      duyurulur.
+    </div>
+  </article>
+</main>
+<footer>
+  <div class="links"><a href="privacy.html">Gizlilik</a><a href="kvkk.html">KVKK</a><a href="acik-riza.html">Açık Rıza</a><a href="terms.html">Koşullar</a><a href="abonelik.html">Abonelik</a><a href="veri-silme.html">Veri Silme</a><a href="guvenlik.html">Güvenlik</a></div>
+  <div>© 2026 YazılımCeosu · Ezan Asistanı Pro · <code>com.yazilimceosu.ezanai</code></div>
+</footer>
+</body>
+</html>
