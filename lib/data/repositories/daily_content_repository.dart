@@ -211,7 +211,9 @@ class DailyAyah {
       ..writeln()
       ..writeln(ayah.turkish)
       ..writeln()
-      ..write('— ${surah.nameTurkish} Suresi, ${ayah.number}. ayet (Ezan Asistanı Pro)');
+      ..write(
+        '— ${surah.nameTurkish} Suresi, ${ayah.number}. ayet (Ezan Asistanı Pro)',
+      );
     return buffer.toString();
   }
 }

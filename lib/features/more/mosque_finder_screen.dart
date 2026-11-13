@@ -605,8 +605,7 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
           .get(
             uri,
             headers: const <String, String>{
-              'User-Agent':
-                  'EzanAsistaniPro/1.0 (+https://yazilimceosu.github.io/ezanapp)',
+              'User-Agent': 'EzanAsistaniPro/1.0 (+https://yazilimceosu.github.io/ezanapp)',
             },
           )
           .timeout(const Duration(seconds: 7));

@@ -522,7 +522,9 @@ class QuranRepository {
         ..writeln(ayah.turkish)
         ..writeln();
     }
-    buffer.write('— $surahName Suresi, ${ayah.number}. ayet (Ezan Asistanı Pro)');
+    buffer.write(
+      '— $surahName Suresi, ${ayah.number}. ayet (Ezan Asistanı Pro)',
+    );
     return buffer.toString();
   }
 }
