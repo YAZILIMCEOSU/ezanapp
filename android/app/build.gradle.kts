@@ -52,12 +52,19 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         multiDexEnabled = true
+        // Deneme paketi: aynı telefonda kurulu sürümle ÇAKIŞMADAN kurulabilmesi
+        // için ayrı paket kimliği. -PAPP_ID_SUFFIX=.beta
+        (project.findProperty("APP_ID_SUFFIX") as String?)
+            ?.takeIf { it.isNotBlank() }
+            ?.let { applicationIdSuffix = it }
         resourceConfigurations += listOf("tr", "en")
         buildConfigField(
             "String",
             "EXPECTED_SIGNING_SHA256",
             "\"$expectedSigningSha256\"",
         )
+        manifestPlaceholders["appLabel"] =
+            (project.findProperty("APP_LABEL") as String?) ?: "Ezan Asistanı Pro"
         manifestPlaceholders["admobAppId"] =
             (project.findProperty("ADMOB_ANDROID_APP_ID") as String?)
                 ?: System.getenv("ADMOB_ANDROID_APP_ID")
@@ -73,6 +80,11 @@ android {
                 storePassword = keystoreProperties["storePassword"] as String?
                 // PKCS#12 (CI test anahtarı) veya JKS (yükleme anahtarı) olabilir.
                 storeType = (keystoreProperties["storeType"] as String?) ?: "jks"
+                // Android 6/7 yalnızca v1 (JAR) imzayı anlar; v2/v3 modern
+                // cihazlar içindir. Üçü birlikte en geniş uyumluluğu verir.
+                enableV1Signing = true
+                enableV2Signing = true
+                enableV3Signing = true
             }
         }
     }

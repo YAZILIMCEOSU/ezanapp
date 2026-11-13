@@ -256,9 +256,38 @@ jobs:
               --dart-define=ADMOB_TEST_MODE=true 2>&1 | tail -20
             cp build/app/outputs/flutter-apk/app-release.apk \
               build/app/outputs/flutter-apk/ezanai-kurulum-arm64.apk
+            build/app/outputs/flutter-apk/ezanai-kurulum-beta.apk
             ls -lh build/app/outputs/flutter-apk/ezanai-kurulum-arm64.apk
             rm -f android/key.properties
           } 2>&1 | tee /tmp/arm64.log
+
+      # KURTARMA PAKETİ: telefonda eski sürüm kuruluysa Android, imza farklı
+      # olduğu için güncellemeyi reddeder ("Uygulama yüklenmedi"). Bu paket
+      # ayrı kimlikle (com.yazilimceosu.ezanai.beta) derlenir; hiçbir şey
+      # silmeden, eskisinin yanına kurulur.
+      - name: flutter build apk (beta paketi, çakışmasız kurulum)
+        id: beta
+        if: always() && steps.build.outcome == 'success'
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          {
+            printf 'storePassword=ezanai-test\nkeyPassword=ezanai-test\nkeyAlias=ezanai-test\nstoreFile=%s\nstoreType=PKCS12\n' \
+              "$GITHUB_WORKSPACE/android/test-only/ezanai-test.p12" > android/key.properties
+            flutter build apk --release --no-pub \
+              -PAPP_ID_SUFFIX=.beta \
+              -PAPP_LABEL="Ezan Asistanı Pro (Beta)" \
+              --dart-define=ADMOB_TEST_MODE=true 2>&1 | tail -20
+            cp build/app/outputs/flutter-apk/app-release.apk \
+              build/app/outputs/flutter-apk/ezanai-kurulum-beta.apk
+            SDK="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
+            BT="$(ls -d "$SDK"/build-tools/* 2>/dev/null | tail -1)"
+            "$BT/aapt2" dump badging build/app/outputs/flutter-apk/ezanai-kurulum-beta.apk | head -1
+            "$BT/apksigner" verify -v build/app/outputs/flutter-apk/ezanai-kurulum-beta.apk 2>&1 \
+              | grep -i "verified using" || true
+            ls -lh build/app/outputs/flutter-apk/ezanai-kurulum-beta.apk
+            rm -f android/key.properties
+          } 2>&1 | tee /tmp/beta.log
 
       # Derleme çıktılarını indirilebilir yap: cihazda denemek için release APK,
       # Play yükleme dosyası biçimi için AAB.
@@ -273,6 +302,7 @@ jobs:
             build/app/outputs/flutter-apk/ezanai-kurulum.apk
             build/app/outputs/flutter-apk/app-debug.apk
             build/app/outputs/flutter-apk/ezanai-kurulum-arm64.apk
+            build/app/outputs/flutter-apk/ezanai-kurulum-beta.apk
             build/app/outputs/bundle/release/app-release.aab
 
       # Telefonda denemek için tek tık indirme bağlantısı: imzalı release APK,
@@ -298,6 +328,9 @@ jobs:
           )
           if [ -f build/app/outputs/flutter-apk/ezanai-kurulum-arm64.apk ]; then
             FILES+=(build/app/outputs/flutter-apk/ezanai-kurulum-arm64.apk)
+          fi
+          if [ -f build/app/outputs/flutter-apk/ezanai-kurulum-beta.apk ]; then
+            FILES+=(build/app/outputs/flutter-apk/ezanai-kurulum-beta.apk)
           fi
           gh release upload "$TAG" "${FILES[@]}" --clobber
           gh release view "$TAG" --json assets --jq '.assets[] | "indirmeye hazır: \(.name) (\(.size) bayt)"'
@@ -325,8 +358,9 @@ jobs:
             echo "| build (debug apk) | ${{ steps.build.outcome }} |"
             echo "| build (release appbundle) | ${{ steps.release.outcome }} |"
             echo "| arm64 yedek APK | ${{ steps.arm64.outcome }} |"
+            echo "| beta paketi (çakışmasız) | ${{ steps.beta.outcome }} |"
             echo "| dene-apk indirmeye açıldı | ${{ steps.apk_release.outcome }} |"
-            for f in pubget fmt analyze test ai rls kible sign sigpin playcompliance build release arm64; do
+            for f in pubget fmt analyze test ai rls kible sign sigpin playcompliance build release arm64 beta; do
               if [ -f /tmp/$f.log ]; then
                 echo
                 echo "## $f"

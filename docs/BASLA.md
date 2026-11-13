@@ -41,11 +41,15 @@ Bu adım Play ile ilgili değil; uygulamanı gerçekten görüp beğenip beğenm
 3. İndirme bitince bildirime dokun → **Kur**.
 4. Telefon "Bilinmeyen kaynaklardan yüklemeye izin ver" derse → **İzin ver** → **Kur** → **Aç**.
 
-> ⚠️ **"Uygulama yüklenmedi" derse:** telefonda eski sürüm kurulu ve imzası
-> farklı. Bir kez **eski uygulamayı kaldır** (simgeye basılı tut → Kaldır),
-> sonra APK'yı tekrar kur. Bu işlemden sonraki güncellemeler artık sorunsuz
-> kurulur; çünkü CI sabit bir test anahtarı kullanıyor
-> (`android/test-only/`).
+> ⚠️ **"Uygulama yüklenmedi" derse iki yol var:**
+>
+> **Yol A (en kolay, silme yok):** `ezanai-kurulum-beta.apk` dosyasını kur.
+> Bu paket ayrı kimlikle (`…ezanai.beta`) derlenir; kurulu sürümün yanına
+> sorunsuz kurulur. Simgesi "Ezan Asistanı Pro (Beta)" olur.
+>
+> **Yol B:** Eski uygulamayı kaldır (simgeye basılı tut → Kaldır) → normal
+> APK'yı kur. 1.0.1+2'den itibaren imza sabit (`android/test-only/`), bu
+> yüzden sonraki güncellemeler sorunsuz kurulur.
 
 **Doğru yaptığının kanıtı:** Telefonda "Ezan Asistanı Pro" uygulaması açılır, vakitler ve geri sayım görünür.
 
