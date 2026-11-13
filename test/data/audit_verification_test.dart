@@ -440,8 +440,8 @@ void main() {
       expect(AdhanSound.tone3.label, contains('Ezan'));
     });
 
-    test('uygulama adı Ezan Vaktim Pro, dil desteği TR/EN/AR, meal seçimi, saat geri alma ve Esmaül Hüsna doğrulanır', () {
-      expect(AppConstants.appName, 'Ezan Vaktim Pro');
+    test('uygulama adı Ezan Asistanı Pro, dil desteği TR/EN/AR, meal seçimi, saat geri alma ve Esmaül Hüsna doğrulanır', () {
+      expect(AppConstants.appName, 'Ezan Asistanı Pro');
       expect(AppStrings.supportedLanguages.length, 3);
       expect(const AppStrings('en').tabPrayers, 'Prayer Times');
       expect(const AppStrings('ar').tabPrayers, 'أوقات الصلاة');

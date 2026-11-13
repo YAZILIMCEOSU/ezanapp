@@ -1,4 +1,4 @@
-# Ezan Vaktim Pro — Veri Silme, Erişim ve Başvuru Prosedürü
+# Ezan Asistanı Pro — Veri Silme, Erişim ve Başvuru Prosedürü
 
 **Sürüm:** 1.0 · **Tarih:** 12 Kasım 2026
 **Veri sorumlusu:** YazılımCeosu — destek@ezanai.app

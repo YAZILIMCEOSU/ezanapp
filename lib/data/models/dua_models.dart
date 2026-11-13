@@ -81,7 +81,7 @@ class Dua {
     buffer
       ..writeln('Kaynak: $reference')
       ..writeln()
-      ..write('(EzanAI ile paylaşıldı)');
+      ..write('(Ezan Asistanı Pro ile paylaşıldı)');
     return buffer.toString().trim();
   }
 

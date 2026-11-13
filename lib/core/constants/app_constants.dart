@@ -1,7 +1,7 @@
 /// Uygulama geneli sabitler.
 abstract final class AppConstants {
-  static const String appName = 'Ezan Vaktim Pro';
-  static const String tagline = 'Akıllı İslam Asistanı';
+  static const String appName = 'Ezan Asistanı Pro';
+  static const String tagline = 'Namaz Vakti · Kıble · Kur’an';
   static const String packageName = 'com.yazilimceosu.ezanai';
 
   /// Destek adresi ve yasal sayfa adresleri.

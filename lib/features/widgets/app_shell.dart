@@ -236,7 +236,7 @@ class BrandMark extends StatelessWidget {
         width: size,
         height: size,
         filterQuality: FilterQuality.medium,
-        semanticLabel: 'Ezan Vaktim Pro logosu',
+        semanticLabel: 'Ezan Asistanı Pro logosu',
       ),
     );
   }

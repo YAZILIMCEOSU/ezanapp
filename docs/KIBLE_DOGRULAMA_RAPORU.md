@@ -1,6 +1,6 @@
 # Kıble Doğrulama Raporu — 4 Bağımsız Kontrol
 
-> **Sürüm:** 2026-10-27 · **Kapsam:** Ezan Vaktim Pro Kıble pusulası
+> **Sürüm:** 2026-10-27 · **Kapsam:** Ezan Asistanı Pro Kıble pusulası
 > (e-Diyanet hassasiyeti) · **Sonuç:** ✅ **4/4 kontrol geçti — bilinen hata yok**
 
 Bu rapor, Kıble hesabının **yalnızca uygulamanın kendi testine** değil,

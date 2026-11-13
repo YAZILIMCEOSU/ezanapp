@@ -1,4 +1,4 @@
-# Ezan Vaktim Pro — Yasal ve Uyum Paketi
+# Ezan Asistanı Pro — Yasal ve Uyum Paketi
 
 **Sürüm:** 1.0 · **Tarih:** 12 Kasım 2026
 **Hizmet sağlayıcı:** YazılımCeosu (gerçek kişi geliştirici), İstanbul

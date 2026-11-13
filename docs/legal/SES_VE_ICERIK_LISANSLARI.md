@@ -1,4 +1,4 @@
-# Ezan Vaktim Pro — Ses, Görsel ve İçerik Lisansları
+# Ezan Asistanı Pro — Ses, Görsel ve İçerik Lisansları
 
 **Sürüm:** 1.0 · **Tarih:** 12 Kasım 2026
 **Amaç:** Yayınlanan her içeriğin kaynağını ve lisansını belgelemek; telif,

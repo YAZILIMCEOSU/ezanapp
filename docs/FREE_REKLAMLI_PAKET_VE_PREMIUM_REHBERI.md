@@ -1,4 +1,4 @@
-# Ezan Vaktim Pro — Ücretsiz (Reklamlı) Paket + Premium Rehberi
+# Ezan Asistanı Pro — Ücretsiz (Reklamlı) Paket + Premium Rehberi
 
 > **Bu belge kimin için?** Yazılım bilgisi olmayan uygulama sahibi için,
 > **tıklama düzeyinde** yazıldı. Sırayla uygulayın; her adımda "ne göreceksiniz"
@@ -84,7 +84,7 @@ uygulamanın içinde **"reklamsız + ek özellikler"** olarak açılır.
 1. Tarayıcıdan **admob.google.com** → *Başlayın* → Google hesabınızla giriş.
 2. Ülke **Türkiye**, para birimi **TRY (₺)**, saat dilimi **İstanbul**.
 3. *Uygulamalar* → **Uygulama ekle** → **Android** → "Uygulama mağazada
-   yayında değil" seçin → Uygulama adı: **Ezan Vaktim Pro**.
+   yayında değil" seçin → Uygulama adı: **Ezan Asistanı Pro**.
 4. Kaydettikten sonra size bir **Uygulama Kimliği** verilir:
    `ca-app-pub-XXXXXXXX~YYYYYYYY` (tilde `~` işaretli olan).
    → Bu kimlik `ANDROID_APP_ID` olarak derlemede kullanılır.
@@ -181,7 +181,7 @@ Bu komut, Google'ın resmî **test reklam** kimliklerini kullanır. Böylece
 ### 3.3. Ömürlük (lifetime) ürün
 1. **Paraya dönüştür** → **Ürünler** → **Uygulama içi ürünler** →
    **Ürün oluştur**.
-2. Kimlik: `ezanai_premium_lifetime` — ad: *Ezan Vaktim Pro Ömürlük*.
+2. Kimlik: `ezanai_premium_lifetime` — ad: *Ezan Asistanı Pro Ömürlük*.
 3. Fiyat: ₺1.499,99 → **Etkinleştir**.
    > Ömürlük ürün **abonelik değil, tek seferlik üründür**; kodumuz bunu
    > doğru şekilde ayırıyor (`BillingService._subscriptionIds`).
@@ -282,7 +282,7 @@ WMM-2025 küresel harmonik modeli kullanılıyor; cihazın kendi
 
 ### 6.2. Uygulama oluşturma
 - [ ] *Tüm uygulamalar* → **Uygulama oluştur**.
-- [ ] Ad: **Ezan Vaktim Pro** · Dil: **Türkçe** · Tür: **Uygulama** ·
+- [ ] Ad: **Ezan Asistanı Pro** · Dil: **Türkçe** · Tür: **Uygulama** ·
       Ücretsiz/Premium: **Ücretsiz** (uygulama içi satın alma var).
 - [ ] Beyanlar: *Uygulama*, *Oyun değil*, *Çocuklara yönelik değil*.
 

@@ -60,25 +60,38 @@ bir kod turu ve QF anahtarı gerektirir.
 ### 1.4 EveryAyah'a gönderilecek metin
 
 > **Konu:** Ticari mobil uygulamada tilavet kullanımı için yazılı izin talebi
+> — Ezan Asistanı Pro (`com.yazilimceosu.ezanai`)
 >
 > Sayın EveryAyah ekibi,
 >
-> “Ezan Vaktim Pro” (Android/iOS, paket `com.yazilimceosu.ezanai`) adlı
-> uygulamamızda `everyayah.com/data/` altındaki Maher Al-Muaiqly
-> (`Alafasy_128kbps`) tilavetlerini ayet bazında akıtıyoruz. Uygulama
-> ücretsizdir; reklam ve isteğe bağlı Premium abonelik içerir.
+> “Ezan Asistanı Pro” adlı Android/iOS uygulamamızda
+> `everyayah.com/data/Alafasy_128kbps/` altındaki Maher Al-Muaiqly
+> tilavetlerini ayet bazında akıtıyoruz. Uygulama ücretsiz indirilir;
+> reklam ve isteğe bağlı Premium abonelik içerir.
 >
-> Sitenizde yayımlanmış açık bir lisans bulunmadığından, ticari kullanım
+> Sitenizde yayımlanmış açık bir lisans bulunmadığından ticari kullanım
 > için **yazılı izin** talep ediyoruz. Şartlarınızı kabul etmeye hazırız:
-> okuyucu ve everyayah.com atfı, siteye geri bağlantı, kayıtları
-> değiştirmeme, yeniden dağıtmama. İsterseniz aylık dinleme/indirme
-> istatistiği paylaşabiliriz.
 >
-> İzin vermemeniz hâlinde 30 gün içinde tilavetleri kaldıracağımızı veya
-> lisanslı bir sağlayıcıya geçeceğimizi taahhüt ederiz.
+> - Okuyucu adı ve **everyayah.com** atfı uygulamada ve mağaza metninde
+>   görünür.
+> - Sitenize geri bağlantı verilir (`https://everyayah.com/`).
+> - Kayıtlar değiştirilmez, yeniden dağıtılmaz, paket içine gömülmez;
+>   yalnız akıtılır ve kullanıcı indirmesi uygulama içi önbellekte tutulur.
+> - İsterseniz aylık dinleme/indirme istatistiği paylaşılır.
+>
+> İzin vermemeniz hâlinde **30 gün içinde** tilavetleri kaldıracağımızı
+> veya lisanslı bir sağlayıcıya (Quran Foundation Content API) geçeceğimizi
+> taahhüt ederiz.
 >
 > Saygılarımızla,
-> YazılımCeosu — destek@ezanai.app
+> YazılımCeosu (gerçek kişi geliştirici) — destek@ezanai.app
+> https://yazilimceosu.github.io/ezanapp/
+
+**Gönderim yolu:** Sitede açık e-posta adresi yok; iletişim formu Quran
+Foundation yardım merkezi üzerinden yürüyor. Bu nedenle talep
+`destek@ezanai.app` adresinden **hem** QF yardım merkezine **hem**
+`developers@quran.com` adresine gönderilir; yanıt gelmezse 30 gün sonra
+QF Content API yoluna geçilir.
 
 ### 1.5 Kabul ölçütü
 

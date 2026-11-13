@@ -1,4 +1,4 @@
-# Apple App Store Uyum Dosyası — Ezan Vaktim Pro (iOS)
+# Apple App Store Uyum Dosyası — Ezan Asistanı Pro (iOS)
 
 **Sürüm:** 1.0 · **Tarih:** 12 Kasım 2026
 **Durum:** Depoda **iOS projesi yok** (`ios/` klasörü bulunmuyor). Bu dosya,
@@ -15,7 +15,7 @@ Connect beyanlarını tanımlar.
 |---|---|
 | Bundle ID | `com.yazilimceosu.ezanai` (Play ile aynı olabilir; ayrı Apple ID) |
 | SKU | `ezanai-ios-1` |
-| Uygulama adı (30 karakter) | `Ezan Vaktim Pro: Ezan & Kıble` |
+| Uygulama adı (30 karakter) | `Ezan Asistanı Pro: Ezan & Kıble` |
 | Alt başlık | `Namaz vakti, kıble, Kur'an` |
 | Kategori | Lifestyle (birincil), Reference (ikincil) |
 | Yaş derecesi | 4+ (dinî içerik; şiddet/uygunsuz içerik yok) |
@@ -195,7 +195,7 @@ Her uygulama ve üçüncü taraf SDK için zorunludur (ITMS-91053 reddi).
 **Promosyon metni:** “Namaz vakitleri, ezan, kıble, Kur’an ve kaynak gösteren
 yapay zekâ asistanı. Reklamsız Premium seçeneği.”
 
-**Açıklama (özet):** “Ezan Vaktim Pro, Diyanet yöntemiyle hesaplanan namaz
+**Açıklama (özet):** “Ezan Asistanı Pro, Diyanet yöntemiyle hesaplanan namaz
 vakitleri, tam vaktinde ezan bildirimi, kıble, Kur’an-ı Kerim ve meal, ilahi,
 tesbih, hadis ve kaynak gösteren AI asistanı sunar. Konumunuz cihazınızda
 işlenir; tam koordinat sunucuya gönderilmez. Harita ve cami aramasında en

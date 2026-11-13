@@ -266,10 +266,10 @@ class AppAudioService {
   MediaItem _queueMediaItem(String url, int index) => MediaItem(
     id: url,
     title: _activeSurahName == null
-        ? (_activeCustomTitle ?? 'Ezan Vaktim Pro')
+        ? (_activeCustomTitle ?? 'Ezan Asistanı Pro')
         : '${_activeSurahName!} • ${index + 1}. ayet',
-    artist: _activeReciterName ?? 'Ezan Vaktim Pro',
-    album: 'Ezan Vaktim Pro',
+    artist: _activeReciterName ?? 'Ezan Asistanı Pro',
+    album: 'Ezan Asistanı Pro',
   );
 
   Future<void> _advanceQueue() async {
@@ -411,9 +411,9 @@ class AppAudioService {
           path,
           tag: MediaItem(
             id: path,
-            title: title ?? 'Ezan Vaktim Pro',
-            artist: 'Ezan Vaktim Pro',
-            album: subtitle ?? 'Ezan Vaktim Pro',
+            title: title ?? 'Ezan Asistanı Pro',
+            artist: 'Ezan Asistanı Pro',
+            album: subtitle ?? 'Ezan Asistanı Pro',
           ),
         ),
       );
@@ -488,9 +488,9 @@ class AppAudioService {
       if (op != _operationId) return false;
       final MediaItem assetItem = MediaItem(
         id: resolvedAsset,
-        title: title ?? 'Ezan Vaktim Pro',
-        artist: 'Ezan Vaktim Pro',
-        album: subtitle ?? 'Ezan Vaktim Pro',
+        title: title ?? 'Ezan Asistanı Pro',
+        artist: 'Ezan Asistanı Pro',
+        album: subtitle ?? 'Ezan Asistanı Pro',
       );
       await _player.setAudioSource(
         AudioSource.file(tempFile.path, tag: assetItem),
@@ -510,9 +510,9 @@ class AppAudioService {
             resolvedAsset,
             tag: MediaItem(
               id: resolvedAsset,
-              title: title ?? 'Ezan Vaktim Pro',
-              artist: 'Ezan Vaktim Pro',
-              album: subtitle ?? 'Ezan Vaktim Pro',
+              title: title ?? 'Ezan Asistanı Pro',
+              artist: 'Ezan Asistanı Pro',
+              album: subtitle ?? 'Ezan Asistanı Pro',
             ),
           ),
         );
@@ -571,8 +571,8 @@ class AppAudioService {
           Uri.parse(url),
           tag: MediaItem(
             id: id ?? url,
-            title: title ?? 'Ezan Vaktim Pro',
-            artist: artist ?? 'Ezan Vaktim Pro',
+            title: title ?? 'Ezan Asistanı Pro',
+            artist: artist ?? 'Ezan Asistanı Pro',
             album: album,
             artUri: artUri == null ? null : Uri.tryParse(artUri),
           ),

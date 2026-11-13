@@ -1153,7 +1153,7 @@ class _KhutbahCard extends StatelessWidget {
                       text:
                           '${khutbah.title}\n\n${khutbah.arabicHeader}\n'
                           '${khutbah.verseOrHadith}\n\n${khutbah.fullText}\n\n'
-                          '${khutbah.source} · (Ezan Vaktim Pro)',
+                          '${khutbah.source} · (Ezan Asistanı Pro)',
                     ),
                   ),
                   icon: const Icon(Icons.ios_share_rounded, size: 16),

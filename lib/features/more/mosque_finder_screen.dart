@@ -424,7 +424,7 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
               .post(
                 Uri.parse(endpoint),
                 headers: const <String, String>{
-                  'User-Agent': 'EzanVaktimPro/1.0 (+https://yazilimceosu.github.io/ezanapp)',
+                  'User-Agent': 'EzanAsistaniPro/1.0 (+https://yazilimceosu.github.io/ezanapp)',
                   'Accept': 'application/json',
                 },
                 body: <String, String>{'data': overpassQuery},
@@ -498,7 +498,7 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
               .get(
                 nomUri,
                 headers: const <String, String>{
-                  'User-Agent': 'EzanVaktimPro/1.0 (+https://yazilimceosu.github.io/ezanapp)',
+                  'User-Agent': 'EzanAsistaniPro/1.0 (+https://yazilimceosu.github.io/ezanapp)',
                 },
               )
               .timeout(const Duration(seconds: 6));
@@ -606,7 +606,7 @@ class _MosqueFinderScreenState extends ConsumerState<MosqueFinderScreen> {
             uri,
             headers: const <String, String>{
               'User-Agent':
-                  'EzanVaktimPro/1.0 (+https://yazilimceosu.github.io/ezanapp)',
+                  'EzanAsistaniPro/1.0 (+https://yazilimceosu.github.io/ezanapp)',
             },
           )
           .timeout(const Duration(seconds: 7));

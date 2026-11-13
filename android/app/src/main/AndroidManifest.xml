@@ -61,7 +61,7 @@
     </queries>
 
     <application
-        android:label="Ezan Vaktim Pro"
+        android:label="Ezan Asistanı Pro"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"

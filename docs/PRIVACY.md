@@ -1,4 +1,4 @@
-# Ezan Vaktim Pro — Gizlilik Politikası (özet)
+# Ezan Asistanı Pro — Gizlilik Politikası (özet)
 
 **Son güncelleme:** 12 Kasım 2026
 **Veri sorumlusu:** YazılımCeosu — destek@ezanai.app

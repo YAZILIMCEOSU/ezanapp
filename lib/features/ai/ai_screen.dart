@@ -618,7 +618,7 @@ class _MessageBubble extends StatelessWidget {
                           text:
                               '${message.text}\n\n'
                               '${message.sources.map((AiSource s) => '• ${s.label}${s.detail == null ? '' : ' · ${s.detail}'}').join('\n')}\n\n'
-                              '(Ezan Vaktim Pro AI Asistanı — kaynaklı yanıt)',
+                              '(Ezan Asistanı Pro AI Asistanı — kaynaklı yanıt)',
                         ),
                       ),
                       icon: const Icon(Icons.ios_share_rounded, size: 17),

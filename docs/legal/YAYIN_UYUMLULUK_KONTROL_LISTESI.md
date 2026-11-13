@@ -1,4 +1,4 @@
-# Ezan Vaktim Pro — Yayın Uyumluluk Kontrol Listesi
+# Ezan Asistanı Pro — Yayın Uyumluluk Kontrol Listesi
 
 **Sürüm:** 1.0 · **Tarih:** 12 Kasım 2026
 **Kullanım:** Her yayın öncesi kopyalanır, maddeler işaretlenir, tarih ve

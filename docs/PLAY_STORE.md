@@ -18,10 +18,10 @@ listeleme eklenirse çeviri notları en altta verilmiştir.
 ## 1. Uygulama adı (30 karakter)
 
 ```
-Ezan Vaktim Pro: Namaz, Kıble, Kur'an
+Ezan Asistanı Pro: Namaz, Kıble, Kur'an
 ```
 
-Alternatifler: `Ezan Vaktim Pro – İslam Asistanı` · `Ezan Vaktim Pro: Ezan, Kıble, Kur'an`
+Alternatifler: `Ezan Asistanı Pro – Namaz ve Kıble` · `Ezan Asistanı Pro: Ezan, Kıble, Kur'an`
 
 ## 2. Kısa açıklama (80 karakter)
 
@@ -38,7 +38,7 @@ Diyanet uyumlu vakitler, ezan, kıble, Kur'an, ilahi, tesbih ve hadis; tek uygul
 ## 3. Tam açıklama (4000 karakter)
 
 ```
-Ezan Vaktim Pro, günlük ibadetlerinizi tek uygulamada kolaylaştıran akıllı İslam asistanıdır.
+Ezan Asistanı Pro, günlük ibadetlerinizi tek uygulamada kolaylaştıran akıllı rehberinizdir.
 Namaz vakitleri, ezan, kıble, Kur'an, ilahi, tesbih, hadis, Ramazan takibi ve
 kaynak gösteren yapay zekâ asistanı bir arada — sade, hızlı ve internetsiz de çalışır.
 
@@ -204,7 +204,7 @@ hicri takvim, dini asistan, sahur, iftar, hatim, kıble pusulası`
 
 ## 10. İngilizce listeleme (isteğe bağlı)
 
-- **Ad:** `Ezan Vaktim Pro: Prayer Times & Qibla`
+- **Ad:** `Ezan Asistanı Pro: Prayer Times & Qibla`
 - **Kısa açıklama:** `Prayer times, adhan, qibla, Qur'an, tasbih, hadith & AI assistant`
 - **Tam açıklama:** yukarıdaki metnin birebir çevirisi; dini içerikte ifade
   sadakati korunmalı, mezhep farklılıkları vurgusu çeviride de yer almalıdır.

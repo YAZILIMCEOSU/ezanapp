@@ -1,4 +1,4 @@
-# Ezan Vaktim Pro — KVKK Aydınlatma Metni ve Gizlilik Politikası
+# Ezan Asistanı Pro — KVKK Aydınlatma Metni ve Gizlilik Politikası
 
 **Sürüm:** 1.0
 **Son güncelleme:** 12 Kasım 2026
@@ -7,7 +7,7 @@
 **Not:** Şirket/ticari unvan bulunmamaktadır; MERSİS ve VKN yoktur. Veri
 sorumlusu gerçek kişidir ve KVKK m.6/2 ile VERBİS istisnası kapsamındadır.
 **Başvuru / iletişim:** destek@ezanai.app
-**Uygulama:** Ezan Vaktim Pro — Akıllı İslam Asistanı (`com.yazilimceosu.ezanai`)
+**Uygulama:** Ezan Asistanı Pro — Namaz Vakti, Kıble ve Kur’an (`com.yazilimceosu.ezanai`)
 
 > Bu metin, 6698 sayılı Kişisel Verilerin Korunması Kanunu (“KVKK”) m.10
 > kapsamındaki **aydınlatma yükümlülüğünü** ve Google Play / App Store gizlilik
@@ -17,7 +17,7 @@ sorumlusu gerçek kişidir ve KVKK m.6/2 ile VERBİS istisnası kapsamındadır.
 
 ## 1. Kapsam ve temel ilke
 
-Ezan Vaktim Pro; namaz vakitleri, ezan/vakit bildirimleri, kıble, Kur'an,
+Ezan Asistanı Pro; namaz vakitleri, ezan/vakit bildirimleri, kıble, Kur'an,
 ilahi, tesbih, hadis, Ramazan ve kaynak gösteren yapay zekâ asistanı sunar.
 
 **Temel ilke:** Uygulamanın çekirdek özellikleri için **hesap açmanız
@@ -203,7 +203,7 @@ geliştirici bilgilerinde paylaşılır)
 
 ### English summary
 
-Ezan Vaktim Pro works without an account. Your location is used **on-device**
+Ezan Asistanı Pro works without an account. Your location is used **on-device**
 for prayer times and qibla; the full coordinate is never uploaded. Only the
 selected district ID is sent to the prayer-times service. If that service is
 unavailable, an **approximate coordinate (2 decimals, ~1 km)** is sent to

@@ -1,4 +1,4 @@
-# Ezan Vaktim Pro — Açık Rıza Metinleri
+# Ezan Asistanı Pro — Açık Rıza Metinleri
 
 **Sürüm:** 1.0 · **Tarih:** 12 Kasım 2026
 **Veri sorumlusu:** YazılımCeosu — destek@ezanai.app

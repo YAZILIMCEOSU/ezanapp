@@ -731,7 +731,7 @@ class _EDiyanetTopHeader extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          // 1. Üst marka çubuğu: Logo + Ezan Vaktim Pro + sağ aksiyon ikonları
+          // 1. Üst marka çubuğu: Logo + Ezan Asistanı Pro + sağ aksiyon ikonları
           Row(
             children: <Widget>[
               const BrandMark(size: 30),

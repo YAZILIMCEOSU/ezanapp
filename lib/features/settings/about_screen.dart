@@ -5,6 +5,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/config/app_config.dart';
+import '../../core/constants/app_constants.dart';
 import '../../core/utils/app_time.dart';
 import '../../core/utils/logger.dart';
 import '../../design/app_colors.dart';
@@ -161,14 +162,14 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 Text(
-                  'Ezan Vaktim Pro',
+                  'Ezan Asistanı Pro',
                   style: theme.textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.w800,
                     letterSpacing: -0.4,
                   ),
                 ),
                 Text(
-                  'Akıllı İslam Asistanı · Sürüm $_version',
+                  '${AppConstants.tagline} · Sürüm $_version',
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),

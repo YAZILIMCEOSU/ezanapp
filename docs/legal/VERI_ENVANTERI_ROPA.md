@@ -1,4 +1,4 @@
-# Ezan Vaktim Pro — Kişisel Veri İşleme Envanteri (ROPA)
+# Ezan Asistanı Pro — Kişisel Veri İşleme Envanteri (ROPA)
 
 **Sürüm:** 1.0 · **Tarih:** 12 Kasım 2026
 **Veri sorumlusu:** YazılımCeosu — destek@ezanai.app

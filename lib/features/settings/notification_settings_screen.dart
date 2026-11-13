@@ -582,7 +582,7 @@ class _NotificationSettingsScreenState
               padding: EdgeInsets.symmetric(horizontal: AppSpacing.xl),
               child: Text(
                 'Zamanlanmış bildirim görünmüyor. Android pil optimizasyonu zamanlanmış '
-                'bildirimleri kısıtlayabilir; sistem ayarlarından Ezan Vaktim Pro için '
+                'bildirimleri kısıtlayabilir; sistem ayarlarından Ezan Asistanı Pro için '
                 '"Kısıtlanmamış" seçeneğini işaretleyin.',
               ),
             ),

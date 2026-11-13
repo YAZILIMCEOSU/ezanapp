@@ -1,4 +1,4 @@
-# Ezan Vaktim Pro — Uyum İçin Teknik Düzeltme Planı
+# Ezan Asistanı Pro — Uyum İçin Teknik Düzeltme Planı
 
 **Sürüm:** 1.0 · **Tarih:** 12 Kasım 2026
 **Amaç:** Hukuki metinlerdeki beyanları kodla **birebir** uyumlu hâle getirmek.

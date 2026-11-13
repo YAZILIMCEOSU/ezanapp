@@ -1,4 +1,4 @@
-# Güvenlik Politikası — Ezan Vaktim Pro
+# Güvenlik Politikası — Ezan Asistanı Pro
 
 **Sürüm:** 1.0 · **Tarih:** 12 Kasım 2026
 **İletişim:** destek@ezanai.app — konu satırı **GÜVENLİK**

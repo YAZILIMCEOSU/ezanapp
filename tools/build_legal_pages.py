@@ -29,49 +29,49 @@ OUT = ROOT / 'docs'
 # (kaynak markdown, çıktı html, <title>, açıklama)
 PAGES = [
     ('KVKK_AYDINLATMA_METNI.md', 'privacy.html',
-     'Gizlilik Politikası — Ezan Vaktim Pro',
-     'Ezan Vaktim Pro gizlilik politikası ve KVKK aydınlatma metni.'),
+     'Gizlilik Politikası — Ezan Asistanı Pro',
+     'Ezan Asistanı Pro gizlilik politikası ve KVKK aydınlatma metni.'),
     ('KVKK_AYDINLATMA_METNI.md', 'kvkk.html',
-     'KVKK Aydınlatma Metni — Ezan Vaktim Pro',
+     'KVKK Aydınlatma Metni — Ezan Asistanı Pro',
      '6698 sayılı KVKK kapsamında aydınlatma metni.'),
     ('ACIK_RIZA_METINLERI.md', 'acik-riza.html',
-     'Açık Rıza Metinleri — Ezan Vaktim Pro',
+     'Açık Rıza Metinleri — Ezan Asistanı Pro',
      'Yapay zekâ, bulut yedekleme ve reklam için açık rıza metinleri.'),
     ('KULLANIM_KOSULLARI.md', 'terms.html',
-     'Kullanım Koşulları — Ezan Vaktim Pro',
-     'Ezan Vaktim Pro kullanım koşulları (EULA).'),
+     'Kullanım Koşulları — Ezan Asistanı Pro',
+     'Ezan Asistanı Pro kullanım koşulları (EULA).'),
     ('ABONELIK_VE_IADE.md', 'abonelik.html',
-     'Abonelik ve İade — Ezan Vaktim Pro',
+     'Abonelik ve İade — Ezan Asistanı Pro',
      'Premium abonelik, otomatik yenileme, cayma ve iade bilgileri.'),
     ('VERI_SILME_VE_BASVURU.md', 'veri-silme.html',
-     'Veri Silme ve Başvuru — Ezan Vaktim Pro',
+     'Veri Silme ve Başvuru — Ezan Asistanı Pro',
      'Cihaz ve sunucu verilerini silme yolları, KVKK başvurusu.'),
     ('SIBER_GUVENLIK_PROTOKOLU.md', 'guvenlik.html',
-     'Siber Güvenlik — Ezan Vaktim Pro',
+     'Siber Güvenlik — Ezan Asistanı Pro',
      'Güvenlik açığı bildirimi, olay müdahale ve KVKK 72 saat süreci.'),
     ('VERI_ENVANTERI_ROPA.md', 'ropa.html',
-     'Veri İşleme Envanteri (ROPA) — Ezan Vaktim Pro',
+     'Veri İşleme Envanteri (ROPA) — Ezan Asistanı Pro',
      'Kişisel veri işleme envanteri ve saklama takvimi.'),
     ('UCUNCU_TARAF_SDK_VE_AKTARIMLAR.md', 'ucuncu-taraflar.html',
-     'Üçüncü Taraf SDK ve Aktarımlar — Ezan Vaktim Pro',
+     'Üçüncü Taraf SDK ve Aktarımlar — Ezan Asistanı Pro',
      'SDK envanteri, yurt dışı aktarım ve tedarikçi listesi.'),
     ('SES_VE_ICERIK_LISANSLARI.md', 'lisanslar.html',
-     'Ses ve İçerik Lisansları — Ezan Vaktim Pro',
+     'Ses ve İçerik Lisansları — Ezan Asistanı Pro',
      'Ezan, ilahi, Kur’an ve görsel içerik lisansları.'),
     ('GOOGLE_PLAY_UYUM.md', 'google-play.html',
-     'Google Play Uyum — Ezan Vaktim Pro',
+     'Google Play Uyum — Ezan Asistanı Pro',
      'Data safety, izinler ve Google Play politika uyumu.'),
     ('APPLE_APP_STORE_UYUM.md', 'app-store.html',
-     'Apple App Store Uyum — Ezan Vaktim Pro',
+     'Apple App Store Uyum — Ezan Asistanı Pro',
      'App Privacy, privacy manifest ve App Store gereksinimleri.'),
     ('TEKNIK_DUZELTME_PLANI.md', 'teknik-plan.html',
-     'Teknik Düzeltme Planı — Ezan Vaktim Pro',
+     'Teknik Düzeltme Planı — Ezan Asistanı Pro',
      'Uyum için yapılan ve kalan teknik düzeltmeler.'),
     ('YAYIN_UYUMLULUK_KONTROL_LISTESI.md', 'yayin-kontrol.html',
-     'Yayın Uyumluluk Kontrol Listesi — Ezan Vaktim Pro',
+     'Yayın Uyumluluk Kontrol Listesi — Ezan Asistanı Pro',
      'Yayın öncesi P0/P1 uyum kontrol listesi.'),
     ('TEDARIKCI_BEYANLARI.md', 'tedarikci-beyanlari.html',
-     'Tedarikçi Beyanları — Ezan Vaktim Pro',
+     'Tedarikçi Beyanları — Ezan Asistanı Pro',
      'Kur’an tilaveti lisansı, AI sıfır saklama ve Android alarm beyanları.'),
 ]
 
@@ -198,7 +198,7 @@ footer .links {{ display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; 
 <body>
 <header>
   <div class="wrap">
-    <div class="brand">Ezan Vaktim Pro<small>Yasal ve uyum belgeleri</small></div>
+    <div class="brand">Ezan Asistanı Pro<small>Yasal ve uyum belgeleri</small></div>
     <nav>{nav}</nav>
   </div>
 </header>
@@ -215,7 +215,7 @@ footer .links {{ display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; 
 </main>
 <footer>
   <div class="links">{footer_links}</div>
-  <div>© 2026 YazılımCeosu · Ezan Vaktim Pro · <code>com.yazilimceosu.ezanai</code></div>
+  <div>© 2026 YazılımCeosu · Ezan Asistanı Pro · <code>com.yazilimceosu.ezanai</code></div>
 </footer>
 </body>
 </html>
@@ -281,7 +281,7 @@ def build_index() -> None:
         )
     body = (
         '<h1>Yasal Belgeler</h1>'
-        '<p>Ezan Vaktim Pro uygulamasının gizlilik, KVKK, kullanım koşulları, '
+        '<p>Ezan Asistanı Pro uygulamasının gizlilik, KVKK, kullanım koşulları, '
         'abonelik, veri silme ve güvenlik belgeleri.</p>'
         '<ul>' + ''.join(cards) + '</ul>'
         '<h2>İletişim</h2>'
@@ -289,8 +289,8 @@ def build_index() -> None:
         'Güvenlik bildirimi: konu satırı “GÜVENLİK”</p>'
     )
     page = TEMPLATE.format(
-        title='Yasal Belgeler — Ezan Vaktim Pro',
-        description='Ezan Vaktim Pro yasal belgeler dizini.',
+        title='Yasal Belgeler — Ezan Asistanı Pro',
+        description='Ezan Asistanı Pro yasal belgeler dizini.',
         nav=nav_html,
         footer_links=nav_html,
         body=body,

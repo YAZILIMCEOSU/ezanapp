@@ -1,4 +1,4 @@
-# Google Play Uyum Dosyası — Ezan Vaktim Pro
+# Google Play Uyum Dosyası — Ezan Asistanı Pro
 
 **Sürüm:** 1.0 · **Tarih:** 12 Kasım 2026
 **Hedef:** Google Play Console beyanları ile uygulamanın gerçek davranışını
@@ -12,7 +12,7 @@
 
 | Alan | Değer |
 |---|---|
-| Uygulama adı | Ezan Vaktim Pro — Akıllı İslam Asistanı |
+| Uygulama adı | Ezan Asistanı Pro — Namaz Vakti, Kıble ve Kur’an |
 | Paket | `com.yazilimceosu.ezanai` |
 | Sürüm | `1.0.0+1` (yayın öncesi artırılacak) |
 | Kategori | Yaşam Tarzı / Referans |
@@ -28,42 +28,45 @@
 
 ## 1.1 Ad, marka ve “copycat” riski
 
-Play Store’da **benzer adlı** uygulamalar bulunmaktadır (12.11.2026 kontrolü):
+### Karar (12.11.2026)
+
+Ürün adı **“Ezan Asistanı Pro”** olarak belirlendi. Önceki çalışma adı
+“Ezan Vaktim Pro” idi; bu ad Play Store’daki “Ezan Vakti Pro” kayıtlarıyla
+**tek harf** farkı taşıdığı için App Store 4.1 (Copycats) ve Play taklit
+kuralları bakımından riskliydi. Ad değişikliğiyle bu risk kapatıldı.
+
+### Pazardaki benzer adlar (12.11.2026 kontrolü)
 
 | Mağaza kaydı | Geliştirici | Paket | Durum |
 |---|---|---|---|
-| Ezan Vakti Pro: Namaz Saatleri | EDR Software Corp. | `com.dogrusoftware.ezanvaktipro` | Yayında (Mart 2026’dan beri) |
+| Ezan Vakti Pro: Namaz Saatleri | EDR Software Corp. | `com.dogrusoftware.ezanvaktipro` | Yayında |
 | Ezan Vakti Pro: Namaz Vakti | Ela İnternet Hizmetleri San. Tic. Ltd. Şti. | — | Yayında |
 | Ezan Vakti Pro | Ezan Saati | `ezan.vakti.pro` | **Kaldırıldı** (Eylül 2024) |
 
-**Bizim kaydımız:** “Ezan Vaktim Pro” · `com.yazilimceosu.ezanai` · geliştirici
-YazılımCeosu. Yukarıdaki uygulamalarla **hiçbir bağlantımız yoktur**; onların
-adı, ikonu, ekran görüntüsü veya kodu kullanılmamıştır.
+**Bizim kaydımız:** “Ezan Asistanı Pro” · `com.yazilimceosu.ezanai` ·
+geliştirici YazılımCeosu. Yukarıdaki uygulamalarla **hiçbir bağlantımız
+yoktur**; ad, ikon, ekran görüntüsü ve kod kullanılmamıştır.
 
-**Riskler:**
+### Kalan riskler
 
-1. **Google Play — Impersonation / Intellectual Property:** Başka bir
-   uygulamanın adını/ikonunu taklit etmek reddedilir. Tek harf farkı
-   (“Vakti” → “Vaktim”) ayırt ediciliği zayıflatır.
-2. **Apple App Store — 4.1 Copycats:** “Başka bir uygulamanın adında veya
-   arayüzünde küçük değişiklik yapıp kendi uygulaman gibi sunma” açıkça
-   yasaktır. Bu nedenle iOS yayınında ad riski daha yüksektir.
-3. **Marka hakkı:** “Ezan Vakti Pro” adı bir başka geliştirici adına tescilli
-   olabilir; tescil varsa kullanım ihlal sayılır.
+1. **Genel “ezan … pro” kalıbı:** Sektörde yaygın olduğu için tamamen
+   ayırt edici değildir; ancak artık belirli bir uygulamanın adının
+   kopyası değildir.
+2. **Marka hakkı:** “Ezan Asistanı” üçüncü kişi adına tescilli olabilir.
+3. **Play/Apple taklit değerlendirmesi:** İkon, ekran görüntüsü ve mağaza
+   metni özgün olduğu sürece risk düşüktür.
 
-**Azaltma:**
+### Azaltma ve yapılacaklar
 
-- [x] Kendi paket kimliği (`com.yazilimceosu.ezanai`), kendi ikonu, kendi
-      ekran görüntüleri ve özgün metinler.
-- [x] Mağaza başlığında ayırt edici alt başlık: “Ezan Vaktim Pro — Akıllı
-      İslam Asistanı”.
-- [ ] Yayın öncesi **Turkpatent** marka araştırması („Ezan Vakti”, „Ezan
-      Vaktim” sınıf 9/42).
-- [ ] Şikâyet/itiraz gelirse 5 iş günü içinde adı değiştirmeye hazır ol;
-      yedek ad önerileri: **“Vaktim”**, **“Ezan Vaktim”**, **“Mihrap”**.
-- [ ] Mağaza açıklamasında “Ezan Vakti Pro ile bağlantılı değildir” ifadesi
-      **kullanılmaz** (rakip adını öne çıkarır); bunun yerine kendi marka
-      farkı anlatılır.
+- [x] Özgün paket kimliği, ikon, ekran görüntüleri ve metinler.
+- [x] Addan bağımsız ayırt edici alt başlık: “Namaz Vakti, Kıble ve Kur’an”.
+- [x] Uygulama içi ad, Android etiketi, bildirim başlıkları, mağaza
+      metinleri ve yasal belgeler **tek kaynaktan** güncellendi
+      (`AppConstants.appName`).
+- [ ] Yayın öncesi **Turkpatent** araştırması: “Ezan Asistanı” (sınıf 9, 42).
+- [ ] Şikâyet hâlinde 5 iş günü içinde yedek ada geçiş hazırlığı:
+      **“Asistan Vakit”**, **“Mihrap”**, **“Vaktim”**.
+- [ ] Mağaza açıklamasında rakip adı **anılmaz**.
 
 ## 2. Data safety — veri türleri
 
@@ -115,7 +118,7 @@ ayrıca beyan edilir.
 
 **Beyan metni (kopyala-yapıştır):**
 
-> Ezan Vaktim Pro, namaz vakti ve ezan alarmlarının tam zamanında çalması için
+> Ezan Asistanı Pro, namaz vakti ve ezan alarmlarının tam zamanında çalması için
 > kesin alarm API’sini kullanır. Bu, uygulamanın çekirdek işlevidir. Kullanıcı
 > izin vermezse alarm yaklaşık moda düşer ve uygulama bunu kullanıcıya bildirir.
 > Konum yalnızca ön planda, vakit ve kıble hesabı için cihazda kullanılır;

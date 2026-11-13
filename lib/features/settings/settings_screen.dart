@@ -333,7 +333,7 @@ class SettingsScreen extends ConsumerWidget {
                     pinned
                         ? 'Widget yerleştirme penceresi açıldı: “Ekle”ye dokunun.'
                         : 'Cihaz otomatik eklemeyi desteklemiyor. Ana ekranı '
-                              'basılı tutun → Widget’lar → Ezan Vaktim Pro.',
+                              'basılı tutun → Widget’lar → Ezan Asistanı Pro.',
                   ),
                 ),
               );
@@ -596,7 +596,7 @@ class SettingsScreen extends ConsumerWidget {
     final String json = const JsonEncoder.withIndent('  ')
         .convert(settings.toPrefs());
     await SharePlus.instance.share(
-      ShareParams(text: json, subject: 'EzanAI ayar yedeği'),
+      ShareParams(text: json, subject: 'Ezan Asistanı Pro ayar yedeği'),
     );
   }
 

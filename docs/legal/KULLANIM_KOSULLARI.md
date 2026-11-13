@@ -1,7 +1,7 @@
-# Ezan Vaktim Pro — Kullanım Koşulları (EULA)
+# Ezan Asistanı Pro — Kullanım Koşulları (EULA)
 
 **Sürüm:** 1.0 · **Son güncelleme:** 12 Kasım 2026
-**Uygulama:** Ezan Vaktim Pro — Akıllı İslam Asistanı
+**Uygulama:** Ezan Asistanı Pro — Namaz Vakti, Kıble ve Kur’an
 **Paket:** `com.yazilimceosu.ezanai`
 **Hizmet sağlayıcı:** YazılımCeosu (gerçek kişi geliştirici), İstanbul, Türkiye
 **İletişim:** destek@ezanai.app
@@ -192,7 +192,7 @@ koşulları kabul etmek anlamına gelir; tüketici hakları saklıdır.
 
 ### English summary
 
-These Terms govern your use of Ezan Vaktim Pro. The app is informational; it
+These Terms govern your use of Ezan Asistanı Pro. The app is informational; it
 does not issue fatwas, and prayer times/qibla are not guaranteed. AI features
 require separate explicit consent; otherwise offline answers are used. Premium
 is sold via Google Play/App Store and renews automatically unless cancelled.

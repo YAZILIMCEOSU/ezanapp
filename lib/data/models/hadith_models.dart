@@ -106,7 +106,7 @@ class Hadith {
         ..writeln('Kaynak: $reference')
         ..writeln();
     }
-    buffer.write('— Riyâzü\'s-sâlihîn, $id. hadis (EzanAI)');
+    buffer.write('— Riyâzü\'s-sâlihîn, $id. hadis (Ezan Asistanı Pro)');
     return buffer.toString();
   }
 }

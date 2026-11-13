@@ -1,8 +1,8 @@
-# Rakip Uyum Karşılaştırması — Ezan Vaktim Pro
+# Rakip Uyum Karşılaştırması — Ezan Asistanı Pro
 
 **Sürüm:** 1.0 · **Tarih:** 12 Kasım 2026
 **Amaç:** Pazardaki büyük ezan uygulamalarının **kamuya açık** uyum
-özelliklerini karşılaştırıp Ezan Vaktim Pro’nun farkını ve risklerini
+özelliklerini karşılaştırıp Ezan Asistanı Pro’nun farkını ve risklerini
 belirlemek. Bu belge hukuki iddia değildir; mağaza sayfaları ve kamuya açık
 kaynaklara dayanır. Karşılaştırma yalnızca özellik/fiyat düzeyindedir;
 hiçbir rakip uygulamanın adı, ikonu, metni veya kodu kopyalanmamıştır.
@@ -16,10 +16,10 @@ ayrıca ele alınmıştır.
 | Muslim Pro | Reklamlı | ~$3,99/ay · ~$29,99/yıl | 2020’de konum verisinin üçüncü taraflara satıldığı iddiası; veri simsarcılığı yasağı ve şeffaflık beklentisi |
 | Ezan Vakti Pro (EDR Software Corp. / Ela İnternet) | Reklamlı | ~€1,99/ay · ~€22,99/yıl | Türkiye pazarı; KVKK aydınlatma ve reklam rızası; **bizimle bağlantısı yok** |
 | Athan Pro | Reklamlı | ~$4,99/yıl | Basit abonelik; veri minimizasyonu |
-| **Ezan Vaktim Pro** | Reklamlı | **₺79,99/ay · ₺599,99/yıl · ₺1.499,99 ömürlük** | **Hesapsız, cihazda konum, rızasız uzak AI/yedekleme yok, veri simsarcısı yok** |
+| **Ezan Asistanı Pro** | Reklamlı | **₺79,99/ay · ₺599,99/yıl · ₺1.499,99 ömürlük** | **Hesapsız, cihazda konum, rızasız uzak AI/yedekleme yok, veri simsarcısı yok** |
 
 > Fiyatlar mağaza sayfalarından derlenmiştir ve ülkeye/ kampanyaya göre
-> değişebilir. Ezan Vaktim Pro fiyatları için tek kaynak
+> değişebilir. Ezan Asistanı Pro fiyatları için tek kaynak
 > [`ABONELIK_VE_IADE.md`](ABONELIK_VE_IADE.md).
 
 ## 2. Muslim Pro 2020 dersi
@@ -43,7 +43,7 @@ ve SDK’yı kaldırdığını açıkladı.
 
 ## 3. Uyum özellikleri karşılaştırması
 
-| Özellik | Muslim Pro | Ezan Vakti Pro | Athan Pro | **Ezan Vaktim Pro** |
+| Özellik | Muslim Pro | Ezan Vakti Pro | Athan Pro | **Ezan Asistanı Pro** |
 |---|---|---|---|---|
 | Hesapsız kullanım | Kısmi | Kısmi | Kısmi | **Evet** |
 | Konumun cihazda işlenmesi | Belgelenmemiş | Belgelenmemiş | Belgelenmemiş | **Evet** |
@@ -66,7 +66,7 @@ ve SDK’yı kaldırdığını açıkladı.
 > “Belgelenmemiş” ifadesi, ilgili uygulamanın kamuya açık politika metninde
 > bu konuda net bir taahhüt bulunmadığını belirtir; aksi yönde iddia değildir.
 
-## 4. Ezan Vaktim Pro’nun uyum avantajları
+## 4. Ezan Asistanı Pro’nun uyum avantajları
 
 1. **Hesapsız mimari:** E-posta/ad/telefon toplanmaz; ihlal yüzeyi küçüktür.
 2. **Veri minimizasyonu:** Koordinat cihazda; yedek serviste ~1 km.

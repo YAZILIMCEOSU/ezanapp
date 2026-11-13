@@ -132,7 +132,7 @@ class _PremiumScreenState extends ConsumerState<PremiumScreen> {
                       ),
                       const SizedBox(width: AppSpacing.sm),
                       Text(
-                        'Ezan Vaktim Pro Premium',
+                        'Ezan Asistanı Pro Premium',
                         style: theme.textTheme.titleLarge?.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w800,

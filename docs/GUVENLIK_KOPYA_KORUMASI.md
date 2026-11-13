@@ -1,4 +1,4 @@
-# Ezan Vaktim Pro — Uygulama Güvenliği, Kopya Koruması ve Gizli Depo Rehberi
+# Ezan Asistanı Pro — Uygulama Güvenliği, Kopya Koruması ve Gizli Depo Rehberi
 
 > **Bu belge kimin için?** Uygulamanın sahibi için, **tıklama düzeyinde** yazıldı.
 > Bölüm 6 "Sizin yapacaklarınız", Bölüm 7 "Benim yapacaklarım" listesidir.
@@ -145,7 +145,7 @@ Notlar:
 keytool -genkeypair -v -keystore ezanai-yayin.jks \
   -storepass <GÜÇLÜ_PAROLA_1> -keypass <GÜÇLÜ_PAROLA_2> \
   -alias ezanai -keyalg RSA -keysize 4096 -validity 10000 \
-  -dname "CN=Ezan Vaktim Pro, OU=Mobile, O=Yazilimceosu, L=İstanbul, C=TR"
+  -dname "CN=Ezan Asistanı Pro, OU=Mobile, O=Yazilimceosu, L=İstanbul, C=TR"
 ```
 
 3. Oluşan `ezanai-yayin.jks` dosyasını:

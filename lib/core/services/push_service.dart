@@ -47,7 +47,7 @@ class PushMessage {
     return PushMessage(
       title:
           message.notification?.title ??
-          (message.data['title'] as String? ?? 'EzanAI'),
+          (message.data['title'] as String? ?? 'Ezan Asistanı Pro'),
       body:
           message.notification?.body ?? (message.data['body'] as String? ?? ''),
       data: message.data.map(

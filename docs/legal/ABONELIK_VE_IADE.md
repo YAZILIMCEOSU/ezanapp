@@ -1,4 +1,4 @@
-# Ezan Vaktim Pro — Premium Abonelik, Mesafeli Satış ve İade Bilgilendirmesi
+# Ezan Asistanı Pro — Premium Abonelik, Mesafeli Satış ve İade Bilgilendirmesi
 
 **Sürüm:** 1.0 · **Tarih:** 12 Kasım 2026
 **Satıcı (dijital mağaza):** Google Play / Apple App Store
@@ -60,9 +60,9 @@ Satın alma ekranında aşağıdakiler gösterilir:
 ## 5. İptal
 
 **Android (Google Play):** Play Store → Profil → Ödemeler ve abonelikler →
-Abonelikler → Ezan Vaktim Pro → Aboneliği iptal et.
+Abonelikler → Ezan Asistanı Pro → Aboneliği iptal et.
 
-**iOS (App Store):** Ayarlar → [Adınız] → Abonelikler → Ezan Vaktim Pro →
+**iOS (App Store):** Ayarlar → [Adınız] → Abonelikler → Ezan Asistanı Pro →
 Aboneliği iptal et.
 
 Uygulama içinden “Aboneliği yönet” bağlantısı da mağaza sayfasını açar.

@@ -150,7 +150,7 @@ class AppRuntime {
       // arka planda paralel olarak ısıtılır.
       unawaited(runtime._warmUp());
     }
-    AppLog.info('EzanAI hazır (${settings.calculationMethodId} yöntemi).');
+    AppLog.info('Ezan Asistanı Pro hazır (${settings.calculationMethodId} yöntemi).');
     return runtime;
   }
 

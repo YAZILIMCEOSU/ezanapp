@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Ezan Vaktim Pro — harici kütüphane gerektirmeyen (saf Python + SDF yumuşatma)
+"""Ezan Asistanı Pro — harici kütüphane gerektirmeyen (saf Python + SDF yumuşatma)
 Turkuvaz Işık Hüzmeli Zemin + Beyaz Kubbeli Çift Minareli Cami + Hilal Alemi + Altın/Beyaz PRO Rozetli
 launcher ve Play Store ikon üreticisi.
 
@@ -347,7 +347,7 @@ def main() -> None:
         os.path.join(IMAGES, 'logo_mark_small.png'),
         render_image(256, with_background=True, rounded_corners=True, scale=0.96),
     )
-    print('Ezan Vaktim Pro turkuvaz cami ikonları başarıyla üretildi.')
+    print('Ezan Asistanı Pro turkuvaz cami ikonları başarıyla üretildi.')
 
 
 if __name__ == '__main__':

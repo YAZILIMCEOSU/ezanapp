@@ -1,4 +1,4 @@
-# Ezan Vaktim Pro — Üçüncü Taraf SDK, Servis ve Aktarım Envanteri
+# Ezan Asistanı Pro — Üçüncü Taraf SDK, Servis ve Aktarım Envanteri
 
 **Sürüm:** 1.0 · **Tarih:** 12 Kasım 2026
 **Amaç:** Mağaza beyanları (Data safety / App Privacy), KVKK m.9 aktarım

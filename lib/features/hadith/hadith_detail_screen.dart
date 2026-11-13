@@ -132,7 +132,7 @@ class HadithDetailScreen extends ConsumerWidget {
                       ShareParams(
                         text:
                             '${item.turkish}\n\n— ${item.primarySource} · ${item.reference}\n'
-                            '(EzanAI ile paylaşıldı)',
+                            '(Ezan Asistanı Pro ile paylaşıldı)',
                         subject: 'Hadis · ${item.reference}',
                       ),
                     ),

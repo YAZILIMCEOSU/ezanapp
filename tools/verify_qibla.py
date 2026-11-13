@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Ezan Vaktim Pro — Kıble doğrulaması (6 bağımsız kontrol).
+"""Ezan Asistanı Pro — Kıble doğrulaması (6 bağımsız kontrol).
 
 Bu betik, uygulamadaki Kıble hesabını **uygulama kodundan bağımsız** dört
 yöntemle yeniden hesaplar ve karşılaştırır. Flutter/Dart çalıştırmaz; bu yüzden
@@ -631,7 +631,7 @@ def verification_4() -> None:
 
 
 def main() -> int:
-    print("# Ezan Vaktim Pro — Kıble 6 aşamalı doğrulama raporu")
+    print("# Ezan Asistanı Pro — Kıble 6 aşamalı doğrulama raporu")
     print(f"- Tarih referansı: ondalık yıl {DECIMAL_YEAR}")
     print(f"- Kâbe (uygulama): {KAABA_LAT}, {KAABA_LON}")
     print(f"- Kâbe (resmî referans): {KAABA_REFERENCE[0]}, {KAABA_REFERENCE[1]}")

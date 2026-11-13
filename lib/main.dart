@@ -101,7 +101,7 @@ class _StartupFailureApp extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 Text(
-                  'Ezan Vaktim Pro başlatılamadı',
+                  'Ezan Asistanı Pro başlatılamadı',
                   style: theme.textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),

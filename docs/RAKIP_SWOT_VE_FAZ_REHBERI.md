@@ -1,12 +1,12 @@
-# Ezan Vaktim Pro — Google Play Store & Apple App Store (iOS) Rakip İncelemesi, SWOT Analizi ve Faz Faz Gelişim Rehberi
+# Ezan Asistanı Pro — Google Play Store & Apple App Store (iOS) Rakip İncelemesi, SWOT Analizi ve Faz Faz Gelişim Rehberi
 
-Bu rehber, **Ezan Vaktim Pro** uygulamasının Türkiye ve küresel pazardaki en güçlü **Android (Google Play)** ve **iOS (App Store)** rakiplerini karşılaştırmalı olarak inceler, **SWOT Analizini** ortaya koyar ve uygulamamızı rakiplerin önüne geçirecek **Faz Faz Gelişim Yol Haritasını** adım adım tanımlar.
+Bu rehber, **Ezan Asistanı Pro** uygulamasının Türkiye ve küresel pazardaki en güçlü **Android (Google Play)** ve **iOS (App Store)** rakiplerini karşılaştırmalı olarak inceler, **SWOT Analizini** ortaya koyar ve uygulamamızı rakiplerin önüne geçirecek **Faz Faz Gelişim Yol Haritasını** adım adım tanımlar.
 
 ---
 
 ## 1. Google Play Store & iOS App Store Rakip Analizi
 
-| Uygulama (Android & iOS) | Güçlü Yönleri | Zayıf Yönleri / Kullanıcı Şikayetleri | Ezan Vaktim Pro'nun Üstünlüğü |
+| Uygulama (Android & iOS) | Güçlü Yönleri | Zayıf Yönleri / Kullanıcı Şikayetleri | Ezan Asistanı Pro'nun Üstünlüğü |
 |---|---|---|---|
 | **1. Ezan Vakti Pro** *(Turuncu İkonlu Rakip)* | Türkiye'de yüksek bilinirlik, Diyanet vakit uyumu, zengin widget seçenekleri | Eski nesil arayüz, tam ekran agresif reklamlar, AI İslam Asistanı yok, Diyanet TV tarzı 3B üçgen + sarı kutulu kelime-kelime Mukabele takibi yok | Modern gece-laciverti & altın mihrap tasarımı, kaynaklı AI İslam Asistanı, tam senkronize **Tecvidli + Sarı Kutulu + 3B Yeşil Üçgenli (`▲`) Mukabele Takibi** |
 | **2. Diyanet Namaz Vakti & e-Kıble** | Resmi kurum güveni, reklamsız, doğru Diyanet vakitleri ve Kıble açısı (`157.7°` İstanbul pusula açısı) | Kişiselleştirme az, nafile namaz alarmları (Teheccüd, Duha, Evvabîn, İşrak) yok, arka planda her sekmede yüzen Kur'an/İlahi mini çalar yok | Diyanet ile birebir aynı Kıble pusula açısı (`157.7°`) + **Pusula / Harita** sekmesi + 9 ayrı Nafile/Sünnet alarmı + tüm ekranlarda yüzen ses kontrol çubuğu |
@@ -16,7 +16,7 @@ Bu rehber, **Ezan Vaktim Pro** uygulamasının Türkiye ve küresel pazardaki en
 
 ---
 
-## 2. Ezan Vaktim Pro — SWOT Analizi
+## 2. Ezan Asistanı Pro — SWOT Analizi
 
 ### Güçlü Yönler (Strengths)
 1. **Diyanet Birebir Uyumlu Kıble Pusulası ve Namaz Vakitleri:**
@@ -39,7 +39,7 @@ Bu rehber, **Ezan Vaktim Pro** uygulamasının Türkiye ve küresel pazardaki en
 1. **Mukabele & Rahat Okuma Segmenti:**
    - Türkiye'de ve Avrupa'daki Türk kullanıcılar arasında Diyanet TV'deki gibi **Sarı Kutulu + Yeşil Üçgen Oklu (`▲`) + Renkli Tecvidli** Kur'an takibini sesle tam senkron sunan mobil uygulama sayısı çok azdır.
 2. **Reklamsız / Saygılı Kullanıcı Deneyimi ve Kademeli Premium:**
-   - Rakiplerin namaz vaktinde tam ekran sesli reklam göstermesinden bunalan milyonlarca kullanıcı için temiz arayüz ve uygun fiyatlı *Ezan Vaktim Pro Premium* büyük bir geçiş fırsatı sunar.
+   - Rakiplerin namaz vaktinde tam ekran sesli reklam göstermesinden bunalan milyonlarca kullanıcı için temiz arayüz ve uygun fiyatlı *Ezan Asistanı Pro Premium* büyük bir geçiş fırsatı sunar.
 
 ### Tehditler (Threats)
 1. **Android Üreticilerinin (Xiaomi/MIUI, Samsung, Huawei) Pil Kısıtlamaları:**
@@ -52,7 +52,7 @@ Bu rehber, **Ezan Vaktim Pro** uygulamasının Türkiye ve küresel pazardaki en
 ## 3. Faz Faz Gelişim Rehberi (Yol Haritası)
 
 ### ✅ Faz 1 — Çekirdek Üretim, Doğruluk ve Görsel Kimlik *(Tamamlandı)*
-- **Yeni "Ezan Vaktim Pro" Altın Mihrap İkonu:** Gece laciverti zemin, 3B altın mihrap kemeri, gün batımı cami silüeti ve altın hilal-yıldız (`store/play_icon_512.png` ve tüm Android `mipmap` ikonları).
+- **Yeni "Ezan Asistanı Pro" Altın Mihrap İkonu:** Gece laciverti zemin, 3B altın mihrap kemeri, gün batımı cami silüeti ve altın hilal-yıldız (`store/play_icon_512.png` ve tüm Android `mipmap` ikonları).
 - **Diyanet Birebir Uyumlu Kıble Pusulası (`157.7°`):** `Pusula | Harita` sekmesi, üstte `Kıble 157.7°` bilgi kartı, her açıda düz okunan `N/E/S/W` harfleri ve masaüstü sahte parazit uyarısının giderilmesi.
 - **Tam Senkronize Tecvidli & 3B Üçgen Oklu (`▲`) Kur'an Takibi:** Fonetik kelime ağırlığı hesabı, `001.mp3` Besmele süresi telafisi, aktif kelimede **Sarı Mushaf Kutusu (`#FFF176`)** + altında **3B Yeşil Üçgen Ok (`▲`)** + **Renkli Tecvid** + `Rahat Okuma (A+)`.
 - **Gerçek Müezzin Ezanları, Vokal İlahiler ve 9 Nafile Alarmı.**

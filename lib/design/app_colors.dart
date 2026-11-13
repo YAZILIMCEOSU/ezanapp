@@ -1,6 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 
-/// Ezan Vaktim Pro renk paleti.
+/// Ezan Asistanı Pro renk paleti.
 ///
 /// Kimlik: e-Diyanet & Ezan Vakti Pro çizgisinde ferah Turkuvaz + Beyaz kartlar + Mercan/Altın vurgu.
 abstract final class AppColors {

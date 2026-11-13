@@ -1,4 +1,4 @@
-# Ezan Vaktim Pro — Siber Güvenlik ve Olay Müdahale Protokolü
+# Ezan Asistanı Pro — Siber Güvenlik ve Olay Müdahale Protokolü
 
 **Sürüm:** 1.0 · **Tarih:** 12 Kasım 2026
 **Kapsam:** Uygulama, backend, Supabase, CI/CD, mağaza hesapları, geliştirici

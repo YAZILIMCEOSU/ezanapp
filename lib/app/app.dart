@@ -297,7 +297,7 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp>
         notif.customAdhanPath!,
         volume: initialVolume,
         title: '${prayer.label} ezanı',
-        subtitle: 'Ezan Vaktim Pro',
+        subtitle: 'Ezan Asistanı Pro',
       );
     } else {
       final String? asset = BundledSounds.assetFor(sound);
@@ -306,7 +306,7 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp>
           asset,
           volume: initialVolume,
           title: '${prayer.label} ezanı',
-          subtitle: 'Ezan Vaktim Pro',
+          subtitle: 'Ezan Asistanı Pro',
         );
       }
     }
@@ -394,7 +394,7 @@ class _EzanAiAppState extends ConsumerState<EzanAiApp>
     };
 
     return MaterialApp.router(
-      title: 'Ezan Vaktim Pro',
+      title: 'Ezan Asistanı Pro',
       scaffoldMessengerKey: _messengerKey,
       debugShowCheckedModeBanner: false,
       routerConfig: appRouter,

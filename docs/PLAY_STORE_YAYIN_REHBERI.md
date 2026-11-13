@@ -1,6 +1,6 @@
-# Ezan Vaktim Pro — Google Play Store Eksik Analizi ve Adım Adım Yayın Rehberi
+# Ezan Asistanı Pro — Google Play Store Eksik Analizi ve Adım Adım Yayın Rehberi
 
-Bu rehber, **Ezan Vaktim Pro** (`com.yazilimceosu.ezanai`) uygulamasını bilgisayarınıza hiçbir yazılım (Java, Android Studio, Flutter) kurmadan, **yalnızca tarayıcıdan tıklayarak** Google Play Store'da yayına almanız için hazırlanmıştır.
+Bu rehber, **Ezan Asistanı Pro** (`com.yazilimceosu.ezanai`) uygulamasını bilgisayarınıza hiçbir yazılım (Java, Android Studio, Flutter) kurmadan, **yalnızca tarayıcıdan tıklayarak** Google Play Store'da yayına almanız için hazırlanmıştır.
 
 ---
 
@@ -11,10 +11,10 @@ Bu rehber, **Ezan Vaktim Pro** (`com.yazilimceosu.ezanai`) uygulamasını bilgis
 |---|---|---|
 | **Hedef Android Sürümü (`targetSdk`)** | ✅ **Hazır (`36`)** | Google Play'in 2026 zorunluluğu olan API 35+ şartını tam karşılar. |
 | **Paket Adı (`applicationId`)** | ✅ **Hazır** | `com.yazilimceosu.ezanai` |
-| **Görünen Uygulama Adı** | ✅ **Hazır** | `Ezan Vaktim Pro` (Gizlilik politikası ve mağaza metinleriyle birebir uyumlu). |
+| **Görünen Uygulama Adı** | ✅ **Hazır** | `Ezan Asistanı Pro` (Gizlilik politikası ve mağaza metinleriyle birebir uyumlu). |
 | **512×512 Mağaza İkonu** | ✅ **Hazır** | `store/play_icon_512.png` (Telefon ve tablette net okunaklı **PRO** rozetli Turkuvaz Cami ikonu). |
 | **1024×500 Özellik Grafiği** | ✅ **Hazır** | `store/play_feature_graphic_1024x500.png` (Turkuvaz Cami + PRO mağaza kapak görseli). |
-| **Gizlilik Politikası & Koşullar** | ✅ **Hazır** | `docs/privacy.html` ve `docs/terms.html` (**Ezan Vaktim Pro** adıyla güncellendi). |
+| **Gizlilik Politikası & Koşullar** | ✅ **Hazır** | `docs/privacy.html` ve `docs/terms.html` (**Ezan Asistanı Pro** adıyla güncellendi). |
 | **Google Play İzin Politikası Temizliği** | ✅ **Hazır** | Reddedilme sebebi olabilen kullanılmayan `FOREGROUND_SERVICE_DATA_SYNC` ve kısıtlı `USE_EXACT_ALARM` kaldırıldı; yalnızca gerçek kullanılan izinler bırakıldı. |
 | **Kod Küçültme & Karartma (R8 + Obfuscation)** | ✅ **Hazır** | Tersine mühendisliğe karşı R8 + `--obfuscate` aktif. |
 
@@ -44,7 +44,7 @@ Google Play Console'da **Büyüme > Mağaza varlığı > Ana mağaza girişi** e
 
 - **Uygulama Adı (30 karakter sınırı):**
   ```text
-  Ezan Vaktim Pro
+  Ezan Asistanı Pro
   ```
 - **Kısa Açıklama (80 karakter sınırı):**
   ```text
@@ -52,7 +52,7 @@ Google Play Console'da **Büyüme > Mağaza varlığı > Ana mağaza girişi** e
   ```
 - **Tam Açıklama:**
   ```text
-  Ezan Vaktim Pro, günlük ibadetlerinizi tek uygulamada buluşturan modern, reklamsız deneyime uygun ve güvenilir İslami yaşam asistanıdır.
+  Ezan Asistanı Pro, günlük ibadetlerinizi tek uygulamada buluşturan modern, reklamsız deneyime uygun ve güvenilir İslami yaşam asistanıdır.
 
   ÖNE ÇIKAN ÖZELLİKLER:
   • Diyanet Uyumlu Namaz Vakitleri: GPS ile konum değiştikçe otomatik güncellenen il/ilçe vakitleri, sonraki vakte canlı geri sayım, hicri takvim ve kerahat/nafile vakit uyarıları.
@@ -62,7 +62,7 @@ Google Play Console'da **Büyüme > Mağaza varlığı > Ana mağaza girişi** e
   • Vokal İlahi Arşivi & Kur'an Radyo: Enstrümansız (acapella/def) vokal ilahiler, çevrimdışı indirme ve cihazdan ses ekleme.
   • Akıllı Tesbih, Sahih Hadis, Esmaül Hüsna, Kaza & Hutbe Takibi, Ramazan İmsakiyesi ve Kaynaklı Dini Rehber Asistanı.
 
-  Not: Ezan Vaktim Pro bilgilendirme ve ibadet kolaylığı amaçlıdır; dini konularda kesin fetva/hüküm yerine geçmez.
+  Not: Ezan Asistanı Pro bilgilendirme ve ibadet kolaylığı amaçlıdır; dini konularda kesin fetva/hüküm yerine geçmez.
   ```
 - **Uygulama İkonu (512×512):** Depodaki `store/play_icon_512.png` dosyasını yükleyin.
 - **Özellik Grafiği (1024×500):** Depodaki `store/play_feature_graphic_1024x500.png` dosyasını yükleyin.

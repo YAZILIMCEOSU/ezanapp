@@ -1,6 +1,6 @@
 # Kıble'yi Hatasız Yaptık + Cami Bul Listeleme Düzeltmeleri
 
-**Tarih:** 29 Ekim 2026 · **Sürüm:** Ezan Vaktim Pro (`ezanai`) · **Dal:** `arena/01a1057d-ezanapp`
+**Tarih:** 29 Ekim 2026 · **Sürüm:** Ezan Asistanı Pro (`ezanai`) · **Dal:** `arena/01a1057d-ezanapp`
 
 Bu belge, "Kıble rakipler karşısında hatalı ve yetersiz" ve "Cami Bul'da mobil
 listeleme hatalı" bildirimlerine karşı yapılan **kök neden analizini**, **yapılan

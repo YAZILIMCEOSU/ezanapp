@@ -1,6 +1,6 @@
 # Vakit Hatası Düzeltmesi — "1 dakika erken ezan" ve "Diyanet güncelleniyor" mesajı
 
-**Tarih:** 31 Ekim 2026 · **Dal:** `arena/01a1057d-ezanapp` · **Uygulama:** Ezan Vaktim Pro
+**Tarih:** 31 Ekim 2026 · **Dal:** `arena/01a1057d-ezanapp` · **Uygulama:** Ezan Asistanı Pro
 
 Bu belge, kullanıcı bildirimi olan iki sorunun kök nedenini, yapılan düzeltmeleri,
 bunların nasıl kanıtlandığını ve telefonunuzda 5 dakikada nasıl doğrulayacağınızı
@@ -223,7 +223,7 @@ Bilgisayar, terminal, SDK gerekmez. Yalnızca telefon.
    - Aynı ekranda **"Kesin alarm izni (ezan tam vaktinde)"** satırına bakın:
      - `Açık` yazıyorsa hiçbir şey yapmayın.
      - `Kapalı` yazıyorsa satıra dokunun, açılan Android ekranında
-       **Ezan Vaktim Pro → İzin ver** seçin. Bu izin olmadan Android 14+
+       **Ezan Asistanı Pro → İzin ver** seçin. Bu izin olmadan Android 14+
        telefonlarda ezan birkaç dakika kayabilir.
 6. **Pil ayarını kontrol edin:**
    - **Ayarlar → Bildirimler → Pil Optimizasyonu İstisnası** → izin verin.

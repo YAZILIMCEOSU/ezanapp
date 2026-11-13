@@ -1248,7 +1248,7 @@ class NotificationService {
     await refreshTimeZone();
     final NotificationScheduleMode mode = await _schedule(
       id: NotificationIds.test,
-      title: 'Ezan Vaktim Pro bildirim testi',
+      title: 'Ezan Asistanı Pro bildirim testi',
       body: 'Bu bildirimi görüyorsanız vakit bildirimleri çalışıyor.',
       when: DateTime.now().add(Duration(seconds: delaySeconds)),
       channelId: NotificationChannels.test,
@@ -1478,7 +1478,7 @@ class NotificationService {
             : AndroidNotificationCategory.alarm,
         visibility: NotificationVisibility.public,
         color: const Color(0xFF0E4A3F),
-        ticker: 'Ezan Vaktim Pro',
+        ticker: 'Ezan Asistanı Pro',
       ),
       iOS: DarwinNotificationDetails(
         presentAlert: true,

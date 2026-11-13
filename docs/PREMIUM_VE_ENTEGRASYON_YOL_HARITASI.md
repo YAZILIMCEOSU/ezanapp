@@ -1,6 +1,6 @@
-# Ezan Vaktim Pro — Premium Özellikler ve Kullanıcı Tarafı Yol Planı
+# Ezan Asistanı Pro — Premium Özellikler ve Kullanıcı Tarafı Yol Planı
 
-Bu belge, **Ezan Vaktim Pro** uygulamasında hangi özelliklerin şu an **ücretsiz ve hazır** çalıştığını, **Premium abonelik ve bulut servislerini** gerçek kullanıcılara açmak için **sizin tarafınızda (uygulama sahibi olarak) neye ihtiyacınız olduğunu** ve **adım adım ne yapmanız gerektiğini** hiçbir teknik/yazılım bilgisi gerektirmeden açıklar.
+Bu belge, **Ezan Asistanı Pro** uygulamasında hangi özelliklerin şu an **ücretsiz ve hazır** çalıştığını, **Premium abonelik ve bulut servislerini** gerçek kullanıcılara açmak için **sizin tarafınızda (uygulama sahibi olarak) neye ihtiyacınız olduğunu** ve **adım adım ne yapmanız gerektiğini** hiçbir teknik/yazılım bilgisi gerektirmeden açıklar.
 
 ---
 
@@ -48,13 +48,13 @@ Kullanıcıların uygulama içinden **"Aylık Premium"** veya **"Yıllık Premiu
 2. Sol menüden **Para Kazanma (Monetize) -> Ürünler (Products) -> Abonelikler (Subscriptions)** bölümüne tıklayın.
 3. **"Abonelik Oluştur" (Create subscription)** butonuna basın ve **birebir şu Ürün Kimliklerini (Product ID)** girin *(uygulama kodu bu 3 kimliği de otomatik tanır)*:
    - **1. Aylık Abonelik Kimliği:** `ezanai_premium_monthly`
-     - Adı: `Ezan Vaktim Pro — Aylık Premium`
+     - Adı: `Ezan Asistanı Pro — Aylık Premium`
      - **Önerilen 2026 Fiyatı:** **79,99 TL / Ay** *(Avrupa/ABD için: **3,99 $ / 3,99 €**)*
    - **2. Yıllık Abonelik Kimliği (En Çok Satan):** `ezanai_premium_yearly`
-     - Adı: `Ezan Vaktim Pro — Yıllık Premium (%37 Avantajlı)`
+     - Adı: `Ezan Asistanı Pro — Yıllık Premium (%37 Avantajlı)`
      - **Önerilen 2026 Fiyatı:** **599,99 TL / Yıl** *(Aylığa böldüğünüzde ~50 TL/ay'a gelir; Avrupa/ABD için: **29,99 $ / 29,99 €** — 7 gün ücretsiz deneme açmanız dönüşümü artırır)*
    - **3. Ömür Boyu VIP Paket Kimliği (Uygulama İçi Ürünler / In-app products menüsünden açılır):** `ezanai_premium_lifetime`
-     - Adı: `Ezan Vaktim Pro — Ömür Boyu VIP (Tek Seferlik)`
+     - Adı: `Ezan Asistanı Pro — Ömür Boyu VIP (Tek Seferlik)`
      - **Önerilen 2026 Fiyatı:** **1.499,99 TL** *(Avrupa/ABD için: **59,99 $ / 59,99 €**)*
 4. Ürünleri **"Etkinleştir" (Activate)** butonuna basarak aktif edin.
 5. `docs/PLAY_STORE_YAYIN_REHBERI.md` dosyasındaki adımlarla GitHub'dan imzalı `.aab` dosyasını indirip Play Console'a yükleyin. **Ekstra hiçbir kod değişikliği yapmanıza gerek kalmadan** uygulama içindeki Premium satın alma butonları gerçek Google Play ödeme penceresini açacaktır.
